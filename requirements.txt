@@ -1,0 +1,8 @@
+plotly==4.10.0
+dash==1.16.0
+dash-core-components==1.12.0
+dash-html-components==1.1.1
+dash-renderer==1.8.0
+dash-table==4.10.1
+numpy==1.18.5
+pandas==1.0.5
