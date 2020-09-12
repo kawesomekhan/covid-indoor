@@ -73,6 +73,12 @@ app.layout = html.Div(children=[
     html.H1(children='COVID-19 Indoor Safety Guidelines'),
 
     html.Div(children='''
+        Kasim Khan (2020)
+    '''),
+    html.Div(children='''
+        https://github.com/kawesomekhan/covid-indoor
+    '''),
+    html.Div(children='''
         Reference: Martin Z. Bazant and John W. M. Bush, medRxiv preprint (2020):
         "Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19"
     '''),
