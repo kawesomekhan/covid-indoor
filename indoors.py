@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy
+import math
 
 
 class Indoors:
@@ -52,6 +53,48 @@ class Indoors:
         n_max = 1 + (risk_tolerance * (1 + 1/(conc_relax_rate * exp_time)) / (airb_trans_rate * exp_time))
         return n_max
 
+    def calc_max_time(self, n_max):
+        # Physical Parameters
+        floor_area = self.physical_params[0]  # ft2
+        mean_ceiling_height = self.physical_params[1]  # ft
+        air_exch_rate = self.physical_params[2]  # /hr
+        primary_outdoor_air_fraction = self.physical_params[3]  # no units
+        aerosol_filtration_eff = self.physical_params[4]  # no units
+
+        # Physiological Parameters
+        breathing_flow_rate = self.physio_params[0]  # m3 / hr
+        aerosol_radius = self.physio_params[1]
+
+        # Disease Parameters
+        exhaled_air_inf = self.disease_params[0]  # infection quanta/m3
+        viral_deact_rate = self.disease_params[1]  # /hr
+
+        # Precautionary Parameters
+        mask_passage_prob = self.prec_params[0]  # no units
+        risk_tolerance = self.prec_params[1]  # no units
+
+        # Calculation
+        mean_ceiling_height_m = mean_ceiling_height * 0.3048
+        room_vol = floor_area * mean_ceiling_height  # ft3
+        room_vol_m = 0.0283168 * room_vol  # m3
+
+        fresh_rate = room_vol * air_exch_rate / 60  # ft3/min
+
+        recirc_rate = fresh_rate * (1/primary_outdoor_air_fraction - 1)  # ft3/min
+
+        air_filt_rate = aerosol_filtration_eff * recirc_rate * 60 / room_vol  # /hr
+
+        sett_speed = 3 * (aerosol_radius / 5) ** 2  # mm/s
+        sett_speed = sett_speed * 60 * 60 / 1000  # m/hr
+
+        conc_relax_rate = air_exch_rate + air_filt_rate + viral_deact_rate + sett_speed / mean_ceiling_height_m  # /hr
+
+        airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (room_vol_m * conc_relax_rate)  # /hr
+
+        exp_time_ss = risk_tolerance / ((n_max - 1) * airb_trans_rate)  # hrs, steady-state
+        exp_time_trans = exp_time_ss * (1 + (1 + 4 / (conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient
+        return exp_time_trans
+
     def calc_n_max_series(self, t_min, t_max, t_step):
         df = pd.DataFrame(columns=['Maximum Exposure Time (hours)', 'Maximum Occupancy'])
         for exp_time in numpy.arange(t_min, t_max, t_step):
@@ -59,6 +102,10 @@ class Indoors:
             df = df.append(pd.DataFrame({'Maximum Exposure Time (hours)': [exp_time], 'Maximum Occupancy': [n_max]}))
 
         return df
+
+    def get_six_ft_n(self):
+        floor_area = self.physical_params[0]  # ft2
+        return math.ceil(floor_area / (math.pi * 6 * 6))
 
     def set_default_params(self):
         # Physical Parameters

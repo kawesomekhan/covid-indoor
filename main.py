@@ -14,7 +14,8 @@ server = app.server
 myInd = ind.Indoors()
 results_df = myInd.calc_n_max_series(2, 100, 1.0)
 fig = px.line(results_df, x="Maximum Exposure Time (hours)", y="Maximum Occupancy",
-              title="Maximum Occupancy & Exposure Time")
+              title="Maximum Occupancy & Exposure Time",
+              height=400, color_discrete_map={"Maximum Occupancy": "#de1616"})
 
 ventilation_types = [
     {'label': "Bedroom, closed windows", 'value': 0.34},
@@ -69,6 +70,28 @@ mask_types = [
     {'label': "N95 Surgical", 'value': 0.05},
 ]
 
+model_output_n_vals = [2, 3, 5, 10, 25, 50, 100]
+
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@200&display=swap" rel="typography">
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>'''
+
 app.layout = html.Div(children=[
     html.H1(children='COVID-19 Indoor Safety Guidelines'),
 
@@ -84,11 +107,29 @@ app.layout = html.Div(children=[
     '''),
 
     html.Br(),
-
-    dcc.Graph(
-        id='safety-graph',
-        figure=fig
-    ),
+    html.Br(),
+    html.Div([
+        html.Div([
+            html.H3([
+                '''With six feet distancing guidelines, it should be safe to have''',
+                html.Span(id='six-ft-output', children=''' 2 people ''', style={'color': '#de1616'}),
+                ''' in this room. Using this model, however, it should be safe to have:
+            ''']),
+            html.H4(className='model-output-text', id='model-text-1'),
+            html.H4(className='model-output-text', id='model-text-2'),
+            html.H4(className='model-output-text', id='model-text-3'),
+            html.H4(className='model-output-text', id='model-text-4'),
+            html.H4(className='model-output-text', id='model-text-5'),
+            html.H4(className='model-output-text', id='model-text-6'),
+            html.H4(className='model-output-text', id='model-text-7'),
+        ], style={'width': '48%', 'display': 'inline-block'}),
+        html.Div([
+            dcc.Graph(
+                id='safety-graph',
+                figure=fig
+            ),
+        ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+    ]),
 
     html.Div([
         html.Div([
@@ -120,7 +161,7 @@ app.layout = html.Div(children=[
                                      0.01: {'label': '0 (closed room)'},
                                      1: {'label': '1 (outdoors)'}
                                  })])
-        ], style={'width': '48%', 'display': 'inline-block'}),
+        ], style={'width': '45%', 'display': 'inline-block'}),
 
         html.Div([
             html.H6("Human Behavior: "),
@@ -144,14 +185,22 @@ app.layout = html.Div(children=[
                       dcc.Dropdown(id='mask-type',
                                    options=mask_types,
                                    value=0.15)])
-        ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'}),
+        ], style={'width': '45%', 'float': 'right', 'display': 'inline-block'}),
         html.Br()
-    ])
+    ], style={'padding-top': '8em'})
 ])
 
 
 @app.callback(
-    Output('safety-graph', 'figure'),
+    [Output('safety-graph', 'figure'),
+     Output('model-text-1', 'children'),
+     Output('model-text-2', 'children'),
+     Output('model-text-3', 'children'),
+     Output('model-text-4', 'children'),
+     Output('model-text-5', 'children'),
+     Output('model-text-6', 'children'),
+     Output('model-text-7', 'children'),
+     Output('six-ft-output', 'children')],
     [Input('floor-area', 'value'),
      Input('ceiling-height', 'value'),
      Input('ventilation-type', 'value'),
@@ -171,10 +220,23 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     new_df = myInd.calc_n_max_series(2, 100, 1.0)
     new_fig = px.line(new_df, x="Maximum Exposure Time (hours)", y="Maximum Occupancy",
-                      title="Maximum Occupancy & Exposure Time")
+                      title="Maximum Occupancy & Exposure Time", height=400, color_discrete_map={"Maximum Occupancy": "#de1616"})
     new_fig.update_layout(transition_duration=500)
 
-    return new_fig
+    model_output_text = ["", "", "", "", "", "", ""]
+    index = 0
+    for n_val in model_output_n_vals:
+        model_output_text[index] = '{n_val} people for {val:.0f} hours,'.format(n_val=n_val,
+                                                                                val=myInd.calc_max_time(n_val))
+        index += 1
+
+    model_output_text[-2] = model_output_text[-2] + ' or'
+    model_output_text[-1] = model_output_text[-1][:-1] + '.'
+
+    six_ft_text = ' {} people'.format(myInd.get_six_ft_n())
+
+    return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
+           model_output_text[4], model_output_text[5], model_output_text[6], six_ft_text
 
 
 if __name__ == "__main__":
