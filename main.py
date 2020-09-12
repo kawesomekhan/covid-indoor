@@ -54,7 +54,7 @@ expiratory_types = [
     {'label': "Singing (voiced 'aah')", 'value': 970},
 ]
 
-def_rt = 0.2 / 10  # default risk tolerance
+def_rt = 0.008  # default risk tolerance
 age_levels = [
     {'label': "Ages 0-4", 'value': def_rt / 0.025},
     {'label': "Ages 5-17", 'value': def_rt / 0.008},
