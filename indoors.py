@@ -105,7 +105,7 @@ class Indoors:
 
     def get_six_ft_n(self):
         floor_area = self.physical_params[0]  # ft2
-        return math.ceil(floor_area / (math.pi * 6 * 6))
+        return math.floor(floor_area / (math.pi * 6 * 6))
 
     def set_default_params(self):
         # Physical Parameters
