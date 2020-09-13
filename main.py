@@ -85,6 +85,15 @@ app.index_string = '''
         {%favicon%}
         {%css%}
         <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@200&display=swap" rel="typography">
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-143756813-2"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'UA-143756813-2');
+        </script>
     </head>
     <body>
         {%app_entry%}
@@ -292,4 +301,4 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=False)
