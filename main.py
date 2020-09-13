@@ -14,7 +14,7 @@ server = app.server
 myInd = ind.Indoors()
 results_df = myInd.calc_n_max_series(2, 100, 1.0)
 fig = px.line(results_df, x="Maximum Exposure Time (hours)", y="Maximum Occupancy",
-              title="Maximum Occupancy & Exposure Time",
+              title="Occupancy vs. Exposure Time",
               height=400, color_discrete_map={"Maximum Occupancy": "#de1616"})
 
 ventilation_types = [
@@ -115,89 +115,117 @@ app.layout = html.Div(children=[
 
     html.Br(),
     html.Br(),
-    html.Div([
-        html.Div([
-            html.H3([
-                '''Based on this model, it should be safe for this room to have:
-            ''']),
-            html.H4(className='model-output-text', id='model-text-1'),
-            html.H4(className='model-output-text', id='model-text-2'),
-            html.H4(className='model-output-text', id='model-text-3'),
-            html.H4(className='model-output-text', id='model-text-4'),
-            html.H4(className='model-output-text', id='model-text-5'),
-            html.H4(className='model-output-text', id='model-text-6'),
-            html.H4(className='model-output-text', id='model-text-7'),
-            html.Br(),
-            html.H3([
-                '''In comparison, current six feet distancing guidelines recommend no more than''',
-                html.Span(id='six-ft-output', children=''' 2 people ''', style={'color': '#de1616'}),
-                ''' in this room.''']),
-        ], style={'width': '48%', 'display': 'inline-block'}),
-        html.Div([
-            dcc.Graph(
-                id='safety-graph',
-                figure=fig
-            ),
-        ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
-    ]),
-
-    html.Div([
-        html.Div([
-            html.H6("Room Specifications: "),
-            html.Br(),
-            html.Div(["Floor Area (sq. ft.): ",
-                      dcc.Input(id='floor-area', value=200, type='number')]),
-            html.Br(),
-            html.Div(["Ceiling Height (ft.): ",
-                      dcc.Input(id='ceiling-height', value=12, type='number')]),
-            html.Br(),
-            html.Div(["Ventilation System: ",
-                      dcc.Dropdown(id='ventilation-type',
-                                   options=ventilation_types,
-                                   value=0.34)]),
-            html.Br(),
-            html.Div(["Filtration System: ",
-                      dcc.Dropdown(id='filter-type',
-                                   options=filter_types,
-                                   value=0.01)]),
-            html.Br(),
-            html.Div(["Outdoor Air Fraction: ",
-                      dcc.Slider(id='outdoor-air-fraction',
-                                 min=0.01,
-                                 max=1,
-                                 step=0.01,
-                                 value=0.2,
-                                 marks={
-                                     0.01: {'label': '0 (closed room)'},
-                                     1: {'label': '1 (outdoors)'}
-                                 })])
-        ], style={'width': '45%', 'display': 'inline-block'}),
-
-        html.Div([
-            html.H6("Human Behavior: "),
-            html.Br(),
-            html.Div(["Exertion Level: ",
-                      dcc.Dropdown(id='exertion-level',
-                                   options=exertion_types,
-                                   value=0.49)]),
-            html.Br(),
-            html.Div(["Expiratory Activity: ",
-                      dcc.Dropdown(id='exp-activity',
-                                   options=expiratory_types,
-                                   value=29)]),
-            html.Br(),
-            html.Div(["Age Group: ",
-                      dcc.Dropdown(id='risk-tolerance',
-                                   options=age_levels,
-                                   value=def_rt / 0.2)]),
-            html.Br(),
-            html.Div(["Masks? ",
-                      dcc.Dropdown(id='mask-type',
-                                   options=mask_types,
-                                   value=0.15)])
-        ], style={'width': '45%', 'float': 'right', 'display': 'inline-block'}),
-        html.Br()
-    ], style={'padding-top': '8em'})
+    html.Div(
+        className='grid',
+        children=[
+            html.Div(
+                className='card',
+                children=[
+                    dcc.Tabs(className='custom-tabs', value='tab-1', children=[
+                        dcc.Tab(
+                            label='Room Specifications',
+                            className='custom-tab',
+                            children=[
+                                html.H6("Room Specifications: "),
+                                html.Br(),
+                                html.Div(["Floor Area (sq. ft.): ",
+                                          dcc.Input(id='floor-area', value=200, type='number')]),
+                                html.Br(),
+                                html.Div(["Ceiling Height (ft.): ",
+                                          dcc.Input(id='ceiling-height', value=12, type='number')]),
+                                html.Br(),
+                                html.Div(["Ventilation System: ",
+                                          dcc.Dropdown(id='ventilation-type',
+                                                       options=ventilation_types,
+                                                       value=0.34)]),
+                                html.Br(),
+                                html.Div(["Filtration System: ",
+                                          dcc.Dropdown(id='filter-type',
+                                                       options=filter_types,
+                                                       value=0.01)]),
+                                html.Br(),
+                                html.Div(["Outdoor Air Fraction: ",
+                                          dcc.Slider(id='outdoor-air-fraction',
+                                                     min=0.01,
+                                                     max=1,
+                                                     step=0.01,
+                                                     value=0.2,
+                                                     marks={
+                                                         0.01: {'label': '0 (closed room)'},
+                                                         1: {'label': '1 (outdoors)'}
+                                                     })])
+                            ]
+                        ),
+                        dcc.Tab(
+                            label='Human Behavior',
+                            className='custom-tab',
+                            children=[
+                                html.H6("Human Behavior: "),
+                                html.Br(),
+                                html.Div(["Exertion Level: ",
+                                          dcc.Dropdown(id='exertion-level',
+                                                       options=exertion_types,
+                                                       value=0.49)]),
+                                html.Br(),
+                                html.Div(["Expiratory Activity: ",
+                                          dcc.Dropdown(id='exp-activity',
+                                                       options=expiratory_types,
+                                                       value=29)]),
+                                html.Br(),
+                                html.Div(["Age Group: ",
+                                          dcc.Dropdown(id='risk-tolerance',
+                                                       options=age_levels,
+                                                       value=def_rt / 0.2)]),
+                                html.Br(),
+                                html.Div(["Masks? ",
+                                          dcc.Dropdown(id='mask-type',
+                                                       options=mask_types,
+                                                       value=0.15)])
+                            ]
+                        ),
+                        dcc.Tab(
+                            label='Graph Output',
+                            className='custom-tab',
+                            children=[
+                                html.H6("Graph Output: "),
+                                html.Div([
+                                    dcc.Graph(
+                                        id='safety-graph',
+                                        figure=fig
+                                    ),
+                                ])
+                            ]
+                        )
+                    ],
+                             colors={
+                                 "border": "#c9c9c9",
+                                 "primary": "#de1616"
+                             }),
+                    html.Br()
+                ]),
+            html.Div(
+                className='card',
+                children=[
+                    html.Div([
+                        html.H3([
+                            '''Based on this model, it should be safe for this room to have:
+                    ''']),
+                        html.H4(className='model-output-text', id='model-text-1'),
+                        html.H4(className='model-output-text', id='model-text-2'),
+                        html.H4(className='model-output-text', id='model-text-3'),
+                        html.H4(className='model-output-text', id='model-text-4'),
+                        html.H4(className='model-output-text', id='model-text-5'),
+                        html.H4(className='model-output-text', id='model-text-6'),
+                        html.H4(className='model-output-text', id='model-text-7'),
+                        html.Br(),
+                        html.H3([
+                            '''In comparison, current six feet distancing guidelines recommend no more than''',
+                            html.Span(id='six-ft-output', children=''' 2 people ''', style={'color': '#de1616'}),
+                            ''' in this room.''']),
+                    ]),
+                ]),
+        ]
+    )
 ])
 
 
@@ -230,7 +258,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     new_df = myInd.calc_n_max_series(2, 100, 1.0)
     new_fig = px.line(new_df, x="Maximum Exposure Time (hours)", y="Maximum Occupancy",
-                      title="Maximum Occupancy & Exposure Time", height=400, color_discrete_map={"Maximum Occupancy": "#de1616"})
+                      title="Occupancy vs. Exposure Time", height=400,
+                      color_discrete_map={"Maximum Occupancy": "#de1616"})
     new_fig.update_layout(transition_duration=500)
 
     model_output_text = ["", "", "", "", "", "", ""]
@@ -263,4 +292,4 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
 
 
 if __name__ == "__main__":
-    app.run_server()
+    app.run_server(debug=True)
