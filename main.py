@@ -26,10 +26,14 @@ ventilation_types = [
     {'label': "Toxic Laboratory", 'value': 25},
 ]
 
+# source: https://www.energyvanguard.com/blog/can-your-hvac-system-filter-out-coronavirus
 filter_types = [
     {'label': "None", 'value': 0},
-    {'label': "HEPA", 'value': 0.9997},
-    {'label': "MERVs", 'value': 0.5},
+    {'label': "Residential Window AC (MERV 1-4)", 'value': 0.01},
+    {'label': "Residential/Commercial/Industrial (MERV 5-8)", 'value': 0.05},
+    {'label': "Residential/Commercial/Hospital Laboratories (MERV 9-12)", 'value': 0.575},
+    {'label': "Hospital & General Surgery (MERV 13-16)", 'value': 0.9},
+    {'label': "HEPA", 'value': 0.9997}
 ]
 
 exertion_types = [
@@ -77,7 +81,7 @@ app.index_string = '''
 <html>
     <head>
         {%metas%}
-        <title>{%title%}</title>
+        <title>COVID-19 Indoor Safety</title>
         {%favicon%}
         {%css%}
         <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@200&display=swap" rel="typography">
@@ -93,7 +97,7 @@ app.index_string = '''
 </html>'''
 
 app.layout = html.Div(children=[
-    html.H1(children='COVID-19 Indoor Safety Guidelines'),
+    html.H1(children='MIT COVID-19 Indoor Safety Guideline'),
 
     html.Div(children='''
         Kasim Khan (2020)
@@ -105,15 +109,16 @@ app.layout = html.Div(children=[
         Reference: Martin Z. Bazant and John W. M. Bush, medRxiv preprint (2020):
         "Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19"
     '''),
+    html.Div('''
+        http://web.mit.edu/bazant/www/COVID-19/
+    '''),
 
     html.Br(),
     html.Br(),
     html.Div([
         html.Div([
             html.H3([
-                '''With six feet distancing guidelines, it should be safe to have''',
-                html.Span(id='six-ft-output', children=''' 2 people ''', style={'color': '#de1616'}),
-                ''' in this room. Using this model, however, it should be safe to have:
+                '''Based on this model, it should be safe for this room to have:
             ''']),
             html.H4(className='model-output-text', id='model-text-1'),
             html.H4(className='model-output-text', id='model-text-2'),
@@ -122,6 +127,11 @@ app.layout = html.Div(children=[
             html.H4(className='model-output-text', id='model-text-5'),
             html.H4(className='model-output-text', id='model-text-6'),
             html.H4(className='model-output-text', id='model-text-7'),
+            html.Br(),
+            html.H3([
+                '''In comparison, current six feet distancing guidelines recommend no more than''',
+                html.Span(id='six-ft-output', children=''' 2 people ''', style={'color': '#de1616'}),
+                ''' in this room.''']),
         ], style={'width': '48%', 'display': 'inline-block'}),
         html.Div([
             dcc.Graph(
@@ -136,7 +146,7 @@ app.layout = html.Div(children=[
             html.H6("Room Specifications: "),
             html.Br(),
             html.Div(["Floor Area (sq. ft.): ",
-                      dcc.Input(id='floor-area', value=900, type='number')]),
+                      dcc.Input(id='floor-area', value=200, type='number')]),
             html.Br(),
             html.Div(["Ceiling Height (ft.): ",
                       dcc.Input(id='ceiling-height', value=12, type='number')]),
@@ -149,7 +159,7 @@ app.layout = html.Div(children=[
             html.Div(["Filtration System: ",
                       dcc.Dropdown(id='filter-type',
                                    options=filter_types,
-                                   value=0)]),
+                                   value=0.01)]),
             html.Br(),
             html.Div(["Outdoor Air Fraction: ",
                       dcc.Slider(id='outdoor-air-fraction',
@@ -226,14 +236,27 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     model_output_text = ["", "", "", "", "", "", ""]
     index = 0
     for n_val in model_output_n_vals:
-        model_output_text[index] = '{n_val} people for {val:.0f} hours,'.format(n_val=n_val,
-                                                                                val=myInd.calc_max_time(n_val))
+        max_time = myInd.calc_max_time(n_val)  # hours
+        units = 'hours'
+        if max_time < 1:
+            units = 'minutes'
+            max_time = max_time * 60
+
+        if round(max_time) == 1:
+            units = units[:-1]
+
+        base_string = '{n_val} people for {val:.0f} ' + units + ','
+        model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
         index += 1
 
     model_output_text[-2] = model_output_text[-2] + ' or'
     model_output_text[-1] = model_output_text[-1][:-1] + '.'
 
-    six_ft_text = ' {} people'.format(myInd.get_six_ft_n())
+    six_ft_people = myInd.get_six_ft_n()
+    if six_ft_people == 1:
+        six_ft_text = ' {} person'.format(six_ft_people)
+    else:
+        six_ft_text = ' {} people'.format(six_ft_people)
 
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], six_ft_text
