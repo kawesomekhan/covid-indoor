@@ -18,12 +18,13 @@ fig = px.line(results_df, x="Maximum Exposure Time (hours)", y="Maximum Occupanc
               height=400, color_discrete_map={"Maximum Occupancy": "#de1616"})
 
 ventilation_types = [
-    {'label': "Bedroom, closed windows", 'value': 0.34},
-    {'label': "Mechanical Ventilation", 'value': 6},
-    {'label': "Restaurant", 'value': 17.5},
-    {'label': "Hospital", 'value': 18},
-    {'label': "Laboratory", 'value': 17.5},
-    {'label': "Toxic Laboratory", 'value': 25},
+    {'label': "Bedroom, closed windows (0.34 ACH)", 'value': 0.34},
+    {'label': "Mechanical Ventilation (3 ACH)", 'value': 3},
+    {'label': "Mechanical Ventilation (8 ACH)", 'value': 8},
+    {'label': "Laboratory (9 ACH)", 'value': 9},
+    {'label': "Restaurant (17.5 ACH)", 'value': 17.5},
+    {'label': "Hospital (18 ACH)", 'value': 18},
+    {'label': "Toxic Laboratory (25 ACH)", 'value': 25},
 ]
 
 # source: https://www.energyvanguard.com/blog/can-your-hvac-system-filter-out-coronavirus
@@ -58,7 +59,7 @@ expiratory_types = [
     {'label': "Singing (voiced 'aah')", 'value': 970},
 ]
 
-def_rt = 0.008  # default risk tolerance
+def_rt = 0.004  # default risk tolerance
 age_levels = [
     {'label': "Ages 0-4", 'value': def_rt / 0.025},
     {'label': "Ages 5-17", 'value': def_rt / 0.008},
@@ -69,9 +70,15 @@ age_levels = [
 ]
 
 mask_types = [
-    {'label': "None", 'value': 1},
-    {'label': "Cloth", 'value': 0.15},
-    {'label': "N95 Surgical", 'value': 0.05},
+    {'label': "None (100% passage)", 'value': 1},
+    {'label': "Cloth (15% passage)", 'value': 0.15},
+    {'label': "N95 Surgical (5% passage)", 'value': 0.05},
+]
+
+presets = [
+    {'label': "House", 'value': 'house'},
+    {'label': "Restaurant", 'value': 'restaurant'},
+    {'label': "Lecture Hall", 'value': 'lecture_hall'}
 ]
 
 model_output_n_vals = [2, 3, 5, 10, 25, 50, 100]
@@ -81,6 +88,7 @@ app.index_string = '''
 <html>
     <head>
         {%metas%}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>COVID-19 Indoor Safety</title>
         {%favicon%}
         {%css%}
@@ -107,22 +115,22 @@ app.index_string = '''
 
 app.layout = html.Div(children=[
     html.H1(children='MIT COVID-19 Indoor Safety Guideline'),
-
-    html.Div(children='''
+    html.Div([
+        html.Div(children='''
         Kasim Khan (2020)
     '''),
-    html.Div(children='''
+        html.Div(children='''
         https://github.com/kawesomekhan/covid-indoor
     '''),
-    html.Div(children='''
-        Reference: Martin Z. Bazant and John W. M. Bush, medRxiv preprint (2020):
+        html.Div(children='''
+        Martin Z. Bazant and John W. M. Bush, medRxiv preprint (2020):
         "Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19"
     '''),
-    html.Div('''
+        html.Div('''
         http://web.mit.edu/bazant/www/COVID-19/
     '''),
+    ], style={'font-size': '13px'}),
 
-    html.Br(),
     html.Br(),
     html.Div(
         className='grid',
@@ -131,6 +139,39 @@ app.layout = html.Div(children=[
                 className='card',
                 children=[
                     dcc.Tabs(className='custom-tabs', value='tab-1', children=[
+                        dcc.Tab(
+                            label='About',
+                            className='custom-tab',
+                            children=[
+                                html.H6("About: "),
+                                html.Div('''
+                                    COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
+                                    enclosed spaces via tiny, infective aerosol droplets suspended in the air.
+                                    To mitigate this spread, official public health guidelines have taken the form 
+                                    of minimum social distancing rules (6 feet in the U.S.) or maximum occupancy 
+                                    (25 people in Massachusetts). 
+                                '''),
+                                html.Br(),
+                                html.Div('''
+                                    However, public health has been slow to catch up with rapidly advancing science.
+                                    Naturally, the risk of COVID-19 transmission would not only depend on physical 
+                                    distance, but also on factors such as exposure time, mask usage, and ventilation
+                                    systems, among other factors.
+                                '''),
+                                html.Br(),
+                                html.Div('''
+                                    This app uses a mathematical model, developed by MIT professors Martin Z. Bazant 
+                                    and John Bush, to improve upon
+                                    current distancing guidelines by providing a more accurate description of
+                                    indoor COVID-19 transmission risk.
+                                '''),
+                                html.Br(),
+                                html.Div('''
+                                    Adjust parameters in the other tabs and see how different spaces handle
+                                    indoor COVID-19 transmission.
+                                '''),
+                            ]
+                        ),
                         dcc.Tab(
                             label='Room Specifications',
                             className='custom-tab',
@@ -154,6 +195,7 @@ app.layout = html.Div(children=[
                                                        value=0.01)]),
                                 html.Br(),
                                 html.Div(["Outdoor Air Fraction: ",
+                                          html.Span(id='air-fraction-output'),
                                           dcc.Slider(id='outdoor-air-fraction',
                                                      min=0.01,
                                                      max=1,
@@ -181,19 +223,33 @@ app.layout = html.Div(children=[
                                                        options=expiratory_types,
                                                        value=29)]),
                                 html.Br(),
-                                html.Div(["Age Group: ",
-                                          dcc.Dropdown(id='risk-tolerance',
-                                                       options=age_levels,
-                                                       value=def_rt / 0.2)]),
-                                html.Br(),
                                 html.Div(["Masks? ",
                                           dcc.Dropdown(id='mask-type',
                                                        options=mask_types,
-                                                       value=0.15)])
+                                                       value=0.15)]),
+                                html.Br(),
+                                html.Div(["Risk Tolerance: ",
+                                          html.Span(id='risk-tolerance-output'),
+                                          html.Div('''
+                                                   This represents the number of expected transmissions during the
+                                                   occupancy period. A vulnerable population, due to age or
+                                                   preexisting medical conditions, will generally require
+                                                   a lower risk tolerance. 
+                                          ''', style={'font-size': '13px', 'margin-left': '20px'}),
+                                        dcc.Slider(id='risk-tolerance',
+                                                   min=0.01,
+                                                   max=1,
+                                                   step=0.01,
+                                                   value=0.1,
+                                                   marks={
+                                                       0.01: {'label': '0.01: Contact Tracing'},
+                                                       1: {'label': '1.0: Unsafe'}
+                                                   })
+                                ])
                             ]
                         ),
                         dcc.Tab(
-                            label='Graph Output',
+                            label='Advanced',
                             className='custom-tab',
                             children=[
                                 html.H6("Graph Output: "),
@@ -206,10 +262,10 @@ app.layout = html.Div(children=[
                             ]
                         )
                     ],
-                             colors={
-                                 "border": "#c9c9c9",
-                                 "primary": "#de1616"
-                             }),
+                     colors={
+                         "border": "#c9c9c9",
+                         "primary": "#de1616"
+                     }),
                     html.Br()
                 ]),
             html.Div(
@@ -232,10 +288,10 @@ app.layout = html.Div(children=[
                             html.Span(id='six-ft-output', children=''' 2 people ''', style={'color': '#de1616'}),
                             ''' in this room.''']),
                     ]),
-                ]),
-        ]
-    )
-])
+                ], style={'padding-top': '0px'}),
+            ]
+        ),
+    ])
 
 
 @app.callback(
@@ -298,6 +354,22 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
 
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], six_ft_text
+
+
+@app.callback(
+    [Output('risk-tolerance-output', 'children')],
+    [Input('risk-tolerance', 'value')]
+)
+def update_risk_tol_disp(risk_tolerance):
+    return ["{:.2f}".format(risk_tolerance)]
+
+
+@app.callback(
+    [Output('air-fraction-output', 'children')],
+    [Input('outdoor-air-fraction', 'value')]
+)
+def update_air_frac_disp(outdoor_air_fraction):
+    return ["{:.2f}".format(outdoor_air_fraction)]
 
 
 if __name__ == "__main__":
