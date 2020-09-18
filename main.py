@@ -5,9 +5,7 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 import indoors as ind
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__)
 
 server = app.server
 
@@ -21,8 +19,8 @@ ventilation_types = [
     {'label': "Bedroom, closed windows (0.34 ACH)", 'value': 0.34},
     {'label': "Mechanical Ventilation (3 ACH)", 'value': 3},
     {'label': "Mechanical Ventilation (8 ACH)", 'value': 8},
-    {'label': "Laboratory (9 ACH)", 'value': 9},
-    {'label': "Restaurant (17.5 ACH)", 'value': 17.5},
+    {'label': "Laboratory, Restaurant (9 ACH)", 'value': 9},
+    {'label': "Bar (15 ACH)", 'value': 15},
     {'label': "Hospital (18 ACH)", 'value': 18},
     {'label': "Toxic Laboratory (25 ACH)", 'value': 25},
 ]
@@ -179,15 +177,17 @@ app.layout = html.Div(children=[
                                 html.H6("Room Specifications: "),
                                 html.Br(),
                                 html.Div(["Floor Area (sq. ft.): ",
-                                          dcc.Input(id='floor-area', value=200, type='number')]),
+                                          dcc.Input(id='floor-area', value=900, type='number')]),
                                 html.Br(),
                                 html.Div(["Ceiling Height (ft.): ",
                                           dcc.Input(id='ceiling-height', value=12, type='number')]),
                                 html.Br(),
-                                html.Div(["Ventilation System: ",
-                                          dcc.Dropdown(id='ventilation-type',
-                                                       options=ventilation_types,
-                                                       value=0.34)]),
+                                html.Div(className='card-dropdown',
+                                         children=[html.Div(["Ventilation System: "])]),
+                                html.Div(className='card-dropdown',
+                                         children=[dcc.Dropdown(id='ventilation-type',
+                                                                options=ventilation_types,
+                                                                value=3)]),
                                 html.Br(),
                                 html.Div(["Filtration System: ",
                                           dcc.Dropdown(id='filter-type',
@@ -236,16 +236,16 @@ app.layout = html.Div(children=[
                                                    preexisting medical conditions, will generally require
                                                    a lower risk tolerance. 
                                           ''', style={'font-size': '13px', 'margin-left': '20px'}),
-                                        dcc.Slider(id='risk-tolerance',
-                                                   min=0.01,
-                                                   max=1,
-                                                   step=0.01,
-                                                   value=0.1,
-                                                   marks={
-                                                       0.01: {'label': '0.01: Contact Tracing'},
-                                                       1: {'label': '1.0: Unsafe'}
-                                                   })
-                                ])
+                                          dcc.Slider(id='risk-tolerance',
+                                                     min=0.01,
+                                                     max=1,
+                                                     step=0.01,
+                                                     value=0.1,
+                                                     marks={
+                                                         0.01: {'label': '0.01: Contact Tracing'},
+                                                         1: {'label': '1.0: Unsafe'}
+                                                     })
+                                          ])
                             ]
                         ),
                         dcc.Tab(
@@ -262,10 +262,10 @@ app.layout = html.Div(children=[
                             ]
                         )
                     ],
-                     colors={
-                         "border": "#c9c9c9",
-                         "primary": "#de1616"
-                     }),
+                             colors={
+                                 "border": "#c9c9c9",
+                                 "primary": "#de1616"
+                             }),
                     html.Br()
                 ]),
             html.Div(
@@ -289,9 +289,9 @@ app.layout = html.Div(children=[
                             ''' in this room.''']),
                     ]),
                 ], style={'padding-top': '0px'}),
-            ]
-        ),
-    ])
+        ]
+    ),
+])
 
 
 @app.callback(

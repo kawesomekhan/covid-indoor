@@ -30,6 +30,12 @@ h4 {
     padding: 1em;
 }
 
+.grid {
+    display: grid;
+    grid-template-columns: 100px 100px 100px
+    padding: 0;
+}
+
 six-ft-output {
     color: #de1616
 }
