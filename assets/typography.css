@@ -1,3 +1,7 @@
+/* CSS related to typography */
+
+@import url(https://fonts.googleapis.com/css2?family=Barlow,200);
+
 body {
     font-family: 'Barlow', sans-serif;
     padding: 3em
@@ -9,31 +13,6 @@ h1, h2, h4, h5, h6 {
 h4 {
     padding: 0;
     margin: 0;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    padding: 0;
-}
-
-@media only screen and (max-width: 960px) {
-    .grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        padding: 0;
-    }
-}
-
-.card {
-    height: 1000px;
-    padding: 1em;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 100px 100px 100px
-    padding: 0;
 }
 
 six-ft-output {

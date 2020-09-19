@@ -5,16 +5,38 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 import indoors as ind
 
-app = dash.Dash(__name__)
+"""
+main.py contains the core functionality of the Dash app. It is responsible for taking inputs,
+feeding those inputs to the model (indoors.py), and displaying the model outputs in an effective, concise
+manner.
 
+Properties: 
+Dash App Setup
+COVID-19 Calculator Setup
+Dropdown Preset Values
+Tab CSS Styles
+Custom HTML Headers
+Main App 
+
+Methods: 
+def update_figure: Calculate model & update displayed values
+def update_risk_tol_disp: Update risk tolerance display value
+def update_air_frac_disp: Update air fraction display value
+"""
+
+# Dash App Setup
+app = dash.Dash(__name__)
+# Used for Heroku deployment
 server = app.server
 
+# COVID-19 Calculator Setup
 myInd = ind.Indoors()
 results_df = myInd.calc_n_max_series(2, 100, 1.0)
 fig = px.line(results_df, x="Maximum Exposure Time (hours)", y="Maximum Occupancy",
               title="Occupancy vs. Exposure Time",
               height=400, color_discrete_map={"Maximum Occupancy": "#de1616"})
 
+# Dropdown Preset Values
 ventilation_types = [
     {'label': "Bedroom, closed windows (0.34 ACH)", 'value': 0.34},
     {'label': "Mechanical Ventilation (3 ACH)", 'value': 3},
@@ -57,16 +79,6 @@ expiratory_types = [
     {'label': "Singing (voiced 'aah')", 'value': 970},
 ]
 
-def_rt = 0.004  # default risk tolerance
-age_levels = [
-    {'label': "Ages 0-4", 'value': def_rt / 0.025},
-    {'label': "Ages 5-17", 'value': def_rt / 0.008},
-    {'label': "Ages 18-49", 'value': def_rt / 0.2},
-    {'label': "Ages 50-64", 'value': def_rt / 0.61},
-    {'label': "Ages 75-84", 'value': def_rt / 1.30},
-    {'label': "Ages >85", 'value': def_rt / 1.45},
-]
-
 mask_types = [
     {'label': "None (100% passage)", 'value': 1},
     {'label': "Cloth (15% passage)", 'value': 0.15},
@@ -79,8 +91,16 @@ presets = [
     {'label': "Lecture Hall", 'value': 'lecture_hall'}
 ]
 
+# Nmax values for main red text output
 model_output_n_vals = [2, 3, 5, 10, 25, 50, 100]
 
+# CSS Styles for Tabs (currently known issue in Dash with overriding default css)
+tab_style = {
+    'padding-left': '1em',
+    'padding-right': '1em'
+}
+
+# Custom HTML Header
 app.index_string = '''
 <!DOCTYPE html>
 <html>
@@ -90,7 +110,6 @@ app.index_string = '''
         <title>COVID-19 Indoor Safety</title>
         {%favicon%}
         {%css%}
-        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@200&display=swap" rel="typography">
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-143756813-2"></script>
         <script>
@@ -111,6 +130,7 @@ app.index_string = '''
     </body>
 </html>'''
 
+# Main App
 app.layout = html.Div(children=[
     html.H1(children='MIT COVID-19 Indoor Safety Guideline'),
     html.Div([
@@ -136,132 +156,141 @@ app.layout = html.Div(children=[
             html.Div(
                 className='card',
                 children=[
-                    dcc.Tabs(className='custom-tabs', value='tab-1', children=[
-                        dcc.Tab(
-                            label='About',
-                            className='custom-tab',
-                            children=[
-                                html.H6("About: "),
-                                html.Div('''
+                    dcc.Tabs(className='custom-tabs-container',
+                             value='tab-1', children=[
+                            dcc.Tab(
+                                label='About',
+                                className='custom-tab',
+                                children=[
+                                    html.H6("About: "),
+                                    html.Div('''
                                     COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
                                     enclosed spaces via tiny, infective aerosol droplets suspended in the air.
                                     To mitigate this spread, official public health guidelines have taken the form 
                                     of minimum social distancing rules (6 feet in the U.S.) or maximum occupancy 
                                     (25 people in Massachusetts). 
                                 '''),
-                                html.Br(),
-                                html.Div('''
+                                    html.Br(),
+                                    html.Div('''
                                     However, public health has been slow to catch up with rapidly advancing science.
                                     Naturally, the risk of COVID-19 transmission would not only depend on physical 
                                     distance, but also on factors such as exposure time, mask usage, and ventilation
                                     systems, among other factors.
                                 '''),
-                                html.Br(),
-                                html.Div('''
+                                    html.Br(),
+                                    html.Div('''
                                     This app uses a mathematical model, developed by MIT professors Martin Z. Bazant 
                                     and John Bush, to improve upon
                                     current distancing guidelines by providing a more accurate description of
                                     indoor COVID-19 transmission risk.
                                 '''),
-                                html.Br(),
-                                html.Div('''
+                                    html.Br(),
+                                    html.Div('''
                                     Adjust parameters in the other tabs and see how different spaces handle
                                     indoor COVID-19 transmission.
                                 '''),
-                            ]
-                        ),
-                        dcc.Tab(
-                            label='Room Specifications',
-                            className='custom-tab',
-                            children=[
-                                html.H6("Room Specifications: "),
-                                html.Br(),
-                                html.Div(["Floor Area (sq. ft.): ",
-                                          dcc.Input(id='floor-area', value=900, type='number')]),
-                                html.Br(),
-                                html.Div(["Ceiling Height (ft.): ",
-                                          dcc.Input(id='ceiling-height', value=12, type='number')]),
-                                html.Br(),
-                                html.Div(className='card-dropdown',
-                                         children=[html.Div(["Ventilation System: "])]),
-                                html.Div(className='card-dropdown',
-                                         children=[dcc.Dropdown(id='ventilation-type',
-                                                                options=ventilation_types,
-                                                                value=3)]),
-                                html.Br(),
-                                html.Div(["Filtration System: ",
-                                          dcc.Dropdown(id='filter-type',
-                                                       options=filter_types,
-                                                       value=0.01)]),
-                                html.Br(),
-                                html.Div(["Outdoor Air Fraction: ",
-                                          html.Span(id='air-fraction-output'),
-                                          dcc.Slider(id='outdoor-air-fraction',
-                                                     min=0.01,
-                                                     max=1,
-                                                     step=0.01,
-                                                     value=0.2,
-                                                     marks={
-                                                         0.01: {'label': '0 (closed room)'},
-                                                         1: {'label': '1 (outdoors)'}
-                                                     })])
-                            ]
-                        ),
-                        dcc.Tab(
-                            label='Human Behavior',
-                            className='custom-tab',
-                            children=[
-                                html.H6("Human Behavior: "),
-                                html.Br(),
-                                html.Div(["Exertion Level: ",
-                                          dcc.Dropdown(id='exertion-level',
-                                                       options=exertion_types,
-                                                       value=0.49)]),
-                                html.Br(),
-                                html.Div(["Expiratory Activity: ",
-                                          dcc.Dropdown(id='exp-activity',
-                                                       options=expiratory_types,
-                                                       value=29)]),
-                                html.Br(),
-                                html.Div(["Masks? ",
-                                          dcc.Dropdown(id='mask-type',
-                                                       options=mask_types,
-                                                       value=0.15)]),
-                                html.Br(),
-                                html.Div(["Risk Tolerance: ",
-                                          html.Span(id='risk-tolerance-output'),
-                                          html.Div('''
+                                ],
+                                style=tab_style,
+                                selected_style=tab_style
+                            ),
+                            dcc.Tab(
+                                label='Room Specifications',
+                                className='custom-tab',
+                                children=[
+                                    html.H6("Room Specifications: "),
+                                    html.Br(),
+                                    html.Div(["Floor Area (sq. ft.): ",
+                                              dcc.Input(id='floor-area', value=900, type='number')]),
+                                    html.Br(),
+                                    html.Div(["Ceiling Height (ft.): ",
+                                              dcc.Input(id='ceiling-height', value=12, type='number')]),
+                                    html.Br(),
+                                    html.Div(className='card-dropdown',
+                                             children=[html.Div(["Ventilation System: "])]),
+                                    html.Div(className='card-dropdown',
+                                             children=[dcc.Dropdown(id='ventilation-type',
+                                                                    options=ventilation_types,
+                                                                    value=3)]),
+                                    html.Br(),
+                                    html.Div(["Filtration System: ",
+                                              dcc.Dropdown(id='filter-type',
+                                                           options=filter_types,
+                                                           value=0.01)]),
+                                    html.Br(),
+                                    html.Div(["Outdoor Air Fraction: ",
+                                              html.Span(id='air-fraction-output'),
+                                              dcc.Slider(id='outdoor-air-fraction',
+                                                         min=0.01,
+                                                         max=1,
+                                                         step=0.01,
+                                                         value=0.2,
+                                                         marks={
+                                                             0.01: {'label': '0 (closed room)'},
+                                                             1: {'label': '1 (outdoors)'}
+                                                         })])
+                                ],
+                                style=tab_style,
+                                selected_style=tab_style
+                            ),
+                            dcc.Tab(
+                                label='Human Behavior',
+                                className='custom-tab',
+                                children=[
+                                    html.H6("Human Behavior: "),
+                                    html.Br(),
+                                    html.Div(["Exertion Level: ",
+                                              dcc.Dropdown(id='exertion-level',
+                                                           options=exertion_types,
+                                                           value=0.49)]),
+                                    html.Br(),
+                                    html.Div(["Expiratory Activity: ",
+                                              dcc.Dropdown(id='exp-activity',
+                                                           options=expiratory_types,
+                                                           value=29)]),
+                                    html.Br(),
+                                    html.Div(["Masks? ",
+                                              dcc.Dropdown(id='mask-type',
+                                                           options=mask_types,
+                                                           value=0.15)]),
+                                    html.Br(),
+                                    html.Div(["Risk Tolerance: ",
+                                              html.Span(id='risk-tolerance-output'),
+                                              html.Div('''
                                                    This represents the number of expected transmissions during the
                                                    occupancy period. A vulnerable population, due to age or
                                                    preexisting medical conditions, will generally require
                                                    a lower risk tolerance. 
                                           ''', style={'font-size': '13px', 'margin-left': '20px'}),
-                                          dcc.Slider(id='risk-tolerance',
-                                                     min=0.01,
-                                                     max=1,
-                                                     step=0.01,
-                                                     value=0.1,
-                                                     marks={
-                                                         0.01: {'label': '0.01: Contact Tracing'},
-                                                         1: {'label': '1.0: Unsafe'}
-                                                     })
-                                          ])
-                            ]
-                        ),
-                        dcc.Tab(
-                            label='Advanced',
-                            className='custom-tab',
-                            children=[
-                                html.H6("Graph Output: "),
-                                html.Div([
-                                    dcc.Graph(
-                                        id='safety-graph',
-                                        figure=fig
-                                    ),
-                                ])
-                            ]
-                        )
-                    ],
+                                              dcc.Slider(id='risk-tolerance',
+                                                         min=0.01,
+                                                         max=1,
+                                                         step=0.01,
+                                                         value=0.1,
+                                                         marks={
+                                                             0.01: {'label': '0.01: Contact Tracing'},
+                                                             1: {'label': '1.0: Unsafe'}
+                                                         })
+                                              ])
+                                ],
+                                style=tab_style,
+                                selected_style=tab_style
+                            ),
+                            dcc.Tab(
+                                label='Advanced',
+                                className='custom-tab',
+                                children=[
+                                    html.H6("Graph Output: "),
+                                    html.Div([
+                                        dcc.Graph(
+                                            id='safety-graph',
+                                            figure=fig
+                                        ),
+                                    ])
+                                ],
+                                style=tab_style,
+                                selected_style=tab_style
+                            )
+                        ],
                              colors={
                                  "border": "#c9c9c9",
                                  "primary": "#de1616"
@@ -294,6 +323,8 @@ app.layout = html.Div(children=[
 ])
 
 
+# Model Update & Calculation
+# See indoors.py def set_default_params(self) for parameter descriptions.
 @app.callback(
     [Output('safety-graph', 'figure'),
      Output('model-text-1', 'children'),
@@ -316,17 +347,21 @@ app.layout = html.Div(children=[
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction, aerosol_filter_eff,
                   breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance):
+    # Update model with newly-selected parameters
     myInd.physical_params = [floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction,
                              aerosol_filter_eff]
     myInd.physio_params = [breathing_flow_rate, 2]
     myInd.disease_params = [infectiousness, 0.3]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
+
+    # Update the figure with a new model calculation
     new_df = myInd.calc_n_max_series(2, 100, 1.0)
     new_fig = px.line(new_df, x="Maximum Exposure Time (hours)", y="Maximum Occupancy",
                       title="Occupancy vs. Exposure Time", height=400,
                       color_discrete_map={"Maximum Occupancy": "#de1616"})
     new_fig.update_layout(transition_duration=500)
 
+    # Update the red text output with new model calculations
     model_output_text = ["", "", "", "", "", "", ""]
     index = 0
     for n_val in model_output_n_vals:
@@ -352,10 +387,12 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     else:
         six_ft_text = ' {} people'.format(six_ft_people)
 
+    # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], six_ft_text
 
 
+# Risk tolerance slider value display
 @app.callback(
     [Output('risk-tolerance-output', 'children')],
     [Input('risk-tolerance', 'value')]
@@ -364,6 +401,7 @@ def update_risk_tol_disp(risk_tolerance):
     return ["{:.2f}".format(risk_tolerance)]
 
 
+# Outdoor Air Fraction slider value display
 @app.callback(
     [Output('air-fraction-output', 'children')],
     [Input('outdoor-air-fraction', 'value')]

@@ -2,8 +2,27 @@ import pandas as pd
 import numpy
 import math
 
+"""
+Indoors is a class which represents the model calculation. A detailed description of
+the mathematical model can be found at: Martin Z. Bazant and John W. M. Bush, medRxiv preprint (2020): 
+"Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19"
+
+http://web.mit.edu/bazant/www/COVID-19/
+
+Properties:
+Model Parameters
+
+Methods:
+def __init__: Constructor
+def calc_n_max: Calculate maximum people allowed in the room given an exposure time (hours)
+def calc_max_time: Calculate maximum exposure time allowed given a capacity (# people)
+def calc_n_max_series: Calculate maximum people allowed in the room across a range of exposure times
+def get_six_ft_n: Get the maximum number of people allowed in the room, based on the six-foot rule.
+def set_default_params: Sets default parameters.
+"""
 
 class Indoors:
+    # Model Parameters
     physical_params = []
     physio_params = []
     disease_params = []
@@ -12,6 +31,7 @@ class Indoors:
     def __init__(self):
         self.set_default_params()
 
+    # Calculate maximum people allowed in the room given an exposure time (hours)
     def calc_n_max(self, exp_time):
         # Physical Parameters
         floor_area = self.physical_params[0]  # ft2
@@ -53,6 +73,7 @@ class Indoors:
         n_max = 1 + (risk_tolerance * (1 + 1/(conc_relax_rate * exp_time)) / (airb_trans_rate * exp_time))
         return n_max
 
+    # Calculate maximum exposure time allowed given a capacity (# people)
     def calc_max_time(self, n_max):
         # Physical Parameters
         floor_area = self.physical_params[0]  # ft2
@@ -95,6 +116,7 @@ class Indoors:
         exp_time_trans = exp_time_ss * (1 + (1 + 4 / (conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient
         return exp_time_trans
 
+    # Calculate maximum people allowed in the room across a range of exposure times
     def calc_n_max_series(self, t_min, t_max, t_step):
         df = pd.DataFrame(columns=['Maximum Exposure Time (hours)', 'Maximum Occupancy'])
         for exp_time in numpy.arange(t_min, t_max, t_step):
@@ -103,10 +125,12 @@ class Indoors:
 
         return df
 
+    # Get the maximum number of people allowed in the room, based on the six-foot rule.
     def get_six_ft_n(self):
         floor_area = self.physical_params[0]  # ft2
         return math.floor(floor_area / 36)
 
+    # Sets default parameters.
     def set_default_params(self):
         # Physical Parameters
         floor_area = 900  # ft2
