@@ -11,6 +11,7 @@ http://web.mit.edu/bazant/www/COVID-19/
 
 Properties:
 Model Parameters
+merv_dict: MERV values to aerosol filtration efficiency conversion
 
 Methods:
 def __init__: Constructor
@@ -19,7 +20,10 @@ def calc_max_time: Calculate maximum exposure time allowed given a capacity (# p
 def calc_n_max_series: Calculate maximum people allowed in the room across a range of exposure times
 def get_six_ft_n: Get the maximum number of people allowed in the room, based on the six-foot rule.
 def set_default_params: Sets default parameters.
+def merv_to_eff: Converts a MERV rating to an aerosol filtration efficiency. 
+def clamp: Clamps a value within a given range.
 """
+
 
 class Indoors:
     # Model Parameters
@@ -27,6 +31,31 @@ class Indoors:
     physio_params = []
     disease_params = []
     prec_params = []
+
+    # Source: https://www.lakeair.com/merv-rating-explanation/
+    # Table of MERV values corresponding to aerosol filtration efficiency, by different particle sizes (in microns)
+    merv_dict = [
+        {'merv': 1, '0.3-1': 0.01, '1-3': 0.01, '3-10': 0.01},
+        {'merv': 2, '0.3-1': 0.01, '1-3': 0.01, '3-10': 0.01},
+        {'merv': 3, '0.3-1': 0.01, '1-3': 0.01, '3-10': 0.01},
+        {'merv': 4, '0.3-1': 0.01, '1-3': 0.01, '3-10': 0.01},
+        {'merv': 5, '0.3-1': 0.01, '1-3': 0.01, '3-10': 0.2},
+        {'merv': 6, '0.3-1': 0.01, '1-3': 0.01, '3-10': 0.35},
+        {'merv': 7, '0.3-1': 0.01, '1-3': 0.01, '3-10': 0.50},
+        {'merv': 8, '0.3-1': 0.01, '1-3': 0.01, '3-10': 0.70},
+        {'merv': 9, '0.3-1': 0.01, '1-3': 0.20, '3-10': 0.85},
+        {'merv': 10, '0.3-1': 0.01, '1-3': 0.50, '3-10': 0.85},
+        {'merv': 11, '0.3-1': 0.01, '1-3': 0.65, '3-10': 0.85},
+        {'merv': 12, '0.3-1': 0.01, '1-3': 0.80, '3-10': 0.90},
+        {'merv': 13, '0.3-1': 0.50, '1-3': 0.90, '3-10': 0.90},
+        {'merv': 14, '0.3-1': 0.75, '1-3': 0.90, '3-10': 0.90},
+        {'merv': 15, '0.3-1': 0.85, '1-3': 0.95, '3-10': 0.90},
+        {'merv': 16, '0.3-1': 0.95, '1-3': 0.95, '3-10': 0.90},
+        {'merv': 17, '0.3-1': 0.9997, '1-3': 0.9997, '3-10': 0.9997},
+        {'merv': 18, '0.3-1': 0.99997, '1-3': 0.99997, '3-10': 0.99997},
+        {'merv': 19, '0.3-1': 0.999997, '1-3': 0.999997, '3-10': 0.999997},
+        {'merv': 20, '0.3-1': 0.9999997, '1-3': 0.9999997, '3-10': 0.9999997},
+    ]
 
     def __init__(self):
         self.set_default_params()
@@ -155,6 +184,32 @@ class Indoors:
         mask_passage_prob = 0.1  # 1 = no masks, ~0.1 cloth, <0.05 N95
         risk_tolerance = 0.1  # expected transmissions per infector
         self.prec_params = [mask_passage_prob, risk_tolerance]
+
+    # Convert MERV rating to aerosol filtration efficiency
+    # merv: if not integer, floor it
+    # aerosol_radius: must be <= 10
+    @staticmethod
+    def merv_to_eff(merv, aerosol_radius):
+        if merv == 0:
+            return 0
+        eff = 0
+        merv = numpy.floor(Indoors.clamp(merv, 1, 20))
+        merv_dict = Indoors.merv_dict
+        for item in merv_dict:
+            if item['merv'] == merv:
+                if aerosol_radius < 1:
+                    eff = item['0.3-1']
+                elif aerosol_radius < 3:
+                    eff = item['1-3']
+                else:
+                    eff = item['3-10']
+
+        return eff
+
+    # Clamp value within range
+    @staticmethod
+    def clamp(n, smallest, largest):
+        return max(smallest, min(n, largest))
 
 
 

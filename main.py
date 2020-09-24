@@ -2,8 +2,10 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+from dash.exceptions import PreventUpdate
 import plotly.express as px
 import indoors as ind
+from indoors import Indoors
 
 """
 main.py contains the core functionality of the Dash app. It is responsible for taking inputs,
@@ -37,7 +39,10 @@ fig = px.line(results_df, x="Maximum Exposure Time (hours)", y="Maximum Occupanc
               height=400, color_discrete_map={"Maximum Occupancy": "#de1616"})
 
 # Dropdown Preset Values
+ventilation_default = 3
+is_custom_vent = False
 ventilation_types = [
+    {'label': "Custom (see Advanced)", 'value': -1},
     {'label': "Bedroom, closed windows (0.34 ACH)", 'value': 0.34},
     {'label': "Mechanical Ventilation (3 ACH)", 'value': 3},
     {'label': "Mechanical Ventilation (8 ACH)", 'value': 8},
@@ -47,14 +52,16 @@ ventilation_types = [
     {'label': "Toxic Laboratory (25 ACH)", 'value': 25},
 ]
 
-# source: https://www.energyvanguard.com/blog/can-your-hvac-system-filter-out-coronavirus
+filter_default = 2
+is_custom_filter = False
 filter_types = [
+    {'label': "Custom (see Advanced)", 'value': -1},
     {'label': "None", 'value': 0},
-    {'label': "Residential Window AC (MERV 1-4)", 'value': 0.01},
-    {'label': "Residential/Commercial/Industrial (MERV 5-8)", 'value': 0.05},
-    {'label': "Residential/Commercial/Hospital Laboratories (MERV 9-12)", 'value': 0.575},
-    {'label': "Hospital & General Surgery (MERV 13-16)", 'value': 0.9},
-    {'label': "HEPA", 'value': 0.9997}
+    {'label': "Residential Window AC (MERV 1-4)", 'value': 2},
+    {'label': "Residential/Commercial/Industrial (MERV 5-8)", 'value': 6},
+    {'label': "Residential/Commercial/Hospital (MERV 9-12)", 'value': 10},
+    {'label': "Hospital & General Surgery (MERV 13-16)", 'value': 14},
+    {'label': "HEPA (MERV 17-20)", 'value': 17}
 ]
 
 exertion_types = [
@@ -210,12 +217,16 @@ app.layout = html.Div(children=[
                                     html.Div(className='card-dropdown',
                                              children=[dcc.Dropdown(id='ventilation-type',
                                                                     options=ventilation_types,
-                                                                    value=3)]),
+                                                                    value=ventilation_default,
+                                                                    searchable=False,
+                                                                    clearable=False)]),
                                     html.Br(),
                                     html.Div(["Filtration System: ",
                                               dcc.Dropdown(id='filter-type',
                                                            options=filter_types,
-                                                           value=0.01)]),
+                                                           value=filter_default,
+                                                           searchable=False,
+                                                           clearable=False)]),
                                     html.Br(),
                                     html.Div(["Outdoor Air Fraction: ",
                                               html.Span(id='air-fraction-output'),
@@ -241,17 +252,23 @@ app.layout = html.Div(children=[
                                     html.Div(["Exertion Level: ",
                                               dcc.Dropdown(id='exertion-level',
                                                            options=exertion_types,
-                                                           value=0.49)]),
+                                                           value=0.49,
+                                                           searchable=False,
+                                                           clearable=False)]),
                                     html.Br(),
                                     html.Div(["Expiratory Activity: ",
                                               dcc.Dropdown(id='exp-activity',
                                                            options=expiratory_types,
-                                                           value=29)]),
+                                                           value=29,
+                                                           searchable=False,
+                                                           clearable=False)]),
                                     html.Br(),
                                     html.Div(["Masks? ",
                                               dcc.Dropdown(id='mask-type',
                                                            options=mask_types,
-                                                           value=0.15)]),
+                                                           value=0.15,
+                                                           searchable=False,
+                                                           clearable=False)]),
                                     html.Br(),
                                     html.Div(["Risk Tolerance: ",
                                               html.Span(id='risk-tolerance-output'),
@@ -279,6 +296,19 @@ app.layout = html.Div(children=[
                                 label='Advanced',
                                 className='custom-tab',
                                 children=[
+                                    html.H6("Advanced Input: "),
+                                    html.Div(['''
+                                        Know your specific ACH or MERV specifications? Input them here:
+                                    ''']),
+                                    html.Br(),
+                                    html.Div(["Ventilation System (ACH): ",
+                                              dcc.Input(id='ventilation-type-adv', value=ventilation_default,
+                                                        type='number')]),
+                                    html.Br(),
+                                    html.Div(["Filtration System (MERV): ",
+                                              dcc.Input(id='filtration-type-adv', value=filter_default,
+                                                        type='number')]),
+                                    html.Br(),
                                     html.H6("Graph Output: "),
                                     html.Div([
                                         dcc.Graph(
@@ -343,14 +373,25 @@ app.layout = html.Div(children=[
      Input('exertion-level', 'value'),
      Input('exp-activity', 'value'),
      Input('mask-type', 'value'),
-     Input('risk-tolerance', 'value')]
+     Input('risk-tolerance', 'value'),
+     Input('ventilation-type-adv', 'value'),
+     Input('filtration-type-adv', 'value')]
 )
-def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction, aerosol_filter_eff,
-                  breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance):
+def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction, merv,
+                  breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance, ach_adv, merv_adv):
+    # Check if any custom values are selected; if so, grab the ach from the advanced tab instead.
+    if air_exchange_rate == -1:
+        air_exchange_rate = ach_adv
+
+    if merv == -1:
+        merv = merv_adv
+
     # Update model with newly-selected parameters
+    aerosol_radius = 2
+
     myInd.physical_params = [floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction,
-                             aerosol_filter_eff]
-    myInd.physio_params = [breathing_flow_rate, 2]
+                             Indoors.merv_to_eff(merv, aerosol_radius)]
+    myInd.physio_params = [breathing_flow_rate, aerosol_radius]
     myInd.disease_params = [infectiousness, 0.3]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
 
@@ -390,6 +431,64 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], six_ft_text
+
+
+# Update Advanced ventilation setting based on dropdown selection.
+# If the custom preset is selected, update the custom value to the default.
+@app.callback(
+    Output('ventilation-type-adv', 'value'),
+    Input('ventilation-type', 'value')
+)
+def update_adv_ventilation_fwd(air_exchange_rate):
+    global is_custom_vent
+    if air_exchange_rate == -1:
+        is_custom_vent = True
+        raise PreventUpdate
+    else:
+        is_custom_vent = False
+        return air_exchange_rate
+
+
+# Update Advanced ventilation dropdown if set to a custom value
+@app.callback(
+    Output('ventilation-type', 'value'),
+    Input('ventilation-type-adv', 'value')
+)
+def update_adv_ventilation_rev(air_exchange_rate):
+    for vent_type in ventilation_types:
+        if vent_type['value'] == air_exchange_rate:
+            return air_exchange_rate
+
+    return -1
+
+
+# Update Advanced filtration setting based on dropdown selection.
+# If the custom preset is selected, update the custom value to the default.
+@app.callback(
+    Output('filtration-type-adv', 'value'),
+    Input('filter-type', 'value')
+)
+def update_adv_filtration_fwd(merv):
+    global is_custom_filter
+    if merv == -1:
+        is_custom_filter = True
+        raise PreventUpdate
+    else:
+        is_custom_filter = False
+        return merv
+
+
+# Update Advanced filtration dropdown if set to a custom value
+@app.callback(
+    Output('filter-type', 'value'),
+    Input('filtration-type-adv', 'value')
+)
+def update_adv_filtration_rev(merv):
+    for filter_type in filter_types:
+        if filter_type['value'] == merv:
+            return merv
+
+    return -1
 
 
 # Risk tolerance slider value display
