@@ -13,6 +13,14 @@
     padding: 1em;
 }
 
+.custom-tab-container {
+    padding: 1em;
+    margin: 0;
+    height: 475px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
 /* Small-width/mobile layout */
 @media only screen and (max-width: 960px) {
     .grid {
@@ -22,7 +30,6 @@
     }
     .card {
         min-width: 0;
-        height: 1000px;
         padding: 1em;
     }
 }

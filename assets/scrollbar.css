@@ -1,0 +1,11 @@
+/* CSS related to scrollbar */
+
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #de1616;
+  border-radius: 1px;
+}

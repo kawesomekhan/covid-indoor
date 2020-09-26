@@ -163,39 +163,42 @@ app.layout = html.Div(children=[
             html.Div(
                 className='card',
                 children=[
-                    dcc.Tabs(className='custom-tabs-container',
-                             value='tab-1', children=[
+                    dcc.Tabs(value='tab-1', children=[
                             dcc.Tab(
                                 label='About',
                                 className='custom-tab',
                                 children=[
-                                    html.H6("About: "),
-                                    html.Div('''
-                                    COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
-                                    enclosed spaces via tiny, infective aerosol droplets suspended in the air.
-                                    To mitigate this spread, official public health guidelines have taken the form 
-                                    of minimum social distancing rules (6 feet in the U.S.) or maximum occupancy 
-                                    (25 people in Massachusetts). 
-                                '''),
-                                    html.Br(),
-                                    html.Div('''
-                                    However, public health has been slow to catch up with rapidly advancing science.
-                                    Naturally, the risk of COVID-19 transmission would not only depend on physical 
-                                    distance, but also on factors such as exposure time, mask usage, and ventilation
-                                    systems, among other factors.
-                                '''),
-                                    html.Br(),
-                                    html.Div('''
-                                    This app uses a mathematical model, developed by MIT professors Martin Z. Bazant 
-                                    and John Bush, to improve upon
-                                    current distancing guidelines by providing a more accurate description of
-                                    indoor COVID-19 transmission risk.
-                                '''),
-                                    html.Br(),
-                                    html.Div('''
-                                    Adjust parameters in the other tabs and see how different spaces handle
-                                    indoor COVID-19 transmission.
-                                '''),
+                                    html.Div(className='custom-tab-container',
+                                             children=[
+                                                 html.H6("About: "),
+                                                 html.Div('''
+                                                    COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
+                                                    enclosed spaces via tiny, infective aerosol droplets suspended in the air.
+                                                    To mitigate this spread, official public health guidelines have taken the form 
+                                                    of minimum social distancing rules (6 feet in the U.S.) or maximum occupancy 
+                                                    (25 people in Massachusetts). 
+                                                '''),
+                                                 html.Br(),
+                                                 html.Div('''
+                                                    However, public health has been slow to catch up with rapidly advancing science.
+                                                    Naturally, the risk of COVID-19 transmission would not only depend on physical 
+                                                    distance, but also on factors such as exposure time, mask usage, and ventilation
+                                                    systems, among other factors.
+                                                '''),
+                                                 html.Br(),
+                                                 html.Div('''
+                                                    This app uses a mathematical model, developed by MIT professors Martin Z. Bazant 
+                                                    and John Bush, to improve upon
+                                                    current distancing guidelines by providing a more accurate description of
+                                                    indoor COVID-19 transmission risk.
+                                                '''),
+                                                 html.Br(),
+                                                 html.Div('''
+                                                    Adjust parameters in the other tabs and see how different spaces handle
+                                                    indoor COVID-19 transmission.
+                                                '''),
+                                             ]),
+
                                 ],
                                 style=tab_style,
                                 selected_style=tab_style
@@ -204,41 +207,45 @@ app.layout = html.Div(children=[
                                 label='Room Specifications',
                                 className='custom-tab',
                                 children=[
-                                    html.H6("Room Specifications: "),
-                                    html.Br(),
-                                    html.Div(["Floor Area (sq. ft.): ",
-                                              dcc.Input(id='floor-area', value=900, type='number')]),
-                                    html.Br(),
-                                    html.Div(["Ceiling Height (ft.): ",
-                                              dcc.Input(id='ceiling-height', value=12, type='number')]),
-                                    html.Br(),
-                                    html.Div(className='card-dropdown',
-                                             children=[html.Div(["Ventilation System: "])]),
-                                    html.Div(className='card-dropdown',
-                                             children=[dcc.Dropdown(id='ventilation-type',
-                                                                    options=ventilation_types,
-                                                                    value=ventilation_default,
-                                                                    searchable=False,
-                                                                    clearable=False)]),
-                                    html.Br(),
-                                    html.Div(["Filtration System: ",
-                                              dcc.Dropdown(id='filter-type',
-                                                           options=filter_types,
-                                                           value=filter_default,
-                                                           searchable=False,
-                                                           clearable=False)]),
-                                    html.Br(),
-                                    html.Div(["Outdoor Air Fraction: ",
-                                              html.Span(id='air-fraction-output'),
-                                              dcc.Slider(id='outdoor-air-fraction',
-                                                         min=0.01,
-                                                         max=1,
-                                                         step=0.01,
-                                                         value=0.2,
-                                                         marks={
-                                                             0.01: {'label': '0 (closed room)'},
-                                                             1: {'label': '1 (outdoors)'}
-                                                         })])
+                                    html.Div(className='custom-tab-container',
+                                             children=[
+                                                 html.H6("Room Specifications: "),
+                                                 html.Br(),
+                                                 html.Div(["Floor Area (sq. ft.): ",
+                                                           dcc.Input(id='floor-area', value=900, type='number')]),
+                                                 html.Br(),
+                                                 html.Div(["Ceiling Height (ft.): ",
+                                                           dcc.Input(id='ceiling-height', value=12, type='number')]),
+                                                 html.Br(),
+                                                 html.Div(className='card-dropdown',
+                                                          children=[html.Div(["Ventilation System: "])]),
+                                                 html.Div(className='card-dropdown',
+                                                          children=[dcc.Dropdown(id='ventilation-type',
+                                                                                 options=ventilation_types,
+                                                                                 value=ventilation_default,
+                                                                                 searchable=False,
+                                                                                 clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Filtration System: ",
+                                                           dcc.Dropdown(id='filter-type',
+                                                                        options=filter_types,
+                                                                        value=filter_default,
+                                                                        searchable=False,
+                                                                        clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Outdoor Air Fraction: ",
+                                                           html.Span(id='air-fraction-output'),
+                                                           dcc.Slider(id='outdoor-air-fraction',
+                                                                      min=0.01,
+                                                                      max=1,
+                                                                      step=0.01,
+                                                                      value=0.2,
+                                                                      marks={
+                                                                          0.01: {'label': '0.01: Closed room',
+                                                                                 'style': {'max-width': '50px'}},
+                                                                          1: {'label': '1.0: Outdoors'}
+                                                                      })])
+                                             ]),
                                 ],
                                 style=tab_style,
                                 selected_style=tab_style
@@ -247,47 +254,51 @@ app.layout = html.Div(children=[
                                 label='Human Behavior',
                                 className='custom-tab',
                                 children=[
-                                    html.H6("Human Behavior: "),
-                                    html.Br(),
-                                    html.Div(["Exertion Level: ",
-                                              dcc.Dropdown(id='exertion-level',
-                                                           options=exertion_types,
-                                                           value=0.49,
-                                                           searchable=False,
-                                                           clearable=False)]),
-                                    html.Br(),
-                                    html.Div(["Expiratory Activity: ",
-                                              dcc.Dropdown(id='exp-activity',
-                                                           options=expiratory_types,
-                                                           value=29,
-                                                           searchable=False,
-                                                           clearable=False)]),
-                                    html.Br(),
-                                    html.Div(["Masks? ",
-                                              dcc.Dropdown(id='mask-type',
-                                                           options=mask_types,
-                                                           value=0.15,
-                                                           searchable=False,
-                                                           clearable=False)]),
-                                    html.Br(),
-                                    html.Div(["Risk Tolerance: ",
-                                              html.Span(id='risk-tolerance-output'),
-                                              html.Div('''
-                                                   This represents the number of expected transmissions during the
-                                                   occupancy period. A vulnerable population, due to age or
-                                                   preexisting medical conditions, will generally require
-                                                   a lower risk tolerance. 
-                                          ''', style={'font-size': '13px', 'margin-left': '20px'}),
-                                              dcc.Slider(id='risk-tolerance',
-                                                         min=0.01,
-                                                         max=1,
-                                                         step=0.01,
-                                                         value=0.1,
-                                                         marks={
-                                                             0.01: {'label': '0.01: Contact Tracing'},
-                                                             1: {'label': '1.0: Unsafe'}
-                                                         })
-                                              ])
+                                    html.Div(className='custom-tab-container',
+                                             children=[
+                                                 html.H6("Human Behavior: "),
+                                                 html.Br(),
+                                                 html.Div(["Exertion Level: ",
+                                                           dcc.Dropdown(id='exertion-level',
+                                                                        options=exertion_types,
+                                                                        value=0.49,
+                                                                        searchable=False,
+                                                                        clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Expiratory Activity: ",
+                                                           dcc.Dropdown(id='exp-activity',
+                                                                        options=expiratory_types,
+                                                                        value=29,
+                                                                        searchable=False,
+                                                                        clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Masks? ",
+                                                           dcc.Dropdown(id='mask-type',
+                                                                        options=mask_types,
+                                                                        value=0.15,
+                                                                        searchable=False,
+                                                                        clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Risk Tolerance: ",
+                                                           html.Span(id='risk-tolerance-output'),
+                                                           html.Div('''
+                                                                   This represents the number of expected transmissions during the
+                                                                   occupancy period. A vulnerable population, due to age or
+                                                                   preexisting medical conditions, will generally require
+                                                                   a lower risk tolerance. 
+                                                          ''', style={'font-size': '13px', 'margin-left': '20px'}),
+                                                           dcc.Slider(id='risk-tolerance',
+                                                                      min=0.01,
+                                                                      max=1,
+                                                                      step=0.01,
+                                                                      value=0.1,
+                                                                      marks={
+                                                                          0.01: {'label': '0.01: Contact Tracing',
+                                                                                 'style': {'max-width': '50px'}},
+                                                                          1: {'label': '1.0: Unsafe'}
+                                                                      })
+                                                           ])
+                                             ]),
                                 ],
                                 style=tab_style,
                                 selected_style=tab_style
@@ -296,26 +307,30 @@ app.layout = html.Div(children=[
                                 label='Advanced',
                                 className='custom-tab',
                                 children=[
-                                    html.H6("Advanced Input: "),
-                                    html.Div(['''
-                                        Know your specific ACH or MERV specifications? Input them here:
-                                    ''']),
-                                    html.Br(),
-                                    html.Div(["Ventilation System (ACH): ",
-                                              dcc.Input(id='ventilation-type-adv', value=ventilation_default,
-                                                        type='number')]),
-                                    html.Br(),
-                                    html.Div(["Filtration System (MERV): ",
-                                              dcc.Input(id='filtration-type-adv', value=filter_default,
-                                                        type='number')]),
-                                    html.Br(),
-                                    html.H6("Graph Output: "),
-                                    html.Div([
-                                        dcc.Graph(
-                                            id='safety-graph',
-                                            figure=fig
-                                        ),
-                                    ])
+                                    html.Div(className='custom-tab-container',
+                                             children=[
+                                                 html.H6("Advanced Input: "),
+                                                 html.Div(['''
+    Know your specific ACH or MERV specifications? Input them here:
+''']),
+                                                 html.Br(),
+                                                 html.Div(["Ventilation System (ACH): ",
+                                                           dcc.Input(id='ventilation-type-adv',
+                                                                     value=ventilation_default,
+                                                                     type='number')]),
+                                                 html.Br(),
+                                                 html.Div(["Filtration System (MERV): ",
+                                                           dcc.Input(id='filtration-type-adv', value=filter_default,
+                                                                     type='number')]),
+                                                 html.Br(),
+                                                 html.H6("Graph Output: "),
+                                                 html.Div([
+                                                     dcc.Graph(
+                                                         id='safety-graph',
+                                                         figure=fig
+                                                     ),
+                                                 ])
+                                             ]),
                                 ],
                                 style=tab_style,
                                 selected_style=tab_style
