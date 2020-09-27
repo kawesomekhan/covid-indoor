@@ -629,4 +629,4 @@ def update_air_frac_disp(outdoor_air_fraction):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=False)
