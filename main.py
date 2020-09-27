@@ -38,8 +38,48 @@ fig = px.line(results_df, x="Maximum Exposure Time (hours)", y="Maximum Occupanc
               title="Occupancy vs. Exposure Time",
               height=400, color_discrete_map={"Maximum Occupancy": "#de1616"})
 
+presets = [
+    {'label': "Custom", 'value': 'custom'},
+    {'label': "House", 'value': 'house'},
+    {'label': "Restaurant", 'value': 'restaurant'},
+    {'label': "Classroom", 'value': 'classroom'},
+]
+
+preset_settings = {
+    'house': {
+        'floor-area': 2000,
+        'ceiling-height': 12,
+        'ventilation': 3,
+        'filtration': 6,
+        'outdoor-air-fraction': 0.2,
+        'exertion': 0.49,
+        'exp-activity': 29,
+        'masks': 0.15
+    },
+    'classroom': {
+        'floor-area': 900,
+        'ceiling-height': 12,
+        'ventilation': 3,
+        'filtration': 6,
+        'outdoor-air-fraction': 0.2,
+        'exertion': 0.49,
+        'exp-activity': 29,
+        'masks': 0.15
+    },
+    'restaurant': {
+        'floor-area': 5000,
+        'ceiling-height': 12,
+        'ventilation': 9,
+        'filtration': 6,
+        'outdoor-air-fraction': 0.2,
+        'exertion': 0.49,
+        'exp-activity': 72,
+        'masks': 1
+    }
+}
+
 # Dropdown Preset Values
-ventilation_default = 3
+ventilation_default = preset_settings['classroom']['ventilation']
 is_custom_vent = False
 ventilation_types = [
     {'label': "Custom (see Advanced)", 'value': -1},
@@ -52,7 +92,7 @@ ventilation_types = [
     {'label': "Toxic Laboratory (25 ACH)", 'value': 25},
 ]
 
-filter_default = 2
+filter_default = preset_settings['classroom']['filtration']
 is_custom_filter = False
 filter_types = [
     {'label': "Custom (see Advanced)", 'value': -1},
@@ -92,14 +132,9 @@ mask_types = [
     {'label': "N95 Surgical (5% passage)", 'value': 0.05},
 ]
 
-presets = [
-    {'label': "House", 'value': 'house'},
-    {'label': "Restaurant", 'value': 'restaurant'},
-    {'label': "Lecture Hall", 'value': 'lecture_hall'}
-]
-
 # Nmax values for main red text output
-model_output_n_vals = [2, 3, 5, 10, 25, 50, 100]
+model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
+model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
 tab_style = {
@@ -164,178 +199,178 @@ app.layout = html.Div(children=[
                 className='card',
                 children=[
                     dcc.Tabs(value='tab-1', children=[
-                            dcc.Tab(
-                                label='About',
-                                className='custom-tab',
-                                children=[
-                                    html.Div(className='custom-tab-container',
-                                             children=[
-                                                 html.H6("About: "),
-                                                 html.Div('''
+                        dcc.Tab(
+                            label='About',
+                            className='custom-tab',
+                            children=[
+                                html.Div(className='custom-tab-container',
+                                         children=[
+                                             html.H6("About: "),
+                                             html.Div('''
                                                     COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
                                                     enclosed spaces via tiny, infective aerosol droplets suspended in the air.
                                                     To mitigate this spread, official public health guidelines have taken the form 
                                                     of minimum social distancing rules (6 feet in the U.S.) or maximum occupancy 
                                                     (25 people in Massachusetts). 
                                                 '''),
-                                                 html.Br(),
-                                                 html.Div('''
+                                             html.Br(),
+                                             html.Div('''
                                                     However, public health has been slow to catch up with rapidly advancing science.
                                                     Naturally, the risk of COVID-19 transmission would not only depend on physical 
                                                     distance, but also on factors such as exposure time, mask usage, and ventilation
                                                     systems, among other factors.
                                                 '''),
-                                                 html.Br(),
-                                                 html.Div('''
+                                             html.Br(),
+                                             html.Div('''
                                                     This app uses a mathematical model, developed by MIT professors Martin Z. Bazant 
                                                     and John Bush, to improve upon
                                                     current distancing guidelines by providing a more accurate description of
                                                     indoor COVID-19 transmission risk.
                                                 '''),
-                                                 html.Br(),
-                                                 html.Div('''
+                                             html.Br(),
+                                             html.Div('''
                                                     Adjust parameters in the other tabs and see how different spaces handle
                                                     indoor COVID-19 transmission.
                                                 '''),
-                                             ]),
+                                         ]),
 
-                                ],
-                                style=tab_style,
-                                selected_style=tab_style
-                            ),
-                            dcc.Tab(
-                                label='Room Specifications',
-                                className='custom-tab',
-                                children=[
-                                    html.Div(className='custom-tab-container',
-                                             children=[
-                                                 html.H6("Room Specifications: "),
-                                                 html.Br(),
-                                                 html.Div(["Floor Area (sq. ft.): ",
-                                                           dcc.Input(id='floor-area', value=900, type='number')]),
-                                                 html.Br(),
-                                                 html.Div(["Ceiling Height (ft.): ",
-                                                           dcc.Input(id='ceiling-height', value=12, type='number')]),
-                                                 html.Br(),
-                                                 html.Div(className='card-dropdown',
-                                                          children=[html.Div(["Ventilation System: "])]),
-                                                 html.Div(className='card-dropdown',
-                                                          children=[dcc.Dropdown(id='ventilation-type',
-                                                                                 options=ventilation_types,
-                                                                                 value=ventilation_default,
-                                                                                 searchable=False,
-                                                                                 clearable=False)]),
-                                                 html.Br(),
-                                                 html.Div(["Filtration System: ",
-                                                           dcc.Dropdown(id='filter-type',
-                                                                        options=filter_types,
-                                                                        value=filter_default,
-                                                                        searchable=False,
-                                                                        clearable=False)]),
-                                                 html.Br(),
-                                                 html.Div(["Outdoor Air Fraction: ",
-                                                           html.Span(id='air-fraction-output'),
-                                                           dcc.Slider(id='outdoor-air-fraction',
-                                                                      min=0.01,
-                                                                      max=1,
-                                                                      step=0.01,
-                                                                      value=0.2,
-                                                                      marks={
-                                                                          0.01: {'label': '0.01: Closed room',
-                                                                                 'style': {'max-width': '50px'}},
-                                                                          1: {'label': '1.0: Outdoors'}
-                                                                      })])
-                                             ]),
-                                ],
-                                style=tab_style,
-                                selected_style=tab_style
-                            ),
-                            dcc.Tab(
-                                label='Human Behavior',
-                                className='custom-tab',
-                                children=[
-                                    html.Div(className='custom-tab-container',
-                                             children=[
-                                                 html.H6("Human Behavior: "),
-                                                 html.Br(),
-                                                 html.Div(["Exertion Level: ",
-                                                           dcc.Dropdown(id='exertion-level',
-                                                                        options=exertion_types,
-                                                                        value=0.49,
-                                                                        searchable=False,
-                                                                        clearable=False)]),
-                                                 html.Br(),
-                                                 html.Div(["Expiratory Activity: ",
-                                                           dcc.Dropdown(id='exp-activity',
-                                                                        options=expiratory_types,
-                                                                        value=29,
-                                                                        searchable=False,
-                                                                        clearable=False)]),
-                                                 html.Br(),
-                                                 html.Div(["Masks? ",
-                                                           dcc.Dropdown(id='mask-type',
-                                                                        options=mask_types,
-                                                                        value=0.15,
-                                                                        searchable=False,
-                                                                        clearable=False)]),
-                                                 html.Br(),
-                                                 html.Div(["Risk Tolerance: ",
-                                                           html.Span(id='risk-tolerance-output'),
-                                                           html.Div('''
+                            ],
+                            style=tab_style,
+                            selected_style=tab_style
+                        ),
+                        dcc.Tab(
+                            label='Room Specifications',
+                            className='custom-tab',
+                            children=[
+                                html.Div(className='custom-tab-container',
+                                         children=[
+                                             html.H6("Room Specifications: "),
+                                             html.Br(),
+                                             html.Div(["Floor Area (sq. ft.): ",
+                                                       dcc.Input(id='floor-area', value=900, type='number')]),
+                                             html.Br(),
+                                             html.Div(["Ceiling Height (ft.): ",
+                                                       dcc.Input(id='ceiling-height', value=12, type='number')]),
+                                             html.Br(),
+                                             html.Div(className='card-dropdown',
+                                                      children=[html.Div(["Ventilation System: "])]),
+                                             html.Div(className='card-dropdown',
+                                                      children=[dcc.Dropdown(id='ventilation-type',
+                                                                             options=ventilation_types,
+                                                                             value=ventilation_default,
+                                                                             searchable=False,
+                                                                             clearable=False)]),
+                                             html.Br(),
+                                             html.Div(["Filtration System: ",
+                                                       dcc.Dropdown(id='filter-type',
+                                                                    options=filter_types,
+                                                                    value=filter_default,
+                                                                    searchable=False,
+                                                                    clearable=False)]),
+                                             html.Br(),
+                                             html.Div(["Outdoor Air Fraction: ",
+                                                       html.Span(id='air-fraction-output'),
+                                                       dcc.Slider(id='outdoor-air-fraction',
+                                                                  min=0.01,
+                                                                  max=1,
+                                                                  step=0.01,
+                                                                  value=0.2,
+                                                                  marks={
+                                                                      0.01: {'label': '0.01: Closed room',
+                                                                             'style': {'max-width': '50px'}},
+                                                                      1: {'label': '1.0: Outdoors'}
+                                                                  })])
+                                         ]),
+                            ],
+                            style=tab_style,
+                            selected_style=tab_style
+                        ),
+                        dcc.Tab(
+                            label='Human Behavior',
+                            className='custom-tab',
+                            children=[
+                                html.Div(className='custom-tab-container',
+                                         children=[
+                                             html.H6("Human Behavior: "),
+                                             html.Br(),
+                                             html.Div(["Exertion Level: ",
+                                                       dcc.Dropdown(id='exertion-level',
+                                                                    options=exertion_types,
+                                                                    value=0.49,
+                                                                    searchable=False,
+                                                                    clearable=False)]),
+                                             html.Br(),
+                                             html.Div(["Expiratory Activity: ",
+                                                       dcc.Dropdown(id='exp-activity',
+                                                                    options=expiratory_types,
+                                                                    value=29,
+                                                                    searchable=False,
+                                                                    clearable=False)]),
+                                             html.Br(),
+                                             html.Div(["Masks? ",
+                                                       dcc.Dropdown(id='mask-type',
+                                                                    options=mask_types,
+                                                                    value=0.15,
+                                                                    searchable=False,
+                                                                    clearable=False)]),
+                                             html.Br(),
+                                             html.Div(["Risk Tolerance: ",
+                                                       html.Span(id='risk-tolerance-output'),
+                                                       html.Div('''
                                                                    This represents the number of expected transmissions during the
                                                                    occupancy period. A vulnerable population, due to age or
                                                                    preexisting medical conditions, will generally require
                                                                    a lower risk tolerance. 
                                                           ''', style={'font-size': '13px', 'margin-left': '20px'}),
-                                                           dcc.Slider(id='risk-tolerance',
-                                                                      min=0.01,
-                                                                      max=1,
-                                                                      step=0.01,
-                                                                      value=0.1,
-                                                                      marks={
-                                                                          0.01: {'label': '0.01: Contact Tracing',
-                                                                                 'style': {'max-width': '50px'}},
-                                                                          1: {'label': '1.0: Unsafe'}
-                                                                      })
-                                                           ])
-                                             ]),
-                                ],
-                                style=tab_style,
-                                selected_style=tab_style
-                            ),
-                            dcc.Tab(
-                                label='Advanced',
-                                className='custom-tab',
-                                children=[
-                                    html.Div(className='custom-tab-container',
-                                             children=[
-                                                 html.H6("Advanced Input: "),
-                                                 html.Div(['''
+                                                       dcc.Slider(id='risk-tolerance',
+                                                                  min=0.01,
+                                                                  max=1,
+                                                                  step=0.01,
+                                                                  value=0.1,
+                                                                  marks={
+                                                                      0.01: {'label': '0.01: Contact Tracing',
+                                                                             'style': {'max-width': '50px'}},
+                                                                      1: {'label': '1.0: Unsafe'}
+                                                                  })
+                                                       ])
+                                         ]),
+                            ],
+                            style=tab_style,
+                            selected_style=tab_style
+                        ),
+                        dcc.Tab(
+                            label='Advanced',
+                            className='custom-tab',
+                            children=[
+                                html.Div(className='custom-tab-container',
+                                         children=[
+                                             html.H6("Advanced Input: "),
+                                             html.Div(['''
     Know your specific ACH or MERV specifications? Input them here:
 ''']),
-                                                 html.Br(),
-                                                 html.Div(["Ventilation System (ACH): ",
-                                                           dcc.Input(id='ventilation-type-adv',
-                                                                     value=ventilation_default,
-                                                                     type='number')]),
-                                                 html.Br(),
-                                                 html.Div(["Filtration System (MERV): ",
-                                                           dcc.Input(id='filtration-type-adv', value=filter_default,
-                                                                     type='number')]),
-                                                 html.Br(),
-                                                 html.H6("Graph Output: "),
-                                                 html.Div([
-                                                     dcc.Graph(
-                                                         id='safety-graph',
-                                                         figure=fig
-                                                     ),
-                                                 ])
-                                             ]),
-                                ],
-                                style=tab_style,
-                                selected_style=tab_style
-                            )
-                        ],
+                                             html.Br(),
+                                             html.Div(["Ventilation System (ACH): ",
+                                                       dcc.Input(id='ventilation-type-adv',
+                                                                 value=ventilation_default,
+                                                                 type='number')]),
+                                             html.Br(),
+                                             html.Div(["Filtration System (MERV): ",
+                                                       dcc.Input(id='filtration-type-adv', value=filter_default,
+                                                                 type='number')]),
+                                             html.Br(),
+                                             html.H6("Graph Output: "),
+                                             html.Div([
+                                                 dcc.Graph(
+                                                     id='safety-graph',
+                                                     figure=fig
+                                                 ),
+                                             ])
+                                         ]),
+                            ],
+                            style=tab_style,
+                            selected_style=tab_style
+                        )
+                    ],
                              colors={
                                  "border": "#c9c9c9",
                                  "primary": "#de1616"
@@ -346,6 +381,14 @@ app.layout = html.Div(children=[
                 className='card',
                 children=[
                     html.Div([
+                        html.H6("Current room: "),
+                        html.Div([
+                            dcc.Dropdown(id='presets',
+                                         options=presets,
+                                         value='classroom',
+                                         searchable=False,
+                                         clearable=False),
+                        ], style={'max-width': '500px'}),
                         html.H3([
                             '''Based on this model, it should be safe for this room to have:
                     ''']),
@@ -356,6 +399,7 @@ app.layout = html.Div(children=[
                         html.H4(className='model-output-text', id='model-text-5'),
                         html.H4(className='model-output-text', id='model-text-6'),
                         html.H4(className='model-output-text', id='model-text-7'),
+                        html.H4(className='model-output-text', id='model-text-8'),
                         html.Br(),
                         html.H3([
                             '''In comparison, current six feet distancing guidelines recommend no more than''',
@@ -379,7 +423,9 @@ app.layout = html.Div(children=[
      Output('model-text-5', 'children'),
      Output('model-text-6', 'children'),
      Output('model-text-7', 'children'),
-     Output('six-ft-output', 'children')],
+     Output('model-text-8', 'children'),
+     Output('six-ft-output', 'children'),
+     Output('presets', 'value')],
     [Input('floor-area', 'value'),
      Input('ceiling-height', 'value'),
      Input('ventilation-type', 'value'),
@@ -394,6 +440,28 @@ app.layout = html.Div(children=[
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction, merv,
                   breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance, ach_adv, merv_adv):
+    # Make sure none of our values are none
+    is_none = floor_area is None or ceiling_height is None or ach_adv is None or merv_adv is None
+    if is_none:
+        raise PreventUpdate
+
+    # Check if we just moved to a preset; if not, change the preset dropdown to custom
+    preset_dd_value = 'custom'
+    is_preset = False
+    for setting_key in preset_settings:
+        setting = preset_settings[setting_key]
+        is_preset = setting['floor-area'] == floor_area and \
+                    setting['ceiling-height'] == ceiling_height and \
+                    setting['ventilation'] == air_exchange_rate and \
+                    setting['outdoor-air-fraction'] == outdoor_air_fraction and \
+                    setting['filtration'] == merv and \
+                    setting['exertion'] == breathing_flow_rate and \
+                    setting['exp-activity'] == infectiousness and \
+                    setting['masks'] == mask_passage_prob
+        if is_preset:
+            preset_dd_value = setting_key
+            break
+
     # Check if any custom values are selected; if so, grab the ach from the advanced tab instead.
     if air_exchange_rate == -1:
         air_exchange_rate = ach_adv
@@ -409,6 +477,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     myInd.physio_params = [breathing_flow_rate, aerosol_radius]
     myInd.disease_params = [infectiousness, 0.3]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
+    myInd.calc_vars()
 
     # Update the figure with a new model calculation
     new_df = myInd.calc_n_max_series(2, 100, 1.0)
@@ -418,14 +487,23 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     new_fig.update_layout(transition_duration=500)
 
     # Update the red text output with new model calculations
-    model_output_text = ["", "", "", "", "", "", ""]
+    model_output_text = ["", "", "", "", "", "", "", ""]
     index = 0
-    for n_val in model_output_n_vals:
+
+    # Check if we should use the normal n vals, or the big n vals
+    n_val_series = model_output_n_vals
+    if myInd.calc_max_time(model_output_n_vals[-1]) > 48:
+        n_val_series = model_output_n_vals_big
+
+    for n_val in n_val_series:
         max_time = myInd.calc_max_time(n_val)  # hours
         units = 'hours'
-        if max_time < 1:
+        if round(max_time) < 1:
             units = 'minutes'
             max_time = max_time * 60
+        elif round(max_time) > 48:
+            units = 'days'
+            max_time = max_time / 24
 
         if round(max_time) == 1:
             units = units[:-1]
@@ -445,7 +523,59 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
 
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
-           model_output_text[4], model_output_text[5], model_output_text[6], six_ft_text
+           model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
+           six_ft_text, preset_dd_value
+
+
+# Update options based on selected presets. Also, because
+# multiple Outputs cannot point to the same dash core component,
+# this function also handles some functionality related to
+# custom ventilation and filtration inputs.
+@app.callback(
+    [Output('floor-area', 'value'),
+     Output('ceiling-height', 'value'),
+     Output('ventilation-type', 'value'),
+     Output('outdoor-air-fraction', 'value'),
+     Output('filter-type', 'value'),
+     Output('exertion-level', 'value'),
+     Output('exp-activity', 'value'),
+     Output('mask-type', 'value')],
+    [Input('presets', 'value'),
+     Input('ventilation-type-adv', 'value'),
+     Input('filtration-type-adv', 'value')]
+)
+def update_presets(preset, air_exchange_rate, merv):
+    ctx = dash.callback_context
+    if ctx.triggered:
+        triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
+
+        if triggered_id == 'presets':
+            # Update the room and behavior options based on the selected preset
+            if preset == 'custom':
+                raise PreventUpdate
+            else:
+                curr_settings = preset_settings[preset]
+                return curr_settings['floor-area'], curr_settings['ceiling-height'], curr_settings['ventilation'], \
+                       curr_settings['outdoor-air-fraction'], curr_settings['filtration'], curr_settings['exertion'], \
+                       curr_settings['exp-activity'], curr_settings['masks']
+        elif triggered_id == 'ventilation-type-adv':
+            # Update ventilation dropdown if set to a custom or preset value
+            for vent_type in ventilation_types:
+                if vent_type['value'] == air_exchange_rate:
+                    return dash.no_update, dash.no_update, air_exchange_rate, dash.no_update, dash.no_update, \
+                           dash.no_update, dash.no_update, dash.no_update
+
+            return dash.no_update, dash.no_update, -1, dash.no_update, dash.no_update, \
+                   dash.no_update, dash.no_update, dash.no_update
+        elif triggered_id == 'filtration-type-adv':
+            # Update filtration dropdown if set to a custom value
+            for filter_type in filter_types:
+                if filter_type['value'] == merv:
+                    return dash.no_update, dash.no_update, dash.no_update, dash.no_update, merv, \
+                           dash.no_update, dash.no_update, dash.no_update
+
+            return dash.no_update, dash.no_update, dash.no_update, dash.no_update, -1, \
+                   dash.no_update, dash.no_update, dash.no_update
 
 
 # Update Advanced ventilation setting based on dropdown selection.
@@ -464,19 +594,6 @@ def update_adv_ventilation_fwd(air_exchange_rate):
         return air_exchange_rate
 
 
-# Update Advanced ventilation dropdown if set to a custom value
-@app.callback(
-    Output('ventilation-type', 'value'),
-    Input('ventilation-type-adv', 'value')
-)
-def update_adv_ventilation_rev(air_exchange_rate):
-    for vent_type in ventilation_types:
-        if vent_type['value'] == air_exchange_rate:
-            return air_exchange_rate
-
-    return -1
-
-
 # Update Advanced filtration setting based on dropdown selection.
 # If the custom preset is selected, update the custom value to the default.
 @app.callback(
@@ -491,19 +608,6 @@ def update_adv_filtration_fwd(merv):
     else:
         is_custom_filter = False
         return merv
-
-
-# Update Advanced filtration dropdown if set to a custom value
-@app.callback(
-    Output('filter-type', 'value'),
-    Input('filtration-type-adv', 'value')
-)
-def update_adv_filtration_rev(merv):
-    for filter_type in filter_types:
-        if filter_type['value'] == merv:
-            return merv
-
-    return -1
 
 
 # Risk tolerance slider value display
@@ -525,4 +629,4 @@ def update_air_frac_disp(outdoor_air_fraction):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=False)
+    app.run_server(debug=True)

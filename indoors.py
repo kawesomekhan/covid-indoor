@@ -32,6 +32,15 @@ class Indoors:
     disease_params = []
     prec_params = []
 
+    # Calculated variables
+    room_vol = 0  # ft3
+    fresh_rate = 0  # ft3/min
+    recirc_rate = 0  # ft3/min
+    air_filt_rate = 0  # /hr
+    sett_speed = 0  # m/hr
+    conc_relax_rate = 0  # /hr
+    airb_trans_rate = 0  # /hr
+
     # Source: https://www.lakeair.com/merv-rating-explanation/
     # Table of MERV values corresponding to aerosol filtration efficiency, by different particle sizes (in microns)
     merv_dict = [
@@ -59,9 +68,10 @@ class Indoors:
 
     def __init__(self):
         self.set_default_params()
+        self.calc_vars()
 
-    # Calculate maximum people allowed in the room given an exposure time (hours)
-    def calc_n_max(self, exp_time):
+    # Calculate all calculated variables
+    def calc_vars(self):
         # Physical Parameters
         floor_area = self.physical_params[0]  # ft2
         mean_ceiling_height = self.physical_params[1]  # ft
@@ -79,70 +89,37 @@ class Indoors:
 
         # Precautionary Parameters
         mask_passage_prob = self.prec_params[0]  # no units
-        risk_tolerance = self.prec_params[1]  # no units
 
         # Calculation
         mean_ceiling_height_m = mean_ceiling_height * 0.3048
-        room_vol = floor_area * mean_ceiling_height  # ft3
-        room_vol_m = 0.0283168 * room_vol  # m3
+        self.room_vol = floor_area * mean_ceiling_height  # ft3
+        room_vol_m = 0.0283168 * self.room_vol  # m3
 
-        fresh_rate = room_vol * air_exch_rate / 60  # ft3/min
+        self.fresh_rate = self.room_vol * air_exch_rate / 60  # ft3/min
 
-        recirc_rate = fresh_rate * (1/primary_outdoor_air_fraction - 1)  # ft3/min
+        self.recirc_rate = self.fresh_rate * (1/primary_outdoor_air_fraction - 1)  # ft3/min
 
-        air_filt_rate = aerosol_filtration_eff * recirc_rate * 60 / room_vol  # /hr
+        self.air_filt_rate = aerosol_filtration_eff * self.recirc_rate * 60 / self.room_vol  # /hr
 
-        sett_speed = 3 * (aerosol_radius / 5) ** 2  # mm/s
-        sett_speed = sett_speed * 60 * 60 / 1000  # m/hr
+        self.sett_speed = 3 * (aerosol_radius / 5) ** 2  # mm/s
+        self.sett_speed = self.sett_speed * 60 * 60 / 1000  # m/hr
 
-        conc_relax_rate = air_exch_rate + air_filt_rate + viral_deact_rate + sett_speed / mean_ceiling_height_m  # /hr
+        self.conc_relax_rate = air_exch_rate + self.air_filt_rate + viral_deact_rate + self.sett_speed / mean_ceiling_height_m  # /hr
 
-        airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (room_vol_m * conc_relax_rate)
+        self.airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (room_vol_m * self.conc_relax_rate)
 
-        n_max = 1 + (risk_tolerance * (1 + 1/(conc_relax_rate * exp_time)) / (airb_trans_rate * exp_time))
+    # Calculate maximum people allowed in the room given an exposure time (hours)
+    def calc_n_max(self, exp_time):
+        risk_tolerance = self.prec_params[1]  # no units
+        n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.airb_trans_rate * exp_time))
         return n_max
 
     # Calculate maximum exposure time allowed given a capacity (# people)
     def calc_max_time(self, n_max):
-        # Physical Parameters
-        floor_area = self.physical_params[0]  # ft2
-        mean_ceiling_height = self.physical_params[1]  # ft
-        air_exch_rate = self.physical_params[2]  # /hr
-        primary_outdoor_air_fraction = self.physical_params[3]  # no units
-        aerosol_filtration_eff = self.physical_params[4]  # no units
-
-        # Physiological Parameters
-        breathing_flow_rate = self.physio_params[0]  # m3 / hr
-        aerosol_radius = self.physio_params[1]
-
-        # Disease Parameters
-        exhaled_air_inf = self.disease_params[0]  # infection quanta/m3
-        viral_deact_rate = self.disease_params[1]  # /hr
-
-        # Precautionary Parameters
-        mask_passage_prob = self.prec_params[0]  # no units
         risk_tolerance = self.prec_params[1]  # no units
 
-        # Calculation
-        mean_ceiling_height_m = mean_ceiling_height * 0.3048
-        room_vol = floor_area * mean_ceiling_height  # ft3
-        room_vol_m = 0.0283168 * room_vol  # m3
-
-        fresh_rate = room_vol * air_exch_rate / 60  # ft3/min
-
-        recirc_rate = fresh_rate * (1/primary_outdoor_air_fraction - 1)  # ft3/min
-
-        air_filt_rate = aerosol_filtration_eff * recirc_rate * 60 / room_vol  # /hr
-
-        sett_speed = 3 * (aerosol_radius / 5) ** 2  # mm/s
-        sett_speed = sett_speed * 60 * 60 / 1000  # m/hr
-
-        conc_relax_rate = air_exch_rate + air_filt_rate + viral_deact_rate + sett_speed / mean_ceiling_height_m  # /hr
-
-        airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (room_vol_m * conc_relax_rate)  # /hr
-
-        exp_time_ss = risk_tolerance / ((n_max - 1) * airb_trans_rate)  # hrs, steady-state
-        exp_time_trans = exp_time_ss * (1 + (1 + 4 / (conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient
+        exp_time_ss = risk_tolerance / ((n_max - 1) * self.airb_trans_rate)  # hrs, steady-state
+        exp_time_trans = exp_time_ss * (1 + (1 + 4 / (self.conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient
         return exp_time_trans
 
     # Calculate maximum people allowed in the room across a range of exposure times
