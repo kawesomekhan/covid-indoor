@@ -1,3 +1,3 @@
 # COVID-Indoor
 
-http://indoor-covid-safety.herokuapp.com/
+https://indoor-covid-safety.herokuapp.com/
