@@ -83,15 +83,15 @@ ventilation_default = preset_settings['classroom']['ventilation']
 is_custom_vent = False
 ventilation_types = [
     {'label': "Custom (see Advanced)", 'value': -1},
-    {'label': "Closed windows (0.3 ACH)", 'value': 0.3},
-    {'label': "Open windows (2 ACH)", 'value': 2},
-    {'label': "Mechanical Ventilation (3 ACH)", 'value': 3},
-    {'label': "Open windows with fans (6 ACH)", 'value': 6},
-    {'label': "Mechanical Ventilation (8 ACH)", 'value': 8},
-    {'label': "Laboratory, Restaurant (9 ACH)", 'value': 9},
-    {'label': "Bar (15 ACH)", 'value': 15},
-    {'label': "Hospital (18 ACH)", 'value': 18},
-    {'label': "Toxic Laboratory (25 ACH)", 'value': 25},
+    {'label': "Closed windows (0.3 Outdoor ACH)", 'value': 0.3},
+    {'label': "Open windows (2 Outdoor ACH)", 'value': 2},
+    {'label': "Mechanical Ventilation (3 Outdoor ACH)", 'value': 3},
+    {'label': "Open windows with fans (6 Outdoor ACH)", 'value': 6},
+    {'label': "Mechanical Ventilation (8 Outdoor ACH)", 'value': 8},
+    {'label': "Laboratory, Restaurant (9 Outdoor ACH)", 'value': 9},
+    {'label': "Bar (15 Outdoor ACH)", 'value': 15},
+    {'label': "Hospital (18 Outdoor ACH)", 'value': 18},
+    {'label': "Toxic Laboratory (25 Outdoor ACH)", 'value': 25},
 ]
 
 filter_default = preset_settings['classroom']['filtration']
@@ -188,15 +188,22 @@ app.layout = html.Div(children=[
         Kasim Khan (2020)
     '''),
         html.Div(children='''
-        https://github.com/kawesomekhan/covid-indoor
-    '''),
-        html.Div(children='''
         Martin Z. Bazant and John W. M. Bush, medRxiv preprint (2020):
         "Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19"
     '''),
-        html.Div('''
-        http://web.mit.edu/bazant/www/COVID-19/
-    '''),
+        html.Div([
+            html.A(href='url',
+                   children='''
+                http://web.mit.edu/bazant/www/COVID-19/
+            '''),
+        ]),
+        html.Div([
+            html.A(href='url',
+                   children='''
+                https://github.com/kawesomekhan/covid-indoor
+            '''),
+        ]),
+
     ], style={'font-size': '13px'}),
 
     html.Br(),
