@@ -192,13 +192,13 @@ app.layout = html.Div(children=[
         "Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19"
     '''),
         html.Div([
-            html.A(href='url',
+            html.A(href='http://web.mit.edu/bazant/www/COVID-19/',
                    children='''
                 http://web.mit.edu/bazant/www/COVID-19/
             '''),
         ]),
         html.Div([
-            html.A(href='url',
+            html.A(href='https://github.com/kawesomekhan/covid-indoor',
                    children='''
                 https://github.com/kawesomekhan/covid-indoor
             '''),
