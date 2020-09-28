@@ -51,7 +51,7 @@ preset_settings = {
         'ceiling-height': 12,
         'ventilation': 3,
         'filtration': 6,
-        'outdoor-air-fraction': 0.2,
+        'outdoor-air-fraction': 1 - 0.2,
         'exertion': 0.49,
         'exp-activity': 29,
         'masks': 0.15
@@ -61,7 +61,7 @@ preset_settings = {
         'ceiling-height': 12,
         'ventilation': 3,
         'filtration': 6,
-        'outdoor-air-fraction': 0.2,
+        'outdoor-air-fraction': 1 - 0.2,
         'exertion': 0.49,
         'exp-activity': 29,
         'masks': 0.15
@@ -71,7 +71,7 @@ preset_settings = {
         'ceiling-height': 12,
         'ventilation': 9,
         'filtration': 6,
-        'outdoor-air-fraction': 0.2,
+        'outdoor-air-fraction': 1 - 0.2,
         'exertion': 0.49,
         'exp-activity': 72,
         'masks': 1
@@ -83,8 +83,10 @@ ventilation_default = preset_settings['classroom']['ventilation']
 is_custom_vent = False
 ventilation_types = [
     {'label': "Custom (see Advanced)", 'value': -1},
-    {'label': "Bedroom, closed windows (0.34 ACH)", 'value': 0.34},
+    {'label': "Closed windows (0.3 ACH)", 'value': 0.3},
+    {'label': "Open windows (2 ACH)", 'value': 2},
     {'label': "Mechanical Ventilation (3 ACH)", 'value': 3},
+    {'label': "Open windows with fans (6 ACH)", 'value': 6},
     {'label': "Mechanical Ventilation (8 ACH)", 'value': 8},
     {'label': "Laboratory, Restaurant (9 ACH)", 'value': 9},
     {'label': "Bar (15 ACH)", 'value': 15},
@@ -127,9 +129,15 @@ expiratory_types = [
 ]
 
 mask_types = [
-    {'label': "None (100% passage)", 'value': 1},
-    {'label': "Cloth (15% passage)", 'value': 0.15},
-    {'label': "N95 Surgical (5% passage)", 'value': 0.05},
+    {'label': "None (0% filtration)", 'value': 1},
+    {'label': "Bandana (5% filtration)", 'value': 0.95},
+    {'label': "Neck Gaiter (10% filtration)", 'value': 0.90},
+    {'label': "2-layer cloth (20% filtration)", 'value': 0.80},
+    {'label': "2-layer silk (30% filtration)", 'value': 0.70},
+    {'label': "2-ply Batik cotton (50% filtration)", 'value': 0.50},
+    {'label': "Surgical (85% filtration)", 'value': 0.15},
+    {'label': "N95 Respirator (95% filtration)", 'value': 0.05},
+    {'label': "2-ply cloth/MBP filter (98% filtration)", 'value': 0.02},
 ]
 
 # Nmax values for main red text output
@@ -268,17 +276,17 @@ app.layout = html.Div(children=[
                                                                     searchable=False,
                                                                     clearable=False)]),
                                              html.Br(),
-                                             html.Div(["Outdoor Air Fraction: ",
+                                             html.Div(["Recirculation Rate: ",  # Note: this is 1 - outdoor fraction
                                                        html.Span(id='air-fraction-output'),
                                                        dcc.Slider(id='outdoor-air-fraction',
-                                                                  min=0.01,
-                                                                  max=1,
+                                                                  min=0,
+                                                                  max=0.99,
                                                                   step=0.01,
-                                                                  value=0.2,
+                                                                  value=0.8,
                                                                   marks={
-                                                                      0.01: {'label': '0.01: Closed room',
+                                                                      0: {'label': 'Low recirculation',
                                                                              'style': {'max-width': '50px'}},
-                                                                      1: {'label': '1.0: Outdoors'}
+                                                                      0.99: {'label': 'High recirculation'}
                                                                   })])
                                          ]),
                             ],
@@ -440,6 +448,9 @@ app.layout = html.Div(children=[
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction, merv,
                   breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance, ach_adv, merv_adv):
+    # Correct outdoor air fraction
+    outdoor_air_fraction = 1 - outdoor_air_fraction
+
     # Make sure none of our values are none
     is_none = floor_area is None or ceiling_height is None or ach_adv is None or merv_adv is None
     if is_none:
