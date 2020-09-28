@@ -277,7 +277,8 @@ app.layout = html.Div(children=[
                                                                     clearable=False)]),
                                              html.Br(),
                                              html.Div(["Recirculation Rate: ",  # Note: this is 1 - outdoor fraction
-                                                       html.Span(id='air-fraction-output'),
+                                                       html.Span(id='air-fraction-output',
+                                                                 children=["{:.2f} ACH".format(myInd.recirc_rate / myInd.room_vol)]),
                                                        dcc.Slider(id='outdoor-air-fraction',
                                                                   min=0,
                                                                   max=0.99,
@@ -433,7 +434,8 @@ app.layout = html.Div(children=[
      Output('model-text-7', 'children'),
      Output('model-text-8', 'children'),
      Output('six-ft-output', 'children'),
-     Output('presets', 'value')],
+     Output('presets', 'value'),
+     Output('air-fraction-output', 'children')],
     [Input('floor-area', 'value'),
      Input('ceiling-height', 'value'),
      Input('ventilation-type', 'value'),
@@ -535,7 +537,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
-           six_ft_text, preset_dd_value
+           six_ft_text, preset_dd_value, ["{:.2f} ACH".format(myInd.recirc_rate / myInd.room_vol)]
 
 
 # Update options based on selected presets. Also, because
@@ -628,15 +630,6 @@ def update_adv_filtration_fwd(merv):
 )
 def update_risk_tol_disp(risk_tolerance):
     return ["{:.2f}".format(risk_tolerance)]
-
-
-# Outdoor Air Fraction slider value display
-@app.callback(
-    [Output('air-fraction-output', 'children')],
-    [Input('outdoor-air-fraction', 'value')]
-)
-def update_air_frac_disp(outdoor_air_fraction):
-    return ["{:.2f}".format(outdoor_air_fraction)]
 
 
 if __name__ == "__main__":
