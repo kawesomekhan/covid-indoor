@@ -450,9 +450,6 @@ app.layout = html.Div(children=[
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction, merv,
                   breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance, ach_adv, merv_adv):
-    # Correct outdoor air fraction
-    outdoor_air_fraction = 1 - outdoor_air_fraction
-
     # Make sure none of our values are none
     is_none = floor_area is None or ceiling_height is None or ach_adv is None or merv_adv is None
     if is_none:
@@ -474,6 +471,9 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
         if is_preset:
             preset_dd_value = setting_key
             break
+
+    # Correct outdoor air fraction
+    outdoor_air_fraction = 1 - outdoor_air_fraction
 
     # Check if any custom values are selected; if so, grab the ach from the advanced tab instead.
     if air_exchange_rate == -1:
