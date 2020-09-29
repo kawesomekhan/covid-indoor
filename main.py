@@ -51,7 +51,7 @@ preset_settings = {
         'ceiling-height': 12,
         'ventilation': 3,
         'filtration': 6,
-        'outdoor-air-fraction': 1 - 0.2,
+        'recirc-rate': 1,
         'exertion': 0.49,
         'exp-activity': 29,
         'masks': 0.15
@@ -61,7 +61,7 @@ preset_settings = {
         'ceiling-height': 12,
         'ventilation': 3,
         'filtration': 6,
-        'outdoor-air-fraction': 1 - 0.2,
+        'recirc-rate': 1,
         'exertion': 0.49,
         'exp-activity': 29,
         'masks': 0.15
@@ -71,7 +71,7 @@ preset_settings = {
         'ceiling-height': 12,
         'ventilation': 9,
         'filtration': 6,
-        'outdoor-air-fraction': 1 - 0.2,
+        'recirc-rate': 1,
         'exertion': 0.49,
         'exp-activity': 72,
         'masks': 1
@@ -104,6 +104,16 @@ filter_types = [
     {'label': "Residential/Commercial/Hospital (MERV 9-12)", 'value': 10},
     {'label': "Hospital & General Surgery (MERV 13-16)", 'value': 14},
     {'label': "HEPA (MERV 17-20)", 'value': 17}
+]
+
+recirc_default = preset_settings['classroom']['recirc-rate']
+is_custom_recirc = False
+recirc_types = [
+    {'label': "Custom (see Advanced)", 'value': -1},
+    {'label': "None (0 ACH)", 'value': 0},
+    {'label': "Slow (0.3 ACH)", 'value': 0.3},
+    {'label': "Moderate (1 ACH)", 'value': 1},
+    {'label': "Fast (10 ACH)", 'value': 10},
 ]
 
 exertion_types = [
@@ -283,19 +293,12 @@ app.layout = html.Div(children=[
                                                                     searchable=False,
                                                                     clearable=False)]),
                                              html.Br(),
-                                             html.Div(["Recirculation Rate: ",  # Note: this is 1 - outdoor fraction
-                                                       html.Span(id='air-fraction-output',
-                                                                 children=["{:.2f} ACH".format(myInd.recirc_rate / myInd.room_vol)]),
-                                                       dcc.Slider(id='outdoor-air-fraction',
-                                                                  min=0,
-                                                                  max=0.99,
-                                                                  step=0.01,
-                                                                  value=0.8,
-                                                                  marks={
-                                                                      0: {'label': 'Low recirculation',
-                                                                             'style': {'max-width': '50px'}},
-                                                                      0.99: {'label': 'High recirculation'}
-                                                                  })])
+                                             html.Div(["Recirculation Rate: ",
+                                                       dcc.Dropdown(id='recirc-rate',
+                                                                    options=recirc_types,
+                                                                    value=recirc_default,
+                                                                    searchable=False,
+                                                                    clearable=False)]),
                                          ]),
                             ],
                             style=tab_style,
@@ -362,8 +365,8 @@ app.layout = html.Div(children=[
                                          children=[
                                              html.H6("Advanced Input: "),
                                              html.Div(['''
-    Know your specific ACH or MERV specifications? Input them here:
-''']),
+                                                 Know your specific ACH or MERV specifications? Input them here:
+                                             ''']),
                                              html.Br(),
                                              html.Div(["Ventilation System (ACH): ",
                                                        dcc.Input(id='ventilation-type-adv',
@@ -372,6 +375,11 @@ app.layout = html.Div(children=[
                                              html.Br(),
                                              html.Div(["Filtration System (MERV): ",
                                                        dcc.Input(id='filtration-type-adv', value=filter_default,
+                                                                 type='number')]),
+                                             html.Br(),
+                                             html.Div(["Recirculation Rate (ACH): ",
+                                                       dcc.Input(id='recirc-rate-adv',
+                                                                 value=recirc_default,
                                                                  type='number')]),
                                              html.Br(),
                                              html.H6("Graph Output: "),
@@ -398,13 +406,19 @@ app.layout = html.Div(children=[
                 children=[
                     html.Div([
                         html.H6("Current room: "),
-                        html.Div([
-                            dcc.Dropdown(id='presets',
-                                         options=presets,
-                                         value='classroom',
-                                         searchable=False,
-                                         clearable=False),
-                        ], style={'max-width': '500px'}),
+                        html.Div(
+                            className='grid-preset',
+                            children=[
+                                html.Div(
+                                    id='presets-div',
+                                    children=[
+                                        dcc.Dropdown(id='presets',
+                                                     options=presets,
+                                                     value='classroom',
+                                                     searchable=False,
+                                                     clearable=False),
+                                    ]),
+                            ], style={'max-width': '500px'}),
                         html.H3([
                             '''Based on this model, it should be safe for this room to have:
                     ''']),
@@ -441,24 +455,26 @@ app.layout = html.Div(children=[
      Output('model-text-7', 'children'),
      Output('model-text-8', 'children'),
      Output('six-ft-output', 'children'),
-     Output('presets', 'value'),
-     Output('air-fraction-output', 'children')],
+     Output('presets', 'value')],
     [Input('floor-area', 'value'),
      Input('ceiling-height', 'value'),
      Input('ventilation-type', 'value'),
-     Input('outdoor-air-fraction', 'value'),
+     Input('recirc-rate', 'value'),
      Input('filter-type', 'value'),
      Input('exertion-level', 'value'),
      Input('exp-activity', 'value'),
      Input('mask-type', 'value'),
      Input('risk-tolerance', 'value'),
      Input('ventilation-type-adv', 'value'),
-     Input('filtration-type-adv', 'value')]
+     Input('filtration-type-adv', 'value'),
+     Input('recirc-rate-adv', 'value')]
 )
-def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction, merv,
-                  breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance, ach_adv, merv_adv):
+def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
+                  breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance, ach_adv, merv_adv,
+                  recirc_rate_adv):
     # Make sure none of our values are none
-    is_none = floor_area is None or ceiling_height is None or ach_adv is None or merv_adv is None
+    is_none = floor_area is None or ceiling_height is None or ach_adv is None or merv_adv is None or \
+              recirc_rate_adv is None or recirc_rate is None
     if is_none:
         raise PreventUpdate
 
@@ -470,7 +486,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
         is_preset = setting['floor-area'] == floor_area and \
                     setting['ceiling-height'] == ceiling_height and \
                     setting['ventilation'] == air_exchange_rate and \
-                    setting['outdoor-air-fraction'] == outdoor_air_fraction and \
+                    setting['recirc-rate'] == recirc_rate and \
                     setting['filtration'] == merv and \
                     setting['exertion'] == breathing_flow_rate and \
                     setting['exp-activity'] == infectiousness and \
@@ -479,9 +495,6 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
             preset_dd_value = setting_key
             break
 
-    # Correct outdoor air fraction
-    outdoor_air_fraction = 1 - outdoor_air_fraction
-
     # Check if any custom values are selected; if so, grab the ach from the advanced tab instead.
     if air_exchange_rate == -1:
         air_exchange_rate = ach_adv
@@ -489,11 +502,18 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     if merv == -1:
         merv = merv_adv
 
+    if recirc_rate == -1:
+        recirc_rate = recirc_rate_adv
+
     # Update model with newly-selected parameters
     aerosol_radius = 2
+    aerosol_filtration_eff = Indoors.merv_to_eff(merv, aerosol_radius)
+
+    # Convert recirc rate to outdoor air fraction
+    outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + recirc_rate)
 
     myInd.physical_params = [floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction,
-                             Indoors.merv_to_eff(merv, aerosol_radius)]
+                             aerosol_filtration_eff]
     myInd.physio_params = [breathing_flow_rate, aerosol_radius]
     myInd.disease_params = [infectiousness, 0.3]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
@@ -544,7 +564,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
-           six_ft_text, preset_dd_value, ["{:.2f} ACH".format(myInd.recirc_rate / myInd.room_vol)]
+           six_ft_text, preset_dd_value
 
 
 # Update options based on selected presets. Also, because
@@ -555,16 +575,17 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, outdoor_air_fra
     [Output('floor-area', 'value'),
      Output('ceiling-height', 'value'),
      Output('ventilation-type', 'value'),
-     Output('outdoor-air-fraction', 'value'),
+     Output('recirc-rate', 'value'),
      Output('filter-type', 'value'),
      Output('exertion-level', 'value'),
      Output('exp-activity', 'value'),
      Output('mask-type', 'value')],
     [Input('presets', 'value'),
      Input('ventilation-type-adv', 'value'),
-     Input('filtration-type-adv', 'value')]
+     Input('filtration-type-adv', 'value'),
+     Input('recirc-rate-adv', 'value')]
 )
-def update_presets(preset, air_exchange_rate, merv):
+def update_presets(preset, air_exchange_rate, merv, recirc_rate):
     ctx = dash.callback_context
     if ctx.triggered:
         triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
@@ -576,7 +597,7 @@ def update_presets(preset, air_exchange_rate, merv):
             else:
                 curr_settings = preset_settings[preset]
                 return curr_settings['floor-area'], curr_settings['ceiling-height'], curr_settings['ventilation'], \
-                       curr_settings['outdoor-air-fraction'], curr_settings['filtration'], curr_settings['exertion'], \
+                       curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['exertion'], \
                        curr_settings['exp-activity'], curr_settings['masks']
         elif triggered_id == 'ventilation-type-adv':
             # Update ventilation dropdown if set to a custom or preset value
@@ -596,6 +617,17 @@ def update_presets(preset, air_exchange_rate, merv):
 
             return dash.no_update, dash.no_update, dash.no_update, dash.no_update, -1, \
                    dash.no_update, dash.no_update, dash.no_update
+        elif triggered_id == 'recirc-rate-adv':
+            # Update filtration dropdown if set to a custom value
+            for recirc_type in recirc_types:
+                if recirc_type['value'] == recirc_rate:
+                    return dash.no_update, dash.no_update, dash.no_update, recirc_rate, dash.no_update, \
+                           dash.no_update, dash.no_update, dash.no_update
+
+            return dash.no_update, dash.no_update, dash.no_update, recirc_rate, dash.no_update, \
+                   dash.no_update, dash.no_update, dash.no_update
+
+    raise PreventUpdate
 
 
 # Update Advanced ventilation setting based on dropdown selection.
@@ -630,6 +662,22 @@ def update_adv_filtration_fwd(merv):
         return merv
 
 
+# Update Advanced recirculation rate setting based on dropdown selection.
+# If the custom preset is selected, update the custom value to the default.
+@app.callback(
+    Output('recirc-rate-adv', 'value'),
+    Input('recirc-rate', 'value')
+)
+def update_adv_recirc_fwd(recirc_rate):
+    global is_custom_recirc
+    if recirc_rate == -1:
+        is_custom_recirc = True
+        raise PreventUpdate
+    else:
+        is_custom_recirc = False
+        return recirc_rate
+
+
 # Risk tolerance slider value display
 @app.callback(
     [Output('risk-tolerance-output', 'children')],
@@ -640,4 +688,4 @@ def update_risk_tol_disp(risk_tolerance):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=False)
+    app.run_server(debug=True)

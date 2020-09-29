@@ -16,13 +16,13 @@
 .custom-tab-container {
     padding: 1em;
     margin: 0;
-    height: 480px;
+    height: 600px;
     overflow-y: scroll;
     overflow-x: hidden;
 }
 
 /* Small-width/mobile layout */
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 1120px) {
     .grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -31,6 +31,14 @@
     .card {
         min-width: 0;
         padding: 1em;
+    }
+    /* TODO: FIX HEIGHT */
+    .custom-tab-container {
+        padding: 1em;
+        margin: 0;
+        height: auto;
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
 }
 
