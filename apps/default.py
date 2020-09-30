@@ -76,9 +76,7 @@ preset_settings = {
 
 # Dropdown Preset Values
 ventilation_default = preset_settings['classroom']['ventilation']
-is_custom_vent = False
 ventilation_types = [
-    {'label': "Custom (see Advanced)", 'value': -1},
     {'label': "Closed windows (0.3 Outdoor ACH)", 'value': 0.3},
     {'label': "Open windows (2 Outdoor ACH)", 'value': 2},
     {'label': "Mechanical Ventilation (3 Outdoor ACH)", 'value': 3},
@@ -91,9 +89,7 @@ ventilation_types = [
 ]
 
 filter_default = preset_settings['classroom']['filtration']
-is_custom_filter = False
 filter_types = [
-    {'label': "Custom (see Advanced)", 'value': -1},
     {'label': "None", 'value': 0},
     {'label': "Residential Window AC (MERV 1-4)", 'value': 2},
     {'label': "Residential/Commercial/Industrial (MERV 5-8)", 'value': 6},
@@ -103,9 +99,7 @@ filter_types = [
 ]
 
 recirc_default = preset_settings['classroom']['recirc-rate']
-is_custom_recirc = False
 recirc_types = [
-    {'label': "Custom (see Advanced)", 'value': -1},
     {'label': "None (0 ACH)", 'value': 0},
     {'label': "Slow (0.3 ACH)", 'value': 0.3},
     {'label': "Moderate (1 ACH)", 'value': 1},
@@ -184,231 +178,341 @@ layout = html.Div(children=[
 
     html.Br(),
     html.Div(
-        className='grid',
-        children=[
-            html.Div(
-                className='card',
-                children=[
-                    dcc.Tabs(value='tab-1', children=[
-                        dcc.Tab(
-                            label='About',
-                            className='custom-tab',
-                            children=[
-                                html.Div(className='custom-tab-container',
-                                         children=[
-                                             html.H6("About: "),
-                                             html.Div('''
-                                                    COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
-                                                    enclosed spaces via tiny, infective aerosol droplets suspended in the air.
-                                                    To mitigate this spread, official public health guidelines have taken the form 
-                                                    of minimum social distancing rules (6 feet in the U.S.) or maximum occupancy 
-                                                    (25 people in Massachusetts). 
-                                                '''),
-                                             html.Br(),
-                                             html.Div('''
-                                                    However, public health has been slow to catch up with rapidly advancing science.
-                                                    Naturally, the risk of COVID-19 transmission would not only depend on physical 
-                                                    distance, but also on factors such as exposure time, mask usage, and ventilation
-                                                    systems, among other factors.
-                                                '''),
-                                             html.Br(),
-                                             html.Div('''
-                                                    This app uses a mathematical model, developed by MIT professors Martin Z. Bazant 
-                                                    and John Bush, to improve upon
-                                                    current distancing guidelines by providing a more accurate description of
-                                                    indoor COVID-19 transmission risk.
-                                                '''),
-                                             html.Br(),
-                                             html.Div('''
-                                                    Adjust parameters in the other tabs and see how different spaces handle
-                                                    indoor COVID-19 transmission.
-                                                '''),
-                                         ]),
+        className='main-content',
+        children=html.Div(
+            className='grid',
+            children=[
+                html.Div(
+                    className='card',
+                    children=[
+                        dcc.Tabs(value='tab-1', children=[
+                            dcc.Tab(
+                                label='About',
+                                className='custom-tab',
+                                children=[
+                                    html.Div(className='custom-tab-container',
+                                             children=[
+                                                 html.H6("About: "),
+                                                 html.Div('''
+                                                COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
+                                                enclosed spaces via tiny, infective aerosol droplets suspended in the air.
+                                                To mitigate this spread, official public health guidelines have taken the form 
+                                                of minimum social distancing rules (6 feet in the U.S.) or maximum occupancy 
+                                                (25 people in Massachusetts). 
+                                            '''),
+                                                 html.Br(),
+                                                 html.Div('''
+                                                However, public health has been slow to catch up with rapidly advancing science.
+                                                Naturally, the risk of COVID-19 transmission would not only depend on physical 
+                                                distance, but also on factors such as exposure time, mask usage, and ventilation
+                                                systems, among other factors.
+                                            '''),
+                                                 html.Br(),
+                                                 html.Div('''
+                                                This app uses a mathematical model, developed by MIT professors Martin Z. Bazant 
+                                                and John Bush, to improve upon
+                                                current distancing guidelines by providing a more accurate description of
+                                                indoor COVID-19 transmission risk.
+                                            '''),
+                                                 html.Br(),
+                                                 html.Div('''
+                                                Adjust parameters in the other tabs and see how different spaces handle
+                                                indoor COVID-19 transmission.
+                                            '''),
+                                             ]),
 
-                            ],
-                            style=tab_style,
-                            selected_style=tab_style
-                        ),
-                        dcc.Tab(
-                            label='Room Specifications',
-                            className='custom-tab',
-                            children=[
-                                html.Div(className='custom-tab-container',
-                                         children=[
-                                             html.H6("Room Specifications: "),
-                                             html.Br(),
-                                             html.Div(["Floor Area (sq. ft.): ",
-                                                       dcc.Input(id='floor-area', value=900, type='number')]),
-                                             html.Br(),
-                                             html.Div(["Ceiling Height (ft.): ",
-                                                       dcc.Input(id='ceiling-height', value=12, type='number')]),
-                                             html.Br(),
-                                             html.Div(className='card-dropdown',
-                                                      children=[html.Div(["Ventilation System: "])]),
-                                             html.Div(className='card-dropdown',
-                                                      children=[dcc.Dropdown(id='ventilation-type',
-                                                                             options=ventilation_types,
-                                                                             value=ventilation_default,
-                                                                             searchable=False,
-                                                                             clearable=False)]),
-                                             html.Br(),
-                                             html.Div(["Filtration System: ",
-                                                       dcc.Dropdown(id='filter-type',
-                                                                    options=filter_types,
-                                                                    value=filter_default,
-                                                                    searchable=False,
-                                                                    clearable=False)]),
-                                             html.Br(),
-                                             html.Div(["Recirculation Rate: ",
-                                                       dcc.Dropdown(id='recirc-rate',
-                                                                    options=recirc_types,
-                                                                    value=recirc_default,
-                                                                    searchable=False,
-                                                                    clearable=False)]),
-                                         ]),
-                            ],
-                            style=tab_style,
-                            selected_style=tab_style
-                        ),
-                        dcc.Tab(
-                            label='Human Behavior',
-                            className='custom-tab',
-                            children=[
-                                html.Div(className='custom-tab-container',
-                                         children=[
-                                             html.H6("Human Behavior: "),
-                                             html.Br(),
-                                             html.Div(["Exertion Level: ",
-                                                       dcc.Dropdown(id='exertion-level',
-                                                                    options=exertion_types,
-                                                                    value=0.49,
-                                                                    searchable=False,
-                                                                    clearable=False)]),
-                                             html.Br(),
-                                             html.Div(["Expiratory Activity: ",
-                                                       dcc.Dropdown(id='exp-activity',
-                                                                    options=expiratory_types,
-                                                                    value=29,
-                                                                    searchable=False,
-                                                                    clearable=False)]),
-                                             html.Br(),
-                                             html.Div(["Masks? ",
-                                                       dcc.Dropdown(id='mask-type',
-                                                                    options=mask_types,
-                                                                    value=0.15,
-                                                                    searchable=False,
-                                                                    clearable=False)]),
-                                             html.Br(),
-                                             html.Div(["Risk Tolerance: ",
-                                                       html.Span(id='risk-tolerance-output'),
-                                                       html.Div('''
-                                                                   This represents the number of expected transmissions during the
-                                                                   occupancy period. A vulnerable population, due to age or
-                                                                   preexisting medical conditions, will generally require
-                                                                   a lower risk tolerance. 
-                                                          ''', style={'font-size': '13px', 'margin-left': '20px'}),
-                                                       dcc.Slider(id='risk-tolerance',
-                                                                  min=0.01,
-                                                                  max=1,
-                                                                  step=0.01,
-                                                                  value=0.1,
-                                                                  marks={
-                                                                      0.01: {'label': '0.01: Contact Tracing',
-                                                                             'style': {'max-width': '50px'}},
-                                                                      1: {'label': '1.0: Unsafe'}
-                                                                  })
-                                                       ])
-                                         ]),
-                            ],
-                            style=tab_style,
-                            selected_style=tab_style
-                        ),
-                        dcc.Tab(
-                            label='Advanced',
-                            className='custom-tab',
-                            children=[
-                                html.Div(className='custom-tab-container',
-                                         children=[
-                                             html.H6("Advanced Input: "),
-                                             html.Div(['''
-                                                 Know your specific ACH or MERV specifications? Input them here:
-                                             ''']),
-                                             html.Br(),
-                                             html.Div(["Ventilation System (ACH): ",
-                                                       dcc.Input(id='ventilation-type-adv',
-                                                                 value=ventilation_default,
-                                                                 type='number')]),
-                                             html.Br(),
-                                             html.Div(["Filtration System (MERV): ",
-                                                       dcc.Input(id='filtration-type-adv', value=filter_default,
-                                                                 type='number')]),
-                                             html.Br(),
-                                             html.Div(["Recirculation Rate (ACH): ",
-                                                       dcc.Input(id='recirc-rate-adv',
-                                                                 value=recirc_default,
-                                                                 type='number')]),
-                                             html.Br(),
-                                             html.H6("Graph Output: "),
-                                             html.Div([
-                                                 dcc.Graph(
-                                                     id='safety-graph',
-                                                     figure=fig
-                                                 ),
-                                             ])
-                                         ]),
-                            ],
-                            style=tab_style,
-                            selected_style=tab_style
-                        )
-                    ],
-                             colors={
-                                 "border": "#c9c9c9",
-                                 "primary": "#de1616"
-                             }),
-                    html.Br()
-                ]),
-            html.Div(
-                className='card',
-                children=[
-                    html.Div([
-                        html.H6("Current room: "),
-                        html.Div(
-                            className='grid-preset',
-                            children=[
-                                html.Div(
-                                    id='presets-div',
-                                    children=[
-                                        dcc.Dropdown(id='presets',
-                                                     options=presets,
-                                                     value='classroom',
-                                                     searchable=False,
-                                                     clearable=False),
-                                    ]),
-                            ], style={'max-width': '500px'}),
-                        html.H3([
-                            '''Based on this model, it should be safe for this room to have:
-                    ''']),
-                        html.H4(className='model-output-text', id='model-text-1'),
-                        html.H4(className='model-output-text', id='model-text-2'),
-                        html.H4(className='model-output-text', id='model-text-3'),
-                        html.H4(className='model-output-text', id='model-text-4'),
-                        html.H4(className='model-output-text', id='model-text-5'),
-                        html.H4(className='model-output-text', id='model-text-6'),
-                        html.H4(className='model-output-text', id='model-text-7'),
-                        html.H4(className='model-output-text', id='model-text-8'),
-                        html.Br(),
-                        html.H3([
-                            '''In comparison, current six feet distancing guidelines recommend no more than''',
-                            html.Span(id='six-ft-output', children=''' 2 people ''', style={'color': '#de1616'}),
-                            ''' in this room.''']),
+                                ],
+                                style=tab_style,
+                                selected_style=tab_style
+                            ),
+                            dcc.Tab(
+                                label='Room Specifications',
+                                className='custom-tab',
+                                children=[
+                                    html.Div(className='custom-tab-container',
+                                             children=[
+                                                 html.H6("Room Specifications: "),
+                                                 html.Br(),
+                                                 html.Div(["Floor Area (sq. ft.): ",
+                                                           dcc.Input(id='floor-area', value=900, type='number')]),
+                                                 html.Br(),
+                                                 html.Div(["Ceiling Height (ft.): ",
+                                                           dcc.Input(id='ceiling-height', value=12, type='number')]),
+                                                 html.Br(),
+                                                 html.Div(className='card-dropdown',
+                                                          children=[html.Div(["Ventilation System: "])]),
+                                                 html.Div(className='card-dropdown',
+                                                          children=[dcc.Dropdown(id='ventilation-type',
+                                                                                 options=ventilation_types,
+                                                                                 value=ventilation_default,
+                                                                                 searchable=False,
+                                                                                 clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Filtration System: ",
+                                                           dcc.Dropdown(id='filter-type',
+                                                                        options=filter_types,
+                                                                        value=filter_default,
+                                                                        searchable=False,
+                                                                        clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Recirculation Rate: ",
+                                                           dcc.Dropdown(id='recirc-rate',
+                                                                        options=recirc_types,
+                                                                        value=recirc_default,
+                                                                        searchable=False,
+                                                                        clearable=False)]),
+                                             ]),
+                                ],
+                                style=tab_style,
+                                selected_style=tab_style
+                            ),
+                            dcc.Tab(
+                                label='Human Behavior',
+                                className='custom-tab',
+                                children=[
+                                    html.Div(className='custom-tab-container',
+                                             children=[
+                                                 html.H6("Human Behavior: "),
+                                                 html.Br(),
+                                                 html.Div(["Exertion Level: ",
+                                                           dcc.Dropdown(id='exertion-level',
+                                                                        options=exertion_types,
+                                                                        value=0.49,
+                                                                        searchable=False,
+                                                                        clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Expiratory Activity: ",
+                                                           dcc.Dropdown(id='exp-activity',
+                                                                        options=expiratory_types,
+                                                                        value=29,
+                                                                        searchable=False,
+                                                                        clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Masks? ",
+                                                           dcc.Dropdown(id='mask-type',
+                                                                        options=mask_types,
+                                                                        value=0.15,
+                                                                        searchable=False,
+                                                                        clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Risk Tolerance: ",
+                                                           html.Span(id='risk-tolerance-output'),
+                                                           html.Div('''
+                                                               A higher risk tolerance will mean more expected 
+                                                               transmissions during the expected occupancy period, 
+                                                               while a lower risk tolerance will mean fewer expected 
+                                                               transmissions during the expected occupancy period 
+                                                               (see Advanced Input & Output for details). More 
+                                                               vulnerable populations such as the elderly or those 
+                                                               with preexisting medical conditions will generally 
+                                                               require a lower risk tolerance.
+                                                      ''', style={'font-size': '13px', 'margin-left': '20px'}),
+                                                           dcc.Slider(id='risk-tolerance',
+                                                                      min=0.01,
+                                                                      max=1,
+                                                                      step=0.01,
+                                                                      value=0.1,
+                                                                      marks={
+                                                                          0.01: {'label': '0.01: Contact Tracing',
+                                                                                 'style': {'max-width': '50px'}},
+                                                                          1: {'label': '1.0: Unsafe'}
+                                                                      })
+                                                           ])
+                                             ]),
+                                ],
+                                style=tab_style,
+                                selected_style=tab_style
+                            ),
+                            dcc.Tab(
+                                label='Advanced Input & Output',
+                                className='custom-tab',
+                                children=[
+                                    html.Div(className='custom-tab-container',
+                                             children=[
+                                                 html.H6("Advanced Input: "),
+                                                 html.Div('''
+                                                    Know your specific ACH and MERV numbers? Want to know more about the 
+                                                    model? Check out Advanced Mode
+                                                    by clicking the button at the bottom of the page.
+                                                 '''),
+                                                 html.Br(),
+                                                 html.H6("Other Model Inputs: "),
+                                                 html.Div(["Aerosol Radius r\u0305 (\u03bcm): ",
+                                                           dcc.Input(id='aerosol-radius', value=2, type='number')]),
+                                                 html.Br(),
+                                                 html.Div(["Viral Deactivation Rate \u03BBv (/hr): ",
+                                                           dcc.Input(id='viral-deact-rate', value=0.3, type='number')]),
+                                                 html.Br(),
+                                                 html.Br(),
+                                                 html.H6("Calculated Values of Interest: "),
+                                                 html.Div([
+                                                     html.Div(["Room volume V: ",
+                                                               html.Span(className='model-output-text-small',
+                                                                         id='room-vol-output')]),
+                                                     html.Div(["Ventilation (outdoor) flow rate Q: ",
+                                                               html.Span(className='model-output-text-small',
+                                                                         id='fresh-rate-output')]),
+                                                     html.Div(["Return (recirculation) flow rate Qf: ",
+                                                               html.Span(className='model-output-text-small',
+                                                                         id='recirc-rate-output')]),
+                                                     html.Div(["Air filtration rate (\u03BBf): ",
+                                                               html.Span(className='model-output-text-small',
+                                                                         id='air-filt-rate-output')]),
+                                                     html.Div(["Effective aerosol settling speed v\u209B(r\u0305): ",
+                                                               html.Span(className='model-output-text-small',
+                                                                         id='sett-speed-output')]),
+                                                     html.Div(["Concentration relaxation rate \u03BBc: ",
+                                                               html.Span(className='model-output-text-small',
+                                                                         id='conc-relax-output')]),
+                                                     html.Div(["Airborne transmission rate \u03B2\u2090: ",
+                                                               html.Span(className='model-output-text-small',
+                                                                         id='airb-trans-output')]),
+                                                 ]),
+                                                 html.Br(),
+                                                 html.H6("Graph Output: "),
+                                                 html.Div([
+                                                     dcc.Graph(
+                                                         id='safety-graph',
+                                                         figure=fig
+                                                     ),
+                                                 ]),
+                                                 html.Br(),
+                                                 html.H6("Assumptions: "),
+                                                 html.Div('''This guideline provides specific recommendations on 
+                                                   how to limit COVID-19 transmission through well-mixed indoor 
+                                                   air, but one should also consider various caveats emphasized 
+                                                   in the paper and other literature, including the possibility 
+                                                   of short-range aerosol transmission in respiratory jets. 
+                                                   Such effects, which can lead to large fluctuations in droplet 
+                                                   concentrations around their mean values, especially when 
+                                                   masks are not worn, are only partially addressed by choosing 
+                                                   a sufficiently small tolerance in the well-mixed guideline 
+                                                   and will depend on the details of airflow and human behavior 
+                                                   in a specific indoor space.'''),
+                                                 html.Br(),
+                                                 html.Div("This model makes the following assumptions:"),
+                                                 html.Div([
+                                                     html.Div('''- The volumetric breathing flow rate Qb is determined by
+                                                       the level of activity. Average values for healthy males and
+                                                       females have been reported as 0.49, 0.54, 1.38, 2.35, and 3.30
+                                                       m\u00B3/hr for resting, standing, light exercise, moderate
+                                                       exercise, and heavy exercise, respectively, and used in
+                                                       simulations of airborne transmission of COVID-19.
+                                                   '''),
+                                                     html.Div('''
+                                                       - The most important disease parameter is the infectiousness
+                                                       of exhaled air, Cq (infection quanta per unit volume). This
+                                                       is discussed extensively in the main text. Using all of the
+                                                       limited information available today, Cq is estimated to be
+                                                       30 q/m3 for normal breathing and light activity. This value of
+                                                       Cq is then used to estimate Cq values for different
+                                                       expiratory activities such as singing, whispering, or heavy
+                                                       breathing. 
+                                                    '''),
+                                                     html.Div('''
+                                                       - The risk tolerance represents the probability of a 
+                                                       single transmission during the occupancy time of one infected 
+                                                       person. The expected number of transmissions is thus prescribed by 
+                                                       the product of the tolerance and the prevalence 
+                                                       of infection in the population. A lower risk tolerance should 
+                                                       be chosen for more vulnerable populations, such
+                                                       as the elderly or those with preexisting medical conditions.
+                                                    '''),
+                                                     html.Div('''
+                                                       - This model calculates two results: the transient bound, which
+                                                       accounts for the buildup of infectious aerosols in the air 
+                                                       after the entrance of an infected person, and the
+                                                       steady-state bound, which is reached after the
+                                                       relaxation time \u03BBc\u03C4 >> 1. Results reported in this
+                                                       app are derived from the transient bound. 
+                                                    '''),
+                                                     html.Div('''
+                                                       - The viral deactivation rate \u03BBv is the rate at which
+                                                       the virus loses infectiousness in aerosol form. For SARS-CoV-2,
+                                                       this is estimated to lie in the range of 0 to 0.63/hr. This
+                                                       can be increased by ultraviolet radiation (UV-C) or chemical
+                                                       disinfectants (e.g. hydrogen peroxide, ozone).
+                                                    '''),
+                                                     html.Div('''- The mean respiratory aerosol droplet size r\u0305
+                                                       exists in a distribution of sizes, dependent on different people
+                                                       and types of respiration. This size can also affect infectivity
+                                                       of the aerosol droplets. However, a typical range for the most
+                                                       common and most infectious droplets is 2-3 \u03bcm, which is
+                                                       roughly consistent with the standard definition of aerosol
+                                                       droplets in the literature (r\u0305 < 5 \u03bcm).
+                                                    '''),
+                                                 ], style={'padding-left': '10px', 'font-size': '13px'}),
+                                                 html.Br(),
+                                                 html.Div('''
+                                                   For more references and further explanation, see the references
+                                                   posted at the top of the webpage. 
+                                                '''),
+                                             ]),
+                                ],
+                                style=tab_style,
+                                selected_style=tab_style
+                            )
+                        ],
+                                 colors={
+                                     "border": "#c9c9c9",
+                                     "primary": "#de1616"
+                                 }),
+                        html.Br()
                     ]),
-                ], style={'padding-top': '0px'}),
-        ]
+                html.Div(
+                    className='card',
+                    children=[
+                        html.Div([
+                            html.H6("Current room: "),
+                            html.Div(
+                                className='grid-preset',
+                                children=[
+                                    html.Div(
+                                        id='presets-div',
+                                        children=[
+                                            dcc.Dropdown(id='presets',
+                                                         options=presets,
+                                                         value='classroom',
+                                                         searchable=False,
+                                                         clearable=False),
+                                        ]),
+                                ], style={'max-width': '500px'}),
+                            html.H3(['''
+                                Based on this model, it should be safe for this room to have:
+                            ''']),
+                            html.H4(className='model-output-text', id='model-text-1'),
+                            html.H4(className='model-output-text', id='model-text-2'),
+                            html.H4(className='model-output-text', id='model-text-3'),
+                            html.H4(className='model-output-text', id='model-text-4'),
+                            html.H4(className='model-output-text', id='model-text-5'),
+                            html.H4(className='model-output-text', id='model-text-6'),
+                            html.H4(className='model-output-text', id='model-text-7'),
+                            html.H4(className='model-output-text', id='model-text-8'),
+                            html.Br(),
+                            html.H3([
+                                '''In comparison, current six feet distancing guidelines recommend no more than''',
+                                html.Span(id='six-ft-output', children=''' 2 people ''', style={'color': '#de1616'}),
+                                ''' in this room.''']),
+                        ]),
+                    ], style={'padding-top': '0px'}),
+            ]
+        ),
     ),
     html.Br(),
-    html.Form(
-        action=''
-    )
+    html.Div([
+        dcc.Link(
+            href='/apps/advanced',
+            children=[
+                html.Button(
+                    className='link-button',
+                    children=[
+                        html.Span('Advanced Mode ')
+                    ],
+                )
+            ]
+        )
+    ], style={'float': 'right',
+              'padding-bottom': '10px'}),
 ])
 
 
@@ -425,7 +529,14 @@ layout = html.Div(children=[
      Output('model-text-7', 'children'),
      Output('model-text-8', 'children'),
      Output('six-ft-output', 'children'),
-     Output('presets', 'value')],
+     Output('presets', 'value'),
+     Output('room-vol-output', 'children'),
+     Output('fresh-rate-output', 'children'),
+     Output('recirc-rate-output', 'children'),
+     Output('air-filt-rate-output', 'children'),
+     Output('sett-speed-output', 'children'),
+     Output('conc-relax-output', 'children'),
+     Output('airb-trans-output', 'children')],
     [Input('floor-area', 'value'),
      Input('ceiling-height', 'value'),
      Input('ventilation-type', 'value'),
@@ -435,16 +546,14 @@ layout = html.Div(children=[
      Input('exp-activity', 'value'),
      Input('mask-type', 'value'),
      Input('risk-tolerance', 'value'),
-     Input('ventilation-type-adv', 'value'),
-     Input('filtration-type-adv', 'value'),
-     Input('recirc-rate-adv', 'value')]
+     Input('aerosol-radius', 'value'),
+     Input('viral-deact-rate', 'value')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
-                  breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance, ach_adv, merv_adv,
-                  recirc_rate_adv):
-    # Make sure none of our values are none
-    is_none = floor_area is None or ceiling_height is None or ach_adv is None or merv_adv is None or \
-              recirc_rate_adv is None or recirc_rate is None
+                  breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance, aerosol_radius,
+                  viral_deact_rate):
+    # Make sure none of the inputs are None
+    is_none = aerosol_radius is None or viral_deact_rate is None
     if is_none:
         raise PreventUpdate
 
@@ -465,18 +574,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
             preset_dd_value = setting_key
             break
 
-    # Check if any custom values are selected; if so, grab the ach from the advanced tab instead.
-    if air_exchange_rate == -1:
-        air_exchange_rate = ach_adv
-
-    if merv == -1:
-        merv = merv_adv
-
-    if recirc_rate == -1:
-        recirc_rate = recirc_rate_adv
-
     # Update model with newly-selected parameters
-    aerosol_radius = 2
     aerosol_filtration_eff = Indoors.merv_to_eff(merv, aerosol_radius)
 
     # Convert recirc rate to outdoor air fraction
@@ -485,7 +583,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.physical_params = [floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction,
                              aerosol_filtration_eff]
     myInd.physio_params = [breathing_flow_rate, aerosol_radius]
-    myInd.disease_params = [infectiousness, 0.3]
+    myInd.disease_params = [infectiousness, viral_deact_rate]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     myInd.calc_vars()
 
@@ -531,10 +629,22 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     else:
         six_ft_text = ' {} people'.format(six_ft_people)
 
+    # Calculated Values of Interest Output
+    interest_output = [
+        '{:,.0f} ft\u00B3'.format(myInd.room_vol),
+        '{:,.0f} ft\u00B3/min'.format(myInd.fresh_rate),
+        '{:,.0f} ft\u00B3/min'.format(myInd.recirc_rate),
+        '{:,.2f} /hr'.format(myInd.air_filt_rate),
+        '{:,.2f} m/hr'.format(myInd.sett_speed),
+        '{:,.2f} /hr'.format(myInd.conc_relax_rate),
+        '{:,.2f} /hr (x10,000)'.format(myInd.airb_trans_rate * 10000),
+    ]
+
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
-           six_ft_text, preset_dd_value
+           six_ft_text, preset_dd_value, interest_output[0], interest_output[1], interest_output[2], \
+           interest_output[3], interest_output[4], interest_output[5], interest_output[6],
 
 
 # Update options based on selected presets.
@@ -558,54 +668,6 @@ def update_presets(preset):
         return curr_settings['floor-area'], curr_settings['ceiling-height'], curr_settings['ventilation'], \
                curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['exertion'], \
                curr_settings['exp-activity'], curr_settings['masks']
-
-
-# Update Advanced ventilation setting based on dropdown selection.
-# If the custom preset is selected, update the custom value to the default.
-@app.callback(
-    Output('ventilation-type-adv', 'value'),
-    Input('ventilation-type', 'value')
-)
-def update_adv_ventilation_fwd(air_exchange_rate):
-    global is_custom_vent
-    if air_exchange_rate == -1:
-        is_custom_vent = True
-        raise PreventUpdate
-    else:
-        is_custom_vent = False
-        return air_exchange_rate
-
-
-# Update Advanced filtration setting based on dropdown selection.
-# If the custom preset is selected, update the custom value to the default.
-@app.callback(
-    Output('filtration-type-adv', 'value'),
-    Input('filter-type', 'value')
-)
-def update_adv_filtration_fwd(merv):
-    global is_custom_filter
-    if merv == -1:
-        is_custom_filter = True
-        raise PreventUpdate
-    else:
-        is_custom_filter = False
-        return merv
-
-
-# Update Advanced recirculation rate setting based on dropdown selection.
-# If the custom preset is selected, update the custom value to the default.
-@app.callback(
-    Output('recirc-rate-adv', 'value'),
-    Input('recirc-rate', 'value')
-)
-def update_adv_recirc_fwd(recirc_rate):
-    global is_custom_recirc
-    if recirc_rate == -1:
-        is_custom_recirc = True
-        raise PreventUpdate
-    else:
-        is_custom_recirc = False
-        return recirc_rate
 
 
 # Risk tolerance slider value display

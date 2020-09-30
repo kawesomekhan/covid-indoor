@@ -35,14 +35,15 @@ h4 {
     }
 }
 
-
-
-
 six-ft-output {
     color: #de1616
 }
 
 .model-output-text {
     padding-left: 2em
+}
+
+.model-output-text-small {
+    color: #de1616
 }
 
