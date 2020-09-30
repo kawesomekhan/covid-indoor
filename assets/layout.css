@@ -1,6 +1,5 @@
 /* CSS related to app layout */
 
-
 /* For default, desktop layout */
 .grid {
     display: grid;
@@ -16,13 +15,35 @@
 .custom-tab-container {
     padding: 1em;
     margin: 0;
-    height: 480px;
+    height: 445px;
     overflow-y: scroll;
     overflow-x: hidden;
 }
 
+.link-button {
+    border: none;
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    transition: 0.5s;
+}
+
+.link-button span {
+  transition: 0.5s;
+}
+
+.link-button span:after {
+    content: '\00bb';
+    opacity: 1;
+    transition: 0.5s
+}
+
+.link-button:hover span {
+    padding-right: 25px;
+    transition: 0.5s;
+}
+
 /* Small-width/mobile layout */
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 1120px) {
     .grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -31,6 +52,25 @@
     .card {
         min-width: 0;
         padding: 1em;
+    }
+    /* TODO: FIX HEIGHT */
+    .custom-tab-container {
+        padding: 1em;
+        margin: 0;
+        height: auto;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    .link-button {
+        border: none;
+        font-family: 'Barlow', sans-serif;
+        font-size: 14px;
+    }
+
+    .link-button span:after {
+        content: '\00bb';
+        opacity: 1;
     }
 }
 
