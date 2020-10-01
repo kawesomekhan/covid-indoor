@@ -409,11 +409,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     index = 0
 
     # Check if we should use the normal n vals, or the big n vals
-    n_val_series = model_output_n_vals
-    if myInd.calc_max_time(model_output_n_vals[-1]) > 48:
-        n_val_series = model_output_n_vals_big
-
-    model_output_text = ess.get_model_output_text(myInd, n_val_series)
+    model_output_text = ess.get_model_output_text(myInd)
     six_ft_text = ess.get_six_ft_text(myInd)
     interest_output = ess.get_interest_output_text(myInd)
 

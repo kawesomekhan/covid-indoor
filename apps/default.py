@@ -38,9 +38,11 @@ fig = px.line(results_df, x="Maximum Exposure Time (hours)", y="Maximum Occupanc
 
 presets = [
     {'label': "Custom", 'value': 'custom'},
-    {'label': "House", 'value': 'house'},
+    {'label': "Suburban House", 'value': 'house'},
     {'label': "Restaurant", 'value': 'restaurant'},
-    {'label': "Classroom", 'value': 'classroom'},
+    {'label': "Quiet Office", 'value': 'office'},
+    {'label': "Classroom Lecture", 'value': 'classroom'},
+    {'label': "MTA Subway Car", 'value': 'subway'},
 ]
 
 preset_settings = {
@@ -73,7 +75,37 @@ preset_settings = {
         'exertion': 0.49,
         'exp-activity': 72,
         'masks': 1
-    }
+    },
+    'office': {
+        'floor-area': 10000,
+        'ceiling-height': 12,
+        'ventilation': 8,
+        'filtration': 10,
+        'recirc-rate': 1,
+        'exertion': 0.54,
+        'exp-activity': 29,
+        'masks': 0.25
+    },
+    'subway': {
+        'floor-area': 580,
+        'ceiling-height': 10,
+        'ventilation': 18,
+        'filtration': 6,
+        'recirc-rate': 10,
+        'exertion': 0.54,
+        'exp-activity': 29,
+        'masks': 0.25
+    },
+    'bus': {
+        'floor-area': 380,
+        'ceiling-height': 10,
+        'ventilation': 8,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.54,
+        'exp-activity': 29,
+        'masks': 0.25
+    },
 }
 
 # Dropdown Preset Values
@@ -141,10 +173,6 @@ mask_types = [
     {'label': "N95 Respirator (85% filtration)", 'value': 0.15},
     {'label': "Cotton+Chiffon (97% filtration)", 'value': 0.03},
 ]
-
-# Nmax values for main red text output
-model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
-model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
 tab_style = {
@@ -531,12 +559,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     new_fig = ess.get_model_figure(myInd)
 
     # Update the red text output with new model calculations
-    # Check if we should use the normal n vals, or the big n vals
-    n_val_series = model_output_n_vals
-    if myInd.calc_max_time(model_output_n_vals[-1]) > 48:
-        n_val_series = model_output_n_vals_big
-
-    model_output_text = ess.get_model_output_text(myInd, n_val_series)
+    model_output_text = ess.get_model_output_text(myInd)
     six_ft_text = ess.get_six_ft_text(myInd)
     interest_output = ess.get_interest_output_text(myInd)
 

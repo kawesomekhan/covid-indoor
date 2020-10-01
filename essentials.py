@@ -1,5 +1,9 @@
 import plotly.express as px
 
+# Nmax values for main red text output
+model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
+model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
+
 
 def get_model_figure(indoor_model):
     new_df = indoor_model.calc_n_max_series(2, 100, 1.0)
@@ -10,7 +14,12 @@ def get_model_figure(indoor_model):
     return new_fig
 
 
-def get_model_output_text(indoor_model, n_val_series):
+def get_model_output_text(indoor_model):
+    # Check if we should use the normal n vals, or the big n vals
+    n_val_series = model_output_n_vals
+    if indoor_model.calc_max_time(model_output_n_vals[-1]) > 48 or indoor_model.get_six_ft_n() >= 100:
+        n_val_series = model_output_n_vals_big
+
     model_output_text = ["", "", "", "", "", "", "", ""]
     index = 0
     for n_val in n_val_series:
