@@ -2,12 +2,13 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
-import plotly.express as px
 import indoors as ind
 from indoors import Indoors
+import plotly.express as px
 
 from app import app
 import descriptions as desc
+import essentials as ess
 
 """
 main.py contains the core functionality of the Dash app. It is responsible for taking inputs,
@@ -51,7 +52,7 @@ preset_settings = {
         'recirc-rate': 1,
         'exertion': 0.49,
         'exp-activity': 29,
-        'masks': 0.15
+        'masks': 0.25
     },
     'classroom': {
         'floor-area': 900,
@@ -61,7 +62,7 @@ preset_settings = {
         'recirc-rate': 1,
         'exertion': 0.49,
         'exp-activity': 29,
-        'masks': 0.15
+        'masks': 0.25
     },
     'restaurant': {
         'floor-area': 5000,
@@ -131,14 +132,14 @@ expiratory_types = [
 
 mask_types = [
     {'label': "None (0% filtration)", 'value': 1},
-    {'label': "Bandana (5% filtration)", 'value': 0.95},
-    {'label': "Neck Gaiter (10% filtration)", 'value': 0.90},
-    {'label': "2-layer cloth (20% filtration)", 'value': 0.80},
-    {'label': "2-layer silk (30% filtration)", 'value': 0.70},
-    {'label': "2-ply Batik cotton (50% filtration)", 'value': 0.50},
-    {'label': "Surgical (85% filtration)", 'value': 0.15},
-    {'label': "N95 Respirator (95% filtration)", 'value': 0.05},
-    {'label': "2-ply cloth/MBP filter (98% filtration)", 'value': 0.02},
+    {'label': "Quilter's Cotton (10% filtration)", 'value': 0.9},
+    {'label': "Silk (55% filtration)", 'value': 0.45},
+    {'label': "Flannel (60% filtration)", 'value': 0.40},
+    {'label': "Chiffon (70% filtration)", 'value': 0.30},
+    {'label': "Surgical (75% filtration)", 'value': 0.25},
+    {'label': "Cotton (80% filtration)", 'value': 0.20},
+    {'label': "N95 Respirator (85% filtration)", 'value': 0.15},
+    {'label': "Cotton+Chiffon (97% filtration)", 'value': 0.03},
 ]
 
 # Nmax values for main red text output
@@ -260,12 +261,27 @@ layout = html.Div(children=[
                                                                         searchable=False,
                                                                         clearable=False)]),
                                                  html.Br(),
-                                                 html.Div(["Masks? ",
+                                                 html.Div(["Mask Type ",
                                                            dcc.Dropdown(id='mask-type',
                                                                         options=mask_types,
-                                                                        value=0.15,
+                                                                        value=0.25,
                                                                         searchable=False,
                                                                         clearable=False)]),
+                                                 html.Br(),
+                                                 html.Div(["Mask Fit/Compliance: ",
+                                                           html.Span(id='mask-fit-output'),
+                                                           dcc.Slider(id='mask-fit',
+                                                                      min=0,
+                                                                      max=0.95,
+                                                                      step=0.01,
+                                                                      value=0.90,
+                                                                      marks={
+                                                                          0: {'label': '0%: None',
+                                                                              'style': {'max-width': '50px'}},
+                                                                          0.5: {'label': '50%: Poor'},
+                                                                          0.95: {'label': '95%: Good'}
+                                                                      }),
+                                                           ]),
                                                  html.Br(),
                                                  html.Div(["Risk Tolerance: ",
                                                            html.Span(id='risk-tolerance-output'),
@@ -384,14 +400,22 @@ layout = html.Div(children=[
                                 id='loading',
                                 type='circle',
                                 children=[
-                                    html.H4(className='model-output-text', id='model-text-1', children="2 people for 31 days"),
-                                    html.H4(className='model-output-text', id='model-text-2', children="3 people for 15 days"),
-                                    html.H4(className='model-output-text', id='model-text-3', children="4 people for 10 days"),
-                                    html.H4(className='model-output-text', id='model-text-4', children="5 people for 8 days"),
-                                    html.H4(className='model-output-text', id='model-text-5', children="10 people for 3 days"),
-                                    html.H4(className='model-output-text', id='model-text-6', children="25 people for 31 hours"),
-                                    html.H4(className='model-output-text', id='model-text-7', children="50 people for 15 hours"),
-                                    html.H4(className='model-output-text', id='model-text-8', children="100 people for 8 hours"),
+                                    html.H4(className='model-output-text', id='model-text-1',
+                                            children="2 people for 31 days"),
+                                    html.H4(className='model-output-text', id='model-text-2',
+                                            children="3 people for 15 days"),
+                                    html.H4(className='model-output-text', id='model-text-3',
+                                            children="4 people for 10 days"),
+                                    html.H4(className='model-output-text', id='model-text-4',
+                                            children="5 people for 8 days"),
+                                    html.H4(className='model-output-text', id='model-text-5',
+                                            children="10 people for 3 days"),
+                                    html.H4(className='model-output-text', id='model-text-6',
+                                            children="25 people for 31 hours"),
+                                    html.H4(className='model-output-text', id='model-text-7',
+                                            children="50 people for 15 hours"),
+                                    html.H4(className='model-output-text', id='model-text-8',
+                                            children="100 people for 8 hours"),
                                 ],
                                 color='#de1616',
                             ),
@@ -454,12 +478,13 @@ layout = html.Div(children=[
      Input('exertion-level', 'value'),
      Input('exp-activity', 'value'),
      Input('mask-type', 'value'),
+     Input('mask-fit', 'value'),
      Input('risk-tolerance', 'value'),
      Input('aerosol-radius', 'value'),
      Input('viral-deact-rate', 'value')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
-                  breathing_flow_rate, infectiousness, mask_passage_prob, risk_tolerance, aerosol_radius,
+                  breathing_flow_rate, infectiousness, mask_passage_prob, mask_fit, risk_tolerance, aerosol_radius,
                   viral_deact_rate):
     # Make sure none of the inputs are None
     is_none = aerosol_radius is None or viral_deact_rate is None
@@ -484,6 +509,12 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
             break
 
     # Update model with newly-selected parameters
+    # Correct mask_passage_prob based on mask fit/compliance
+    mask_passage_prob = 1 - mask_passage_prob
+    mask_passage_prob = mask_passage_prob * mask_fit
+    mask_passage_prob = 1 - mask_passage_prob
+
+    # Calculate aerosol filtration efficiency
     aerosol_filtration_eff = Indoors.merv_to_eff(merv, aerosol_radius)
 
     # Convert recirc rate to outdoor air fraction
@@ -497,59 +528,17 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.calc_vars()
 
     # Update the figure with a new model calculation
-    new_df = myInd.calc_n_max_series(2, 100, 1.0)
-    new_fig = px.line(new_df, x="Maximum Exposure Time (hours)", y="Maximum Occupancy",
-                      title="Occupancy vs. Exposure Time", height=400,
-                      color_discrete_map={"Maximum Occupancy": "#de1616"})
-    new_fig.update_layout(transition_duration=500)
+    new_fig = ess.get_model_figure(myInd)
 
     # Update the red text output with new model calculations
-    model_output_text = ["", "", "", "", "", "", "", ""]
-    index = 0
-
     # Check if we should use the normal n vals, or the big n vals
     n_val_series = model_output_n_vals
     if myInd.calc_max_time(model_output_n_vals[-1]) > 48:
         n_val_series = model_output_n_vals_big
 
-    for n_val in n_val_series:
-        max_time = myInd.calc_max_time(n_val)  # hours
-        units = 'hours'
-        if round(max_time) < 1:
-            units = 'minutes'
-            max_time = max_time * 60
-        elif round(max_time) > 48:
-            units = 'days'
-            max_time = max_time / 24
-
-        if round(max_time) == 1:
-            units = units[:-1]
-
-        base_string = '{n_val} people for {val:.0f} ' + units + ','
-        model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
-        index += 1
-
-    model_output_text[-2] = model_output_text[-2] + ' or'
-    model_output_text[-1] = model_output_text[-1][:-1] + '.'
-
-    six_ft_people = myInd.get_six_ft_n()
-    if six_ft_people == 1:
-        six_ft_text = ' {} person'.format(six_ft_people)
-    else:
-        six_ft_text = ' {} people'.format(six_ft_people)
-
-    # Calculated Values of Interest Output
-    interest_output = [
-        '{:,.2f} ft\u00B3/hr'.format(breathing_flow_rate * 35.3147),  # m3/hr to ft3/hr
-        '{:,.2f} quanta/hr'.format(infectiousness),
-        '{:,.0f} ft\u00B3'.format(myInd.room_vol),
-        '{:,.0f} ft\u00B3/min'.format(myInd.fresh_rate),
-        '{:,.0f} ft\u00B3/min'.format(myInd.recirc_rate),
-        '{:,.2f} /hr'.format(myInd.air_filt_rate),
-        '{:,.2f} m/hr'.format(myInd.sett_speed),
-        '{:,.2f} /hr'.format(myInd.conc_relax_rate),
-        '{:,.2f} /hr (x10,000)'.format(myInd.airb_trans_rate * 10000),
-    ]
+    model_output_text = ess.get_model_output_text(myInd, n_val_series)
+    six_ft_text = ess.get_six_ft_text(myInd)
+    interest_output = ess.get_interest_output_text(myInd)
 
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
@@ -591,4 +580,10 @@ def update_risk_tol_disp(risk_tolerance):
     return ["{:.2f}".format(risk_tolerance)]
 
 
-
+# Mask Fit/Compliance slider value display
+@app.callback(
+    [Output('mask-fit-output', 'children')],
+    [Input('mask-fit', 'value')]
+)
+def update_mask_fit_disp(mask_fit):
+    return ["{:.0f}%".format(mask_fit * 100)]

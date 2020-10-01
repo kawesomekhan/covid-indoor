@@ -96,6 +96,9 @@ assumptions_layout = html.Div([
            roughly consistent with the standard definition of aerosol
            droplets in the literature (r\u0305 < 5 \u03bcm).
         '''),
+        html.Div('''- Mask filtration efficiencies are taken from a study in ACS Nano 
+            by Konda, et al: "Aerosol Filtration Efficiency of Common Fabrics Used in Respiratory Cloth Masks"
+        '''),
     ], style={'padding-left': '10px', 'font-size': '13px'}),
     html.Br(),
     html.Div('''
@@ -106,9 +109,7 @@ assumptions_layout = html.Div([
 
 risk_tol_desc = html.Div('''
    A higher risk tolerance will mean more expected 
-   transmissions during the expected occupancy period, 
-   while a lower risk tolerance will mean fewer expected 
-   transmissions during the expected occupancy period 
+   transmissions during the expected occupancy period
    (see Advanced Input & Output for details). More 
    vulnerable populations such as the elderly or those 
    with preexisting medical conditions will generally 
