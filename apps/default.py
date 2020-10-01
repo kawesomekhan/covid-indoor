@@ -480,14 +480,21 @@ layout = html.Div(children=[
                             html.H3(['''
                                 Based on this model, it should be safe for this room to have:
                             ''']),
-                            html.H4(className='model-output-text', id='model-text-1'),
-                            html.H4(className='model-output-text', id='model-text-2'),
-                            html.H4(className='model-output-text', id='model-text-3'),
-                            html.H4(className='model-output-text', id='model-text-4'),
-                            html.H4(className='model-output-text', id='model-text-5'),
-                            html.H4(className='model-output-text', id='model-text-6'),
-                            html.H4(className='model-output-text', id='model-text-7'),
-                            html.H4(className='model-output-text', id='model-text-8'),
+                            dcc.Loading(
+                                id='loading',
+                                type='circle',
+                                children=[
+                                    html.H4(className='model-output-text', id='model-text-1', children="2 people for 31 days"),
+                                    html.H4(className='model-output-text', id='model-text-2', children="3 people for 15 days"),
+                                    html.H4(className='model-output-text', id='model-text-3', children="4 people for 10 days"),
+                                    html.H4(className='model-output-text', id='model-text-4', children="5 people for 8 days"),
+                                    html.H4(className='model-output-text', id='model-text-5', children="10 people for 3 days"),
+                                    html.H4(className='model-output-text', id='model-text-6', children="25 people for 31 hours"),
+                                    html.H4(className='model-output-text', id='model-text-7', children="50 people for 15 hours"),
+                                    html.H4(className='model-output-text', id='model-text-8', children="100 people for 8 hours"),
+                                ],
+                                color='#de1616',
+                            ),
                             html.Br(),
                             html.H3([
                                 '''In comparison, current six feet distancing guidelines recommend no more than''',
