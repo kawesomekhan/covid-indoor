@@ -7,6 +7,7 @@ import indoors as ind
 from indoors import Indoors
 
 from app import app
+import descriptions as desc
 
 """
 main.py contains the core functionality of the Dash app. It is responsible for taking inputs,
@@ -191,36 +192,7 @@ layout = html.Div(children=[
                                 className='custom-tab',
                                 children=[
                                     html.Div(className='custom-tab-container',
-                                             children=[
-                                                 html.H6("About: "),
-                                                 html.Div('''
-                                                COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
-                                                enclosed spaces via tiny, infective aerosol droplets suspended in the air.
-                                                To mitigate this spread, official public health guidelines have taken the form 
-                                                of minimum social distancing rules (6 feet in the U.S.) or maximum occupancy 
-                                                (25 people in Massachusetts). 
-                                            '''),
-                                                 html.Br(),
-                                                 html.Div('''
-                                                However, public health has been slow to catch up with rapidly advancing science.
-                                                Naturally, the risk of COVID-19 transmission would not only depend on physical 
-                                                distance, but also on factors such as exposure time, mask usage, and ventilation
-                                                systems, among other factors.
-                                            '''),
-                                                 html.Br(),
-                                                 html.Div('''
-                                                This app uses a mathematical model, developed by MIT professors Martin Z. Bazant 
-                                                and John Bush, to improve upon
-                                                current distancing guidelines by providing a more accurate description of
-                                                indoor COVID-19 transmission risk.
-                                            '''),
-                                                 html.Br(),
-                                                 html.Div('''
-                                                Adjust parameters in the other tabs and see how different spaces handle
-                                                indoor COVID-19 transmission.
-                                            '''),
-                                             ]),
-
+                                             children=desc.about),
                                 ],
                                 style=tab_style,
                                 selected_style=tab_style
@@ -297,16 +269,7 @@ layout = html.Div(children=[
                                                  html.Br(),
                                                  html.Div(["Risk Tolerance: ",
                                                            html.Span(id='risk-tolerance-output'),
-                                                           html.Div('''
-                                                               A higher risk tolerance will mean more expected 
-                                                               transmissions during the expected occupancy period, 
-                                                               while a lower risk tolerance will mean fewer expected 
-                                                               transmissions during the expected occupancy period 
-                                                               (see Advanced Input & Output for details). More 
-                                                               vulnerable populations such as the elderly or those 
-                                                               with preexisting medical conditions will generally 
-                                                               require a lower risk tolerance.
-                                                      ''', style={'font-size': '13px', 'margin-left': '20px'}),
+                                                           desc.risk_tol_desc,
                                                            dcc.Slider(id='risk-tolerance',
                                                                       min=0.01,
                                                                       max=1,
@@ -346,6 +309,12 @@ layout = html.Div(children=[
                                                  html.Br(),
                                                  html.H6("Calculated Values of Interest: "),
                                                  html.Div([
+                                                     html.Div(["Breathing flow rate Qb: ",
+                                                               html.Span(className='model-output-text-small',
+                                                                         id='breath-rate-output')]),
+                                                     html.Div(["Infectiousness of exhaled air Cq: ",
+                                                               html.Span(className='model-output-text-small',
+                                                                         id='infect-air-output')]),
                                                      html.Div(["Room volume V: ",
                                                                html.Span(className='model-output-text-small',
                                                                          id='room-vol-output')]),
@@ -377,76 +346,7 @@ layout = html.Div(children=[
                                                      ),
                                                  ]),
                                                  html.Br(),
-                                                 html.H6("Assumptions: "),
-                                                 html.Div('''This guideline provides specific recommendations on 
-                                                   how to limit COVID-19 transmission through well-mixed indoor 
-                                                   air, but one should also consider various caveats emphasized 
-                                                   in the paper and other literature, including the possibility 
-                                                   of short-range aerosol transmission in respiratory jets. 
-                                                   Such effects, which can lead to large fluctuations in droplet 
-                                                   concentrations around their mean values, especially when 
-                                                   masks are not worn, are only partially addressed by choosing 
-                                                   a sufficiently small tolerance in the well-mixed guideline 
-                                                   and will depend on the details of airflow and human behavior 
-                                                   in a specific indoor space.'''),
-                                                 html.Br(),
-                                                 html.Div("This model makes the following assumptions:"),
-                                                 html.Div([
-                                                     html.Div('''- The volumetric breathing flow rate Qb is determined by
-                                                       the level of activity. Average values for healthy males and
-                                                       females have been reported as 0.49, 0.54, 1.38, 2.35, and 3.30
-                                                       m\u00B3/hr for resting, standing, light exercise, moderate
-                                                       exercise, and heavy exercise, respectively, and used in
-                                                       simulations of airborne transmission of COVID-19.
-                                                   '''),
-                                                     html.Div('''
-                                                       - The most important disease parameter is the infectiousness
-                                                       of exhaled air, Cq (infection quanta per unit volume). This
-                                                       is discussed extensively in the main text. Using all of the
-                                                       limited information available today, Cq is estimated to be
-                                                       30 q/m3 for normal breathing and light activity. This value of
-                                                       Cq is then used to estimate Cq values for different
-                                                       expiratory activities such as singing, whispering, or heavy
-                                                       breathing. 
-                                                    '''),
-                                                     html.Div('''
-                                                       - The risk tolerance represents the probability of a 
-                                                       single transmission during the occupancy time of one infected 
-                                                       person. The expected number of transmissions is thus prescribed by 
-                                                       the product of the tolerance and the prevalence 
-                                                       of infection in the population. A lower risk tolerance should 
-                                                       be chosen for more vulnerable populations, such
-                                                       as the elderly or those with preexisting medical conditions.
-                                                    '''),
-                                                     html.Div('''
-                                                       - This model calculates two results: the transient bound, which
-                                                       accounts for the buildup of infectious aerosols in the air 
-                                                       after the entrance of an infected person, and the
-                                                       steady-state bound, which is reached after the
-                                                       relaxation time \u03BBc\u03C4 >> 1. Results reported in this
-                                                       app are derived from the transient bound. 
-                                                    '''),
-                                                     html.Div('''
-                                                       - The viral deactivation rate \u03BBv is the rate at which
-                                                       the virus loses infectiousness in aerosol form. For SARS-CoV-2,
-                                                       this is estimated to lie in the range of 0 to 0.63/hr. This
-                                                       can be increased by ultraviolet radiation (UV-C) or chemical
-                                                       disinfectants (e.g. hydrogen peroxide, ozone).
-                                                    '''),
-                                                     html.Div('''- The mean respiratory aerosol droplet size r\u0305
-                                                       exists in a distribution of sizes, dependent on different people
-                                                       and types of respiration. This size can also affect infectivity
-                                                       of the aerosol droplets. However, a typical range for the most
-                                                       common and most infectious droplets is 2-3 \u03bcm, which is
-                                                       roughly consistent with the standard definition of aerosol
-                                                       droplets in the literature (r\u0305 < 5 \u03bcm).
-                                                    '''),
-                                                 ], style={'padding-left': '10px', 'font-size': '13px'}),
-                                                 html.Br(),
-                                                 html.Div('''
-                                                   For more references and further explanation, see the references
-                                                   posted at the top of the webpage. 
-                                                '''),
+                                                 desc.assumptions_layout,
                                              ]),
                                 ],
                                 style=tab_style,
@@ -537,13 +437,15 @@ layout = html.Div(children=[
      Output('model-text-8', 'children'),
      Output('six-ft-output', 'children'),
      Output('presets', 'value'),
+     Output('breath-rate-output', 'children'),
+     Output('infect-air-output', 'children'),
      Output('room-vol-output', 'children'),
      Output('fresh-rate-output', 'children'),
      Output('recirc-rate-output', 'children'),
      Output('air-filt-rate-output', 'children'),
      Output('sett-speed-output', 'children'),
      Output('conc-relax-output', 'children'),
-     Output('airb-trans-output', 'children')],
+     Output('airb-trans-output', 'children'),],
     [Input('floor-area', 'value'),
      Input('ceiling-height', 'value'),
      Input('ventilation-type', 'value'),
@@ -638,6 +540,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
 
     # Calculated Values of Interest Output
     interest_output = [
+        '{:,.2f} ft\u00B3/hr'.format(breathing_flow_rate * 35.3147),  # m3/hr to ft3/hr
+        '{:,.2f} quanta/hr'.format(infectiousness),
         '{:,.0f} ft\u00B3'.format(myInd.room_vol),
         '{:,.0f} ft\u00B3/min'.format(myInd.fresh_rate),
         '{:,.0f} ft\u00B3/min'.format(myInd.recirc_rate),
@@ -651,7 +555,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
            six_ft_text, preset_dd_value, interest_output[0], interest_output[1], interest_output[2], \
-           interest_output[3], interest_output[4], interest_output[5], interest_output[6],
+           interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
+           interest_output[8]
 
 
 # Update options based on selected presets.
