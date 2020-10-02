@@ -245,8 +245,7 @@ layout = html.Div(children=[
                                              children=[
                                                  html.Div(className='custom-tab-content',
                                                           children=[
-                                                              html.H6("Room Specifications: "),
-                                                              html.Br(),
+                                                              html.H6("Room Specifications"),
                                                               html.Div(["Floor Area (sq. ft.): ",
                                                                         dcc.Input(id='floor-area', value=900,
                                                                                   type='number')]),
@@ -296,8 +295,7 @@ layout = html.Div(children=[
                                              children=[
                                                  html.Div(className='custom-tab-content',
                                                           children=[
-                                                              html.H6("Human Behavior: "),
-                                                              html.Br(),
+                                                              html.H6("Human Behavior"),
                                                               html.Div(["Exertion Level: ",
                                                                         dcc.Dropdown(id='exertion-level',
                                                                                      options=exertion_types,
@@ -363,31 +361,43 @@ layout = html.Div(children=[
                                 selected_style=tab_style_selected
                             ),
                             dcc.Tab(
-                                label='Advanced Input & Output',
+                                label='Frequently Asked Questions',
                                 className='custom-tab',
                                 children=[
                                     html.Div(className='custom-tab-container',
                                              children=[
                                                  html.Div(className='custom-tab-content',
                                                           children=[
-                                                              html.H6("Advanced Input: "),
+                                                              desc.faq_top,
+                                                              html.Br(),
+                                                              html.H5("Does the model assume any other parameters?"),
                                                               html.Div('''
-                                                                   Know your specific ACH and MERV numbers? Want to know more about the 
-                                                                   model? Check out Advanced Mode
-                                                                   by clicking the button at the bottom of the page.
-                                                                '''),
+                                                                  The model assumes a well-mixed room, but all 
+                                                                  parameters
+                                                                  are based on scientific studies of COVID-19 and aerosol 
+                                                                  transmission.
+                                                                  The model also assumes a given aerosol radius and viral
+                                                                  deactivation rate, which you can change below if
+                                                                  you'd like!
+                                                              ''', className='faq-answer'),
                                                               html.Br(),
-                                                              html.H6("Other Model Inputs: "),
-                                                              html.Div(["Aerosol Radius r\u0305 (\u03bcm): ",
-                                                                        dcc.Input(id='aerosol-radius', value=2,
-                                                                                  type='number')]),
+                                                              html.Div([
+                                                                  html.Div(["Aerosol Radius r\u0305 (\u03bcm): ",
+                                                                            dcc.Input(id='aerosol-radius', value=2,
+                                                                                      type='number')]),
+                                                                  html.Br(),
+                                                                  html.Div(["Viral Deactivation Rate \u03BBv (/hr): ",
+                                                                            dcc.Input(id='viral-deact-rate', value=0.3,
+                                                                                      type='number')]),
+                                                              ], className='faq-answer'),
                                                               html.Br(),
-                                                              html.Div(["Viral Deactivation Rate \u03BBv (/hr): ",
-                                                                        dcc.Input(id='viral-deact-rate', value=0.3,
-                                                                                  type='number')]),
                                                               html.Br(),
+                                                              html.H5("What is this model calculating, exactly?"),
+                                                              html.Div('''
+                                                                    See below for a list of values used in calculating
+                                                                    the output you see.
+                                                                ''', className='faq-answer'),
                                                               html.Br(),
-                                                              html.H6("Calculated Values of Interest: "),
                                                               html.Div([
                                                                   html.Div(["Breathing flow rate Qb: ",
                                                                             html.Span(
@@ -426,17 +436,30 @@ layout = html.Div(children=[
                                                                             html.Span(
                                                                                 className='model-output-text-small',
                                                                                 id='airb-trans-output')]),
-                                                              ]),
+                                                              ], className='faq-answer'),
                                                               html.Br(),
-                                                              html.H6("Graph Output: "),
+                                                              html.H5("I like graphs. Do you have any graphs?"),
+                                                              html.Div('''
+                                                                  Here you go!
+                                                              ''', className='faq-answer'),
                                                               html.Div([
                                                                   dcc.Graph(
                                                                       id='safety-graph',
                                                                       figure=fig
                                                                   ),
-                                                              ]),
+                                                              ], className='faq-answer'),
                                                               html.Br(),
+                                                              html.H5("I'm having trouble sleeping. What should I do?"),
+                                                              html.Div('''
+                                                                  Check out a bunch of other details regarding how
+                                                                  this model works:
+                                                              ''', className='faq-answer'),
                                                               desc.assumptions_layout,
+                                                              html.H5("I still have questions!"),
+                                                              html.Div('''
+                                                                If you'd like to see more references and/or further explanation, see the links
+                                                                posted at the top of the webpage. 
+                                                             ''', className='faq-answer'),
                                                           ]),
                                              ])
                                 ],

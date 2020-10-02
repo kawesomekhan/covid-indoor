@@ -132,8 +132,7 @@ layout = html.Div(children=[
                                                  children=[
                                                      html.Div(className='custom-tab-content',
                                                               children=[
-                                                                  html.H6("Room Specifications: "),
-                                                                  html.Br(),
+                                                                  html.H6("Room Specifications"),
                                                                   html.Div(["Floor Area (sq. ft.): ",
                                                                             dcc.Input(id='adv-floor-area', value=900,
                                                                                       type='number')]),
@@ -168,8 +167,7 @@ layout = html.Div(children=[
                                                  children=[
                                                      html.Div(className='custom-tab-content',
                                                               children=[
-                                                                  html.H6("Human Behavior: "),
-                                                                  html.Br(),
+                                                                  html.H6("Human Behavior"),
                                                                   html.Div(["Exertion Level: ",
                                                                             dcc.Dropdown(id='adv-exertion-level',
                                                                                          options=exertion_types,
@@ -235,7 +233,7 @@ layout = html.Div(children=[
                                     selected_style=tab_style_selected
                                 ),
                                 dcc.Tab(
-                                    label='Other Inputs & Assumptions',
+                                    label='Other Inputs & Outputs',
                                     className='custom-tab',
                                     children=[
                                         html.Div(className='custom-tab-container',
@@ -304,7 +302,6 @@ layout = html.Div(children=[
                                                                       ),
                                                                   ]),
                                                                   html.Br(),
-                                                                  desc.assumptions_layout,
                                                               ])
                                                  ]),
                                     ],

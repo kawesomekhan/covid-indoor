@@ -4,7 +4,7 @@ import dash_core_components as dcc
 about = html.Div(
     className='custom-tab-content',
     children=[
-    html.H6("About: "),
+    html.H6("About"),
     html.Div('''
         COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
         enclosed spaces via tiny, infective aerosol droplets suspended in the air.
@@ -34,20 +34,6 @@ about = html.Div(
 ])
 
 assumptions_layout = html.Div([
-    html.H6("Assumptions: "),
-    html.Div('''This guideline provides specific recommendations on 
-       how to limit COVID-19 transmission through well-mixed indoor 
-       air, but one should also consider various caveats emphasized 
-       in the paper and other literature, including the possibility 
-       of short-range aerosol transmission in respiratory jets. 
-       Such effects, which can lead to large fluctuations in droplet 
-       concentrations around their mean values, especially when 
-       masks are not worn, are only partially addressed by choosing 
-       a sufficiently small tolerance in the well-mixed guideline 
-       and will depend on the details of airflow and human behavior 
-       in a specific indoor space.'''),
-    html.Br(),
-    html.Div("This model makes the following assumptions:"),
     html.Div([
         html.Div('''- The volumetric breathing flow rate Qb is determined by
            the level of activity. Average values for healthy males and
@@ -103,10 +89,27 @@ assumptions_layout = html.Div([
         '''),
     ], style={'padding-left': '10px', 'font-size': '13px'}),
     html.Br(),
+], className='faq-answer')
+
+faq_top = html.Div([
+    html.H6("Frequently Asked Questions"),
+    html.H5("I know my ACH/MERV numbers. Where can I enter them?"),
     html.Div('''
-       For more references and further explanation, see the references
-       posted at the top of the webpage. 
-    '''),
+        If you need more control over your inputs, check out Advanced Mode by clicking the button at the bottom of
+        the webpage!
+    ''', className='faq-answer'),
+    html.Br(),
+    html.H5("What -doesn't- this model account for?"),
+    html.Div('''
+            This guideline does not explicitly account for the possibility 
+       of short-range aerosol transmission in respiratory jets.
+       Such effects, which can lead to large fluctuations in droplet 
+       concentrations around their mean values, especially when 
+       masks are not worn, can be partially addressed by choosing 
+       a sufficiently small risk tolerance in this guideline,
+       and will depend on the details of airflow and human behavior 
+       in the specific indoor space.
+    ''', className='faq-answer'),
 ])
 
 risk_tol_desc = html.Div('''

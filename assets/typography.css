@@ -17,8 +17,16 @@ h4 {
     margin: 0;
 }
 
+h5 {
+    font-size: 18px;
+}
+
 .model-output-text {
     padding-left: 2em
+}
+
+.faq-answer {
+    padding-left: 1em
 }
 
 /* Small-width/mobile layout */
@@ -34,14 +42,21 @@ h4 {
     h6 {
         font-size: 18px;
     }
+
     h3 {
         font-size: 20px;
     }
     h4 {
         font-size: 18px;
     }
+    h5 {
+        font-size: 15px;
+    }
     .model-output-text {
         padding-left: 1em;
+    }
+    .faq-answer {
+        padding-left: 0
     }
 }
 
