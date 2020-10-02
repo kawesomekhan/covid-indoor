@@ -25,7 +25,7 @@ body {
 
 .custom-tab-content {
     padding-right: 1em;
-    height: 476px;
+    height: 496px;
     margin: 1em;
     margin-right: 0;
     overflow-y: scroll;
@@ -74,7 +74,7 @@ body {
     padding-right: 1em;
     margin: 1em;
     margin-right: 1em;
-    height: 570px;
+    height: 590px;
     overflow-y: scroll;
     overflow-x: hidden;
 }

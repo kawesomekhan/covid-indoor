@@ -206,13 +206,13 @@ layout = html.Div(children=[
             html.A(href='http://web.mit.edu/bazant/www/COVID-19/',
                    children='''
                 http://web.mit.edu/bazant/www/COVID-19/
-            '''),
+            ''', target='_blank'),
         ]),
         html.Div([
             html.A(href='https://github.com/kawesomekhan/covid-indoor',
                    children='''
                 https://github.com/kawesomekhan/covid-indoor
-            '''),
+            ''', target='_blank'),
         ]),
 
     ], style={'font-size': '13px'}),
@@ -495,7 +495,7 @@ layout = html.Div(children=[
                                                               ]),
                                                       ], style={'max-width': '500px'}),
                                                   html.H3(['''
-                                                    Based on this model, it should be safe for this room to have:
+                                                    Based on this model, it should be safe* for this room to have:
                                                 ''']),
                                                   dcc.Loading(
                                                       id='loading',
@@ -527,6 +527,11 @@ layout = html.Div(children=[
                                                       html.Span(id='six-ft-output', children=''' 2 people ''',
                                                                 style={'color': '#de1616'}),
                                                       ''' in this room.''']),
+                                                  html.Div(["*based on airborne transmission only (",
+                                                            html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
+                                                               children="what is airborne transmission?",
+                                                               target='_blank'),),
+                                                            html.Span(")")])
                                               ]),
                                  ]),
                     ]),
