@@ -91,7 +91,7 @@ preset_settings = {
         'ceiling-height': 10,
         'ventilation': 18,
         'filtration': 6,
-        'recirc-rate': 10,
+        'recirc-rate': 54,
         'exertion': 0.54,
         'exp-activity': 29,
         'masks': 0.25
@@ -111,33 +111,34 @@ preset_settings = {
 # Dropdown Preset Values
 ventilation_default = preset_settings['classroom']['ventilation']
 ventilation_types = [
-    {'label': "Closed windows (0.3 Outdoor ACH)", 'value': 0.3},
-    {'label': "Open windows (2 Outdoor ACH)", 'value': 2},
-    {'label': "Mechanical Ventilation (3 Outdoor ACH)", 'value': 3},
-    {'label': "Open windows with fans (6 Outdoor ACH)", 'value': 6},
-    {'label': "Mechanical Ventilation (8 Outdoor ACH)", 'value': 8},
-    {'label': "Laboratory, Restaurant (9 Outdoor ACH)", 'value': 9},
-    {'label': "Bar (15 Outdoor ACH)", 'value': 15},
-    {'label': "Hospital (18 Outdoor ACH)", 'value': 18},
-    {'label': "Toxic Laboratory (25 Outdoor ACH)", 'value': 25},
+    {'label': "Closed windows", 'value': 0.3},
+    {'label': "Open windows", 'value': 2},
+    {'label': "Mechanical Ventilation", 'value': 3},
+    {'label': "Open windows with fans", 'value': 6},
+    {'label': "Better Mechanical Ventilation", 'value': 8},
+    {'label': "Laboratory, Restaurant", 'value': 9},
+    {'label': "Bar", 'value': 15},
+    {'label': "Hospital/Subway Car", 'value': 18},
+    {'label': "Toxic Laboratory", 'value': 25},
 ]
 
 filter_default = preset_settings['classroom']['filtration']
 filter_types = [
     {'label': "None", 'value': 0},
-    {'label': "Residential Window AC (MERV 1-4)", 'value': 2},
-    {'label': "Residential/Commercial/Industrial (MERV 5-8)", 'value': 6},
-    {'label': "Residential/Commercial/Hospital (MERV 9-12)", 'value': 10},
-    {'label': "Hospital & General Surgery (MERV 13-16)", 'value': 14},
-    {'label': "HEPA (MERV 17-20)", 'value': 17}
+    {'label': "Residential Window AC", 'value': 2},
+    {'label': "Residential/Commercial/Industrial", 'value': 6},
+    {'label': "Residential/Commercial/Hospital", 'value': 10},
+    {'label': "Hospital & General Surgery", 'value': 14},
+    {'label': "HEPA", 'value': 17}
 ]
 
 recirc_default = preset_settings['classroom']['recirc-rate']
 recirc_types = [
-    {'label': "None (0 ACH)", 'value': 0},
-    {'label': "Slow (0.3 ACH)", 'value': 0.3},
-    {'label': "Moderate (1 ACH)", 'value': 1},
-    {'label': "Fast (10 ACH)", 'value': 10},
+    {'label': "None", 'value': 0},
+    {'label': "Slow", 'value': 0.3},
+    {'label': "Moderate", 'value': 1},
+    {'label': "Fast", 'value': 10},
+    {'label': "Subway Car", 'value': 54},
 ]
 
 exertion_types = [
@@ -177,7 +178,17 @@ mask_types = [
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
 tab_style = {
     'padding-left': '1em',
-    'padding-right': '1em'
+    'padding-right': '1em',
+    'border-color': '#DDDDDD',
+    'font-size': '14px'
+}
+
+tab_style_selected = {
+    'padding-left': '1em',
+    'padding-right': '1em',
+    'border-color': '#DDDDDD',
+    'border-top-color': '#de1616',
+    'font-size': '14px'
 }
 
 # Main App
@@ -224,7 +235,7 @@ layout = html.Div(children=[
                                              children=desc.about),
                                 ],
                                 style=tab_style,
-                                selected_style=tab_style
+                                selected_style=tab_style_selected
                             ),
                             dcc.Tab(
                                 label='Room Specifications',
@@ -232,40 +243,50 @@ layout = html.Div(children=[
                                 children=[
                                     html.Div(className='custom-tab-container',
                                              children=[
-                                                 html.H6("Room Specifications: "),
-                                                 html.Br(),
-                                                 html.Div(["Floor Area (sq. ft.): ",
-                                                           dcc.Input(id='floor-area', value=900, type='number')]),
-                                                 html.Br(),
-                                                 html.Div(["Ceiling Height (ft.): ",
-                                                           dcc.Input(id='ceiling-height', value=12, type='number')]),
-                                                 html.Br(),
-                                                 html.Div(className='card-dropdown',
-                                                          children=[html.Div(["Ventilation System: "])]),
-                                                 html.Div(className='card-dropdown',
-                                                          children=[dcc.Dropdown(id='ventilation-type',
-                                                                                 options=ventilation_types,
-                                                                                 value=ventilation_default,
-                                                                                 searchable=False,
-                                                                                 clearable=False)]),
-                                                 html.Br(),
-                                                 html.Div(["Filtration System: ",
-                                                           dcc.Dropdown(id='filter-type',
-                                                                        options=filter_types,
-                                                                        value=filter_default,
-                                                                        searchable=False,
-                                                                        clearable=False)]),
-                                                 html.Br(),
-                                                 html.Div(["Recirculation Rate: ",
-                                                           dcc.Dropdown(id='recirc-rate',
-                                                                        options=recirc_types,
-                                                                        value=recirc_default,
-                                                                        searchable=False,
-                                                                        clearable=False)]),
+                                                 html.Div(className='custom-tab-content',
+                                                          children=[
+                                                              html.H6("Room Specifications: "),
+                                                              html.Br(),
+                                                              html.Div(["Floor Area (sq. ft.): ",
+                                                                        dcc.Input(id='floor-area', value=900,
+                                                                                  type='number')]),
+                                                              html.Br(),
+                                                              html.Div(["Ceiling Height (ft.): ",
+                                                                        dcc.Input(id='ceiling-height', value=12,
+                                                                                  type='number')]),
+                                                              html.Br(),
+                                                              html.Div(["Ventilation System: ",
+                                                                        html.Span(className='model-output-text-small',
+                                                                                  id='ventilation-type-output'),
+                                                                        dcc.Dropdown(id='ventilation-type',
+                                                                                     options=ventilation_types,
+                                                                                     value=ventilation_default,
+                                                                                     searchable=False,
+                                                                                     clearable=False)
+                                                                        ]),
+                                                              html.Br(),
+                                                              html.Div(["Filtration System: ",
+                                                                        html.Span(className='model-output-text-small',
+                                                                                  id='filter-type-output'),
+                                                                        dcc.Dropdown(id='filter-type',
+                                                                                     options=filter_types,
+                                                                                     value=filter_default,
+                                                                                     searchable=False,
+                                                                                     clearable=False)]),
+                                                              html.Br(),
+                                                              html.Div(["Recirculation Rate: ",
+                                                                        html.Span(className='model-output-text-small',
+                                                                                  id='recirc-rate-output-2'),
+                                                                        dcc.Dropdown(id='recirc-rate',
+                                                                                     options=recirc_types,
+                                                                                     value=recirc_default,
+                                                                                     searchable=False,
+                                                                                     clearable=False)]),
+                                                          ]),
                                              ]),
                                 ],
                                 style=tab_style,
-                                selected_style=tab_style
+                                selected_style=tab_style_selected
                             ),
                             dcc.Tab(
                                 label='Human Behavior',
@@ -273,62 +294,72 @@ layout = html.Div(children=[
                                 children=[
                                     html.Div(className='custom-tab-container',
                                              children=[
-                                                 html.H6("Human Behavior: "),
-                                                 html.Br(),
-                                                 html.Div(["Exertion Level: ",
-                                                           dcc.Dropdown(id='exertion-level',
-                                                                        options=exertion_types,
-                                                                        value=0.49,
-                                                                        searchable=False,
-                                                                        clearable=False)]),
-                                                 html.Br(),
-                                                 html.Div(["Expiratory Activity: ",
-                                                           dcc.Dropdown(id='exp-activity',
-                                                                        options=expiratory_types,
-                                                                        value=29,
-                                                                        searchable=False,
-                                                                        clearable=False)]),
-                                                 html.Br(),
-                                                 html.Div(["Mask Type ",
-                                                           dcc.Dropdown(id='mask-type',
-                                                                        options=mask_types,
-                                                                        value=0.25,
-                                                                        searchable=False,
-                                                                        clearable=False)]),
-                                                 html.Br(),
-                                                 html.Div(["Mask Fit/Compliance: ",
-                                                           html.Span(id='mask-fit-output'),
-                                                           dcc.Slider(id='mask-fit',
-                                                                      min=0,
-                                                                      max=0.95,
-                                                                      step=0.01,
-                                                                      value=0.90,
-                                                                      marks={
-                                                                          0: {'label': '0%: None',
-                                                                              'style': {'max-width': '50px'}},
-                                                                          0.5: {'label': '50%: Poor'},
-                                                                          0.95: {'label': '95%: Good'}
-                                                                      }),
-                                                           ]),
-                                                 html.Br(),
-                                                 html.Div(["Risk Tolerance: ",
-                                                           html.Span(id='risk-tolerance-output'),
-                                                           desc.risk_tol_desc,
-                                                           dcc.Slider(id='risk-tolerance',
-                                                                      min=0.01,
-                                                                      max=1,
-                                                                      step=0.01,
-                                                                      value=0.1,
-                                                                      marks={
-                                                                          0.01: {'label': '0.01: Contact Tracing',
-                                                                                 'style': {'max-width': '50px'}},
-                                                                          1: {'label': '1.0: Unsafe'}
-                                                                      })
-                                                           ])
+                                                 html.Div(className='custom-tab-content',
+                                                          children=[
+                                                              html.H6("Human Behavior: "),
+                                                              html.Br(),
+                                                              html.Div(["Exertion Level: ",
+                                                                        dcc.Dropdown(id='exertion-level',
+                                                                                     options=exertion_types,
+                                                                                     value=0.49,
+                                                                                     searchable=False,
+                                                                                     clearable=False)]),
+                                                              html.Br(),
+                                                              html.Div(["Expiratory Activity: ",
+                                                                        dcc.Dropdown(id='exp-activity',
+                                                                                     options=expiratory_types,
+                                                                                     value=29,
+                                                                                     searchable=False,
+                                                                                     clearable=False)]),
+                                                              html.Br(),
+                                                              html.Div(["Mask Type ",
+                                                                        dcc.Dropdown(id='mask-type',
+                                                                                     options=mask_types,
+                                                                                     value=0.25,
+                                                                                     searchable=False,
+                                                                                     clearable=False)]),
+                                                              html.Br(),
+                                                              html.Div(["Mask Fit/Compliance: ",
+                                                                        html.Span(className='model-output-text-small',
+                                                                                  id='mask-fit-output'),
+                                                                        dcc.Slider(id='mask-fit',
+                                                                                   min=0,
+                                                                                   max=0.95,
+                                                                                   step=0.01,
+                                                                                   value=0.90,
+                                                                                   marks={
+                                                                                       0: {'label': '0%: None',
+                                                                                           'style': {
+                                                                                               'max-width': '50px'}},
+                                                                                       0.5: {'label': '50%: Poor'},
+                                                                                       0.95: {'label': '95%: Good'}
+                                                                                   }),
+                                                                        ]),
+                                                              html.Br(),
+                                                              html.Div(["Risk Tolerance: ",
+                                                                        html.Span(className='model-output-text-small',
+                                                                                  id='risk-tolerance-output'),
+                                                                        desc.risk_tol_desc,
+                                                                        dcc.Slider(id='risk-tolerance',
+                                                                                   min=0.01,
+                                                                                   max=1,
+                                                                                   step=0.01,
+                                                                                   value=0.1,
+                                                                                   marks={
+                                                                                       0.01: {
+                                                                                           'label': '0.01: Contact Tracing',
+                                                                                           'style': {
+                                                                                               'max-width': '50px'}},
+                                                                                       1: {'label': '1.0: Unsafe'}
+                                                                                   })
+                                                                        ]),
+                                                              html.Br(),
+                                                              html.Br(),
+                                                          ]),
                                              ]),
                                 ],
                                 style=tab_style,
-                                selected_style=tab_style
+                                selected_style=tab_style_selected
                             ),
                             dcc.Tab(
                                 label='Advanced Input & Output',
@@ -336,65 +367,80 @@ layout = html.Div(children=[
                                 children=[
                                     html.Div(className='custom-tab-container',
                                              children=[
-                                                 html.H6("Advanced Input: "),
-                                                 html.Div('''
-                                                    Know your specific ACH and MERV numbers? Want to know more about the 
-                                                    model? Check out Advanced Mode
-                                                    by clicking the button at the bottom of the page.
-                                                 '''),
-                                                 html.Br(),
-                                                 html.H6("Other Model Inputs: "),
-                                                 html.Div(["Aerosol Radius r\u0305 (\u03bcm): ",
-                                                           dcc.Input(id='aerosol-radius', value=2, type='number')]),
-                                                 html.Br(),
-                                                 html.Div(["Viral Deactivation Rate \u03BBv (/hr): ",
-                                                           dcc.Input(id='viral-deact-rate', value=0.3, type='number')]),
-                                                 html.Br(),
-                                                 html.Br(),
-                                                 html.H6("Calculated Values of Interest: "),
-                                                 html.Div([
-                                                     html.Div(["Breathing flow rate Qb: ",
-                                                               html.Span(className='model-output-text-small',
-                                                                         id='breath-rate-output')]),
-                                                     html.Div(["Infectiousness of exhaled air Cq: ",
-                                                               html.Span(className='model-output-text-small',
-                                                                         id='infect-air-output')]),
-                                                     html.Div(["Room volume V: ",
-                                                               html.Span(className='model-output-text-small',
-                                                                         id='room-vol-output')]),
-                                                     html.Div(["Ventilation (outdoor) flow rate Q: ",
-                                                               html.Span(className='model-output-text-small',
-                                                                         id='fresh-rate-output')]),
-                                                     html.Div(["Return (recirculation) flow rate Qf: ",
-                                                               html.Span(className='model-output-text-small',
-                                                                         id='recirc-rate-output')]),
-                                                     html.Div(["Air filtration rate (\u03BBf): ",
-                                                               html.Span(className='model-output-text-small',
-                                                                         id='air-filt-rate-output')]),
-                                                     html.Div(["Effective aerosol settling speed v\u209B(r\u0305): ",
-                                                               html.Span(className='model-output-text-small',
-                                                                         id='sett-speed-output')]),
-                                                     html.Div(["Concentration relaxation rate \u03BBc: ",
-                                                               html.Span(className='model-output-text-small',
-                                                                         id='conc-relax-output')]),
-                                                     html.Div(["Airborne transmission rate \u03B2\u2090: ",
-                                                               html.Span(className='model-output-text-small',
-                                                                         id='airb-trans-output')]),
-                                                 ]),
-                                                 html.Br(),
-                                                 html.H6("Graph Output: "),
-                                                 html.Div([
-                                                     dcc.Graph(
-                                                         id='safety-graph',
-                                                         figure=fig
-                                                     ),
-                                                 ]),
-                                                 html.Br(),
-                                                 desc.assumptions_layout,
-                                             ]),
+                                                 html.Div(className='custom-tab-content',
+                                                          children=[
+                                                              html.H6("Advanced Input: "),
+                                                              html.Div('''
+                                                                   Know your specific ACH and MERV numbers? Want to know more about the 
+                                                                   model? Check out Advanced Mode
+                                                                   by clicking the button at the bottom of the page.
+                                                                '''),
+                                                              html.Br(),
+                                                              html.H6("Other Model Inputs: "),
+                                                              html.Div(["Aerosol Radius r\u0305 (\u03bcm): ",
+                                                                        dcc.Input(id='aerosol-radius', value=2,
+                                                                                  type='number')]),
+                                                              html.Br(),
+                                                              html.Div(["Viral Deactivation Rate \u03BBv (/hr): ",
+                                                                        dcc.Input(id='viral-deact-rate', value=0.3,
+                                                                                  type='number')]),
+                                                              html.Br(),
+                                                              html.Br(),
+                                                              html.H6("Calculated Values of Interest: "),
+                                                              html.Div([
+                                                                  html.Div(["Breathing flow rate Qb: ",
+                                                                            html.Span(
+                                                                                className='model-output-text-small',
+                                                                                id='breath-rate-output')]),
+                                                                  html.Div(["Infectiousness of exhaled air Cq: ",
+                                                                            html.Span(
+                                                                                className='model-output-text-small',
+                                                                                id='infect-air-output')]),
+                                                                  html.Div(["Room volume V: ",
+                                                                            html.Span(
+                                                                                className='model-output-text-small',
+                                                                                id='room-vol-output')]),
+                                                                  html.Div(["Ventilation (outdoor) flow rate Q: ",
+                                                                            html.Span(
+                                                                                className='model-output-text-small',
+                                                                                id='fresh-rate-output')]),
+                                                                  html.Div(["Return (recirculation) flow rate Qf: ",
+                                                                            html.Span(
+                                                                                className='model-output-text-small',
+                                                                                id='recirc-rate-output')]),
+                                                                  html.Div(["Air filtration rate (\u03BBf): ",
+                                                                            html.Span(
+                                                                                className='model-output-text-small',
+                                                                                id='air-filt-rate-output')]),
+                                                                  html.Div([
+                                                                      "Effective aerosol settling speed v\u209B(r\u0305): ",
+                                                                      html.Span(
+                                                                          className='model-output-text-small',
+                                                                          id='sett-speed-output')]),
+                                                                  html.Div(["Concentration relaxation rate \u03BBc: ",
+                                                                            html.Span(
+                                                                                className='model-output-text-small',
+                                                                                id='conc-relax-output')]),
+                                                                  html.Div(["Airborne transmission rate \u03B2\u2090: ",
+                                                                            html.Span(
+                                                                                className='model-output-text-small',
+                                                                                id='airb-trans-output')]),
+                                                              ]),
+                                                              html.Br(),
+                                                              html.H6("Graph Output: "),
+                                                              html.Div([
+                                                                  dcc.Graph(
+                                                                      id='safety-graph',
+                                                                      figure=fig
+                                                                  ),
+                                                              ]),
+                                                              html.Br(),
+                                                              desc.assumptions_layout,
+                                                          ]),
+                                             ])
                                 ],
                                 style=tab_style,
-                                selected_style=tab_style
+                                selected_style=tab_style_selected
                             )
                         ],
                                  colors={
@@ -406,54 +452,60 @@ layout = html.Div(children=[
                 html.Div(
                     className='card',
                     children=[
-                        html.Div([
-                            html.H6("Current room: "),
-                            html.Div(
-                                className='grid-preset',
-                                children=[
-                                    html.Div(
-                                        id='presets-div',
-                                        children=[
-                                            dcc.Dropdown(id='presets',
-                                                         options=presets,
-                                                         value='classroom',
-                                                         searchable=False,
-                                                         clearable=False),
-                                        ]),
-                                ], style={'max-width': '500px'}),
-                            html.H3(['''
-                                Based on this model, it should be safe for this room to have:
-                            ''']),
-                            dcc.Loading(
-                                id='loading',
-                                type='circle',
-                                children=[
-                                    html.H4(className='model-output-text', id='model-text-1',
-                                            children="2 people for 31 days"),
-                                    html.H4(className='model-output-text', id='model-text-2',
-                                            children="3 people for 15 days"),
-                                    html.H4(className='model-output-text', id='model-text-3',
-                                            children="4 people for 10 days"),
-                                    html.H4(className='model-output-text', id='model-text-4',
-                                            children="5 people for 8 days"),
-                                    html.H4(className='model-output-text', id='model-text-5',
-                                            children="10 people for 3 days"),
-                                    html.H4(className='model-output-text', id='model-text-6',
-                                            children="25 people for 31 hours"),
-                                    html.H4(className='model-output-text', id='model-text-7',
-                                            children="50 people for 15 hours"),
-                                    html.H4(className='model-output-text', id='model-text-8',
-                                            children="100 people for 8 hours"),
-                                ],
-                                color='#de1616',
-                            ),
-                            html.Br(),
-                            html.H3([
-                                '''In comparison, current six feet distancing guidelines recommend no more than''',
-                                html.Span(id='six-ft-output', children=''' 2 people ''', style={'color': '#de1616'}),
-                                ''' in this room.''']),
-                        ]),
-                    ], style={'padding-top': '0px'}),
+                        html.Div(className='output-tray',
+                                 children=[
+                                     html.Div(className='output-content',
+                                              children=[
+                                                  html.H6("Current room: "),
+                                                  html.Div(
+                                                      className='grid-preset',
+                                                      children=[
+                                                          html.Div(
+                                                              id='presets-div',
+                                                              children=[
+                                                                  dcc.Dropdown(id='presets',
+                                                                               options=presets,
+                                                                               value='classroom',
+                                                                               searchable=False,
+                                                                               clearable=False),
+                                                              ]),
+                                                      ], style={'max-width': '500px'}),
+                                                  html.H3(['''
+                                                    Based on this model, it should be safe for this room to have:
+                                                ''']),
+                                                  dcc.Loading(
+                                                      id='loading',
+                                                      type='circle',
+                                                      children=[
+                                                          html.H4(className='model-output-text', id='model-text-1',
+                                                                  children="2 people for 31 days"),
+                                                          html.H4(className='model-output-text', id='model-text-2',
+                                                                  children="3 people for 15 days"),
+                                                          html.H4(className='model-output-text', id='model-text-3',
+                                                                  children="4 people for 10 days"),
+                                                          html.H4(className='model-output-text', id='model-text-4',
+                                                                  children="5 people for 8 days"),
+                                                          html.H4(className='model-output-text', id='model-text-5',
+                                                                  children="10 people for 3 days"),
+                                                          html.H4(className='model-output-text', id='model-text-6',
+                                                                  children="25 people for 31 hours"),
+                                                          html.H4(className='model-output-text', id='model-text-7',
+                                                                  children="50 people for 15 hours"),
+                                                          html.H4(className='model-output-text', id='model-text-8',
+                                                                  children="100 people for 8 hours"),
+                                                      ],
+                                                      color='#de1616',
+                                                  ),
+                                                  html.Br(),
+                                                  html.H3([
+                                                      '''In comparison, current six feet distancing guidelines 
+                                                      recommend no more than''',
+                                                      html.Span(id='six-ft-output', children=''' 2 people ''',
+                                                                style={'color': '#de1616'}),
+                                                      ''' in this room.''']),
+                                              ]),
+                                 ]),
+                    ]),
             ]
         ),
     ),
@@ -497,7 +549,7 @@ layout = html.Div(children=[
      Output('air-filt-rate-output', 'children'),
      Output('sett-speed-output', 'children'),
      Output('conc-relax-output', 'children'),
-     Output('airb-trans-output', 'children'),],
+     Output('airb-trans-output', 'children'), ],
     [Input('floor-area', 'value'),
      Input('ceiling-height', 'value'),
      Input('ventilation-type', 'value'),
@@ -592,6 +644,33 @@ def update_presets(preset):
         return curr_settings['floor-area'], curr_settings['ceiling-height'], curr_settings['ventilation'], \
                curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['exertion'], \
                curr_settings['exp-activity'], curr_settings['masks']
+
+
+# Ventilation ACH value display
+@app.callback(
+    [Output('ventilation-type-output', 'children')],
+    [Input('ventilation-type', 'value')]
+)
+def update_vent_disp(air_exchange_rate):
+    return ["{:.0f} ACH".format(air_exchange_rate)]
+
+
+# Filtration value display
+@app.callback(
+    [Output('filter-type-output', 'children')],
+    [Input('filter-type', 'value')]
+)
+def update_filt_disp(merv):
+    return ["MERV {:.0f}".format(merv)]
+
+
+# Recirculation value display
+@app.callback(
+    [Output('recirc-rate-output-2', 'children')],
+    [Input('recirc-rate', 'value')]
+)
+def update_recirc_disp(recirc_rate):
+    return ["{:.0f} recirculation ACH".format(recirc_rate)]
 
 
 # Risk tolerance slider value display

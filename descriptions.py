@@ -1,7 +1,9 @@
 import dash_html_components as html
 import dash_core_components as dcc
 
-about = html.Div([
+about = html.Div(
+    className='custom-tab-content',
+    children=[
     html.H6("About: "),
     html.Div('''
         COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other

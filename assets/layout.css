@@ -1,6 +1,10 @@
 /* CSS related to app layout */
 
 /* For default, desktop layout */
+body {
+    background-color: #fafafa
+}
+
 .grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -13,11 +17,23 @@
 }
 
 .custom-tab-container {
-    padding: 1em;
-    margin: 0;
-    height: 440px;
+    padding: 1.5em;
+    padding-top: 1em;
+    border: solid 1px #DDDDDD;
+    border-top: none;
+}
+
+.custom-tab-content {
+    padding-right: 1em;
+    height: 476px;
+    margin: 1em;
+    margin-right: 0;
     overflow-y: scroll;
     overflow-x: hidden;
+}
+
+.custom-tab-content-2 {
+
 }
 
 .link-button {
@@ -42,6 +58,27 @@
     transition: 0.5s;
 }
 
+.tab-parent {
+    background-color: #ffffff;
+    box-shadow: 0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24)
+}
+
+.output-tray {
+    padding: 1em;
+    background-color: #ffffff;
+    border: solid 1px #DDDDDD;
+    box-shadow: 0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24)
+}
+
+.output-content {
+    padding-right: 1em;
+    margin: 1em;
+    margin-right: 1em;
+    height: 570px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
 /* Small-width/mobile layout */
 @media only screen and (max-width: 1120px) {
     .grid {
@@ -53,13 +90,38 @@
         min-width: 0;
         padding: 1em;
     }
-    /* TODO: FIX HEIGHT */
+
+    .tab-content {
+        overflow: visible
+    }
+
     .custom-tab-container {
         padding: 1em;
+        border: solid 1px #DDDDDD;
+        border-top: none;
+        overflow-y: visible;
+        overflow-x: visible;
+        height: auto;
+    }
+
+    .custom-tab-content {
+        padding: 0;
         margin: 0;
         height: auto;
-        overflow-y: scroll;
-        overflow-x: hidden;
+        overflow: visible;
+    }
+
+    .output-tray {
+        border: solid 1px #DDDDDD;
+        padding: 1em;
+    }
+
+    .output-content {
+        padding-right: 1em;
+        margin: 1em;
+        margin-right: 1em;
+        height: auto;
+        overflow: visible;
     }
 
     .link-button {
