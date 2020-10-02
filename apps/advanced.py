@@ -64,7 +64,17 @@ model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
 tab_style = {
     'padding-left': '1em',
-    'padding-right': '1em'
+    'padding-right': '1em',
+    'border-color': '#DDDDDD',
+    'font-size': '14px'
+}
+
+tab_style_selected = {
+    'padding-left': '1em',
+    'padding-right': '1em',
+    'border-color': '#DDDDDD',
+    'border-top-color': '#de1616',
+    'font-size': '14px'
 }
 
 # Main App
@@ -112,7 +122,7 @@ layout = html.Div(children=[
                                                  children=desc.about),
                                     ],
                                     style=tab_style,
-                                    selected_style=tab_style
+                                    selected_style=tab_style_selected
                                 ),
                                 dcc.Tab(
                                     label='Room Specifications',
@@ -148,7 +158,7 @@ layout = html.Div(children=[
                                                  ]),
                                     ],
                                     style=tab_style,
-                                    selected_style=tab_style
+                                    selected_style=tab_style_selected
                                 ),
                                 dcc.Tab(
                                     label='Human Behavior',
@@ -214,12 +224,14 @@ layout = html.Div(children=[
                                                                                                    'max-width': '50px'}},
                                                                                            1: {'label': '1.0: Unsafe'}
                                                                                        })
-                                                                            ])
+                                                                            ]),
+                                                                  html.Br(),
+                                                                  html.Br(),
                                                               ]),
                                                  ]),
                                     ],
                                     style=tab_style,
-                                    selected_style=tab_style
+                                    selected_style=tab_style_selected
                                 ),
                                 dcc.Tab(
                                     label='Other Inputs & Assumptions',
@@ -296,7 +308,7 @@ layout = html.Div(children=[
                                                  ]),
                                     ],
                                     style=tab_style,
-                                    selected_style=tab_style
+                                    selected_style=tab_style_selected
                                 )
                             ],
                                      colors={
