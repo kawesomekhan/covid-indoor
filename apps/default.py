@@ -336,6 +336,7 @@ layout = html.Div(children=[
                                                                                    }),
                                                                         ]),
                                                               html.Br(),
+                                                              html.Br(),
                                                               html.Div(["Risk Tolerance: ",
                                                                         html.Span(className='model-output-text-small',
                                                                                   id='risk-tolerance-output'),
