@@ -449,17 +449,15 @@ layout = html.Div(children=[
                                                                   ),
                                                               ], className='faq-answer'),
                                                               html.Br(),
-                                                              html.H5("I'm having trouble sleeping. What should I do?"),
-                                                              html.Div('''
-                                                                  Check out a bunch of other details regarding how
-                                                                  this model works:
-                                                              ''', className='faq-answer'),
-                                                              desc.assumptions_layout,
                                                               html.H5("I still have questions!"),
                                                               html.Div('''
-                                                                If you'd like to see more references and/or further explanation, see the links
-                                                                posted at the top of the webpage. 
-                                                             ''', className='faq-answer'),
+                                                                  If you'd like to see more references and/or further 
+                                                                  explanation, see the links
+                                                                  posted at the top of the webpage. You can also check 
+                                                                  out a bunch of other details regarding how
+                                                                  this model works, shown below:
+                                                              ''', className='faq-answer'),
+                                                              desc.assumptions_layout,
                                                           ]),
                                              ])
                                 ],
