@@ -281,6 +281,10 @@ layout = html.Div(children=[
                                                                                      value=recirc_default,
                                                                                      searchable=False,
                                                                                      clearable=False)]),
+                                                              html.Br(),
+                                                              html.Div('''Need more control over your inputs? Check out 
+                                                              Advanced Mode by clicking the button at the bottom of the 
+                                                              page.'''),
                                                           ]),
                                              ]),
                                 ],
@@ -354,6 +358,9 @@ layout = html.Div(children=[
                                                                         ]),
                                                               html.Br(),
                                                               html.Br(),
+                                                              html.Div('''Need more control over your inputs? Check out 
+                                                              Advanced Mode by clicking the button at the bottom of the 
+                                                              page.'''),
                                                           ]),
                                              ]),
                                 ],
