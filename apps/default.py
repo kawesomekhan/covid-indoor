@@ -43,6 +43,7 @@ presets = [
     {'label': "Quiet Office", 'value': 'office'},
     {'label': "Classroom Lecture", 'value': 'classroom'},
     {'label': "MTA Subway Car", 'value': 'subway'},
+    {'label': "Church", 'value': 'church'},
 ]
 
 preset_settings = {
@@ -104,6 +105,16 @@ preset_settings = {
         'recirc-rate': 1,
         'exertion': 0.54,
         'exp-activity': 29,
+        'masks': 0.25
+    },
+    'church': {
+        'floor-area': 1900,
+        'ceiling-height': 30,
+        'ventilation': 2,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.54,
+        'exp-activity': 72,
         'masks': 0.25
     },
 }
@@ -406,11 +417,11 @@ layout = html.Div(children=[
                                                                 ''', className='faq-answer'),
                                                               html.Br(),
                                                               html.Div([
-                                                                  html.Div(["Breathing flow rate Qb: ",
+                                                                  html.Div(["Breathing flow rate Q", html.Sub('b'), ": ",
                                                                             html.Span(
                                                                                 className='model-output-text-small',
                                                                                 id='breath-rate-output')]),
-                                                                  html.Div(["Infectiousness of exhaled air Cq: ",
+                                                                  html.Div(["Infectiousness of exhaled air C", html.Sub('q'), ": ",
                                                                             html.Span(
                                                                                 className='model-output-text-small',
                                                                                 id='infect-air-output')]),
@@ -422,11 +433,11 @@ layout = html.Div(children=[
                                                                             html.Span(
                                                                                 className='model-output-text-small',
                                                                                 id='fresh-rate-output')]),
-                                                                  html.Div(["Return (recirculation) flow rate Qf: ",
+                                                                  html.Div(["Return (recirculation) flow rate Q", html.Sub('f'), ": ",
                                                                             html.Span(
                                                                                 className='model-output-text-small',
                                                                                 id='recirc-rate-output')]),
-                                                                  html.Div(["Air filtration rate (\u03BBf): ",
+                                                                  html.Div(["Air filtration rate (\u03BB", html.Sub('f'), "): ",
                                                                             html.Span(
                                                                                 className='model-output-text-small',
                                                                                 id='air-filt-rate-output')]),
@@ -435,7 +446,7 @@ layout = html.Div(children=[
                                                                       html.Span(
                                                                           className='model-output-text-small',
                                                                           id='sett-speed-output')]),
-                                                                  html.Div(["Concentration relaxation rate \u03BBc: ",
+                                                                  html.Div(["Concentration relaxation rate \u03BB", html.Sub('c'), ": ",
                                                                             html.Span(
                                                                                 className='model-output-text-small',
                                                                                 id='conc-relax-output')]),
@@ -455,6 +466,8 @@ layout = html.Div(children=[
                                                                       figure=fig
                                                                   ),
                                                               ], className='faq-answer'),
+                                                              html.Br(),
+                                                              desc.faq_infect_rate,
                                                               html.Br(),
                                                               html.H5("I still have questions!"),
                                                               html.Div('''
@@ -536,7 +549,8 @@ layout = html.Div(children=[
                                                             html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
                                                                children="what is airborne transmission?",
                                                                target='_blank'),),
-                                                            html.Span(")")])
+                                                            html.Span(")"),
+                                                            html.Span("")])
                                               ]),
                                  ]),
                     ]),

@@ -252,11 +252,11 @@ layout = html.Div(children=[
                                                                   html.Br(),
                                                                   html.H6("Calculated Values of Interest: "),
                                                                   html.Div([
-                                                                      html.Div(["Breathing flow rate Qb: ",
+                                                                      html.Div(["Breathing flow rate Q", html.Sub('b'), ": ",
                                                                                 html.Span(
                                                                                     className='model-output-text-small',
                                                                                     id='adv-breath-rate-output')]),
-                                                                      html.Div(["Infectiousness of exhaled air Cq: ",
+                                                                      html.Div(["Infectiousness of exhaled air C", html.Sub('q'), ": ",
                                                                                 html.Span(
                                                                                     className='model-output-text-small',
                                                                                     id='adv-infect-air-output')]),
@@ -268,11 +268,11 @@ layout = html.Div(children=[
                                                                                 html.Span(
                                                                                     className='model-output-text-small',
                                                                                     id='adv-fresh-rate-output')]),
-                                                                      html.Div(["Return (recirculation) flow rate Qf: ",
+                                                                      html.Div(["Return (recirculation) flow rate Q", html.Sub('f'), ": ",
                                                                                 html.Span(
                                                                                     className='model-output-text-small',
                                                                                     id='adv-recirc-rate-output')]),
-                                                                      html.Div(["Air filtration rate (\u03BBf): ",
+                                                                      html.Div(["Air filtration rate (\u03BB", html.Sub('f'), "): ",
                                                                                 html.Span(
                                                                                     className='model-output-text-small',
                                                                                     id='adv-air-filt-rate-output')]),
@@ -283,7 +283,7 @@ layout = html.Div(children=[
                                                                                   className='model-output-text-small',
                                                                                   id='adv-sett-speed-output')]),
                                                                       html.Div(
-                                                                          ["Concentration relaxation rate \u03BBc: ",
+                                                                          ["Concentration relaxation rate \u03BB", html.Sub('c'), ": ",
                                                                            html.Span(
                                                                                className='model-output-text-small',
                                                                                id='adv-conc-relax-output')]),
@@ -301,7 +301,6 @@ layout = html.Div(children=[
                                                                           figure=fig
                                                                       ),
                                                                   ]),
-                                                                  html.Br(),
                                                               ])
                                                  ]),
                                     ],

@@ -87,6 +87,7 @@ assumptions_layout = html.Div([
         html.Div('''- Mask filtration efficiencies are taken from a study in ACS Nano 
             by Konda, et al: "Aerosol Filtration Efficiency of Common Fabrics Used in Respiratory Cloth Masks"
         '''),
+        html.Div('''- MERV filtration efficiencies estimated using https://www.lakeair.com/merv-rating-explanation/'''),
     ], style={'padding-left': '10px', 'font-size': '13px'}),
     html.Br(),
 ], className='faq-answer')
@@ -101,21 +102,46 @@ faq_top = html.Div([
     html.Br(),
     html.H5("What -doesn't- this model account for?"),
     html.Div('''
-            This guideline does not explicitly account for the possibility 
-       of short-range aerosol transmission in respiratory jets.
-       Such effects, which can lead to large fluctuations in droplet 
-       concentrations around their mean values, especially when 
-       masks are not worn, can be partially addressed by choosing 
-       a sufficiently small risk tolerance in this guideline,
-       and will depend on the details of airflow and human behavior 
-       in the specific indoor space.
+            This guideline does not account for transmission methods other than airborne transmission, like 
+            droplet transmission. This guideline also does not explicitly account for the possibility 
+               of short-range aerosol transmission in respiratory jets.
+               Such effects, which can lead to large fluctuations in droplet 
+               concentrations around their mean values, especially when 
+               masks are not worn, can be partially addressed by choosing 
+               a sufficiently small risk tolerance in this guideline,
+               and will depend on the details of airflow and human behavior 
+               in the specific indoor space.
     ''', className='faq-answer'),
+])
+
+faq_infect_rate = html.Div([
+    html.H5("Does this model assume a certain infection rate among the population?"),
+    html.Div([
+        html.Div(['''No - it's not needed! Here's why:''']),
+        html.Div(['''The model takes each one of your inputs in the other tabs and 
+        calculates what we call the Indoor Reproductive Number, R''', html.Sub('in'), '''. This is the indoor analogue of 
+        the basic
+        reproduction number R\u2092. Much like how pandemics are controlled when R\u2092 < 1, airborne disease transmission 
+        within indoor spaces is controlled when R''', html.Sub('in'), ''' < 1. For example, 
+        values of R''', html.Sub('in'), ''' = 0.5, R''', html.Sub('in'), ''' = 0.1, R''', html.Sub('in'), ''' = 0.01 will 
+        all help reduce airborne transmission to varying degrees. In fact, you, the user, are limiting 
+        R''', html.Sub('in'), ''' in this way, 
+        by modifying the Risk Tolerance, where R''', html.Sub('in'), ''' = Risk Tolerance! 
+        A lower Risk Tolerance value forces a lower R''', html.Sub('in'), ''' 
+        value, which means less airborne transmission. The model uses all the room specification and human behavior 
+        inputs to calculate allowed exposure times for a range of occupancy numbers (2 people, 3 people, 4 people, 
+        5 people, 10 people, etc.) that give an R''', html.Sub('in'), ''' equal to your 
+        Risk Tolerance (these are the outputs displayed in 
+        large red text). The physical and epidemiological equations that govern this calculation do not require an 
+        assumed infection rate among the local population - it's all about how easily aerosols (specifically, infectious 
+        COVID-19 aerosols) are transmitted throughout the room.'''], style={'padding-left': '10px', 'font-size': '13px'}),
+    ], className='faq-answer'),
 ])
 
 risk_tol_desc = html.Div('''
    A higher risk tolerance will mean more expected 
    transmissions during the expected occupancy period
-   (see Advanced Input & Output for details). More 
+   (see FAQ for details). More 
    vulnerable populations such as the elderly or those 
    with preexisting medical conditions will generally 
    require a lower risk tolerance.
