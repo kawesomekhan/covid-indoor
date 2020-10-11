@@ -108,10 +108,18 @@ class Indoors:
 
         self.airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (room_vol_m * self.conc_relax_rate)
 
-    # Calculate maximum people allowed in the room given an exposure time (hours)
+    # Calculate maximum people allowed in the room given an exposure time (hours), using the
+    # transient model
     def calc_n_max(self, exp_time):
         risk_tolerance = self.prec_params[1]  # no units
         n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.airb_trans_rate * exp_time))
+        return n_max
+
+    # Calculate maximum people allowed in the room given an exposure time (hours), using the
+    # steady-state model
+    def calc_n_max_ss(self, exp_time):
+        risk_tolerance = self.prec_params[1]  # no units
+        n_max = 1 + risk_tolerance / (self.airb_trans_rate * exp_time)
         return n_max
 
     # Calculate maximum exposure time allowed given a capacity (# people)
@@ -122,12 +130,15 @@ class Indoors:
         exp_time_trans = exp_time_ss * (1 + (1 + 4 / (self.conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient
         return exp_time_trans
 
-    # Calculate maximum people allowed in the room across a range of exposure times
+    # Calculate maximum people allowed in the room across a range of exposure times, returning both transient
+    # and steady-state outputs
     def calc_n_max_series(self, t_min, t_max, t_step):
-        df = pd.DataFrame(columns=['Maximum Exposure Time (hours)', 'Maximum Occupancy'])
+        df = pd.DataFrame(columns=['exposure_time', 'occupancy_trans', 'occupancy_ss'])
         for exp_time in numpy.arange(t_min, t_max, t_step):
-            n_max = self.calc_n_max(exp_time)
-            df = df.append(pd.DataFrame({'Maximum Exposure Time (hours)': [exp_time], 'Maximum Occupancy': [n_max]}))
+            n_max_trans = self.calc_n_max(exp_time)
+            n_max_ss = self.calc_n_max_ss(exp_time)
+            df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'occupancy_trans': [n_max_trans],
+                                         'occupancy_ss': [n_max_ss]}))
 
         return df
 

@@ -12,10 +12,7 @@ import essentials as ess
 
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
-results_df = myInd.calc_n_max_series(2, 100, 1.0)
-fig = px.line(results_df, x="Maximum Exposure Time (hours)", y="Maximum Occupancy",
-              title="Occupancy vs. Exposure Time",
-              height=400, color_discrete_map={"Maximum Occupancy": "#de1616"})
+fig = ess.get_model_figure(myInd)
 
 # Dropdown Preset Values
 
@@ -245,13 +242,23 @@ layout = html.Div(children=[
                                                                             dcc.Input(id='adv-aerosol-radius', value=2,
                                                                                       type='number')]),
                                                                   html.Br(),
-                                                                  html.Div(["Viral Deactivation Rate \u03BBv (/hr): ",
+                                                                  html.Div(["Viral Deactivation Rate \u03BB", html.Sub('v'), " (/hr): ",
                                                                             dcc.Input(id='adv-viral-deact-rate',
                                                                                       value=0.3,
                                                                                       type='number')]),
                                                                   html.Br(),
                                                                   html.H6("Calculated Values of Interest: "),
                                                                   html.Div([
+                                                                      html.Div(["Outdoor air fraction Z", html.Sub('p'),
+                                                                                ": ",
+                                                                                html.Span(
+                                                                                    className='model-output-text-small',
+                                                                                    id='adv-air-frac-output')]),
+                                                                      html.Div(["Aerosol filtration efficiency p",
+                                                                                html.Sub('f'), ": ",
+                                                                                html.Span(
+                                                                                    className='model-output-text-small',
+                                                                                    id='adv-filtration-eff-output')]),
                                                                       html.Div(["Breathing flow rate Q", html.Sub('b'), ": ",
                                                                                 html.Span(
                                                                                     className='model-output-text-small',
@@ -260,6 +267,12 @@ layout = html.Div(children=[
                                                                                 html.Span(
                                                                                     className='model-output-text-small',
                                                                                     id='adv-infect-air-output')]),
+                                                                      html.Div(
+                                                                          ["Mask passage probability p", html.Sub('m'),
+                                                                           ": ",
+                                                                           html.Span(
+                                                                               className='model-output-text-small',
+                                                                               id='adv-mask-pass-output')]),
                                                                       html.Div(["Room volume V: ",
                                                                                 html.Span(
                                                                                     className='model-output-text-small',
@@ -408,8 +421,11 @@ layout = html.Div(children=[
      Output('adv-model-text-7', 'children'),
      Output('adv-model-text-8', 'children'),
      Output('adv-six-ft-output', 'children'),
+     Output('adv-air-frac-output', 'children'),
+     Output('adv-filtration-eff-output', 'children'),
      Output('adv-breath-rate-output', 'children'),
      Output('adv-infect-air-output', 'children'),
+     Output('adv-mask-pass-output', 'children'),
      Output('adv-room-vol-output', 'children'),
      Output('adv-fresh-rate-output', 'children'),
      Output('adv-recirc-rate-output', 'children'),
@@ -476,7 +492,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
            six_ft_text, interest_output[0], interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
-           interest_output[8]
+           interest_output[8], interest_output[9], interest_output[10], interest_output[11]
 
 
 # Risk tolerance slider value display

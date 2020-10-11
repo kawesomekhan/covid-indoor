@@ -1,4 +1,5 @@
 import plotly.express as px
+import plotly.graph_objects as go
 
 # Nmax values for main red text output
 model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
@@ -7,10 +8,26 @@ model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
 
 def get_model_figure(indoor_model):
     new_df = indoor_model.calc_n_max_series(2, 100, 1.0)
-    new_fig = px.line(new_df, x="Maximum Exposure Time (hours)", y="Maximum Occupancy",
-                      title="Occupancy vs. Exposure Time", height=400,
-                      color_discrete_map={"Maximum Occupancy": "#de1616"})
-    new_fig.update_layout(transition_duration=500)
+
+    new_fig = go.Figure()
+    new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_trans"],
+                                 mode='lines',
+                                 name='Transient',
+                                 line=go.scatter.Line(color="#8ad4ed")))
+    new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_ss"],
+                                 mode='lines',
+                                 name='Steady-State',
+                                 line=go.scatter.Line(color="#2490b5"),
+                                 visible='legendonly'))
+    new_fig.update_layout(transition_duration=500,
+                          title="Occupancy vs. Exposure Time", height=400,
+                          xaxis_title="Maximum Exposure Time \u03C4 (hours)",
+                          yaxis_title="Maximum Occupancy N",
+                          font_family="Barlow",
+                          template="simple_white",
+                          hoverlabel=dict(
+                              font_family="Barlow"
+                          ))
     return new_fig
 
 
@@ -56,12 +73,18 @@ def get_six_ft_text(indoor_model):
 
 
 def get_interest_output_text(indoor_model):
+    outdoor_air_frac = indoor_model.physical_params[3]
+    aerosol_filtration_eff = indoor_model.physical_params[4]
     breathing_flow_rate = indoor_model.physio_params[0]
     infectiousness = indoor_model.disease_params[0]
+    mask_pass_prob = indoor_model.prec_params[0]
     # Calculated Values of Interest Output
     interest_output = [
+        '{:,.2f}'.format(outdoor_air_frac),
+        '{:,.2f}'.format(aerosol_filtration_eff),
         '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60),  # m3/hr to ft3/min
         '{:,.2f} quanta/hr'.format(infectiousness),
+        '{:,.2f}'.format(mask_pass_prob),
         '{:,.0f} ft\u00B3'.format(indoor_model.room_vol),
         '{:,.0f} ft\u00B3/min'.format(indoor_model.fresh_rate),
         '{:,.0f} ft\u00B3/min'.format(indoor_model.recirc_rate),
