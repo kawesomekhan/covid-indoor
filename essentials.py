@@ -52,20 +52,22 @@ def get_model_output_text(indoor_model):
         max_time = indoor_model.calc_max_time(n_val)  # hours
 
         units = 'hours'
-        if round(max_time) > 24 * recovery_time:
+        is_past_recovery = round(max_time) > (24 * recovery_time)
+        if round(max_time) < 1:
+            units = 'minutes'
+            max_time = max_time * 60
+        elif round(max_time) > 48:
+            units = 'days'
+            max_time = max_time / 24
+
+        if round(max_time) == 1:
+            units = units[:-1]
+
+        if is_past_recovery:
             base_string = '{n_val} people for >{val:.0f} days,'
             max_time = recovery_time
         else:
             base_string = '{n_val} people for {val:.0f} ' + units + ','
-            if round(max_time) < 1:
-                units = 'minutes'
-                max_time = max_time * 60
-            elif round(max_time) > 48:
-                units = 'days'
-                max_time = max_time / 24
-
-        if round(max_time) == 1:
-            units = units[:-1]
 
         model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
         index += 1
