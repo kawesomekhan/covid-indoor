@@ -1,11 +1,16 @@
-import plotly.express as px
 import plotly.graph_objects as go
+
+"""
+essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
+
+"""
 
 # Nmax values for main red text output
 model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
 model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
 
 
+# Returns the plotly figure based on the supplied indoor model.
 def get_model_figure(indoor_model):
     new_df = indoor_model.calc_n_max_series(2, 100, 1.0)
 
@@ -31,6 +36,7 @@ def get_model_figure(indoor_model):
     return new_fig
 
 
+# Returns the big red output text.
 def get_model_output_text(indoor_model):
     # Check if we should use the normal n vals, or the big n vals
     n_val_series = model_output_n_vals
@@ -62,6 +68,7 @@ def get_model_output_text(indoor_model):
     return model_output_text
 
 
+# Returns the six feet distancing text.
 def get_six_ft_text(indoor_model):
     six_ft_people = indoor_model.get_six_ft_n()
     if six_ft_people == 1:
@@ -72,6 +79,7 @@ def get_six_ft_text(indoor_model):
     return six_ft_text
 
 
+# Returns the output text for the variables of interest, shown in the FAQ/Other Inputs & Outputs tab.
 def get_interest_output_text(indoor_model):
     outdoor_air_frac = indoor_model.physical_params[3]
     aerosol_filtration_eff = indoor_model.physical_params[4]

@@ -2,7 +2,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
-import plotly.express as px
 import indoors as ind
 from indoors import Indoors
 
@@ -10,12 +9,30 @@ from app import app
 import descriptions as desc
 import essentials as ess
 
+"""
+advanced.py contains the core functionality of the Dash app Advanced Mode. It is responsible for taking inputs,
+feeding those inputs to the model (indoors.py), and displaying the model outputs in an effective, concise
+manner. This mode is designed to be used by people who know their specific MERV and ACH values, so it is
+less geared towards the general public and more focused on additional features and functionality. 
+
+Properties: 
+COVID-19 Calculator Setup
+Dropdown Preset Values
+Tab CSS Styles
+Main App (Advanced Mode)
+
+Methods: 
+def update_figure: Calculate model & update displayed values
+def update_presets: Updates options based on selected presets
+def update_risk_tol_disp: Update risk tolerance display value
+def update_mask_fit_disp: Updates mask fit/compliance filtration display based on slider value
+"""
+
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd)
 
 # Dropdown Preset Values
-
 exertion_types = [
     {'label': "Resting", 'value': 0.49},
     {'label': "Standing", 'value': 0.54},
@@ -53,10 +70,6 @@ mask_types = [
     {'label': "2-Ply Chiffon (83% filtration)", 'value': 1-0.83},
     {'label': "Cotton+Chiffon (97% filtration)", 'value': 0.03},
 ]
-
-# Nmax values for main red text output
-model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
-model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
 tab_style = {
@@ -406,7 +419,6 @@ layout = html.Div(children=[
     ], style={'float': 'right',
               'padding-bottom': '10px'}),
 ])
-
 
 # Model Update & Calculation
 # See indoors.py def set_default_params(self) for parameter descriptions.

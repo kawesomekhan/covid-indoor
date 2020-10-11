@@ -11,11 +11,16 @@ http://web.mit.edu/bazant/www/COVID-19/
 
 Properties:
 Model Parameters
+Calculated Variables
 merv_dict: MERV values to aerosol filtration efficiency conversion
 
 Methods:
 def __init__: Constructor
-def calc_n_max: Calculate maximum people allowed in the room given an exposure time (hours)
+def calc_vars: Calculates and stores all variables used in the model, based on the model parameters.
+def calc_n_max: Calculate maximum people allowed in the room given an exposure time (hours), using the transient
+                model.
+def calc_n_max_ss: Calculate maximum people allowed in the room given an exposure time (hours), using the steady-state
+                   model.
 def calc_max_time: Calculate maximum exposure time allowed given a capacity (# people)
 def calc_n_max_series: Calculate maximum people allowed in the room across a range of exposure times
 def get_six_ft_n: Get the maximum number of people allowed in the room, based on the six-foot rule.
@@ -32,7 +37,7 @@ class Indoors:
     disease_params = []
     prec_params = []
 
-    # Calculated variables
+    # Calculated Variables
     room_vol = 0  # ft3
     fresh_rate = 0  # ft3/min
     recirc_rate = 0  # ft3/min

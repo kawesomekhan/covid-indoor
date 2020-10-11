@@ -1,6 +1,11 @@
 import dash_html_components as html
 import dash_core_components as dcc
 
+"""
+descriptions.py contains all text-heavy descriptions used throughout the app (Basic, Advanced Mode).
+
+"""
+
 about = html.Div(
     className='custom-tab-content',
     children=[

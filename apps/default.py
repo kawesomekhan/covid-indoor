@@ -4,29 +4,31 @@ from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 import indoors as ind
 from indoors import Indoors
-import plotly.express as px
 
 from app import app
 import descriptions as desc
 import essentials as ess
 
 """
-main.py contains the core functionality of the Dash app. It is responsible for taking inputs,
+default.py contains the core functionality of the Dash app Basic Mode. It is responsible for taking inputs,
 feeding those inputs to the model (indoors.py), and displaying the model outputs in an effective, concise
-manner.
+manner. This mode is the default mode that all users see when they visit indoor-covid-safety.herokuapp.com,
+and is therefore designed to be digestible for the average reader. 
 
 Properties: 
-Dash App Setup
 COVID-19 Calculator Setup
 Dropdown Preset Values
 Tab CSS Styles
-Custom HTML Headers
-Main App 
+Main App (Basic Mode)
 
 Methods: 
 def update_figure: Calculate model & update displayed values
+def update_presets: Updates options based on selected presets
+def update_vent_disp: Updates ventilation ACH number based on dropdown value
+def update_filt_disp: Updates filtration MERV number based on dropdown value
+def update_recirc_disp: Updates recirculation ACH number based on dropdown value
 def update_risk_tol_disp: Update risk tolerance display value
-def update_air_frac_disp: Update air fraction display value
+def update_mask_fit_disp: Updates mask fit/compliance filtration display based on slider value
 """
 
 # COVID-19 Calculator Setup
@@ -683,7 +685,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            interest_output[8], interest_output[9], interest_output[10], interest_output[11]
 
 
-# Update options based on selected presets.
+# Update options based on selected presets
 @app.callback(
     [Output('floor-area', 'value'),
      Output('ceiling-height', 'value'),

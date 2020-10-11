@@ -5,6 +5,13 @@ from dash.dependencies import Input, Output
 from app import app
 from apps import default, advanced
 
+"""
+index.py handles the general app functionality related to the HTML header, switching between modes (Basic Mode,
+Advanced Mode), and running the app.
+
+"""
+
+
 # Used for Heroku deployment
 server = app.server
 
