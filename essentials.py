@@ -9,6 +9,9 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
 model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
 
+# Max time reported in the big red text output
+recovery_time = 14  # Days
+
 
 # Returns the plotly figure based on the supplied indoor model.
 def get_model_figure(indoor_model):
@@ -47,18 +50,23 @@ def get_model_output_text(indoor_model):
     index = 0
     for n_val in n_val_series:
         max_time = indoor_model.calc_max_time(n_val)  # hours
+
         units = 'hours'
-        if round(max_time) < 1:
-            units = 'minutes'
-            max_time = max_time * 60
-        elif round(max_time) > 48:
-            units = 'days'
-            max_time = max_time / 24
+        if round(max_time) > 24 * recovery_time:
+            base_string = '{n_val} people for >{val:.0f} days,'
+            max_time = recovery_time
+        else:
+            base_string = '{n_val} people for {val:.0f} ' + units + ','
+            if round(max_time) < 1:
+                units = 'minutes'
+                max_time = max_time * 60
+            elif round(max_time) > 48:
+                units = 'days'
+                max_time = max_time / 24
 
         if round(max_time) == 1:
             units = units[:-1]
 
-        base_string = '{n_val} people for {val:.0f} ' + units + ','
         model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
         index += 1
 
