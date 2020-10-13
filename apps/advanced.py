@@ -93,29 +93,7 @@ tab_style_selected = {
 
 # Main App
 layout = html.Div(children=[
-    html.H1(children='MIT COVID-19 Indoor Safety Guideline'),
-    html.Div([
-        html.Div(children='''
-        Kasim Khan (2020)
-    '''),
-        html.Div(children='''
-        Martin Z. Bazant and John W. M. Bush, medRxiv preprint (2020):
-        "Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19"
-    '''),
-        html.Div([
-            html.A(href='http://web.mit.edu/bazant/www/COVID-19/',
-                   children='''
-                http://web.mit.edu/bazant/www/COVID-19/
-            ''', target='_blank'),
-        ]),
-        html.Div([
-            html.A(href='https://github.com/kawesomekhan/covid-indoor',
-                   children='''
-                https://github.com/kawesomekhan/covid-indoor
-            ''', target='_blank'),
-        ]),
-
-    ], style={'font-size': '13px'}),
+    desc.header,
 
     html.Br(),
     html.Div(

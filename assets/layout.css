@@ -5,6 +5,16 @@ body {
     background-color: #fafafa
 }
 
+.grid-header {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    padding: 0;
+}
+
+#header-left {
+    float: right;
+}
+
 .grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -80,6 +90,21 @@ body {
 
 /* Small-width/mobile layout */
 @media only screen and (max-width: 1120px) {
+
+    .grid-header {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding: 0;
+    }
+
+    .card-header {
+        margin: 1em;
+    }
+
+    #header-left {
+        float: left;
+    }
+
     .grid {
         display: grid;
         grid-template-columns: 1fr;
