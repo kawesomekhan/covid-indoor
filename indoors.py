@@ -21,7 +21,7 @@ def calc_n_max: Calculate maximum people allowed in the room given an exposure t
                 model.
 def calc_n_max_ss: Calculate maximum people allowed in the room given an exposure time (hours), using the steady-state
                    model.
-def calc_max_time: Calculate maximum exposure time allowed given a capacity (# people)
+def calc_max_time: Calculate maximum exposure time allowed given a capacity (# people, transient)
 def calc_n_max_series: Calculate maximum people allowed in the room across a range of exposure times
 def get_six_ft_n: Get the maximum number of people allowed in the room, based on the six-foot rule.
 def set_default_params: Sets default parameters.
@@ -127,7 +127,7 @@ class Indoors:
         n_max = 1 + risk_tolerance / (self.airb_trans_rate * exp_time)
         return n_max
 
-    # Calculate maximum exposure time allowed given a capacity (# people)
+    # Calculate maximum exposure time allowed given a capacity (# people), transient
     def calc_max_time(self, n_max):
         risk_tolerance = self.prec_params[1]  # no units
 

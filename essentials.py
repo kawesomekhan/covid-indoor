@@ -50,26 +50,17 @@ def get_model_output_text(indoor_model):
     index = 0
     for n_val in n_val_series:
         max_time = indoor_model.calc_max_time(n_val)  # hours
+        time_text = time_to_text(max_time)
 
-        units = 'hours'
         is_past_recovery = round(max_time) > (24 * recovery_time)
-        if round(max_time) < 1:
-            units = 'minutes'
-            max_time = max_time * 60
-        elif round(max_time) > 48:
-            units = 'days'
-            max_time = max_time / 24
-
-        if round(max_time) == 1:
-            units = units[:-1]
-
         if is_past_recovery:
             base_string = '{n_val} people for >{val:.0f} days,'
             max_time = recovery_time
+            model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
         else:
-            base_string = '{n_val} people for {val:.0f} ' + units + ','
+            base_string = '{n_val} people for ' + time_text
+            model_output_text[index] = base_string.format(n_val=n_val)
 
-        model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
         index += 1
 
     model_output_text[-2] = model_output_text[-2] + ' or'
@@ -88,6 +79,22 @@ def get_six_ft_text(indoor_model):
 
     return six_ft_text
 
+
+# Converts a time (in hours) into a text with formatting based on minutes/hours/days
+def time_to_text(time):
+    units = 'hours'
+    if round(time) < 1:
+        units = 'minutes'
+        time = time * 60
+    elif round(time) > 48:
+        units = 'days'
+        time = time / 24
+
+    if round(time) == 1:
+        units = units[:-1]
+
+    base_string = '{val:.0f} ' + units
+    return base_string.format(val=time)
 
 # Returns the output text for the variables of interest, shown in the FAQ/Other Inputs & Outputs tab.
 def get_interest_output_text(indoor_model):

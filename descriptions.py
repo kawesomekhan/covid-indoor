@@ -6,9 +6,7 @@ descriptions.py contains all text-heavy descriptions used throughout the app (Ba
 
 """
 
-about = html.Div(
-    className='custom-tab-content',
-    children=[
+about = html.Div([
     html.H6("About"),
     html.Div('''
         COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
