@@ -64,7 +64,7 @@ def get_model_output_text(indoor_model):
         index += 1
 
     model_output_text[-2] = model_output_text[-2] + ' or'
-    model_output_text[-1] = model_output_text[-1][:-1] + '.'
+    model_output_text[-1] = model_output_text[-1] + '.'
 
     return model_output_text
 
@@ -83,7 +83,7 @@ def get_six_ft_text(indoor_model):
 # Converts a time (in hours) into a text with formatting based on minutes/hours/days
 def time_to_text(time):
     units = 'hours'
-    if round(time) < 1:
+    if round(time) < 2:
         units = 'minutes'
         time = time * 60
     elif round(time) > 48:
