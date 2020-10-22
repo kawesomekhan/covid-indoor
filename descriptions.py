@@ -151,7 +151,8 @@ assumptions_layout = html.Div([
         html.Div('''- Mask filtration efficiencies are taken from a study in ACS Nano 
             by Konda, et al: "Aerosol Filtration Efficiency of Common Fabrics Used in Respiratory Cloth Masks"
         '''),
-        html.Div('''- MERV filtration efficiencies estimated using https://www.lakeair.com/merv-rating-explanation/'''),
+        html.Div('''- MERV filtration efficiencies estimated using ASHRAE Standard 52.2-2017 Minimum Efficiency 
+            Reporting Value (MERV)'''),
         html.Div('''- This app uses the transient form of the guideline.'''),
     ], style={'padding-left': '10px', 'font-size': '13px'}),
     html.Br(),
