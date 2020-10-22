@@ -359,8 +359,6 @@ layout = html.Div(children=[
                     html.Div(
                         className='card',
                         children=[html.Div(className='output-content', children=[
-                                    html.Div('''(under construction - please refer to main panel for
-                                    correct outputs)'''),
                                   html.H3(['''If this room has ''',
                                            html.Span([dcc.Input(id='adv-n-input',
                                                                 value=10,
@@ -378,8 +376,6 @@ layout = html.Div(children=[
                     html.Div(
                         className='card',
                         children=[html.Div(className='output-content', children=[
-                            html.Div('''(under construction - please refer to main panel for
-correct outputs)'''),
                                   html.H3(['''If people spend about ''',
                                            html.Span([dcc.Input(id='adv-t-input',
                                                                 value=4,
