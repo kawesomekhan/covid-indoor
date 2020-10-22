@@ -434,7 +434,9 @@ correct outputs)'''),
      Output('adv-air-filt-rate-output', 'children'),
      Output('adv-sett-speed-output', 'children'),
      Output('adv-conc-relax-output', 'children'),
-     Output('adv-airb-trans-output', 'children')],
+     Output('adv-airb-trans-output', 'children'),
+     Output('adv-t-output', 'children'),
+     Output('adv-n-output', 'children')],
     [Input('adv-floor-area', 'value'),
      Input('adv-ceiling-height', 'value'),
      Input('adv-ventilation-type', 'value'),
@@ -446,15 +448,21 @@ correct outputs)'''),
      Input('adv-mask-fit', 'value'),
      Input('adv-risk-tolerance', 'value'),
      Input('adv-aerosol-radius', 'value'),
-     Input('adv-viral-deact-rate', 'value')]
+     Input('adv-viral-deact-rate', 'value'),
+     Input('adv-n-input', 'value'),
+     Input('adv-t-input', 'value')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
                   breathing_flow_rate, infectiousness, mask_passage_prob, mask_fit, risk_tolerance, aerosol_radius,
-                  viral_deact_rate):
+                  viral_deact_rate, n_max_input, exp_time_input):
     # Make sure none of our values are none
     is_none = floor_area is None or ceiling_height is None or recirc_rate is None or aerosol_radius is None or \
                 viral_deact_rate is None
     if is_none:
+        raise PreventUpdate
+    if n_max_input is None or n_max_input < 2:
+        raise PreventUpdate
+    if exp_time_input is None:
         raise PreventUpdate
 
     # Update model with newly-selected parameters
@@ -480,45 +488,24 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     new_fig = ess.get_model_figure(myInd)
 
     # Update the red text output with new model calculations
-
-    model_output_text = ["", "", "", "", "", "", "", ""]
-    index = 0
-
-    # Check if we should use the normal n vals, or the big n vals
     model_output_text = ess.get_model_output_text(myInd)
     six_ft_text = ess.get_six_ft_text(myInd)
     interest_output = ess.get_interest_output_text(myInd)
+
+    # Update transient exposure time based on selected n value
+    exp_time_output = myInd.calc_max_time(n_max_input)
+    exp_time_text = ess.time_to_text(exp_time_output)
+
+    n_max_output = myInd.calc_n_max(exp_time_input)
+    n_max_text = ' {:.0f} people'.format(n_max_output)
 
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
            six_ft_text, interest_output[0], interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
-           interest_output[8], interest_output[9], interest_output[10], interest_output[11]
-
-
-# Return transient exposure time based on n value
-@app.callback(
-    Output('adv-t-output', 'children'),
-    [Input('adv-n-input', 'value')]
-)
-def update_t_output(n_max):
-    if n_max is None or n_max < 2:
-        raise PreventUpdate
-    exp_time = myInd.calc_max_time(n_max)
-    return ess.time_to_text(exp_time)
-
-
-# Return transient n_max based on exposure time (hours)
-@app.callback(
-    Output('adv-n-output', 'children'),
-    [Input('adv-t-input', 'value')]
-)
-def update_n_output(exp_time):
-    if exp_time is None:
-        raise PreventUpdate
-    n_max = math.floor(myInd.calc_n_max(exp_time))
-    return ' {} people'.format(n_max)
+           interest_output[8], interest_output[9], interest_output[10], interest_output[11], exp_time_text, \
+           n_max_text
 
 
 # Risk tolerance slider value display
