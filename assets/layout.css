@@ -13,6 +13,7 @@ body {
 
 #header-left {
     float: right;
+    padding: 16px;
 }
 
 .grid {
@@ -118,6 +119,7 @@ body {
 
     #header-left {
         float: left;
+        padding: 0;
     }
 
     .grid {

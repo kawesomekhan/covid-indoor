@@ -22,11 +22,20 @@ header = html.Div(className='grid-header', children=[
     html.Div(className='card-header', children=[
         html.H1(children='MIT COVID-19 Indoor Safety Guideline'),
         html.Div([
+            html.Div([html.Span(html.A(href="https://www.linkedin.com/in/kasim-k-a92620b1/",
+                                       children="Kasim Khan",
+                                       target='_blank')),
+                      ", ",
+                      html.Span(html.A(href="https://www.mit.edu/~bazant/",
+                                       children="Martin Z. Bazant",
+                                       target='_blank')),
+                      ", and ",
+                      html.Span(html.A(href="https://math.mit.edu/~bush/",
+                                       children="John W. M. Bush",
+                                       target='_blank')),
+                      ""]),
             html.Div(children='''
-                            Kasim Khan (2020)
-                        '''),
-            html.Div(children='''
-                            Martin Z. Bazant and John W. M. Bush, medRxiv preprint (2020):
+                            medRxiv preprint (2020):
                             "Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19"
                         '''),
             html.Div([
@@ -37,17 +46,23 @@ header = html.Div(className='grid-header', children=[
             ]),
             html.Div([
                 html.A(href='https://github.com/kawesomekhan/covid-indoor',
-                       children='''
-                            https://github.com/kawesomekhan/covid-indoor
-                        ''', target='_blank'),
+                       children=[
+                           "https://github.com/kawesomekhan/covid-indoor"
+                       ],
+                       target='_blank'),
             ]),
-
         ], style={'font-size': '13px'}),
     ]),
     html.Div(className='card-header', children=[
-        html.Div(id='header-left', children=[
-
-        ])
+        # html.Div(id='header-left', children=[
+        #     html.Div([
+        #         html.A(href='https://github.com/kawesomekhan/covid-indoor',
+        #                children=[
+        #                    html.Img(src='/assets/GitHub-Mark-32px.png')
+        #                ],
+        #                target='_blank'),
+        #     ]),
+        # ])
     ]),
 
 ])
