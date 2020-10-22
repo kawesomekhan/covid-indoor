@@ -1,8 +1,8 @@
+import dash
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from dash.exceptions import PreventUpdate
-import math
 
 import indoors as ind
 from indoors import Indoors
@@ -93,6 +93,13 @@ tab_style_selected = {
 
 # Main App
 layout = html.Div(children=[
+    dbc.Alert(
+        "Error Alert",
+        id='adv-alert-no-update',
+        className='error-alert',
+        is_open=False,
+    ),
+
     desc.header,
 
     html.Br(),
@@ -436,7 +443,9 @@ correct outputs)'''),
      Output('adv-conc-relax-output', 'children'),
      Output('adv-airb-trans-output', 'children'),
      Output('adv-t-output', 'children'),
-     Output('adv-n-output', 'children')],
+     Output('adv-n-output', 'children'),
+     Output('adv-alert-no-update', 'children'),
+     Output('adv-alert-no-update', 'is_open')],
     [Input('adv-floor-area', 'value'),
      Input('adv-ceiling-height', 'value'),
      Input('adv-ventilation-type', 'value'),
@@ -455,15 +464,35 @@ correct outputs)'''),
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
                   breathing_flow_rate, infectiousness, mask_passage_prob, mask_fit, risk_tolerance, aerosol_radius,
                   viral_deact_rate, n_max_input, exp_time_input):
+    error_msg = ""
+
     # Make sure none of our values are none
-    is_none = floor_area is None or ceiling_height is None or recirc_rate is None or aerosol_radius is None or \
-                viral_deact_rate is None
-    if is_none:
-        raise PreventUpdate
-    if n_max_input is None or n_max_input < 2:
-        raise PreventUpdate
-    if exp_time_input is None:
-        raise PreventUpdate
+    if floor_area is None:
+        error_msg = desc.error_list["floor_area"]
+    elif ceiling_height is None:
+        error_msg = desc.error_list["ceiling_height"]
+    elif recirc_rate is None:
+        error_msg = desc.error_list["recirc_rate"]
+    elif aerosol_radius is None:
+        error_msg = desc.error_list["aerosol_radius"]
+    elif viral_deact_rate is None:
+        error_msg = desc.error_list["viral_deact_rate"]
+    elif n_max_input is None or n_max_input < 2:
+        error_msg = desc.error_list["n_max_input"]
+    elif exp_time_input == 0 or exp_time_input is None:
+        error_msg = desc.error_list["exp_time_input"]
+    elif air_exchange_rate == 0 or air_exchange_rate is None:
+        error_msg = desc.error_list["air_exchange_rate"]
+    elif merv is None:
+        error_msg = desc.error_list["merv"]
+
+    if error_msg != "":
+        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, error_msg, True
 
     # Update model with newly-selected parameters
     # Correct mask_passage_prob based on mask fit/compliance
@@ -505,7 +534,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            six_ft_text, interest_output[0], interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
            interest_output[8], interest_output[9], interest_output[10], interest_output[11], exp_time_text, \
-           n_max_text
+           n_max_text, error_msg, False
 
 
 # Risk tolerance slider value display

@@ -1,3 +1,5 @@
+import dash
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
@@ -203,6 +205,13 @@ tab_style_selected = {
 
 # Main App
 layout = html.Div(children=[
+    dbc.Alert(
+        "Error Alert",
+        id='alert-no-update',
+        className='error-alert',
+        is_open=False,
+    ),
+
     desc.header,
 
     html.Br(),
@@ -563,7 +572,9 @@ layout = html.Div(children=[
      Output('air-filt-rate-output', 'children'),
      Output('sett-speed-output', 'children'),
      Output('conc-relax-output', 'children'),
-     Output('airb-trans-output', 'children'), ],
+     Output('airb-trans-output', 'children'),
+     Output('alert-no-update', 'children'),
+     Output('alert-no-update', 'is_open')],
     [Input('floor-area', 'value'),
      Input('ceiling-height', 'value'),
      Input('ventilation-type', 'value'),
@@ -580,10 +591,24 @@ layout = html.Div(children=[
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
                   breathing_flow_rate, infectiousness, mask_passage_prob, mask_fit, risk_tolerance, aerosol_radius,
                   viral_deact_rate):
-    # Make sure none of the inputs are None
-    is_none = aerosol_radius is None or viral_deact_rate is None
-    if is_none:
-        raise PreventUpdate
+    error_msg = ""
+
+    # Make sure none of our values are none
+    if floor_area is None:
+        error_msg = desc.error_list["floor_area"]
+    elif ceiling_height is None:
+        error_msg = desc.error_list["ceiling_height"]
+    elif aerosol_radius is None:
+        error_msg = desc.error_list["aerosol_radius"]
+    elif viral_deact_rate is None:
+        error_msg = desc.error_list["viral_deact_rate"]
+
+    if error_msg != "":
+        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
     preset_dd_value = 'custom'
@@ -634,7 +659,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
            six_ft_text, preset_dd_value, interest_output[0], interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
-           interest_output[8], interest_output[9], interest_output[10], interest_output[11]
+           interest_output[8], interest_output[9], interest_output[10], interest_output[11], error_msg, False
 
 
 # Update options based on selected presets

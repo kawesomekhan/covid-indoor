@@ -6,6 +6,18 @@ descriptions.py contains all text-heavy descriptions used throughout the app (Ba
 
 """
 
+error_list = {
+    "floor_area": "Error: floor area cannot be empty.",
+    "ceiling_height": "Error: ceiling height cannot be empty.",
+    "recirc_rate": "Error: recirculation rate cannot be empty.",
+    "aerosol_radius": "Error: aerosol radius cannot be empty.",
+    "viral_deact_rate": "Error: viral deactivation rate cannot be empty.",
+    "n_max_input": "Error: number of people cannot be less than 2.",
+    "exp_time_input": "Error: exposure time must be greater than 0.",
+    "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
+    "merv": "Error: Filtration System (MERV) cannot be empty."
+}
+
 header = html.Div(className='grid-header', children=[
     html.Div(className='card-header', children=[
         html.H1(children='MIT COVID-19 Indoor Safety Guideline'),

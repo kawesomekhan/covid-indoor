@@ -1,5 +1,6 @@
 plotly==4.10.0
 dash==1.16.0
+dash-bootstrap-components==0.10.7
 dash-core-components==1.12.0
 dash-html-components==1.1.1
 dash-renderer==1.8.0
