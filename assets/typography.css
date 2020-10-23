@@ -1,6 +1,6 @@
 /* CSS related to typography */
 
-@import url(https://fonts.googleapis.com/css2?family=Barlow,200);
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400&display=swap');
 
 /* For default, desktop layout */
 body {
