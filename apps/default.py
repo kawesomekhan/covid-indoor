@@ -121,6 +121,79 @@ preset_settings = {
     },
 }
 
+preset_settings_metric = {
+    'house': {
+        'floor-area': 186,
+        'ceiling-height': 3.66,
+        'ventilation': 3,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.49,
+        'exp-activity': 29,
+        'masks': 0.25
+    },
+    'classroom': {
+        'floor-area': 83.6,
+        'ceiling-height': 3.66,
+        'ventilation': 3,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.49,
+        'exp-activity': 29,
+        'masks': 0.25
+    },
+    'restaurant': {
+        'floor-area': 465,
+        'ceiling-height': 3.66,
+        'ventilation': 9,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.49,
+        'exp-activity': 72,
+        'masks': 1
+    },
+    'office': {
+        'floor-area': 929,
+        'ceiling-height': 3.66,
+        'ventilation': 8,
+        'filtration': 10,
+        'recirc-rate': 1,
+        'exertion': 0.54,
+        'exp-activity': 29,
+        'masks': 0.25
+    },
+    'subway': {
+        'floor-area': 54,
+        'ceiling-height': 3,
+        'ventilation': 18,
+        'filtration': 6,
+        'recirc-rate': 54,
+        'exertion': 0.54,
+        'exp-activity': 29,
+        'masks': 0.25
+    },
+    'bus': {
+        'floor-area': 54,
+        'ceiling-height': 3,
+        'ventilation': 8,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.54,
+        'exp-activity': 29,
+        'masks': 0.25
+    },
+    'church': {
+        'floor-area': 177,
+        'ceiling-height': 9,
+        'ventilation': 2,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.54,
+        'exp-activity': 72,
+        'masks': 0.25
+    },
+}
+
 # Dropdown Preset Values
 ventilation_default = preset_settings['classroom']['ventilation']
 ventilation_types = [
@@ -530,7 +603,7 @@ layout = html.Div(children=[
 ])
 
 
-# Updates labels depending on selected unit system
+# Updates labels & presets depending on selected unit system
 @app.callback(
     [Output('floor-area-text', 'children'),
      Output('ceiling-height-text', 'children')],
@@ -623,27 +696,42 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     if "units" in params:
         my_units = params["units"]
 
+    # Check if we just moved to a preset; if not, change the preset dropdown to custom
+    preset_dd_value = 'custom'
+
+    if my_units == "british":
+        for setting_key in preset_settings:
+            setting = preset_settings[setting_key]
+            is_preset = setting['floor-area'] == floor_area and \
+                        setting['ceiling-height'] == ceiling_height and \
+                        setting['ventilation'] == air_exchange_rate and \
+                        setting['recirc-rate'] == recirc_rate and \
+                        setting['filtration'] == merv and \
+                        setting['exertion'] == breathing_flow_rate and \
+                        setting['exp-activity'] == infectiousness and \
+                        setting['masks'] == mask_passage_prob
+            if is_preset:
+                preset_dd_value = setting_key
+                break
+    elif my_units == "metric":
+        for setting_key in preset_settings_metric:
+            setting = preset_settings_metric[setting_key]
+            is_preset = setting['floor-area'] == floor_area and \
+                        setting['ceiling-height'] == ceiling_height and \
+                        setting['ventilation'] == air_exchange_rate and \
+                        setting['recirc-rate'] == recirc_rate and \
+                        setting['filtration'] == merv and \
+                        setting['exertion'] == breathing_flow_rate and \
+                        setting['exp-activity'] == infectiousness and \
+                        setting['masks'] == mask_passage_prob
+            if is_preset:
+                preset_dd_value = setting_key
+                break
+
     # If metric, convert floor_area and ceiling_height to feet
     if my_units == "metric":
         floor_area = floor_area * 10.764
         ceiling_height = ceiling_height * 3.281
-
-    # Check if we just moved to a preset; if not, change the preset dropdown to custom
-    preset_dd_value = 'custom'
-    is_preset = False
-    for setting_key in preset_settings:
-        setting = preset_settings[setting_key]
-        is_preset = setting['floor-area'] == floor_area and \
-                    setting['ceiling-height'] == ceiling_height and \
-                    setting['ventilation'] == air_exchange_rate and \
-                    setting['recirc-rate'] == recirc_rate and \
-                    setting['filtration'] == merv and \
-                    setting['exertion'] == breathing_flow_rate and \
-                    setting['exp-activity'] == infectiousness and \
-                    setting['masks'] == mask_passage_prob
-        if is_preset:
-            preset_dd_value = setting_key
-            break
 
     # Update model with newly-selected parameters
     # Correct mask_passage_prob based on mask fit/compliance
@@ -680,7 +768,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            interest_output[8], interest_output[9], interest_output[10], interest_output[11], error_msg, False
 
 
-# Update options based on selected presets
+# Update options based on selected presets, also if units changed
 @app.callback(
     [Output('floor-area', 'value'),
      Output('ceiling-height', 'value'),
@@ -690,14 +778,23 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
      Output('exertion-level', 'value'),
      Output('exp-activity', 'value'),
      Output('mask-type', 'value')],
-    [Input('presets', 'value')]
+    [Input('presets', 'value'),
+     Input('url', 'search')]
 )
-def update_presets(preset):
+def update_presets(preset, search):
     # Update the room and behavior options based on the selected preset
     if preset == 'custom':
         raise PreventUpdate
     else:
-        curr_settings = preset_settings[preset]
+        params = ess.search_to_params(search)
+        my_units = "british"
+        if "units" in params:
+            my_units = params["units"]
+
+        if my_units == "british":
+            curr_settings = preset_settings[preset]
+        elif my_units == "metric":
+            curr_settings = preset_settings_metric[preset]
         return curr_settings['floor-area'], curr_settings['ceiling-height'], curr_settings['ventilation'], \
                curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['exertion'], \
                curr_settings['exp-activity'], curr_settings['masks']
