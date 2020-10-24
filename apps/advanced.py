@@ -9,6 +9,7 @@ from indoors import Indoors
 
 from app import app
 import descriptions as desc
+import descriptions_fr as desc_fr
 import essentials as ess
 
 """
@@ -100,9 +101,6 @@ layout = html.Div(children=[
         is_open=False,
     ),
 
-    desc.header,
-
-    html.Br(),
     html.Div(
         className='main-content',
         children=[
@@ -124,11 +122,11 @@ layout = html.Div(children=[
                                     className='custom-tab',
                                     children=[
                                               html.H6("Room Specifications"),
-                                              html.Div(["Floor Area (sq. ft.): ",
+                                              html.Div([html.Span(desc.floor_area_text, id='adv-floor-area-text'),
                                                         dcc.Input(id='adv-floor-area', value=900,
                                                                   type='number')]),
                                               html.Br(),
-                                              html.Div(["Ceiling Height (ft.): ",
+                                              html.Div([html.Span(desc.ceiling_height_text, id='adv-ceiling-height-text'),
                                                         dcc.Input(id='adv-ceiling-height', value=12,
                                                                   type='number')]),
                                               html.Br(),
@@ -394,23 +392,30 @@ layout = html.Div(children=[
             ),
         ]
     ),
-
-    html.Br(),
-    html.Div([
-        dcc.Link(
-            href='/',
-            children=[
-                html.Button(
-                    className='link-button',
-                    children=[
-                        html.Span('Basic Mode ')
-                    ],
-                )
-            ]
-        )
-    ], style={'float': 'right',
-              'padding-bottom': '10px'}),
 ])
+
+
+# Updates labels based on unit system
+@app.callback(
+    [Output('adv-floor-area-text', 'children'),
+     Output('adv-ceiling-height-text', 'children')],
+    [Input('url', 'search')]
+)
+def update_units(search):
+    params = ess.search_to_params(search)
+    my_units = "british"
+    if "units" in params:
+        my_units = params["units"]
+
+    desc_file = desc
+    if "lang" in params:
+        if params["lang"] == "fr":
+            desc_file = desc_fr
+
+    if my_units == "british":
+        return [desc_file.floor_area_text, desc_file.ceiling_height_text]
+    else:
+        return [desc_file.floor_area_text_metric, desc_file.ceiling_height_text_metric]
 
 
 # Model Update & Calculation
@@ -455,11 +460,12 @@ layout = html.Div(children=[
      Input('adv-aerosol-radius', 'value'),
      Input('adv-viral-deact-rate', 'value'),
      Input('adv-n-input', 'value'),
-     Input('adv-t-input', 'value')]
+     Input('adv-t-input', 'value'),
+     Input('url', 'search')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
                   breathing_flow_rate, infectiousness, mask_passage_prob, mask_fit, risk_tolerance, aerosol_radius,
-                  viral_deact_rate, n_max_input, exp_time_input):
+                  viral_deact_rate, n_max_input, exp_time_input, search):
     error_msg = ""
 
     # Make sure none of our values are none
@@ -490,6 +496,17 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, error_msg, True
 
+    # Check our units!
+    params = ess.search_to_params(search)
+    my_units = "british"
+    if "units" in params:
+        my_units = params["units"]
+
+    # If metric, convert floor_area and ceiling_height to feet
+    if my_units == "metric":
+        floor_area = floor_area * 10.764
+        ceiling_height = ceiling_height * 3.281
+
     # Update model with newly-selected parameters
     # Correct mask_passage_prob based on mask fit/compliance
     mask_passage_prob = 1 - mask_passage_prob
@@ -515,7 +532,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Update the red text output with new model calculations
     model_output_text = ess.get_model_output_text(myInd)
     six_ft_text = ess.get_six_ft_text(myInd)
-    interest_output = ess.get_interest_output_text(myInd)
+    interest_output = ess.get_interest_output_text(myInd, my_units)
 
     # Update transient exposure time based on selected n value
     exp_time_output = myInd.calc_max_time(n_max_input)

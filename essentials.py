@@ -96,30 +96,69 @@ def time_to_text(time):
     base_string = '{val:.0f} ' + units
     return base_string.format(val=time)
 
+
 # Returns the output text for the variables of interest, shown in the FAQ/Other Inputs & Outputs tab.
-def get_interest_output_text(indoor_model):
+# units: British or Metric.
+def get_interest_output_text(indoor_model, units):
     outdoor_air_frac = indoor_model.physical_params[3]
     aerosol_filtration_eff = indoor_model.physical_params[4]
     breathing_flow_rate = indoor_model.physio_params[0]
     infectiousness = indoor_model.disease_params[0]
     mask_pass_prob = indoor_model.prec_params[0]
+
     # Calculated Values of Interest Output
-    interest_output = [
-        '{:,.2f}'.format(outdoor_air_frac),
-        '{:,.2f}'.format(aerosol_filtration_eff),
-        '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60),  # m3/hr to ft3/min
-        '{:,.2f} quanta/hr'.format(infectiousness),
-        '{:,.2f}'.format(mask_pass_prob),
-        '{:,.0f} ft\u00B3'.format(indoor_model.room_vol),
-        '{:,.0f} ft\u00B3/min'.format(indoor_model.fresh_rate),
-        '{:,.0f} ft\u00B3/min'.format(indoor_model.recirc_rate),
-        '{:,.2f} /hr'.format(indoor_model.air_filt_rate),
-        '{:,.2f} m/hr'.format(indoor_model.sett_speed),
-        '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
-        '{:,.2f} /hr (x10,000)'.format(indoor_model.airb_trans_rate * 10000),
-    ]
+    if units == "british":
+        interest_output = [
+            '{:,.2f}'.format(outdoor_air_frac),
+            '{:,.2f}'.format(aerosol_filtration_eff),
+            '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60),  # m3/hr to ft3/min
+            '{:,.2f} quanta/hr'.format(infectiousness),
+            '{:,.2f}'.format(mask_pass_prob),
+            '{:,.0f} ft\u00B3'.format(indoor_model.room_vol),
+            '{:,.0f} ft\u00B3/min'.format(indoor_model.fresh_rate),
+            '{:,.0f} ft\u00B3/min'.format(indoor_model.recirc_rate),
+            '{:,.2f} /hr'.format(indoor_model.air_filt_rate),
+            '{:,.2f} ft/min'.format(indoor_model.sett_speed * 3.281 / 60),  # m/hr to ft/min
+            '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
+            '{:,.2f} /hr (x10,000)'.format(indoor_model.airb_trans_rate * 10000),
+        ]
+    elif units == "metric":
+        interest_output = [
+            '{:,.2f}'.format(outdoor_air_frac),
+            '{:,.2f}'.format(aerosol_filtration_eff),
+            '{:,.2f} m\u00B3/hr'.format(breathing_flow_rate),
+            '{:,.2f} quanta/hr'.format(infectiousness),
+            '{:,.2f}'.format(mask_pass_prob),
+            '{:,.0f} m\u00B3'.format(indoor_model.room_vol / 35.315),  # ft3 to m3
+            '{:,.0f} m\u00B3/hr'.format(indoor_model.fresh_rate / 35.3147 * 60),  # ft3/min to m3/hr
+            '{:,.0f} m\u00B3/hr'.format(indoor_model.recirc_rate / 35.3147 * 60),  # ft3/min to m3/hr
+            '{:,.2f} /hr'.format(indoor_model.air_filt_rate),
+            '{:,.2f} m/hr'.format(indoor_model.sett_speed),
+            '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
+            '{:,.2f} /hr (x10,000)'.format(indoor_model.airb_trans_rate * 10000),
+        ]
 
     return interest_output
+
+
+# Returns a dictionary of parameters and values given by the search url.
+# Key: Parameter name
+# Value: Parameter value
+def search_to_params(search):
+    output_dict = {}
+    if search == "":
+        return output_dict
+
+    # remove initial question mark
+    search = search[1:]
+
+    params_raw = search.split("&")
+
+    for param in params_raw:
+        param_split = param.split("=")
+        output_dict[param_split[0]] = param_split[1]
+
+    return output_dict
 
 
 

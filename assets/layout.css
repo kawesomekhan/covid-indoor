@@ -5,6 +5,16 @@ body {
     background-color: #fafafa
 }
 
+.grid-settings {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 0px;
+}
+
+.card-settings {
+    padding: 8px;
+}
+
 .grid-header {
     display: grid;
     grid-template-columns: 3fr 1fr;
@@ -12,8 +22,9 @@ body {
 }
 
 #header-left {
-    float: right;
+    font-size: 13px;
     padding: 16px;
+    width: 400px;
 }
 
 .grid {
@@ -106,6 +117,11 @@ body {
 
 /* Small-width/mobile layout */
 @media only screen and (max-width: 1120px) {
+    .grid-settings {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0px;
+    }
 
     .grid-header {
         display: grid;
@@ -118,7 +134,6 @@ body {
     }
 
     #header-left {
-        float: left;
         padding: 0;
     }
 
