@@ -1,10 +1,15 @@
 import dash_html_components as html
-import dash_core_components as dcc
 
 """
 descriptions.py contains all text-heavy descriptions used throughout the app (Basic, Advanced Mode).
 
 """
+
+floor_area_text = "Floor area (sq. ft.): "
+floor_area_text_metric = "Floor area (m²): "
+
+ceiling_height_text = "Ceiling height (ft.): "
+ceiling_height_text_metric = "Ceiling height (m): "
 
 error_list = {
     "floor_area": "Error: floor area cannot be empty.",
@@ -18,8 +23,7 @@ error_list = {
     "merv": "Error: Filtration System (MERV) cannot be empty."
 }
 
-header = html.Div(className='grid-header', children=[
-    html.Div(className='card-header', children=[
+header = html.Div([
         html.H1(children='MIT COVID-19 Indoor Safety Guideline'),
         html.Div([
             html.Div([html.Span(html.A(href="https://www.linkedin.com/in/kasim-k-a92620b1/",
@@ -51,20 +55,7 @@ header = html.Div(className='grid-header', children=[
                        ],
                        target='_blank'),
             ]),
-        ], style={'font-size': '13px'}),
-    ]),
-    html.Div(className='card-header', children=[
-        # html.Div(id='header-left', children=[
-        #     html.Div([
-        #         html.A(href='https://github.com/kawesomekhan/covid-indoor',
-        #                children=[
-        #                    html.Img(src='/assets/GitHub-Mark-32px.png')
-        #                ],
-        #                target='_blank'),
-        #     ]),
-        # ])
-    ]),
-
+        ], style={'font-size': '13px'})
 ])
 
 about = html.Div([
@@ -162,7 +153,7 @@ faq_top = html.Div([
     html.H6("Frequently Asked Questions"),
     html.H5("I know my ACH/MERV numbers. Where can I enter them?"),
     html.Div('''
-        If you need more control over your inputs, check out Advanced Mode by clicking the button at the bottom of
+        If you need more control over your inputs, switch to Advanced Mode using the dropdown at the top of
         the webpage!
     ''', className='faq-answer'),
     html.Br(),

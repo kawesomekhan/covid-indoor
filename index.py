@@ -1,3 +1,4 @@
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
@@ -5,12 +6,39 @@ from dash.dependencies import Input, Output
 from app import app
 from apps import default, advanced
 
+import descriptions as desc
+import essentials as ess
+
 """
 index.py handles the general app functionality related to the HTML header, switching between modes (Basic Mode,
-Advanced Mode), and running the app.
+Advanced Mode), Unit Systems, Languages, and running the app.
 
 """
 
+# Unit systems
+unit_settings = [
+    {'label': "British", 'value': "british"},
+    {'label': "Metric", 'value': "metric"},
+]
+
+# Modes
+app_modes = [
+    {'label': "Basic", 'value': "basic"},
+    {'label': "Advanced", 'value': "advanced"},
+]
+
+# Languages
+languages = [
+    # {'label': "العربية", 'value': "ar"},
+    # {'label': "Čeština", 'value': "cs"},
+    # {'label': "Deutsch", 'value': "de"},
+    # {'label': "Ελληνικά", 'value': "el"},
+    {'label': "English", 'value': "en"},
+    # {'label': "Espa\u00f1ol", 'value': "es"},
+    # {'label': "Fran\u00e7ais", 'value': "fr"},
+    # {'label': "한국어", 'value': "ko"},
+    # {'label': "简体中文", 'value': "zh"},
+]
 
 # Used for Heroku deployment
 server = app.server
@@ -47,19 +75,129 @@ app.index_string = '''
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
+    dcc.Location(id='url-read'),
+
+    html.Div(className='grid-header', children=[
+        html.Div(className='card-header', children=[
+            desc.header
+        ]),
+        html.Div(className='card-header', children=[
+            html.Div(id='header-left', children=[
+                html.Div(className='grid-settings', children=[
+                    html.Div(className='card-settings', children=[
+                        html.Div("Language: ", className='settings-header'),
+                        dcc.Dropdown(id='lang-setting',
+                                     options=languages,
+                                     value="",
+                                     searchable=False,
+                                     clearable=False)
+                    ]),
+                    html.Div(className='card-settings', children=[
+                        html.Div("Units: ", className='settings-header'),
+                        dcc.Dropdown(id='units-setting',
+                                     options=unit_settings,
+                                     value="",
+                                     searchable=False,
+                                     clearable=False)
+                    ]),
+                    html.Div(className='card-settings', children=[
+                        html.Div("Mode: ", className='settings-header'),
+                        dcc.Dropdown(id='app-mode',
+                                     options=app_modes,
+                                     value="",
+                                     searchable=False,
+                                     clearable=False)
+                    ]),
+                ]),
+
+            ])
+        ]),
+    ]),
+
+    html.Br(),
+
     html.Div(id='page-content')
 ])
 
 
+# Updates page content and app dropdown based on URL
 @app.callback(
-    Output('page-content', 'children'),
+    [Output('page-content', 'children'),
+     Output('app-mode', 'value')],
     [Input('url', 'pathname')]
 )
 def display_page(pathname):
-    if pathname == '/apps/advanced':
-        return advanced.layout
+    if pathname == '/apps/advanced' or pathname == '/apps/advanced/':
+        return [advanced.layout, 'advanced']
     else:
-        return default.layout
+        return [default.layout, 'basic']
+
+
+# Updates URL based on menu dropdowns (language, units, mode)
+@app.callback(
+    Output('url', 'search'),
+    [Input('units-setting', 'value'),
+     Input('lang-setting', 'value'),
+     Input('url-read', 'search')]
+)
+def update_units_search(units, lang, search):
+    # if nothing is selected in our dropdown, that means we just loaded the page
+    if units == "":
+        return search
+
+    units_str = ""
+    if units == 'metric':
+        units_str = "units=metric"
+    elif units == 'british':
+        units_str = ""
+
+    lang_str = ""
+    if lang == 'en':
+        lang_str = ""
+    elif lang == 'fr':
+        lang_str = "lang=fr"
+
+    search_terms = [units_str, lang_str]
+    search_str = ""
+    for term in search_terms:
+        if term != "":
+            if search_str == "":
+                search_str = "?" + term
+            else:
+                search_str = search_str + "&" + term
+
+    return search_str
+
+
+# Updates menu dropdowns language and units based on URL search terms.
+@app.callback(
+    [Output('units-setting', 'value'),
+     Output('lang-setting', 'value')],
+    [Input('url', 'search')]
+)
+def update_dropdowns(search):
+    params = ess.search_to_params(search)
+    my_units = "british"
+    if "units" in params:
+        my_units = params["units"]
+
+    my_lang = "en"
+    if "lang" in params:
+        my_lang = params["lang"]
+
+    return [my_units, my_lang]
+
+
+# Updates URL pathname based on mode dropdown
+@app.callback(
+    Output('url', 'pathname'),
+    [Input('app-mode', 'value')]
+)
+def update_app_mode(mode):
+    if mode == 'basic':
+        return "/"
+    elif mode == 'advanced':
+        return "/apps/advanced"
 
 
 if __name__ == "__main__":

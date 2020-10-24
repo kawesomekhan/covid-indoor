@@ -29,6 +29,15 @@ h5 {
     padding-left: 1em
 }
 
+#header-left {
+    font-size: 13px;
+}
+
+.settings-header {
+    font-size: 13px;
+    color: #de1616;
+}
+
 /* Small-width/mobile layout */
 @media only screen and (max-width: 960px) {
     body {

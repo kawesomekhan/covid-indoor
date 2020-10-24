@@ -9,6 +9,7 @@ from indoors import Indoors
 
 from app import app
 import descriptions as desc
+import descriptions_fr as desc_fr
 import essentials as ess
 
 """
@@ -212,9 +213,6 @@ layout = html.Div(children=[
         is_open=False,
     ),
 
-    desc.header,
-
-    html.Br(),
     html.Div(
         className='main-content',
         children=html.Div(
@@ -236,11 +234,11 @@ layout = html.Div(children=[
                                 className='custom-tab',
                                 children=[
                                           html.H6("Room Specifications"),
-                                          html.Div(["Floor Area (sq. ft.): ",
+                                          html.Div([html.Span(desc.floor_area_text, id='floor-area-text'),
                                                     dcc.Input(id='floor-area', value=900,
                                                               type='number')]),
                                           html.Br(),
-                                          html.Div(["Ceiling Height (ft.): ",
+                                          html.Div([html.Span(desc.ceiling_height_text, id='ceiling-height-text'),
                                                     dcc.Input(id='ceiling-height', value=12,
                                                               type='number')]),
                                           html.Br(),
@@ -272,9 +270,9 @@ layout = html.Div(children=[
                                                                  searchable=False,
                                                                  clearable=False)]),
                                           html.Br(),
-                                          html.Div('''Need more control over your inputs? Check out 
-                                          Advanced Mode by clicking the button at the bottom of the 
-                                          page.'''),
+                                          html.Div('''Need more control over your inputs? Switch to 
+                                          Advanced Mode using the dropdown at the top of the 
+                                          page!'''),
                                 ],
                                 style=tab_style,
                                 selected_style=tab_style_selected
@@ -342,9 +340,9 @@ layout = html.Div(children=[
                                                     ]),
                                           html.Br(),
                                           html.Br(),
-                                          html.Div('''Need more control over your inputs? Check out 
-                                          Advanced Mode by clicking the button at the bottom of the 
-                                          page.'''),
+                                          html.Div('''Need more control over your inputs? Switch to 
+                                          Advanced Mode using the dropdown at the top of the
+                                          page!'''),
                                 ],
                                 style=tab_style,
                                 selected_style=tab_style_selected
@@ -529,22 +527,30 @@ layout = html.Div(children=[
             ]
         ),
     ),
-    html.Br(),
-    html.Div([
-        dcc.Link(
-            href='/apps/advanced',
-            children=[
-                html.Button(
-                    className='link-button',
-                    children=[
-                        html.Span('Advanced Mode ')
-                    ],
-                )
-            ]
-        )
-    ], style={'float': 'right',
-              'padding-bottom': '10px'}),
 ])
+
+
+# Updates labels depending on selected unit system
+@app.callback(
+    [Output('floor-area-text', 'children'),
+     Output('ceiling-height-text', 'children')],
+    [Input('url', 'search')]
+)
+def update_units(search):
+    params = ess.search_to_params(search)
+    my_units = "british"
+    if "units" in params:
+        my_units = params["units"]
+
+    desc_file = desc
+    if "lang" in params:
+        if params["lang"] == "fr":
+            desc_file = desc_fr
+
+    if my_units == "british":
+        return [desc_file.floor_area_text, desc_file.ceiling_height_text]
+    else:
+        return [desc_file.floor_area_text_metric, desc_file.ceiling_height_text_metric]
 
 
 # Model Update & Calculation
@@ -586,11 +592,12 @@ layout = html.Div(children=[
      Input('mask-fit', 'value'),
      Input('risk-tolerance', 'value'),
      Input('aerosol-radius', 'value'),
-     Input('viral-deact-rate', 'value')]
+     Input('viral-deact-rate', 'value'),
+     Input('url', 'search')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
                   breathing_flow_rate, infectiousness, mask_passage_prob, mask_fit, risk_tolerance, aerosol_radius,
-                  viral_deact_rate):
+                  viral_deact_rate, search):
     error_msg = ""
 
     # Make sure none of our values are none
@@ -609,6 +616,17 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
+
+    # Check our units!
+    params = ess.search_to_params(search)
+    my_units = "british"
+    if "units" in params:
+        my_units = params["units"]
+
+    # If metric, convert floor_area and ceiling_height to feet
+    if my_units == "metric":
+        floor_area = floor_area * 10.764
+        ceiling_height = ceiling_height * 3.281
 
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
     preset_dd_value = 'custom'
@@ -652,7 +670,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Update the red text output with new model calculations
     model_output_text = ess.get_model_output_text(myInd)
     six_ft_text = ess.get_six_ft_text(myInd)
-    interest_output = ess.get_interest_output_text(myInd)
+    interest_output = ess.get_interest_output_text(myInd, my_units)
 
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
