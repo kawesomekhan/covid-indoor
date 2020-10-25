@@ -79,13 +79,13 @@ app.layout = html.Div([
 
     html.Div(className='grid-header', children=[
         html.Div(className='card-header', children=[
-            desc.header
+            html.Span(desc.header, id='header-text')
         ]),
         html.Div(className='card-header', children=[
             html.Div(id='header-left', children=[
                 html.Div(className='grid-settings', children=[
                     html.Div(className='card-settings', children=[
-                        html.Div("Language: ", className='settings-header'),
+                        html.Div(html.Span(desc.language_dd, id='language-dd'), className='settings-header'),
                         dcc.Dropdown(id='lang-setting',
                                      options=languages,
                                      value="",

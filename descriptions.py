@@ -23,6 +23,7 @@ error_list = {
     "merv": "Error: Filtration System (MERV) cannot be empty."
 }
 
+# Header
 header = html.Div([
         html.H1(children='MIT COVID-19 Indoor Safety Guideline'),
         html.Div([
@@ -57,6 +58,9 @@ header = html.Div([
             ]),
         ], style={'font-size': '13px'})
 ])
+
+# Menu dropdowns
+language_dd = "Language: "
 
 about = html.Div([
     html.H6("About"),

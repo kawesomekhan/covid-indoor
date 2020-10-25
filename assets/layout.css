@@ -135,6 +135,7 @@ body {
 
     #header-left {
         padding: 0;
+        width: auto
     }
 
     .grid {
