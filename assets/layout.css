@@ -30,7 +30,7 @@ body {
 .grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    grid-auto-rows: 675px 250px;
+    grid-auto-rows: 694px 250px;
     padding: 0;
 }
 

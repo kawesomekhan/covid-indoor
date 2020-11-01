@@ -5,12 +5,6 @@ descriptions.py contains all text-heavy descriptions used throughout the app (Ba
 
 """
 
-floor_area_text = "Floor area (sq. ft.): "
-floor_area_text_metric = "Floor area (m²): "
-
-ceiling_height_text = "Ceiling height (ft.): "
-ceiling_height_text_metric = "Ceiling height (m): "
-
 error_list = {
     "floor_area": "Error: floor area cannot be empty.",
     "ceiling_height": "Error: ceiling height cannot be empty.",
@@ -61,36 +55,58 @@ header = html.Div([
 
 # Menu dropdowns
 language_dd = "Language: "
+units_dd = "Units: "
+mode_dd = "Mode: "
 
+# Unit systems
+unit_settings = [
+    {'label': "British", 'value': "british"},
+    {'label': "Metric", 'value': "metric"},
+]
+
+# Modes
+app_modes = [
+    {'label': "Basic", 'value': "basic"},
+    {'label': "Advanced", 'value': "advanced"},
+]
+
+# Tabs
+about_header = "About"
+room_header = "Room Specifications"
+human_header = "Human Behavior"
+faq_header = "Frequently Asked Questions"
+
+# About
 about = html.Div([
-    html.H6("About"),
-    html.Div('''
-        COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
-        enclosed spaces via tiny, infective aerosol droplets suspended in the air.
-        To mitigate this spread, official public health guidelines have taken the form 
-        of minimum social distancing rules (6 feet in the U.S.) or maximum occupancy 
-        (25 people in Massachusetts). 
-    '''),
+    html.H6("About", style={'margin': '0'}),
+    html.Div('''To mitigate the spread of COVID-19, official guidelines recommend social 
+    distancing by setting limits on: distance (1-2 meters in Europe), time (15 minutes in the U.S.), or maximum 
+    occupancy (25 people in Massachusetts). However, public health organizations have been slow to acknowledge the 
+    role of airborne transmission as revealed by increasing scientific evidence.'''),
     html.Br(),
-    html.Div('''
-        However, public health has been slow to catch up with rapidly advancing science.
-        Naturally, the risk of COVID-19 transmission would not only depend on physical 
-        distance, but also on factors such as exposure time, mask usage, and ventilation
-        systems, among other factors.
-    '''),
+    html.Div('''Airborne transmission occurs via infectious aerosols released by 
+    breathing, speaking, or coughing, and may be mixed throughout an indoor space by ambient air currents. Indoor 
+    COVID-19 transmission risk is therefore affected by multiple factors like exposure time, ventilation, filtration, 
+    and masks.'''),
     html.Br(),
-    html.Div('''
-        This app uses a mathematical model, developed by MIT professors Martin Z. Bazant 
-        and John Bush, to improve upon
-        current distancing guidelines by providing a more accurate description of
-        indoor COVID-19 transmission risk.
-    '''),
+    html.Div('''This app, developed by Kasim Khan in collaboration with MIT professors Martin Z. Bazant and John W. 
+    M. Bush, uses a mathematical model by Bazant & Bush to calculate safe exposure times for indoor spaces at varying 
+    occupancy levels.'''),
     html.Br(),
-    html.Div('''
-        Adjust parameters in the other tabs and see how different spaces handle
-        indoor COVID-19 transmission.
-    '''),
+    html.Div('''Adjust room size, ventilation/filtration, human activity, and your risk tolerance in the other 
+    tabs and see how different spaces handle indoor COVID-19 transmission.'''),
 ])
+
+# Room Specifications
+floor_area_text = "Floor area (sq. ft.): "
+floor_area_text_metric = "Floor area (m²): "
+
+ceiling_height_text = "Ceiling height (ft.): "
+ceiling_height_text_metric = "Ceiling height (m): "
+
+ventilation_text = "Ventilation System: "
+filtration_text = "Filtration System: "
+
 
 assumptions_layout = html.Div([
     html.Div([

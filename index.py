@@ -15,18 +15,6 @@ Advanced Mode), Unit Systems, Languages, and running the app.
 
 """
 
-# Unit systems
-unit_settings = [
-    {'label': "British", 'value': "british"},
-    {'label': "Metric", 'value': "metric"},
-]
-
-# Modes
-app_modes = [
-    {'label': "Basic", 'value': "basic"},
-    {'label': "Advanced", 'value': "advanced"},
-]
-
 # Languages
 languages = [
     # {'label': "العربية", 'value': "ar"},
@@ -93,17 +81,17 @@ app.layout = html.Div([
                                      clearable=False)
                     ]),
                     html.Div(className='card-settings', children=[
-                        html.Div("Units: ", className='settings-header'),
+                        html.Div(html.Span(desc.units_dd, id='units-dd'), className='settings-header'),
                         dcc.Dropdown(id='units-setting',
-                                     options=unit_settings,
+                                     options=desc.unit_settings,
                                      value="",
                                      searchable=False,
                                      clearable=False)
                     ]),
                     html.Div(className='card-settings', children=[
-                        html.Div("Mode: ", className='settings-header'),
+                        html.Div(html.Span(desc.mode_dd, id='mode-dd'), className='settings-header'),
                         dcc.Dropdown(id='app-mode',
-                                     options=app_modes,
+                                     options=desc.app_modes,
                                      value="",
                                      searchable=False,
                                      clearable=False)

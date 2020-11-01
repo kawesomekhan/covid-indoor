@@ -45,6 +45,7 @@ presets = [
     {'label': "Quiet Office", 'value': 'office'},
     {'label': "Classroom Lecture", 'value': 'classroom'},
     {'label': "MTA Subway Car", 'value': 'subway'},
+    {'label': "Boeing 737", 'value': 'airplane'},
     {'label': "Church", 'value': 'church'},
 ]
 
@@ -107,6 +108,16 @@ preset_settings = {
         'recirc-rate': 1,
         'exertion': 0.54,
         'exp-activity': 29,
+        'masks': 0.25
+    },
+    'airplane': {
+        'floor-area': 1440,
+        'ceiling-height': 6.7,
+        'ventilation': 24,
+        'filtration': 17,
+        'recirc-rate': 24,
+        'exertion': 0.54,
+        'exp-activity': 72,
         'masks': 0.25
     },
     'church': {
@@ -182,6 +193,16 @@ preset_settings_metric = {
         'exp-activity': 29,
         'masks': 0.25
     },
+    'airplane': {
+        'floor-area': 134,
+        'ceiling-height': 2,
+        'ventilation': 24,
+        'filtration': 17,
+        'recirc-rate': 24,
+        'exertion': 0.54,
+        'exp-activity': 72,
+        'masks': 0.25
+    },
     'church': {
         'floor-area': 177,
         'ceiling-height': 9,
@@ -205,7 +226,7 @@ ventilation_types = [
     {'label': "Laboratory, Restaurant", 'value': 9},
     {'label': "Bar", 'value': 15},
     {'label': "Hospital/Subway Car", 'value': 18},
-    {'label': "Toxic Laboratory", 'value': 25},
+    {'label': "Toxic Laboratory/Airplane", 'value': 24},
 ]
 
 filter_default = preset_settings['classroom']['filtration']
@@ -224,6 +245,7 @@ recirc_types = [
     {'label': "Slow", 'value': 0.3},
     {'label': "Moderate", 'value': 1},
     {'label': "Fast", 'value': 10},
+    {'label': "Airplane", 'value': 24},
     {'label': "Subway Car", 'value': 54},
 ]
 
@@ -296,17 +318,17 @@ layout = html.Div(children=[
                     children=[
                         dcc.Tabs(value='tab-1', children=[
                             dcc.Tab(
-                                label='About',
+                                label=desc.about_header,
                                 className='custom-tab',
-                                children=desc.about,
+                                children=html.Span(desc.about, id='about-text'),
                                 style=tab_style,
                                 selected_style=tab_style_selected
                             ),
                             dcc.Tab(
-                                label='Room Specifications',
+                                label=desc.room_header,
                                 className='custom-tab',
                                 children=[
-                                          html.H6("Room Specifications"),
+                                          html.H6(html.Span(desc.room_header, id='about-header-body')),
                                           html.Div([html.Span(desc.floor_area_text, id='floor-area-text'),
                                                     dcc.Input(id='floor-area', value=900,
                                                               type='number')]),
@@ -315,7 +337,7 @@ layout = html.Div(children=[
                                                     dcc.Input(id='ceiling-height', value=12,
                                                               type='number')]),
                                           html.Br(),
-                                          html.Div(["Ventilation System: ",
+                                          html.Div([html.Span(desc.ventilation_text, id='ventilation-text'),
                                                     html.Span(className='model-output-text-small',
                                                               id='ventilation-type-output'),
                                                     dcc.Dropdown(id='ventilation-type',
@@ -325,7 +347,7 @@ layout = html.Div(children=[
                                                                  clearable=False)
                                                     ]),
                                           html.Br(),
-                                          html.Div(["Filtration System: ",
+                                          html.Div([html.Span(desc.filtration_text, id='filtration-text'),
                                                     html.Span(className='model-output-text-small',
                                                               id='filter-type-output'),
                                                     dcc.Dropdown(id='filter-type',
