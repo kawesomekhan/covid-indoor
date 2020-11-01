@@ -5,6 +5,57 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 
 """
 
+# Default dropdown options shared between basic mode and advanced mode
+exertion_types = [
+    {'label': "Resting", 'value': 0.49},
+    {'label': "Standing", 'value': 0.54},
+    {'label': "Light Exercise", 'value': 1.38},
+    {'label': "Moderate Exercise", 'value': 2.35},
+    {'label': "Heavy Exercise", 'value': 3.30},
+]
+
+expiratory_types = [
+    {'label': "Breathing (light)", 'value': 1.1},
+    {'label': "Breathing (normal)", 'value': 4.2},
+    {'label': "Breathing (heavy)", 'value': 8.8},
+    # {'label': "Breathing (fast-deep)", 'value': 8.5},
+    {'label': "Talking (whisper)", 'value': 29},
+    # {'label': "Speaking (whispered counting)", 'value': 37},
+    {'label': "Talking (normal)", 'value': 72},
+    # {'label': "Speaking (voiced counting)", 'value': 72},
+    {'label': "Talking (loud)", 'value': 142},
+    # {'label': "Singing (whispered 'aah')", 'value': 103},
+    {'label': "Singing", 'value': 970},
+]
+
+mask_fit_marks = {
+   0: {'label': '0%: None', 'style': {'max-width': '50px'}},
+   0.5: {'label': '50%: Poor'},
+   0.95: {'label': '95%: Good'}
+}
+
+risk_tol_marks = {
+     0.01: {'label': '0.01: Safest', 'style': {'max-width': '50px'}},
+     0.1: {'label': '0.10: Safe', 'style': {'max-width': '50px'}},
+     1: {'label': '1.00: Unsafe'}
+}
+
+# CSS Styles for Tabs (currently known issue in Dash with overriding default css)
+tab_style = {
+    'padding-left': '1em',
+    'padding-right': '1em',
+    'border-color': '#DDDDDD',
+    'font-size': '14px'
+}
+
+tab_style_selected = {
+    'padding-left': '1em',
+    'padding-right': '1em',
+    'border-color': '#DDDDDD',
+    'border-top-color': '#de1616',
+    'font-size': '14px'
+}
+
 # Nmax values for main red text output
 model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
 model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
@@ -112,7 +163,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60),  # m3/hr to ft3/min
-            '{:,.2f} quanta/hr'.format(infectiousness),
+            '{:,.2f} quanta/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
             '{:,.2f}'.format(mask_pass_prob),
             '{:,.0f} ft\u00B3'.format(indoor_model.room_vol),
             '{:,.0f} ft\u00B3/min'.format(indoor_model.fresh_rate),
@@ -127,7 +178,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} m\u00B3/hr'.format(breathing_flow_rate),
-            '{:,.2f} quanta/hr'.format(infectiousness),
+            '{:,.2f} quanta/m\u00B3'.format(infectiousness),
             '{:,.2f}'.format(mask_pass_prob),
             '{:,.0f} m\u00B3'.format(indoor_model.room_vol / 35.315),  # ft3 to m3
             '{:,.0f} m\u00B3/hr'.format(indoor_model.fresh_rate / 35.3147 * 60),  # ft3/min to m3/hr
