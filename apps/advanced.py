@@ -4,6 +4,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
+import covid_room_viz
+
 import indoors as ind
 from indoors import Indoors
 
@@ -387,12 +389,37 @@ layout = html.Div(children=[
                                   html.Div('''based on airborne transmission only''', className='airborne-text')
                              ])
                         ]
-                    )
+                    ),
+                    html.Div(
+                        className='card',
+                        children=html.Div(className='output-content', children=[
+
+                        ])
+                    ),
+                    html.Div(
+                        className='card',
+                        children=html.Div(className='output-content', children=[
+                            covid_room_viz.CovidRoomViz(id='visualizer',
+                                                        label='my-label',
+                                                        floorArea=83.6,
+                                                        ceilingHeight=3.66,)
+                        ], style={'padding': '0'})
+                    ),
                 ]
             ),
         ]
     ),
 ])
+
+
+# Update visualizer
+@app.callback(
+    Output('visualizer', 'floorArea'),
+    [Input('adv-floor-area', 'value')]
+)
+def update_viz_floor_area(floor_area):
+    print("Updating floor area..." + str(floor_area))
+    return floor_area
 
 
 # Updates labels based on unit system

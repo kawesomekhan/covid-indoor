@@ -115,6 +115,11 @@ body {
     border-radius: 0.25rem;
 }
 
+#visualizer {
+    height: 100%;
+    width: 100%;
+}
+
 /* Small-width/mobile layout */
 @media only screen and (max-width: 1120px) {
     .grid-settings {
