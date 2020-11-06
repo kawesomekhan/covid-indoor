@@ -1,18 +1,18 @@
 import dash_html_components as html
 
 """
-descriptions.py contains all text-heavy descriptions used throughout the app (Basic, Advanced Mode).
+descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
 
 """
 
 error_list = {
-    "floor_area": "Error: floor area cannot be empty.",
-    "ceiling_height": "Error: ceiling height cannot be empty.",
-    "recirc_rate": "Error: recirculation rate cannot be empty.",
-    "aerosol_radius": "Error: aerosol radius cannot be empty.",
-    "viral_deact_rate": "Error: viral deactivation rate cannot be empty.",
-    "n_max_input": "Error: number of people cannot be less than 2.",
-    "exp_time_input": "Error: exposure time must be greater than 0.",
+    "floor_area": "Error: Floor area cannot be empty.",
+    "ceiling_height": "Error: Ceiling height cannot be empty.",
+    "recirc_rate": "Error: Recirculation rate cannot be empty.",
+    "aerosol_radius": "Error: Minimum aerosol radius cannot be empty.",
+    "viral_deact_rate": "Error: Maximum viral deactivation rate cannot be empty.",
+    "n_max_input": "Error: Number of people cannot be less than 2.",
+    "exp_time_input": "Error: Exposure time must be greater than 0.",
     "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
     "merv": "Error: Filtration System (MERV) cannot be empty."
 }
@@ -114,6 +114,8 @@ filtration_text_adv = "Filtration System (MERV): "
 recirc_text = "Recirculation Rate: "
 recirc_text_adv = "Recirculation Rate (recirculation ACH): "
 
+humidity_text = "Relative Humidity: "
+
 need_more_ctrl_text = '''Need more control over your inputs? Switch to Advanced Mode using the dropdown at the top of 
                          the page!'''
 
@@ -169,7 +171,7 @@ assumptions_layout = html.Div([
                accounts for the buildup of infectious aerosols in the air 
                after the entrance of an infected person, and the
                steady-state bound, which is reached after the
-               relaxation time \u03BBc\u03C4 >> 1. The results reported in this
+               relaxation time \u03BBc\u03C4 >> 1. This value is usually 3-20. The results reported in this
                app are derived from the transient bound. 
             '''),
             html.Div('''
@@ -178,14 +180,6 @@ assumptions_layout = html.Div([
                this is estimated to lie in the range of 0 to 0.63/hr. This
                can be increased by ultraviolet radiation (UV-C) or chemical
                disinfectants (e.g. hydrogen peroxide, ozone).
-            '''),
-            html.Div('''- The mean respiratory aerosol droplet size r\u0305 is set by the drop-size distribution,
-               and varies between different people
-               and types of respiration. This mean size can also affect the infectivity
-               of the aerosol droplets. However, a typical range for the most
-               common and most infectious droplets is 2-3 \u03bcm, which is
-               roughly consistent with the standard definition of aerosol
-               droplets in the literature (r\u0305 < 5 \u03bcm).
             '''),
             html.Div('''- MERV filtration efficiencies estimated using ASHRAE Standard 52.2-2017 Minimum Efficiency 
                 Reporting Value (MERV)'''),
@@ -236,15 +230,15 @@ faq_top = html.Div([
 faq_other_params_text = html.Div([
     html.H5("Does the model assume any other parameters?"),
     html.Div('''The model assumes a well-mixed room, but all parameters are based on scientific studies of COVID-19 
-    and aerosol transmission. Based on current scientific literature, the model assumes a minimum aerosol radius (
-    i.e. at ~0% humidity) of 1-3 μm and a maximum viral deactivation rate (i.e. at ~100% humidity) of 0.6 /hr, 
+    and aerosol transmission. Based on current scientific literature, the model assumes a default aerosol radius (
+    at 60% humidity) of 1-3 μm and a maximum viral deactivation rate (at ~100% humidity) of 0.6 /hr, 
     which can be reduced by ultraviolet radiation (UV-C) or chemical disinfectants (H₂O₂, O₃). Aerosol radius scales 
-    inversely with relative humidity. Viral deactivation rate scales directly with relative humidity as has been 
+    directly with relative humidity. Viral deactivation rate also scales directly with relative humidity as has been 
     established for influenza A and errs on the conservative side of slower deactivation. These can be 
     modified below:''', className='faq-answer'),
 ])
-aerosol_radius_text = "Minimum Aerosol Radius r\u0305 (\u03bcm): "
-viral_deact_text = html.Span(["Maximum Viral Deactivation Rate \u03BB", html.Sub('v'), " (/hr): "])
+aerosol_radius_text = "Default Aerosol Radius r\u0305 (\u03bcm): "
+viral_deact_text = html.Span(["Maximum Viral Deactivation Rate \u03BB", html.Sub('vmax'), " (/hr): "])
 
 values_interest_header = "Calculated Values of Interest: "
 values_interest_desc = html.Div([
@@ -263,7 +257,9 @@ room_vol_label = html.Span(["Room volume V: "])
 vent_rate_Label = html.Span(["Ventilation (outdoor) flow rate Q: "])
 recirc_rate_label = html.Span(["Return (recirculation) flow rate Q", html.Sub('f'), ": "])
 air_filt_label = html.Span(["Air filtration rate (\u03BB", html.Sub('f'), "): "])
-sett_speed_label = html.Span(["Effective aerosol settling speed v\u209B(r\u0305): "])
+eff_aerosol_rad_label = html.Span(["Effective aerosol radius r\u0305", html.Sub('eff'), ": "])
+viral_deact_label = html.Span(["Viral deactivation rate \u03BB", html.Sub('v'), ": "])
+sett_speed_label = html.Span(["Effective aerosol settling speed v\u209B(r\u0305", html.Sub('eff'), "): "])
 conc_relax_rate_label = html.Span(["Concentration relaxation rate \u03BB", html.Sub('c'), ": "])
 airb_trans_label = html.Span(["Airborne transmission rate \u03B2\u2090: "])
 
@@ -319,5 +315,20 @@ t_input_text_2 = " hours here, the occupancy should be limited to "
 t_input_text_3 = "."
 
 airb_trans_only_disc = html.Div('''based on consideration of airborne transmission only.''', className='airborne-text')
+
+footer = html.Div([
+    html.Div('''The MIT COVID-19 Indoor Safety Guideline is an evolving tool intended to familiarize the interested 
+    user with the factors influencing the risk of indoor airborne transmission of COVID-19, and to assist in the 
+    quantitative assessment of risk in various settings. We note that uncertainty in and intrinsic variability of 
+    model parameters may lead to errors as large as an order of magnitude, which may be compensated for by choosing a 
+    sufficiently small risk tolerance. Our guideline does not take into account short-range transmission through 
+    respiratory jets, which may substantially elevate risk when face masks are not being worn, in a manner discussed 
+    in the accompanying manuscript (Bazant & Bush, 2020). Use of the MIT COVID-19 Indoor Safety Guideline is the sole 
+    responsibility of the user. It is being made available without guarantee or warranty of any kind. The authors do 
+    not accept any liability from its use. ''', style={'font-size': '13px'}),
+    html.Br(),
+    html.Div("Special Thanks: William H. Green, David Keating, Marc Rosenbaum, David Stark, Ann Kinzig, "
+             "Michelle Quien, Caeli MacLennan", style={'font-size': '13px'})
+])
 
 

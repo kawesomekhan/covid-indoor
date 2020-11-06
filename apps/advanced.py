@@ -31,19 +31,13 @@ def update_n_output: Returns transient n max based on exposure time
 def update_presets: Updates options based on selected presets
 def update_risk_tol_disp: Update risk tolerance display value
 def update_mask_fit_disp: Updates mask fit/compliance filtration display based on slider value
+
+TODO: Add presets
 """
 
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd)
-
-mask_type_marks = {
-    0: {'label': "0% (none)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (quilter's cotton)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (silk, flannel, chiffon)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (surgical, cotton)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (N95 respirator)", 'style': {'max-width': '50px'}},
-}
 
 # Main App
 layout = html.Div(children=[
@@ -95,6 +89,16 @@ layout = html.Div(children=[
                                     html.Div([html.Span(desc.recirc_text_adv, id='adv-recirc-text'),
                                               dcc.Input(id='adv-recirc-rate', value=1,
                                                         type='number')]),
+                                    html.Br(),
+                                    html.Div([html.Span(desc.humidity_text, id='adv-humidity-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='adv-humidity-output'),
+                                              dcc.Slider(id='adv-relative-humidity',
+                                                         min=0,
+                                                         max=0.99,
+                                                         step=0.01,
+                                                         value=0.6,
+                                                         marks=ess.humidity_marks)]),
                                 ],
                                 style=ess.tab_style,
                                 selected_style=ess.tab_style_selected
@@ -126,7 +130,7 @@ layout = html.Div(children=[
                                                          max=1,
                                                          step=0.01,
                                                          value=0.75,
-                                                         marks=mask_type_marks)]),
+                                                         marks=ess.mask_type_marks)]),
                                     html.Br(),
                                     html.Br(),
                                     html.Div([html.Span(desc.mask_fit_text, id='adv-mask-fit-text'),
@@ -169,7 +173,7 @@ layout = html.Div(children=[
                                     html.Br(),
                                     html.Div([html.Span(desc.viral_deact_text, id='adv-viral-deact-text'),
                                               dcc.Input(id='adv-viral-deact-rate',
-                                                        value=0.3,
+                                                        value=0.6,
                                                         type='number')]),
                                     html.Br(),
                                     html.H6(html.Span(desc.values_interest_header, id='adv-val-interest-header')),
@@ -211,6 +215,14 @@ layout = html.Div(children=[
                                                   html.Span(
                                                       className='model-output-text-small',
                                                       id='adv-air-filt-rate-output')]),
+                                        html.Div([html.Span(desc.eff_aerosol_rad_label, id='adv-eff-rad-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='adv-eff-rad-output')]),
+                                        html.Div([html.Span(desc.viral_deact_label, id='adv-viral-deact-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='adv-viral-deact-output')]),
                                         html.Div([html.Span(desc.sett_speed_label, id='adv-sett-speed-label'),
                                                   html.Span(
                                                       className='model-output-text-small',
@@ -369,6 +381,8 @@ def update_units(search):
      Output('adv-fresh-rate-output', 'children'),
      Output('adv-recirc-rate-output', 'children'),
      Output('adv-air-filt-rate-output', 'children'),
+     Output('adv-eff-rad-output', 'children'),
+     Output('adv-viral-deact-output', 'children'),
      Output('adv-sett-speed-output', 'children'),
      Output('adv-conc-relax-output', 'children'),
      Output('adv-airb-trans-output', 'children'),
@@ -381,6 +395,7 @@ def update_units(search):
      Input('adv-ventilation-type', 'value'),
      Input('adv-recirc-rate', 'value'),
      Input('adv-filter-type', 'value'),
+     Input('adv-relative-humidity', 'value'),
      Input('adv-exertion-level', 'value'),
      Input('adv-exp-activity', 'value'),
      Input('adv-mask-type', 'value'),
@@ -392,30 +407,11 @@ def update_units(search):
      Input('adv-t-input', 'value'),
      Input('url', 'search')]
 )
-def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
-                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, aerosol_radius,
-                  viral_deact_rate, n_max_input, exp_time_input, search):
-    error_msg = ""
-
-    # Make sure none of our values are none
-    if floor_area is None:
-        error_msg = desc.error_list["floor_area"]
-    elif ceiling_height is None:
-        error_msg = desc.error_list["ceiling_height"]
-    elif recirc_rate is None:
-        error_msg = desc.error_list["recirc_rate"]
-    elif aerosol_radius is None:
-        error_msg = desc.error_list["aerosol_radius"]
-    elif viral_deact_rate is None:
-        error_msg = desc.error_list["viral_deact_rate"]
-    elif n_max_input is None or n_max_input < 2:
-        error_msg = desc.error_list["n_max_input"]
-    elif exp_time_input == 0 or exp_time_input is None:
-        error_msg = desc.error_list["exp_time_input"]
-    elif air_exchange_rate == 0 or air_exchange_rate is None:
-        error_msg = desc.error_list["air_exchange_rate"]
-    elif merv is None:
-        error_msg = desc.error_list["merv"]
+def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
+                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, def_aerosol_radius,
+                  max_viral_deact_rate, n_max_input, exp_time_input, search):
+    error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
+                                max_viral_deact_rate)
 
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -423,13 +419,10 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, error_msg, True
+               dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
     # Check our units!
-    params = ess.search_to_params(search)
-    my_units = "british"
-    if "units" in params:
-        my_units = params["units"]
+    my_units = ess.get_units(search)
 
     # If metric, convert floor_area and ceiling_height to feet
     if my_units == "metric":
@@ -442,15 +435,15 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     mask_passage_prob = 1 - mask_real_eff
 
     # Calculate aerosol filtration efficiency
-    aerosol_filtration_eff = Indoors.merv_to_eff(merv, aerosol_radius)
+    aerosol_filtration_eff = Indoors.merv_to_eff(merv, def_aerosol_radius)
 
     # Convert recirc rate to outdoor air fraction
     outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + recirc_rate)
 
     myInd.physical_params = [floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction,
-                             aerosol_filtration_eff]
-    myInd.physio_params = [breathing_flow_rate, aerosol_radius]
-    myInd.disease_params = [infectiousness, viral_deact_rate]
+                             aerosol_filtration_eff, relative_humidity]
+    myInd.physio_params = [breathing_flow_rate, def_aerosol_radius]
+    myInd.disease_params = [infectiousness, max_viral_deact_rate]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     myInd.calc_vars()
 
@@ -474,8 +467,17 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
            six_ft_text, interest_output[0], interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
-           interest_output[8], interest_output[9], interest_output[10], interest_output[11], exp_time_text, \
-           n_max_text, error_msg, False
+           interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
+           interest_output[13], exp_time_text, n_max_text, error_msg, False
+
+
+# Relative Humidity slider value display
+@app.callback(
+    [Output('adv-humidity-output', 'children')],
+    [Input('adv-relative-humidity', 'value')]
+)
+def update_humid_disp(relative_humidity):
+    return ["{:.0f}%".format(relative_humidity * 100)]
 
 
 # Risk tolerance slider value display

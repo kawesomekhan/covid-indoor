@@ -1,11 +1,21 @@
 import plotly.graph_objects as go
 
+import descriptions as desc
+
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
 
 """
 
 # Default dropdown options shared between basic mode and advanced mode
+humidity_marks = {
+    0: {'label': '0%: Very Dry', 'style': {'max-width': '50px'}},
+    0.2: {'label': '20%: Airplane', 'style': {'max-width': '50px'}},
+    0.3: {'label': '30%: Dry'},
+    0.6: {'label': '60%: Average'},
+    0.99: {'label': '99%: Dew Point'},
+}
+
 exertion_types = [
     {'label': "Resting", 'value': 0.49},
     {'label': "Standing", 'value': 0.54},
@@ -28,16 +38,32 @@ expiratory_types = [
     {'label': "Singing", 'value': 970},
 ]
 
+mask_type_marks = {
+    0: {'label': "0% (none)", 'style': {'max-width': '50px'}},
+    0.1: {'label': "10% (quilter's cotton)", 'style': {'max-width': '50px'}},
+    0.5: {'label': "50% (silk, flannel, chiffon)", 'style': {'max-width': '50px'}},
+    0.75: {'label': "75% (surgical, cotton)", 'style': {'max-width': '50px'}},
+    0.95: {'label': "95% (N95 respirator)", 'style': {'max-width': '50px'}},
+}
+
+mask_types = [
+    {'label': "None", 'value': 0},
+    {'label': "Quilter's Cotton", 'value': 0.1},
+    {'label': "Silk, Flannel, Chiffon", 'value': 0.5},
+    {'label': "Surgical, Cotton", 'value': 0.75},
+    {'label': "N95 Respirator", 'value': 0.95},
+]
+
 mask_fit_marks = {
-   0: {'label': '0%: None', 'style': {'max-width': '50px'}},
-   0.5: {'label': '50%: Poor'},
-   0.95: {'label': '95%: Good'}
+    0: {'label': '0%: None', 'style': {'max-width': '50px'}},
+    0.5: {'label': '50%: Poor'},
+    0.95: {'label': '95%: Good'}
 }
 
 risk_tol_marks = {
-     0.01: {'label': '0.01: Safest', 'style': {'max-width': '50px'}},
-     0.1: {'label': '0.10: Safe', 'style': {'max-width': '50px'}},
-     1: {'label': '1.00: Unsafe'}
+    0.01: {'label': '0.01: Safest', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: Safe', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: Unsafe'}
 }
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
@@ -56,12 +82,196 @@ tab_style_selected = {
     'font-size': '14px'
 }
 
+presets = [
+    {'label': "Custom", 'value': 'custom'},
+    {'label': "Suburban House", 'value': 'house'},
+    {'label': "Restaurant", 'value': 'restaurant'},
+    {'label': "Quiet Office", 'value': 'office'},
+    {'label': "Classroom Lecture", 'value': 'classroom'},
+    {'label': "New York City Subway Car", 'value': 'subway'},
+    {'label': "Boeing 737", 'value': 'airplane'},
+    {'label': "Church", 'value': 'church'},
+]
+
+preset_settings = {
+    'house': {
+        'floor-area': 2000,
+        'ceiling-height': 12,
+        'floor-area-metric': 2000 / 10.764,
+        'ceiling-height-metric': 12 / 10.764,
+        'ventilation': 3,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.49,
+        'exp-activity': 29,
+        'masks': 0.75
+    },
+    'classroom': {
+        'floor-area': 900,
+        'ceiling-height': 12,
+        'floor-area-metric': 900 / 10.764,
+        'ceiling-height-metric': 12 / 10.764,
+        'ventilation': 3,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.49,
+        'exp-activity': 29,
+        'masks': 0.75
+    },
+    'restaurant': {
+        'floor-area': 5000,
+        'ceiling-height': 12,
+        'floor-area-metric': 5000 / 10.764,
+        'ceiling-height-metric': 12 / 10.764,
+        'ventilation': 9,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.49,
+        'exp-activity': 72,
+        'masks': 0
+    },
+    'office': {
+        'floor-area': 10000,
+        'ceiling-height': 12,
+        'floor-area-metric': 10000 / 10.764,
+        'ceiling-height-metric': 12 / 10.764,
+        'ventilation': 8,
+        'filtration': 10,
+        'recirc-rate': 1,
+        'exertion': 0.54,
+        'exp-activity': 29,
+        'masks': 0.75
+    },
+    'subway': {
+        'floor-area': 580,
+        'ceiling-height': 10,
+        'floor-area-metric': 580 / 10.764,
+        'ceiling-height-metric': 10 / 10.764,
+        'ventilation': 18,
+        'filtration': 6,
+        'recirc-rate': 54,
+        'exertion': 0.54,
+        'exp-activity': 29,
+        'masks': 0.75
+    },
+    'bus': {
+        'floor-area': 380,
+        'ceiling-height': 10,
+        'floor-area-metric': 380 / 10.764,
+        'ceiling-height-metric': 10 / 10.764,
+        'ventilation': 8,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.54,
+        'exp-activity': 29,
+        'masks': 0.75
+    },
+    'airplane': {
+        'floor-area': 1440,
+        'ceiling-height': 6.7,
+        'floor-area-metric': 1440 / 10.764,
+        'ceiling-height-metric': 6.7 / 10.764,
+        'ventilation': 24,
+        'filtration': 17,
+        'recirc-rate': 24,
+        'exertion': 0.54,
+        'exp-activity': 72,
+        'masks': 0.75
+    },
+    'church': {
+        'floor-area': 1900,
+        'ceiling-height': 30,
+        'floor-area-metric': 1900 / 10.764,
+        'ceiling-height-metric': 30 / 10.764,
+        'ventilation': 2,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'exertion': 0.54,
+        'exp-activity': 72,
+        'masks': 0.75
+    },
+}
+
 # Nmax values for main red text output
 model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
 model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
 
 # Max time reported in the big red text output
 recovery_time = 14  # Days
+
+
+# Determines what error message we should use, if any
+def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
+                max_viral_deact_rate, n_max_input=2, exp_time_input=1):
+    error_msg = ""
+
+    # Make sure none of our values are none
+    if floor_area is None:
+        error_msg = desc.error_list["floor_area"]
+    elif ceiling_height is None:
+        error_msg = desc.error_list["ceiling_height"]
+    elif recirc_rate is None:
+        error_msg = desc.error_list["recirc_rate"]
+    elif max_aerosol_radius is None:
+        error_msg = desc.error_list["aerosol_radius"]
+    elif max_viral_deact_rate is None:
+        error_msg = desc.error_list["viral_deact_rate"]
+    elif n_max_input is None or n_max_input < 2:
+        error_msg = desc.error_list["n_max_input"]
+    elif exp_time_input == 0 or exp_time_input is None:
+        error_msg = desc.error_list["exp_time_input"]
+    elif air_exchange_rate == 0 or air_exchange_rate is None:
+        error_msg = desc.error_list["air_exchange_rate"]
+    elif merv is None:
+        error_msg = desc.error_list["merv"]
+
+    return error_msg
+
+
+# Returns unit selection based on URL search
+def get_units(search):
+    params = search_to_params(search)
+    my_units = "british"
+    if "units" in params:
+        my_units = params["units"]
+
+    return my_units
+
+
+# Gets the preset dropdown value based on given values. If no preset is found, return 'custom'
+def get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, breathing_flow_rate,
+                        infectiousness, mask_eff, units):
+    preset_dd_value = 'custom'
+    for setting_key in preset_settings:
+        setting = preset_settings[setting_key]
+
+        if units == "british":
+            is_right_volume = setting['floor-area'] == floor_area and \
+                              setting['ceiling-height'] == ceiling_height
+        elif units == "metric":
+            is_right_volume = round(setting['floor-area-metric'], 2) == floor_area and \
+                              round(setting['ceiling-height-metric'], 2) == ceiling_height
+        is_preset = is_right_volume and \
+                    setting['ventilation'] == air_exchange_rate and \
+                    setting['recirc-rate'] == recirc_rate and \
+                    setting['filtration'] == merv and \
+                    setting['exertion'] == breathing_flow_rate and \
+                    setting['exp-activity'] == infectiousness and \
+                    setting['masks'] == mask_eff
+        if is_preset:
+            preset_dd_value = setting_key
+            break
+
+    return preset_dd_value
+
+
+# # Get preset settings based on preset and units
+# def get_preset_settings(preset, units):
+#     if units == "british":
+#         return preset_settings[preset]
+#     elif units == "metric":
+#         metric_settings = preset_settings[preset]
+
 
 
 # Returns the plotly figure based on the supplied indoor model.
@@ -169,6 +379,8 @@ def get_interest_output_text(indoor_model, units):
             '{:,.0f} ft\u00B3/min'.format(indoor_model.fresh_rate),
             '{:,.0f} ft\u00B3/min'.format(indoor_model.recirc_rate),
             '{:,.2f} /hr'.format(indoor_model.air_filt_rate),
+            '{:,.2f} \u03bcm'.format(indoor_model.eff_aerosol_radius),
+            '{:,.2f} /hr'.format(indoor_model.viral_deact_rate),
             '{:,.2f} ft/min'.format(indoor_model.sett_speed * 3.281 / 60),  # m/hr to ft/min
             '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
             '{:,.2f} /hr (x10,000)'.format(indoor_model.airb_trans_rate * 10000),
@@ -184,6 +396,8 @@ def get_interest_output_text(indoor_model, units):
             '{:,.0f} m\u00B3/hr'.format(indoor_model.fresh_rate / 35.3147 * 60),  # ft3/min to m3/hr
             '{:,.0f} m\u00B3/hr'.format(indoor_model.recirc_rate / 35.3147 * 60),  # ft3/min to m3/hr
             '{:,.2f} /hr'.format(indoor_model.air_filt_rate),
+            '{:,.2f} \u03bcm'.format(indoor_model.eff_aerosol_radius),
+            '{:,.2f} /hr'.format(indoor_model.viral_deact_rate),
             '{:,.2f} m/hr'.format(indoor_model.sett_speed),
             '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
             '{:,.2f} /hr (x10,000)'.format(indoor_model.airb_trans_rate * 10000),
@@ -210,7 +424,3 @@ def search_to_params(search):
         output_dict[param_split[0]] = param_split[1]
 
     return output_dict
-
-
-
-

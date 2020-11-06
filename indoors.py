@@ -45,6 +45,8 @@ class Indoors:
     sett_speed = 0  # m/hr
     conc_relax_rate = 0  # /hr
     airb_trans_rate = 0  # /hr
+    viral_deact_rate = 0  # /hr
+    eff_aerosol_radius = 0  # um
 
     # Source: https://www.ashrae.org/technical-resources/filtration-disinfection
     # Table of MERV values corresponding to aerosol filtration efficiency, by different particle sizes (in microns)
@@ -83,14 +85,15 @@ class Indoors:
         air_exch_rate = self.physical_params[2]  # /hr
         primary_outdoor_air_fraction = self.physical_params[3]  # no units
         aerosol_filtration_eff = self.physical_params[4]  # no units
+        relative_humidity = self.physical_params[5]  # no units
 
         # Physiological Parameters
         breathing_flow_rate = self.physio_params[0]  # m3 / hr
-        aerosol_radius = self.physio_params[1]
+        max_aerosol_radius = self.physio_params[1]
 
         # Disease Parameters
         exhaled_air_inf = self.disease_params[0]  # infection quanta/m3
-        viral_deact_rate = self.disease_params[1]  # /hr
+        max_viral_deact_rate = self.disease_params[1]  # /hr
 
         # Precautionary Parameters
         mask_passage_prob = self.prec_params[0]  # no units
@@ -106,10 +109,14 @@ class Indoors:
 
         self.air_filt_rate = aerosol_filtration_eff * self.recirc_rate * 60 / self.room_vol  # /hr
 
-        self.sett_speed = 3 * (aerosol_radius / 5) ** 2  # mm/s
+        self.eff_aerosol_radius = ((0.4 / (1 - relative_humidity)) ** (1 / 3)) * max_aerosol_radius
+
+        self.viral_deact_rate = max_viral_deact_rate * relative_humidity
+
+        self.sett_speed = 3 * (self.eff_aerosol_radius / 5) ** 2  # mm/s
         self.sett_speed = self.sett_speed * 60 * 60 / 1000  # m/hr
 
-        self.conc_relax_rate = air_exch_rate + self.air_filt_rate + viral_deact_rate + self.sett_speed / mean_ceiling_height_m  # /hr
+        self.conc_relax_rate = air_exch_rate + self.air_filt_rate + self.viral_deact_rate + self.sett_speed / mean_ceiling_height_m  # /hr
 
         self.airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (room_vol_m * self.conc_relax_rate)
 
@@ -160,18 +167,19 @@ class Indoors:
         air_exchange_rate = 3  # /hr (air changes per hour (ACH))
         primary_outdoor_air_fraction = 0.2  # 1.0 = natural ventilation
         aerosol_filtration_eff = 0  # >0.9997 HEPA, =0.2-0.9 MERVs, =0 no filter
+        relative_humidity = 0.6
         self.physical_params = [floor_area, mean_ceiling_height, air_exchange_rate, primary_outdoor_air_fraction,
-                                aerosol_filtration_eff]
+                                aerosol_filtration_eff, relative_humidity]
 
         # Physiological Parameters
         breathing_flow_rate = 0.5  # m3/hr
-        aerosol_radius = 2  # micrometers
-        self.physio_params = [breathing_flow_rate, aerosol_radius]
+        max_aerosol_radius = 2  # micrometers
+        self.physio_params = [breathing_flow_rate, max_aerosol_radius]
 
         # Disease Parameters
         exhaled_air_inf = 30  # infection quanta/m3
-        viral_deact_rate = 0.3  # /hr
-        self.disease_params = [exhaled_air_inf, viral_deact_rate]
+        max_viral_deact_rate = 0.3  # /hr
+        self.disease_params = [exhaled_air_inf, max_viral_deact_rate]
 
         # Precautionary Parameters
         mask_passage_prob = 0.1  # 1 = no masks, ~0.1 cloth, <0.05 N95

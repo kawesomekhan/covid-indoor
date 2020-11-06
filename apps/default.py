@@ -32,195 +32,20 @@ def update_filt_disp: Updates filtration MERV number based on dropdown value
 def update_recirc_disp: Updates recirculation ACH number based on dropdown value
 def update_risk_tol_disp: Update risk tolerance display value
 def update_mask_fit_disp: Updates mask fit/compliance filtration display based on slider value
+
+TODO: Add panels from Advanced Mode
 """
 
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd)
 
-presets = [
-    {'label': "Custom", 'value': 'custom'},
-    {'label': "Suburban House", 'value': 'house'},
-    {'label': "Restaurant", 'value': 'restaurant'},
-    {'label': "Quiet Office", 'value': 'office'},
-    {'label': "Classroom Lecture", 'value': 'classroom'},
-    {'label': "New York City Subway Car", 'value': 'subway'},
-    {'label': "Boeing 737", 'value': 'airplane'},
-    {'label': "Church", 'value': 'church'},
-]
-
-preset_settings = {
-    'house': {
-        'floor-area': 2000,
-        'ceiling-height': 12,
-        'ventilation': 3,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 29,
-        'masks': 0.75
-    },
-    'classroom': {
-        'floor-area': 900,
-        'ceiling-height': 12,
-        'ventilation': 3,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 29,
-        'masks': 0.75
-    },
-    'restaurant': {
-        'floor-area': 5000,
-        'ceiling-height': 12,
-        'ventilation': 9,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 72,
-        'masks': 0
-    },
-    'office': {
-        'floor-area': 10000,
-        'ceiling-height': 12,
-        'ventilation': 8,
-        'filtration': 10,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.75
-    },
-    'subway': {
-        'floor-area': 580,
-        'ceiling-height': 10,
-        'ventilation': 18,
-        'filtration': 6,
-        'recirc-rate': 54,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.75
-    },
-    'bus': {
-        'floor-area': 380,
-        'ceiling-height': 10,
-        'ventilation': 8,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.75
-    },
-    'airplane': {
-        'floor-area': 1440,
-        'ceiling-height': 6.7,
-        'ventilation': 24,
-        'filtration': 17,
-        'recirc-rate': 24,
-        'exertion': 0.54,
-        'exp-activity': 72,
-        'masks': 0.75
-    },
-    'church': {
-        'floor-area': 1900,
-        'ceiling-height': 30,
-        'ventilation': 2,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 72,
-        'masks': 0.75
-    },
-}
-
-preset_settings_metric = {
-    'house': {
-        'floor-area': 186,
-        'ceiling-height': 3.66,
-        'ventilation': 3,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 29,
-        'masks': 0.75
-    },
-    'classroom': {
-        'floor-area': 83.6,
-        'ceiling-height': 3.66,
-        'ventilation': 3,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 29,
-        'masks': 0.75
-    },
-    'restaurant': {
-        'floor-area': 465,
-        'ceiling-height': 3.66,
-        'ventilation': 9,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 72,
-        'masks': 0
-    },
-    'office': {
-        'floor-area': 929,
-        'ceiling-height': 3.66,
-        'ventilation': 8,
-        'filtration': 10,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.75
-    },
-    'subway': {
-        'floor-area': 54,
-        'ceiling-height': 3,
-        'ventilation': 18,
-        'filtration': 6,
-        'recirc-rate': 54,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.75
-    },
-    'bus': {
-        'floor-area': 54,
-        'ceiling-height': 3,
-        'ventilation': 8,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.75
-    },
-    'airplane': {
-        'floor-area': 134,
-        'ceiling-height': 2,
-        'ventilation': 24,
-        'filtration': 17,
-        'recirc-rate': 24,
-        'exertion': 0.54,
-        'exp-activity': 72,
-        'masks': 0.75
-    },
-    'church': {
-        'floor-area': 177,
-        'ceiling-height': 9,
-        'ventilation': 2,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 72,
-        'masks': 0.75
-    },
-}
-
 # Dropdown Preset Values
 # For changing ventilation types based on language: ventilation_types will be a dictionary in desc_fr with
 # the english labels (here) as the keys. We will
 # loop through each item in ventilation_types and create a new array of dicts with the french label, then return
 # that to the options.
-ventilation_default = preset_settings['classroom']['ventilation']
+ventilation_default = ess.preset_settings['classroom']['ventilation']
 ventilation_types = [
     {'label': "Closed windows", 'value': 0.3},
     {'label': "Open windows", 'value': 2},
@@ -233,7 +58,7 @@ ventilation_types = [
     {'label': "Toxic Laboratory/Airplane", 'value': 24},
 ]
 
-filter_default = preset_settings['classroom']['filtration']
+filter_default = ess.preset_settings['classroom']['filtration']
 filter_types = [
     {'label': "None", 'value': 0},
     {'label': "Residential Window AC", 'value': 2},
@@ -243,7 +68,7 @@ filter_types = [
     {'label': "HEPA", 'value': 17}
 ]
 
-recirc_default = preset_settings['classroom']['recirc-rate']
+recirc_default = ess.preset_settings['classroom']['recirc-rate']
 recirc_types = [
     {'label': "None", 'value': 0},
     {'label': "Slow", 'value': 0.3},
@@ -251,14 +76,6 @@ recirc_types = [
     {'label': "Fast", 'value': 10},
     {'label': "Airplane", 'value': 24},
     {'label': "Subway Car", 'value': 54},
-]
-
-mask_types = [
-    {'label': "None", 'value': 0},
-    {'label': "Quilter's Cotton", 'value': 0.1},
-    {'label': "Silk, Flannel, Chiffon", 'value': 0.5},
-    {'label': "Surgical, Cotton", 'value': 0.75},
-    {'label': "N95 Respirator", 'value': 0.95},
 ]
 
 # Main App
@@ -327,6 +144,17 @@ layout = html.Div(children=[
                                                            searchable=False,
                                                            clearable=False)]),
                                     html.Br(),
+                                    html.Div([html.Span(desc.humidity_text, id='humidity-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='humidity-output'),
+                                              dcc.Slider(id='relative-humidity',
+                                                         min=0,
+                                                         max=0.99,
+                                                         step=0.01,
+                                                         value=0.6,
+                                                         marks=ess.humidity_marks)]),
+                                    html.Br(),
+                                    html.Br(),
                                     html.Span(desc.need_more_ctrl_text, id='need-more-ctrl-text'),
                                 ],
                                 style=ess.tab_style,
@@ -355,7 +183,7 @@ layout = html.Div(children=[
                                               html.Span(className='model-output-text-small',
                                                         id='mask-eff-output'),
                                               dcc.Dropdown(id='mask-type',
-                                                           options=mask_types,
+                                                           options=ess.mask_types,
                                                            value=0.75,
                                                            searchable=False,
                                                            clearable=False)]),
@@ -404,7 +232,7 @@ layout = html.Div(children=[
                                                             type='number')]),
                                         html.Br(),
                                         html.Div([html.Span(desc.viral_deact_text, id='viral-deact-text'),
-                                                  dcc.Input(id='viral-deact-rate', value=0.3,
+                                                  dcc.Input(id='viral-deact-rate', value=0.6,
                                                             type='number')]),
                                     ], className='faq-answer'),
                                     html.Br(),
@@ -448,6 +276,14 @@ layout = html.Div(children=[
                                                   html.Span(
                                                       className='model-output-text-small',
                                                       id='air-filt-rate-output')]),
+                                        html.Div([html.Span(desc.eff_aerosol_rad_label, id='eff-rad-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='eff-rad-output')]),
+                                        html.Div([html.Span(desc.viral_deact_label, id='viral-deact-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='viral-deact-output')]),
                                         html.Div([html.Span(desc.sett_speed_label, id='sett-speed-label'),
                                                   html.Span(
                                                       className='model-output-text-small',
@@ -494,7 +330,7 @@ layout = html.Div(children=[
                             html.Div(
                                 id='presets-div',
                                 children=dcc.Dropdown(id='presets',
-                                                      options=presets,
+                                                      options=ess.presets,
                                                       value='classroom',
                                                       searchable=False,
                                                       clearable=False)),
@@ -585,6 +421,8 @@ def update_units(search):
      Output('fresh-rate-output', 'children'),
      Output('recirc-rate-output', 'children'),
      Output('air-filt-rate-output', 'children'),
+     Output('eff-rad-output', 'children'),
+     Output('viral-deact-output', 'children'),
      Output('sett-speed-output', 'children'),
      Output('conc-relax-output', 'children'),
      Output('airb-trans-output', 'children'),
@@ -595,6 +433,7 @@ def update_units(search):
      Input('ventilation-type', 'value'),
      Input('recirc-rate', 'value'),
      Input('filter-type', 'value'),
+     Input('relative-humidity', 'value'),
      Input('exertion-level', 'value'),
      Input('exp-activity', 'value'),
      Input('mask-type', 'value'),
@@ -604,65 +443,25 @@ def update_units(search):
      Input('viral-deact-rate', 'value'),
      Input('url', 'search')]
 )
-def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
-                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, aerosol_radius,
-                  viral_deact_rate, search):
-    error_msg = ""
-
-    # Make sure none of our values are none
-    if floor_area is None:
-        error_msg = desc.error_list["floor_area"]
-    elif ceiling_height is None:
-        error_msg = desc.error_list["ceiling_height"]
-    elif aerosol_radius is None:
-        error_msg = desc.error_list["aerosol_radius"]
-    elif viral_deact_rate is None:
-        error_msg = desc.error_list["viral_deact_rate"]
-
+def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
+                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, max_aerosol_radius,
+                  max_viral_deact_rate, search):
+    error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
+                                max_viral_deact_rate)
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update,\
+               dash.no_update, error_msg, True
 
     # Check our units!
-    params = ess.search_to_params(search)
-    my_units = "british"
-    if "units" in params:
-        my_units = params["units"]
+    my_units = ess.get_units(search)
 
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
-    preset_dd_value = 'custom'
-
-    if my_units == "british":
-        for setting_key in preset_settings:
-            setting = preset_settings[setting_key]
-            is_preset = setting['floor-area'] == floor_area and \
-                        setting['ceiling-height'] == ceiling_height and \
-                        setting['ventilation'] == air_exchange_rate and \
-                        setting['recirc-rate'] == recirc_rate and \
-                        setting['filtration'] == merv and \
-                        setting['exertion'] == breathing_flow_rate and \
-                        setting['exp-activity'] == infectiousness and \
-                        setting['masks'] == mask_eff
-            if is_preset:
-                preset_dd_value = setting_key
-                break
-    elif my_units == "metric":
-        for setting_key in preset_settings_metric:
-            setting = preset_settings_metric[setting_key]
-            is_preset = setting['floor-area'] == floor_area and \
-                        setting['ceiling-height'] == ceiling_height and \
-                        setting['ventilation'] == air_exchange_rate and \
-                        setting['recirc-rate'] == recirc_rate and \
-                        setting['filtration'] == merv and \
-                        setting['exertion'] == breathing_flow_rate and \
-                        setting['exp-activity'] == infectiousness and \
-                        setting['masks'] == mask_eff
-            if is_preset:
-                preset_dd_value = setting_key
-                break
+    preset_dd_value = ess.get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
+                                              breathing_flow_rate, infectiousness, mask_eff, my_units)
 
     # If metric, convert floor_area and ceiling_height to feet
     if my_units == "metric":
@@ -670,20 +469,20 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
         ceiling_height = ceiling_height * 3.281
 
     # Update model with newly-selected parameters
-    # Correct mask_passage_prob based on mask fit/compliance
+    # mask_passage_prob based on mask fit/compliance
     mask_final_eff = mask_eff * mask_fit
     mask_passage_prob = 1 - mask_final_eff
 
     # Calculate aerosol filtration efficiency
-    aerosol_filtration_eff = Indoors.merv_to_eff(merv, aerosol_radius)
+    aerosol_filtration_eff = Indoors.merv_to_eff(merv, max_aerosol_radius)
 
     # Convert recirc rate to outdoor air fraction
     outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + recirc_rate)
 
     myInd.physical_params = [floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction,
-                             aerosol_filtration_eff]
-    myInd.physio_params = [breathing_flow_rate, aerosol_radius]
-    myInd.disease_params = [infectiousness, viral_deact_rate]
+                             aerosol_filtration_eff, relative_humidity]
+    myInd.physio_params = [breathing_flow_rate, max_aerosol_radius]
+    myInd.disease_params = [infectiousness, max_viral_deact_rate]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     myInd.calc_vars()
 
@@ -700,7 +499,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
            six_ft_text, preset_dd_value, interest_output[0], interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
-           interest_output[8], interest_output[9], interest_output[10], interest_output[11], error_msg, False
+           interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
+           interest_output[13], error_msg, False
 
 
 # Update options based on selected presets, also if units changed
@@ -721,16 +521,17 @@ def update_presets(preset, search):
     if preset == 'custom':
         raise PreventUpdate
     else:
-        params = ess.search_to_params(search)
-        my_units = "british"
-        if "units" in params:
-            my_units = params["units"]
+        curr_settings = ess.preset_settings[preset]
 
+        my_units = ess.get_units(search)
         if my_units == "british":
-            curr_settings = preset_settings[preset]
+            floor_area = curr_settings['floor-area']
+            ceiling_height = curr_settings['ceiling-height']
         elif my_units == "metric":
-            curr_settings = preset_settings_metric[preset]
-        return curr_settings['floor-area'], curr_settings['ceiling-height'], curr_settings['ventilation'], \
+            floor_area = round(curr_settings['floor-area-metric'], 2)
+            ceiling_height = round(curr_settings['ceiling-height-metric'], 2)
+
+        return floor_area, ceiling_height, curr_settings['ventilation'], \
                curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['exertion'], \
                curr_settings['exp-activity'], curr_settings['masks']
 
@@ -760,6 +561,15 @@ def update_filt_disp(merv):
 )
 def update_recirc_disp(recirc_rate):
     return ["{:.1f} recirculation ACH".format(recirc_rate)]
+
+
+# Relative Humidity slider value display
+@app.callback(
+    [Output('humidity-output', 'children')],
+    [Input('relative-humidity', 'value')]
+)
+def update_humid_disp(relative_humidity):
+    return ["{:.0f}%".format(relative_humidity * 100)]
 
 
 # Risk tolerance slider value display
