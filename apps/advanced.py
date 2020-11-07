@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-
+from dash.exceptions import PreventUpdate
 import indoors as ind
 from indoors import Indoors
 
@@ -31,8 +31,6 @@ def update_n_output: Returns transient n max based on exposure time
 def update_presets: Updates options based on selected presets
 def update_risk_tol_disp: Update risk tolerance display value
 def update_mask_fit_disp: Updates mask fit/compliance filtration display based on slider value
-
-TODO: Add presets
 """
 
 # COVID-19 Calculator Setup
@@ -256,6 +254,19 @@ layout = html.Div(children=[
                     html.Div(
                         className='card',
                         children=[html.Div(className='output-content', children=[
+                            html.H6(html.Span(desc.curr_room_header, id='adv-curr-room-header')),
+                            html.Div(
+                                className='grid-preset',
+                                children=
+                                html.Div(
+                                    id='adv-presets-div',
+                                    children=dcc.Dropdown(id='adv-presets',
+                                                          options=ess.presets,
+                                                          value='classroom',
+                                                          searchable=False,
+                                                          clearable=False)),
+                                style={'max-width': '500px'}
+                            ),
                             html.H3(html.Span(desc.main_panel_s1, id='adv-main-panel-s1')),
                             dcc.Loading(
                                 id='adv-loading',
@@ -372,6 +383,7 @@ def update_units(search):
      Output('adv-model-text-7', 'children'),
      Output('adv-model-text-8', 'children'),
      Output('adv-six-ft-output', 'children'),
+     Output('adv-presets', 'value'),
      Output('adv-air-frac-output', 'children'),
      Output('adv-filtration-eff-output', 'children'),
      Output('adv-breath-rate-output', 'children'),
@@ -411,7 +423,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                   breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, def_aerosol_radius,
                   max_viral_deact_rate, n_max_input, exp_time_input, search):
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
-                                max_viral_deact_rate)
+                                max_viral_deact_rate, n_max_input, exp_time_input)
 
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -419,10 +431,14 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, error_msg, True
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
     # Check our units!
     my_units = ess.get_units(search)
+
+    # Check if we just moved to a preset; if not, change the preset dropdown to custom
+    preset_dd_value = ess.get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
+                                              breathing_flow_rate, infectiousness, mask_eff, my_units)
 
     # If metric, convert floor_area and ceiling_height to feet
     if my_units == "metric":
@@ -455,7 +471,6 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     six_ft_text = ess.get_six_ft_text(myInd)
     interest_output = ess.get_interest_output_text(myInd, my_units)
 
-    # Update transient exposure time based on selected n value
     exp_time_output = myInd.calc_max_time(n_max_input)
     exp_time_text = ess.time_to_text(exp_time_output)
 
@@ -465,10 +480,43 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
-           six_ft_text, interest_output[0], interest_output[1], interest_output[2], \
+           six_ft_text, preset_dd_value, interest_output[0], interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
            interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
            interest_output[13], exp_time_text, n_max_text, error_msg, False
+
+
+# Update options based on selected presets, also if units changed
+@app.callback(
+    [Output('adv-floor-area', 'value'),
+     Output('adv-ceiling-height', 'value'),
+     Output('adv-ventilation-type', 'value'),
+     Output('adv-recirc-rate', 'value'),
+     Output('adv-filter-type', 'value'),
+     Output('adv-exertion-level', 'value'),
+     Output('adv-exp-activity', 'value'),
+     Output('adv-mask-type', 'value')],
+    [Input('adv-presets', 'value'),
+     Input('url', 'search')]
+)
+def update_presets(preset, search):
+    # Update the room and behavior options based on the selected preset
+    if preset == 'custom':
+        raise PreventUpdate
+    else:
+        curr_settings = ess.preset_settings[preset]
+
+        my_units = ess.get_units(search)
+        if my_units == "british":
+            floor_area = curr_settings['floor-area']
+            ceiling_height = curr_settings['ceiling-height']
+        elif my_units == "metric":
+            floor_area = round(curr_settings['floor-area-metric'], 2)
+            ceiling_height = round(curr_settings['ceiling-height-metric'], 2)
+
+        return floor_area, ceiling_height, curr_settings['ventilation'], \
+               curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['exertion'], \
+               curr_settings['exp-activity'], curr_settings['masks']
 
 
 # Relative Humidity slider value display

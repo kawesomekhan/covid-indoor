@@ -9,7 +9,7 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 
 # Default dropdown options shared between basic mode and advanced mode
 humidity_marks = {
-    0: {'label': '0%: Very Dry', 'style': {'max-width': '50px'}},
+    0: {'label': '0%: Very Dry', 'style': {'max-width': '25px'}},
     0.2: {'label': '20%: Airplane', 'style': {'max-width': '50px'}},
     0.3: {'label': '30%: Dry'},
     0.6: {'label': '60%: Average'},
