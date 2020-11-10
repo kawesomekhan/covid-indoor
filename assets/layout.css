@@ -1,113 +1,15 @@
 /* CSS related to app layout */
 
+:root {
+    --big-number-input-width: 100px;
+}
+
 /* For default, desktop layout */
 body {
     background-color: #fafafa
 }
 
-.grid-settings {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    padding: 0px;
-}
-
-.card-settings {
-    padding: 8px;
-}
-
-.grid-header {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    padding: 0;
-}
-
-#header-left {
-    font-size: 13px;
-    padding: 16px;
-    width: 400px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    grid-auto-rows: 694px 250px;
-    padding: 0;
-}
-
-.card {
-    position: relative;
-    min-width: 500px;
-    padding: 1.5em;
-    margin: 1em;
-    height: auto;
-    background-color: #ffffff;
-    border: solid 1px #DDDDDD;
-    box-shadow: 0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24)
-}
-
-.link-button {
-    border: none;
-    font-family: 'Barlow', sans-serif;
-    font-size: 14px;
-    transition: 0.5s;
-}
-
-.link-button span {
-  transition: 0.5s;
-}
-
-.link-button span:after {
-    content: '\00bb';
-    opacity: 1;
-    transition: 0.5s
-}
-
-.link-button:hover span {
-    padding-right: 25px;
-    transition: 0.5s;
-}
-
-.tab-parent {
-    height: 100%;
-}
-
-.tab-content {
-    padding: 1em;
-    height: 100%;
-    margin: 2em;
-    margin-left: 1em;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-
-.output-content {
-    padding-right: 1em;
-    height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-
-#adv-n-input {
-    width: 100px
-}
-
-#n-input {
-    width: 100px
-}
-
-#adv-t-input {
-    width: 100px
-}
-
-#t-input {
-    width: 100px
-}
-
-.airborne-text {
-    position: absolute;
-    bottom: 1em;
-}
-
+/* Error Message */
 .error-alert {
     position: fixed;
     width: 256px;
@@ -123,29 +25,109 @@ body {
     border-radius: 0.25rem;
 }
 
+/* Settings Grid */
+.grid-settings {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 0px;
+}
+.card-settings {
+    padding: 8px;
+}
+
+/* Header Grid */
+.grid-header {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    padding: 0;
+}
+#header-left {
+    font-size: 13px;
+    padding: 16px;
+    width: 400px;
+}
+
+/* Main Grid */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-auto-rows: 694px 250px;
+    padding: 0;
+}
+.card {
+    position: relative;
+    min-width: 500px;
+    padding: 1.5em;
+    margin: 1em;
+    height: auto;
+    background-color: #ffffff;
+    border: solid 1px #DDDDDD;
+    box-shadow: 0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24)
+}
+
+/* Tabs */
+.tab-parent {
+    height: 100%;
+}
+.tab-content {
+    padding: 1em;
+    height: 100%;
+    margin: 2em;
+    margin-left: 1em;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.output-content {
+    padding-right: 1em;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+/* Bottom Panels */
+#adv-n-input {
+    width: var(--big-number-input-width);
+}
+#n-input {
+    width: var(--big-number-input-width);
+}
+#adv-t-input {
+    width: var(--big-number-input-width);
+}
+#t-input {
+    width: var(--big-number-input-width);
+}
+
+/* Card Footer/Disclaimer Text */
+.airborne-text {
+    position: absolute;
+    bottom: 1em;
+}
+
 /* Small-width/mobile layout */
 @media only screen and (max-width: 1120px) {
+    /* Settings Grid */
     .grid-settings {
         display: grid;
         grid-template-columns: 1fr 1fr;
         padding: 0px;
     }
 
+    /* Header Grid */
     .grid-header {
         display: grid;
         grid-template-columns: 1fr;
         padding: 0;
     }
-
     .card-header {
         margin: 1em;
     }
-
     #header-left {
         padding: 0;
         width: auto
     }
 
+    /* Main Grid */
     .grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -157,20 +139,15 @@ body {
         padding: 1em;
     }
 
-    .tab-content {
-        overflow: visible
-    }
-
+    /* Tabs */
     .tab-content {
         height: auto;
         overflow: visible;
     }
-
     .output-tray {
         border: solid 1px #DDDDDD;
         padding: 1em;
     }
-
     .output-content {
         padding-right: 1em;
         margin: 1em;
@@ -179,17 +156,7 @@ body {
         overflow: visible;
     }
 
-    .link-button {
-        border: none;
-        font-family: 'Barlow', sans-serif;
-        font-size: 14px;
-    }
-
-    .link-button span:after {
-        content: '\00bb';
-        opacity: 1;
-    }
-
+    /* Card Footer/Disclaimer Text */
     .airborne-text {
         position: relative;
         bottom: auto;
