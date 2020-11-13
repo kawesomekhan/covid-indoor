@@ -3,10 +3,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400&display=swap');
 
 :root {
-    --small-font-size: 13px;
+    --small-font-size: 12px;
+    --settings-font-size: 12.5px;
+
     --small-heading-font-size: 18px;
 
     --mobile-font-size: 13px;
+    --mobile-slider-mark-size: 12px;
 
     --body-padding: 3em;
     --mobile-body-padding: 2em;
@@ -17,20 +20,40 @@
 /* For default, desktop layout */
 body {
     font-family: 'Barlow', sans-serif;
+    font-size: 135%;
     padding: var(--body-padding);
 }
-
-h1, h2, h4, h5, h6 {
+h1 {
     color: var(--accent-color);
+    font-size: 300%;
 }
+h2 {
+    color: var(--accent-color);
 
+}
+h3 {
+    font-size: 200%;
+}
 h4 {
+    color: var(--accent-color);
+    font-size: 175%;
     padding: 0;
     margin: 0;
 }
-
 h5 {
+    color: var(--accent-color);
     font-size: var(--small-heading-font-size);
+}
+h6 {
+    color: var(--accent-color);
+    font-size: 145%;
+}
+
+.header-small-text {
+    font-size: var(--small-font-size);
+}
+.footer-small-text {
+    font-size: var(--small-font-size);
 }
 
 .model-output-text {
@@ -46,11 +69,10 @@ h5 {
 }
 
 #header-left {
-    font-size: var(--small-font-size);
+    font-size: var(--settings-font-size);
 }
 
 .settings-header {
-    font-size: var(--small-font-size);
     color: #de1616;
 }
 
@@ -59,7 +81,7 @@ six-ft-output {
 }
 
 /* Small-width/mobile layout */
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 800px) {
     body {
         font-family: 'Barlow', sans-serif;
         font-size: var(--mobile-font-size);
@@ -86,6 +108,10 @@ six-ft-output {
     }
     .faq-answer {
         padding-left: 0
+    }
+
+    .rc-slider-mark-text {
+        font-size: var(--mobile-slider-mark-size);
     }
 }
 

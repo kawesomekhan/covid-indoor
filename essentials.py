@@ -13,7 +13,7 @@ humidity_marks = {
     0.2: {'label': '20%: Airplane', 'style': {'max-width': '50px'}},
     0.3: {'label': '30%: Dry'},
     0.6: {'label': '60%: Average'},
-    0.99: {'label': '99%: Dew Point'},
+    0.99: {'label': '99%: Very Humid'},
 }
 
 exertion_types = [
@@ -39,16 +39,16 @@ expiratory_types = [
 ]
 
 mask_type_marks = {
-    0: {'label': "0% (none)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (quilter's cotton)", 'style': {'max-width': '50px'}},
+    0: {'label': "0% (none, face shield)", 'style': {'max-width': '50px'}},
+    0.1: {'label': "10% (coarse cotton)", 'style': {'max-width': '50px'}},
     0.5: {'label': "50% (silk, flannel, chiffon)", 'style': {'max-width': '50px'}},
     0.75: {'label': "75% (surgical, cotton)", 'style': {'max-width': '50px'}},
     0.95: {'label': "95% (N95 respirator)", 'style': {'max-width': '50px'}},
 }
 
 mask_types = [
-    {'label': "None", 'value': 0},
-    {'label': "Quilter's Cotton", 'value': 0.1},
+    {'label': "None, Face Shield", 'value': 0},
+    {'label': "Coarse Cotton", 'value': 0.1},
     {'label': "Silk, Flannel, Chiffon", 'value': 0.5},
     {'label': "Surgical, Cotton", 'value': 0.75},
     {'label': "N95 Respirator", 'value': 0.95},
@@ -71,7 +71,7 @@ tab_style = {
     'padding-left': '1em',
     'padding-right': '1em',
     'border-color': '#DDDDDD',
-    'font-size': '14px'
+    'font-size': '13px'
 }
 
 tab_style_selected = {
@@ -79,7 +79,7 @@ tab_style_selected = {
     'padding-right': '1em',
     'border-color': '#DDDDDD',
     'border-top-color': '#de1616',
-    'font-size': '14px'
+    'font-size': '13px'
 }
 
 presets = [

@@ -38,7 +38,7 @@ app.index_string = '''
     <head>
         {%metas%}
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>MIT COVID-19 Indoor Safety Guideline</title>
+        <title>COVID-19 Indoor Safety Guideline</title>
         {%favicon%}
         {%css%}
         <!-- Global site tag (gtag.js) - Google Analytics -->

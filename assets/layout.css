@@ -42,7 +42,6 @@ body {
     padding: 0;
 }
 #header-left {
-    font-size: 13px;
     padding: 16px;
     width: 400px;
 }
@@ -51,7 +50,7 @@ body {
 .grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    grid-auto-rows: 694px 250px;
+    grid-auto-rows: 615px 200px;
     padding: 0;
 }
 .card {
@@ -104,8 +103,15 @@ body {
     bottom: 1em;
 }
 
+/* Intermediate Size */
+@media only screen and (max-width: 1400px) {
+    .grid {
+        grid-auto-rows: 700px 200px;
+    }
+}
+
 /* Small-width/mobile layout */
-@media only screen and (max-width: 1120px) {
+@media only screen and (max-width: 1200px) {
     /* Settings Grid */
     .grid-settings {
         display: grid;

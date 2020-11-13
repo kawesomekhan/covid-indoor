@@ -222,19 +222,6 @@ layout = html.Div(children=[
                                 children=[
                                     html.Span(desc.faq_top, id='faq-top'),
                                     html.Br(),
-                                    html.Span(desc.faq_other_params_text, id='faq-other-params-text'),
-                                    html.Br(),
-                                    html.Div([
-                                        html.Div([html.Span(desc.aerosol_radius_text, id='aerosol-rad-text'),
-                                                  dcc.Input(id='aerosol-radius', value=2,
-                                                            type='number')]),
-                                        html.Br(),
-                                        html.Div([html.Span(desc.viral_deact_text, id='viral-deact-text'),
-                                                  dcc.Input(id='viral-deact-rate', value=0.6,
-                                                            type='number')]),
-                                    ], className='faq-answer'),
-                                    html.Br(),
-                                    html.Br(),
                                     html.Span(desc.values_interest_desc, id='values-interest-desc'),
                                     html.Br(),
                                     html.Div([
@@ -364,6 +351,7 @@ layout = html.Div(children=[
                                            children=''' 2 people ''',
                                            style={'color': '#de1616'}),
                                  html.Span(desc.main_panel_six_ft_2, id='main-six-ft-2')]),
+                        html.Br(),
                         html.Span(desc.main_airb_trans_only_disc, id='main-airb-trans-disc')
                     ]),
                 ]),
@@ -471,16 +459,15 @@ def update_units(search):
      Input('mask-type', 'value'),
      Input('mask-fit', 'value'),
      Input('risk-tolerance', 'value'),
-     Input('aerosol-radius', 'value'),
-     Input('viral-deact-rate', 'value'),
      Input('n-input', 'value'),
      Input('t-input', 'value'),
      Input('url', 'search')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
-                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, max_aerosol_radius,
-                  max_viral_deact_rate, n_max_input, exp_time_input, search):
-    error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
+                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, n_max_input, exp_time_input, search):
+    def_aerosol_radius = 2
+    max_viral_deact_rate = 0.6
+    error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
                                 max_viral_deact_rate, n_max_input, exp_time_input)
 
     if error_msg != "":
@@ -509,14 +496,14 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     mask_passage_prob = 1 - mask_final_eff
 
     # Calculate aerosol filtration efficiency
-    aerosol_filtration_eff = Indoors.merv_to_eff(merv, max_aerosol_radius)
+    aerosol_filtration_eff = Indoors.merv_to_eff(merv, def_aerosol_radius)
 
     # Convert recirc rate to outdoor air fraction
     outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + recirc_rate)
 
     myInd.physical_params = [floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction,
                              aerosol_filtration_eff, relative_humidity]
-    myInd.physio_params = [breathing_flow_rate, max_aerosol_radius]
+    myInd.physio_params = [breathing_flow_rate, def_aerosol_radius]
     myInd.disease_params = [infectiousness, max_viral_deact_rate]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     myInd.calc_vars()

@@ -131,6 +131,7 @@ layout = html.Div(children=[
                                                          marks=ess.mask_type_marks)]),
                                     html.Br(),
                                     html.Br(),
+                                    html.Br(),
                                     html.Div([html.Span(desc.mask_fit_text, id='adv-mask-fit-text'),
                                               html.Span(className='model-output-text-small',
                                                         id='adv-mask-fit-output'),
@@ -305,6 +306,7 @@ layout = html.Div(children=[
                                                children=''' 2 people ''',
                                                style={'color': '#de1616'}),
                                      html.Span(desc.main_panel_six_ft_2, id='main-six-ft-2')]),
+                            html.Br(),
                             html.Span(desc.main_airb_trans_only_disc, id='main-airb-trans-disc')
                         ])]),
                     html.Div(
@@ -337,8 +339,7 @@ layout = html.Div(children=[
                                      html.Span(desc.t_input_text_3, id='adv-t-input-text-3')]),
                             html.Br(),
                             html.Span(desc.airb_trans_only_disc, id='adv-airb-trans-only-disc-2')
-                        ])
-                                  ]
+                        ])]
                     )
                 ]
             ),
