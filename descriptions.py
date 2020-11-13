@@ -1,210 +1,332 @@
 import dash_html_components as html
 
 """
-descriptions.py contains all text-heavy descriptions used throughout the app (Basic, Advanced Mode).
+descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
 
 """
 
-floor_area_text = "Floor area (sq. ft.): "
-floor_area_text_metric = "Floor area (m²): "
-
-ceiling_height_text = "Ceiling height (ft.): "
-ceiling_height_text_metric = "Ceiling height (m): "
+link_paper = "https://www.medrxiv.org/content/10.1101/2020.08.26.20182824v2"
+link_docs = "https://docs.google.com/document/d/1fB5pysccOHvxphpTmCG_TGdytavMmc1cUumn8m0pwzo/edit"
 
 error_list = {
-    "floor_area": "Error: floor area cannot be empty.",
-    "ceiling_height": "Error: ceiling height cannot be empty.",
-    "recirc_rate": "Error: recirculation rate cannot be empty.",
-    "aerosol_radius": "Error: aerosol radius cannot be empty.",
-    "viral_deact_rate": "Error: viral deactivation rate cannot be empty.",
-    "n_max_input": "Error: number of people cannot be less than 2.",
-    "exp_time_input": "Error: exposure time must be greater than 0.",
+    "floor_area": "Error: Floor area cannot be empty.",
+    "ceiling_height": "Error: Ceiling height cannot be empty.",
+    "recirc_rate": "Error: Recirculation rate cannot be empty.",
+    "aerosol_radius": "Error: Aerosol radius cannot be empty.",
+    "viral_deact_rate": "Error: Viral deactivation rate cannot be empty.",
+    "n_max_input": "Error: Number of people cannot be less than 2.",
+    "exp_time_input": "Error: Exposure time must be greater than 0.",
     "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
     "merv": "Error: Filtration System (MERV) cannot be empty."
 }
 
 # Header
 header = html.Div([
-        html.H1(children='MIT COVID-19 Indoor Safety Guideline'),
+    html.H1(children='COVID-19 Indoor Safety Guideline'),
+    html.Div([
+        html.Div([html.Span(html.A(href="https://www.linkedin.com/in/kasim-k-a92620b1/",
+                                   children="Kasim Khan",
+                                   target='_blank')),
+                  ", ",
+                  html.Span(html.A(href="https://math.mit.edu/~bush/",
+                                   children="John W. M. Bush",
+                                   target='_blank')),
+                  ", and ",
+                  html.Span(html.A(href="https://www.mit.edu/~bazant/",
+                                   children="Martin Z. Bazant",
+                                   target='_blank')),
+                  ""]),
+        html.Div([html.Span(["Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19 ("]),
+                  html.Span(html.A(href=link_paper,
+                                   target='_blank',
+                                   children='''Bazant & Bush, 2020''')),
+                  html.Span(")")]),
         html.Div([
-            html.Div([html.Span(html.A(href="https://www.linkedin.com/in/kasim-k-a92620b1/",
-                                       children="Kasim Khan",
-                                       target='_blank')),
-                      ", ",
-                      html.Span(html.A(href="https://www.mit.edu/~bazant/",
-                                       children="Martin Z. Bazant",
-                                       target='_blank')),
-                      ", and ",
-                      html.Span(html.A(href="https://math.mit.edu/~bush/",
-                                       children="John W. M. Bush",
-                                       target='_blank')),
-                      ""]),
-            html.Div(children='''
-                            medRxiv preprint (2020):
-                            "Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19"
-                        '''),
-            html.Div([
-                html.A(href='http://web.mit.edu/bazant/www/COVID-19/',
-                       children='''
+            html.A(href='http://web.mit.edu/bazant/www/COVID-19/',
+                   children='''
                             http://web.mit.edu/bazant/www/COVID-19/
                         ''', target='_blank'),
-            ]),
-            html.Div([
-                html.A(href='https://github.com/kawesomekhan/covid-indoor',
-                       children=[
-                           "https://github.com/kawesomekhan/covid-indoor"
-                       ],
-                       target='_blank'),
-            ]),
-        ], style={'font-size': '13px'})
+        ]),
+        html.Div([
+            html.A(href='https://github.com/kawesomekhan/covid-indoor',
+                   children=[
+                       "https://github.com/kawesomekhan/covid-indoor"
+                   ],
+                   target='_blank'),
+        ]),
+    ], className='header-small-text')
 ])
 
 # Menu dropdowns
 language_dd = "Language: "
+units_dd = "Units: "
+mode_dd = "Mode: "
 
+# Unit systems
+unit_settings = [
+    {'label': "British", 'value': "british"},
+    {'label': "Metric", 'value': "metric"},
+]
+
+# Modes
+app_modes = [
+    {'label': "Basic", 'value': "basic"},
+    {'label': "Advanced", 'value': "advanced"},
+]
+
+# Tabs
+about_header = "About"
+room_header = "Room Specifications"
+human_header = "Human Behavior"
+faq_header = "Frequently Asked Questions"
+other_io = "Other Inputs & Outputs"
+
+# About
 about = html.Div([
-    html.H6("About"),
-    html.Div('''
-        COVID-19 has been spreading in homes, restaurants, bars, classrooms, and other
-        enclosed spaces via tiny, infective aerosol droplets suspended in the air.
-        To mitigate this spread, official public health guidelines have taken the form 
-        of minimum social distancing rules (6 feet in the U.S.) or maximum occupancy 
-        (25 people in Massachusetts). 
-    '''),
+    html.H6("About", style={'margin': '0'}),
+    html.Div('''To mitigate the spread of COVID-19, official public health guidelines have recommended limits on: 
+    person-to-person distance (6 feet / 2 meters), occupancy time (15 minutes), maximum occupancy (25 people), 
+    or minimum ventilation (6 air changes per hour).'''),
     html.Br(),
-    html.Div('''
-        However, public health has been slow to catch up with rapidly advancing science.
-        Naturally, the risk of COVID-19 transmission would not only depend on physical 
-        distance, but also on factors such as exposure time, mask usage, and ventilation
-        systems, among other factors.
-    '''),
+    html.Div([html.Span('''There is growing '''),
+              html.A(children="scientific evidence",
+                     href=link_docs,
+                     target='_blank'),
+              html.Span(''' for airborne transmission of COVID-19, which occurs when 
+    infectious aerosol droplets are exchanged by breathing shared indoor air. While public health organizations are 
+    beginning to acknowledge airborne transmission, they have yet to provide a safety guideline that incorporates all 
+    the relevant variables.''')]),
     html.Br(),
-    html.Div('''
-        This app uses a mathematical model, developed by MIT professors Martin Z. Bazant 
-        and John Bush, to improve upon
-        current distancing guidelines by providing a more accurate description of
-        indoor COVID-19 transmission risk.
-    '''),
-    html.Br(),
-    html.Div('''
-        Adjust parameters in the other tabs and see how different spaces handle
-        indoor COVID-19 transmission.
-    '''),
+    html.Div([html.Span('''This app, developed by Kasim Khan in collaboration with Martin Z. Bazant and John W. M. Bush, 
+    uses a '''),
+              html.A(children="theoretical model",
+                     href=link_paper,
+                     target='_blank'),
+              html.Span(''' to calculate safe exposure times and occupancy levels for indoor spaces.  By adjusting 
+    room specifications, ventilation and filtration rates, face-mask usage, respiratory activities, 
+    and risk tolerance (in the other tabs), you can see how to mitigate indoor COVID-19 transmission in different 
+    indoor spaces.''')]),
 ])
 
+# Room Specifications
+floor_area_text = "Total floor area (sq. ft.): "
+floor_area_text_metric = "Total floor area (m²): "
+
+ceiling_height_text = "Average ceiling height (ft.): "
+ceiling_height_text_metric = "Average ceiling height (m): "
+
+ventilation_text = "Ventilation System: "
+ventilation_text_adv = "Ventilation System (ACH): "
+
+filtration_text = "Filtration System: "
+filtration_text_adv = "Filtration System (MERV): "
+
+recirc_text = "Recirculation Rate: "
+recirc_text_adv = "Recirculation Rate (recirculation ACH): "
+
+humidity_text = "Relative Humidity: "
+
+need_more_ctrl_text = '''Need more control over your inputs? Switch to Advanced Mode using the dropdown at the top of 
+                         the page!'''
+
+# Human Behavior
+exertion_text = "Exertion Level: "
+
+breathing_text = "Respiratory Activity: "
+
+mask_type_text = "Mask Type/Efficiency: "
+
+mask_fit_text = "Mask Fit/Compliance: "
+
+risk_tolerance_text = "Risk Tolerance: "
+
+# FAQ/Other Inputs and Outputs
 assumptions_layout = html.Div([
-    html.Div([
-        html.Div('''- The volumetric breathing flow rate Qb is determined by
-           the level of activity. Average values for healthy males and
-           females have been reported as 0.49, 0.54, 1.38, 2.35, and 3.30
-           m\u00B3/hr for resting, standing, light exercise, moderate
-           exercise, and heavy exercise, respectively, and used in
-           simulations of airborne transmission of COVID-19.
-       '''),
-        html.Div('''
-           - The most important disease parameter is the infectiousness
-           of exhaled air, Cq (infection quanta per unit volume). This
-           is discussed extensively in the main text. Using all of the
-           limited information available today, Cq is estimated to be
-           30 q/m3 for normal breathing and light activity. This value of
-           Cq is then used to estimate Cq values for different
-           expiratory activities such as singing, whispering, or heavy
-           breathing. 
-        '''),
-        html.Div('''
-           - The risk tolerance represents the probability of a 
-           single transmission during the occupancy time of one infected 
-           person. The expected number of transmissions is thus prescribed by 
-           the product of the tolerance and the prevalence 
-           of infection in the population. A lower risk tolerance should 
-           be chosen for more vulnerable populations, such
-           as the elderly or those with preexisting medical conditions.
-        '''),
-        html.Div('''
-           - This model calculates two results: the transient bound, which
-           accounts for the buildup of infectious aerosols in the air 
-           after the entrance of an infected person, and the
-           steady-state bound, which is reached after the
-           relaxation time \u03BBc\u03C4 >> 1. Results reported in this
-           app are derived from the transient bound. 
-        '''),
-        html.Div('''
-           - The viral deactivation rate \u03BBv is the rate at which
-           the virus loses infectiousness in aerosol form. For SARS-CoV-2,
-           this is estimated to lie in the range of 0 to 0.63/hr. This
-           can be increased by ultraviolet radiation (UV-C) or chemical
-           disinfectants (e.g. hydrogen peroxide, ozone).
-        '''),
-        html.Div('''- The mean respiratory aerosol droplet size r\u0305
-           exists in a distribution of sizes, dependent on different people
-           and types of respiration. This size can also affect infectivity
-           of the aerosol droplets. However, a typical range for the most
-           common and most infectious droplets is 2-3 \u03bcm, which is
-           roughly consistent with the standard definition of aerosol
-           droplets in the literature (r\u0305 < 5 \u03bcm).
-        '''),
-        html.Div('''- Mask filtration efficiencies are taken from a study in ACS Nano 
-            by Konda, et al: "Aerosol Filtration Efficiency of Common Fabrics Used in Respiratory Cloth Masks"
-        '''),
-        html.Div('''- MERV filtration efficiencies estimated using ASHRAE Standard 52.2-2017 Minimum Efficiency 
-            Reporting Value (MERV)'''),
-        html.Div('''- This app uses the transient form of the guideline.'''),
-    ], style={'padding-left': '10px', 'font-size': '13px'}),
-    html.Br(),
-], className='faq-answer')
+    html.H5("More Questions?"),
+    html.Div([html.Span('''For more detailed explanations and references, see "'''),
+              html.A(children="Beyond 6 Feet",
+                     href=link_paper,
+                     target='_blank'),
+              html.Span('''" and other links posted at the top of the webpage.''')]),
+])
 
 faq_top = html.Div([
     html.H6("Frequently Asked Questions"),
+    html.H5("Why isn't 6 feet/2 meter spacing enough?"),
+    html.Div([
+        html.Div([html.Span('''6 feet/2 meter spacing protects you from large drops ejected by an infected person coughing, 
+        as do face masks; however, it doesn’t protect against '''),
+                  html.A(children="airborne transmission",
+                         href=link_docs,
+                         target='_blank'),
+                  html.Span(''' by infectious aerosols that are 
+        suspended in the air and can be mixed throughout a room. Indoors, people are no safer from airborne 
+        transmission at 6 feet than 60 feet. ''')]),
+    ], className='faq-answer'),
+    html.Br(),
+    html.H5("Are there other modes of transmission?"),
+    html.Div([
+        html.Div([html.A(children="Airborne transmission",
+                         href=link_docs,
+                         target='_blank'),
+                  html.Span(''' is thought to be dominant for COVID-19, but other modes are possible, such as `fomite’ 
+                  transmission through direct contact with infectious residues on surfaces, `large-droplet' 
+                  transmission via coughing or sneezing, and `short-range aerosol' transmission from the respiratory 
+                  jet of an infected person over a prolonged period. While the latter two modes may be significant, 
+                  they are largely eliminated when face masks or shields are worn; however, the risk of airborne 
+                  transmission remains.''')]),
+    ], className='faq-answer'),
+    html.Br(),
+    html.H5("Can we really assume a well-mixed room?"),
+    html.Div([
+        html.Div([html.Span('''There are many contributors to mixing in indoor spaces, including buoyancy-driven 
+        flows (from heaters, air conditioners or windows), forced convection from vents and fans, and human motion 
+        and respiration. While there are exceptions, as discussed in the '''),
+                  html.A(children="paper",
+                         href=link_paper,
+                         target='_blank'),
+                  html.Span(''', the assumption of well-mixedness is widely used in the theoretical modeling of 
+                  airborne disease transmission.''')]),
+    ], className='faq-answer'),
+    html.Br(),
+    html.H5("Does the guideline hold for very large spaces?"),
+    html.Div([
+        html.Div([html.Span('''In concert halls, stadiums, or other large, ventilated spaces with large numbers of 
+        people, the risk of airborne transmission is significant and properly captured by the guideline.  However, 
+        when masks or face shields are not worn, there is an additional risk of short-range transmission through 
+        respiratory jets, estimated in the '''),
+                  html.A(children="paper",
+                         href=link_paper,
+                         target='_blank'),
+                  html.Span('''.''')]),
+    ], className='faq-answer'),
+    html.Br(),
+    html.H5("Why does ceiling height matter?"),
+    html.Div([
+        '''Ceiling height influences the total room volume, which is required for estimating the concentration of 
+        infectious aerosols (# of aerosols per unit volume). This concentration is needed to estimate the room’s 
+        COVID-19 transmission risk.'''
+    ], className='faq-answer'),
+    html.Br(),
     html.H5("I know my ACH/MERV numbers. Where can I enter them?"),
     html.Div('''
         If you need more control over your inputs, switch to Advanced Mode using the dropdown at the top of
-        the webpage!
+        the webpage.
     ''', className='faq-answer'),
-    html.Br(),
-    html.H5("What -doesn't- this model account for?"),
-    html.Div('''
-            This guideline does not account for transmission methods other than airborne transmission, like 
-            droplet transmission. This guideline also does not explicitly account for the possibility 
-               of short-range aerosol transmission in respiratory jets.
-               Such effects, which can lead to large fluctuations in droplet 
-               concentrations around their mean values, especially when 
-               masks are not worn, can be partially addressed by choosing 
-               a sufficiently small risk tolerance in this guideline,
-               and will depend on the details of airflow and human behavior 
-               in the specific indoor space.
-    ''', className='faq-answer'),
+])
+
+faq_other_params_text = html.Div([
+    html.H5("Are there any hidden parameters in Basic Mode?"),
+    html.Div([html.Span('''All of the relevant physical parameters are detailed in the '''),
+              html.A(children="paper",
+                     href=link_paper,
+                     target='_blank'),
+              html.Span('''. In Basic Mode, the app assumes a default effective aerosol radius of 2 μm (at 60% 
+              humidity) and a maximum viral deactivation rate of 0.6 /hr (at ~100% humidity), both of which increase 
+              with relative humidity (RH). Estimates for the viral deactivation rate err on the conservative side of 
+              slower deactivation.  The viral deactivation rate can be increased by ultraviolet radiation (UV-C) or 
+              chemical disinfectants (e.g. hydrogen peroxide, ozone). The app also estimates the key disease 
+              parameter, the infectiousness of exhaled air, C'''),
+              html.Sub("q"),
+              html.Span(''' (infection quanta per unit volume), from the specified 
+              respiratory activity, using tabulated values in Figure 2 of the '''),
+              html.A(children="paper",
+                     href=link_paper,
+                     target='_blank'),
+              html.Span('''. You define these parameters yourself in Advanced Mode.''')],
+             className='faq-answer'),
+])
+aerosol_radius_text = "Effective Aerosol Radius (at RH = 60%), r\u0305 (\u03bcm): "
+viral_deact_text = html.Span(["Maximum Viral Deactivation Rate (at RH = 100%), \u03BB", html.Sub('vmax'), " (/hr): "])
+
+values_interest_header = "Calculated Values of Interest: "
+values_interest_desc = html.Div([
+    html.H5("What exactly is this app calculating?"),
+    html.Div([
+        html.Div([html.Span('''Given a risk tolerance for airborne transmission, the app calculates the maximum 
+        allowable cumulative exposure time, the product of room occupancy and time in the presence of an infected 
+        person.  The app also calculates related quantities, defined in the '''),
+                  html.A(children="paper",
+                         href=link_paper,
+                         target='_blank'),
+                  html.Span(''', that may be of interest:''')]),
+    ], className='faq-answer'),
+])
+outdoor_air_frac_label = html.Span(["Outdoor air fraction Z", html.Sub('p'), ": "])
+aerosol_eff_label = html.Span(["Aerosol filtration efficiency p", html.Sub('f'), ": "])
+breathing_rate_label = html.Span(["Breathing flow rate Q", html.Sub('b'), ": "])
+cq_label = html.Span(["Infectiousness of exhaled air C", html.Sub('q'), ": "])
+mask_pass_prob_label = html.Span(["Mask passage probability p", html.Sub('m'), ": "])
+room_vol_label = html.Span(["Room volume V: "])
+vent_rate_Label = html.Span(["Ventilation (outdoor) flow rate Q: "])
+recirc_rate_label = html.Span(["Return (recirculation) flow rate Q", html.Sub('f'), ": "])
+air_filt_label = html.Span(["Air filtration rate (\u03BB", html.Sub('f'), "): "])
+eff_aerosol_rad_label = html.Span(["Humidity-adjusted aerosol radius r\u0305", html.Sub('eff'), ": "])
+viral_deact_label = html.Span(["Humidity-adjusted viral deactivation rate \u03BB", html.Sub('v'), ": "])
+sett_speed_label = html.Span(["Effective aerosol settling speed v\u209B(r\u0305", html.Sub('eff'), "): "])
+conc_relax_rate_label = html.Span(["Concentration relaxation rate \u03BB", html.Sub('c'), ": "])
+airb_trans_label = html.Span(["Airborne transmission rate \u03B2\u2090: "])
+
+graph_output_header = "Graph Output: "
+faq_graphs_text = html.Div([
+    html.H5("Graph Output: "),
+    # html.Div("Here you go!", className='faq-answer'),
 ])
 
 faq_infect_rate = html.Div([
-    html.H5("Does this model assume a certain infection rate among the population?"),
-    html.Div([
-        html.Div(['''No - it's not needed! Here's why:''']),
-        html.Div(['''The model takes each one of your inputs in the other tabs and 
-        calculates what we call the Indoor Reproductive Number, R''', html.Sub('in'), '''. This is the indoor analogue of 
-        the basic
-        reproduction number R\u2092. Much like how pandemics are controlled when R\u2092 < 1, airborne disease transmission 
-        within indoor spaces is controlled when R''', html.Sub('in'), ''' < 1. For example, 
-        values of R''', html.Sub('in'), ''' = 0.5, R''', html.Sub('in'), ''' = 0.1, R''', html.Sub('in'), ''' = 0.01 will 
-        all help reduce airborne transmission to varying degrees. In fact, you, the user, are limiting 
-        R''', html.Sub('in'), ''' in this way, 
-        by modifying the Risk Tolerance, where R''', html.Sub('in'), ''' = Risk Tolerance! 
-        A lower Risk Tolerance value forces a lower R''', html.Sub('in'), ''' 
-        value, which means less airborne transmission. The model uses all the room specification and human behavior 
-        inputs to calculate allowed exposure times for a range of occupancy numbers (2 people, 3 people, 4 people, 
-        5 people, 10 people, etc.) that give an R''', html.Sub('in'), ''' equal to your 
-        Risk Tolerance (these are the outputs displayed in 
-        large red text). The physical and epidemiological equations that govern this calculation do not require an 
-        assumed infection rate among the local population - it's all about how easily aerosols (specifically, infectious 
-        COVID-19 aerosols) are transmitted throughout the room.'''], style={'padding-left': '10px', 'font-size': '13px'}),
-    ], className='faq-answer'),
+    html.H5("Does this model account for the prevalence of infection in the local population?"),
+    html.Div(['''No. The model calculates the risk of transmission from a single infected person. It thus implicitly 
+    assumes that the prevalence of infection in the population is relatively low.  In this limit, the risk of 
+    transmission increases with the expected number of infected persons in the room, specifically the product of the 
+    occupancy and the prevalence in the population.  The tolerance should be lowered in proportion to this number if 
+    it exceeds one.  Conversely, when the expected number of infected persons in the room approaches zero, 
+    the tolerance could be proportionally increased until the recommended restrictions are deemed unnecessary. '''],
+             className='faq-answer'),
 ])
 
-risk_tol_desc = html.Div('''
-   A higher risk tolerance will mean more expected 
-   transmissions during the expected occupancy period
-   (see FAQ for details). More 
-   vulnerable populations such as the elderly or those 
-   with preexisting medical conditions will generally 
-   require a lower risk tolerance.
-''', style={'font-size': '13px', 'margin-left': '20px'})
+risk_tol_desc = html.Div('''More vulnerable populations such as the elderly or those with preexisting medical 
+conditions require a lower risk tolerance (~0.01). A higher risk tolerance will mean more expected 
+transmissions during the expected occupancy period (see FAQ for details).''', style={'font-size': '13px',
+                                                                                     'margin-left': '20px'})
 
+# Main Panel Text
+curr_room_header = "Current Room: "
+main_panel_s1 = "Based on this model, it should be safe* for this room to have: "
+main_panel_six_ft_1 = "In comparison, current six-foot or two-meter distancing would recommend no more than "
+main_panel_six_ft_2 = " in this room for an indefinite time."
+
+main_airb_trans_only_disc = html.Div(["*based on consideration of airborne transmission only (",
+                                      html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
+                                                       children="What is airborne transmission?",
+                                                       target='_blank'), ),
+                                      html.Span(").")], className='airborne-text')
+
+# Bottom panels text
+n_input_text_1 = "If this room has "
+n_input_text_2 = " people, its occupants should be safe for "
+n_input_text_3 = "."
+
+t_input_text_1 = "If people spend approximately "
+t_input_text_2 = " hours here, the occupancy should be limited to "
+t_input_text_3 = "."
+
+airb_trans_only_disc = html.Div('''based on consideration of airborne transmission only.''', className='airborne-text')
+
+footer = html.Div([
+    html.Div([html.Span('''The COVID-19 Indoor Safety Guideline is an evolving tool intended to familiarize the 
+    interested user with the factors influencing the risk of indoor airborne transmission of COVID-19, and to assist 
+    in the quantitative assessment of risk in various settings. We note that uncertainty in and intrinsic variability 
+    of model parameters may lead to errors as large as an order of magnitude, which may be compensated for by 
+    choosing a sufficiently small risk tolerance. Our guideline does not take into account short-range transmission 
+    through respiratory jets, which may substantially elevate risk when face masks are not being worn, in a manner 
+    discussed in the '''),
+              html.A(children="accompanying manuscript",
+                     href=link_paper,
+                     target='_blank'),
+              html.Span(''' (Bazant & Bush, 2020). Use of the COVID-19 Indoor Safety Guideline is the sole 
+              responsibility of the user. It is being made available without guarantee or warranty of any kind. The 
+              authors do not accept any liability from its use.''')]),
+    html.Br(),
+    html.Div("Special Thanks to  William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
+             "Marc Rosenbaum, and David Stark")
+], className='footer-small-text')

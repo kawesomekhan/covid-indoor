@@ -38,164 +38,12 @@ def update_mask_fit_disp: Updates mask fit/compliance filtration display based o
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd)
 
-presets = [
-    {'label': "Custom", 'value': 'custom'},
-    {'label': "Suburban House", 'value': 'house'},
-    {'label': "Restaurant", 'value': 'restaurant'},
-    {'label': "Quiet Office", 'value': 'office'},
-    {'label': "Classroom Lecture", 'value': 'classroom'},
-    {'label': "MTA Subway Car", 'value': 'subway'},
-    {'label': "Church", 'value': 'church'},
-]
-
-preset_settings = {
-    'house': {
-        'floor-area': 2000,
-        'ceiling-height': 12,
-        'ventilation': 3,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 29,
-        'masks': 0.25
-    },
-    'classroom': {
-        'floor-area': 900,
-        'ceiling-height': 12,
-        'ventilation': 3,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 29,
-        'masks': 0.25
-    },
-    'restaurant': {
-        'floor-area': 5000,
-        'ceiling-height': 12,
-        'ventilation': 9,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 72,
-        'masks': 1
-    },
-    'office': {
-        'floor-area': 10000,
-        'ceiling-height': 12,
-        'ventilation': 8,
-        'filtration': 10,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.25
-    },
-    'subway': {
-        'floor-area': 580,
-        'ceiling-height': 10,
-        'ventilation': 18,
-        'filtration': 6,
-        'recirc-rate': 54,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.25
-    },
-    'bus': {
-        'floor-area': 380,
-        'ceiling-height': 10,
-        'ventilation': 8,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.25
-    },
-    'church': {
-        'floor-area': 1900,
-        'ceiling-height': 30,
-        'ventilation': 2,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 72,
-        'masks': 0.25
-    },
-}
-
-preset_settings_metric = {
-    'house': {
-        'floor-area': 186,
-        'ceiling-height': 3.66,
-        'ventilation': 3,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 29,
-        'masks': 0.25
-    },
-    'classroom': {
-        'floor-area': 83.6,
-        'ceiling-height': 3.66,
-        'ventilation': 3,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 29,
-        'masks': 0.25
-    },
-    'restaurant': {
-        'floor-area': 465,
-        'ceiling-height': 3.66,
-        'ventilation': 9,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 72,
-        'masks': 1
-    },
-    'office': {
-        'floor-area': 929,
-        'ceiling-height': 3.66,
-        'ventilation': 8,
-        'filtration': 10,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.25
-    },
-    'subway': {
-        'floor-area': 54,
-        'ceiling-height': 3,
-        'ventilation': 18,
-        'filtration': 6,
-        'recirc-rate': 54,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.25
-    },
-    'bus': {
-        'floor-area': 54,
-        'ceiling-height': 3,
-        'ventilation': 8,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.25
-    },
-    'church': {
-        'floor-area': 177,
-        'ceiling-height': 9,
-        'ventilation': 2,
-        'filtration': 6,
-        'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 72,
-        'masks': 0.25
-    },
-}
-
 # Dropdown Preset Values
-ventilation_default = preset_settings['classroom']['ventilation']
+# For changing ventilation types based on language: ventilation_types will be a dictionary in desc_fr with
+# the english labels (here) as the keys. We will
+# loop through each item in ventilation_types and create a new array of dicts with the french label, then return
+# that to the options.
+ventilation_default = ess.preset_settings['classroom']['ventilation']
 ventilation_types = [
     {'label': "Closed windows", 'value': 0.3},
     {'label': "Open windows", 'value': 2},
@@ -205,10 +53,10 @@ ventilation_types = [
     {'label': "Laboratory, Restaurant", 'value': 9},
     {'label': "Bar", 'value': 15},
     {'label': "Hospital/Subway Car", 'value': 18},
-    {'label': "Toxic Laboratory", 'value': 25},
+    {'label': "Toxic Laboratory/Airplane", 'value': 24},
 ]
 
-filter_default = preset_settings['classroom']['filtration']
+filter_default = ess.preset_settings['classroom']['filtration']
 filter_types = [
     {'label': "None", 'value': 0},
     {'label': "Residential Window AC", 'value': 2},
@@ -218,64 +66,15 @@ filter_types = [
     {'label': "HEPA", 'value': 17}
 ]
 
-recirc_default = preset_settings['classroom']['recirc-rate']
+recirc_default = ess.preset_settings['classroom']['recirc-rate']
 recirc_types = [
     {'label': "None", 'value': 0},
     {'label': "Slow", 'value': 0.3},
     {'label': "Moderate", 'value': 1},
     {'label': "Fast", 'value': 10},
+    {'label': "Airplane", 'value': 24},
     {'label': "Subway Car", 'value': 54},
 ]
-
-exertion_types = [
-    {'label': "Resting", 'value': 0.49},
-    {'label': "Standing", 'value': 0.54},
-    {'label': "Light Exercise", 'value': 1.38},
-    {'label': "Moderate Exercise", 'value': 2.35},
-    {'label': "Heavy Exercise", 'value': 3.30},
-]
-
-expiratory_types = [
-    {'label': "Breathing (nose)", 'value': 1.1},
-    {'label': "Breathing (nose-nose)", 'value': 8.8},
-    {'label': "Breathing (deep-fast)", 'value': 4.2},
-    {'label': "Breathing (fast-deep)", 'value': 8.5},
-    {'label': "Speaking (quiet speech)", 'value': 29},
-    {'label': "Speaking (whispered counting)", 'value': 37},
-    {'label': "Speaking (normal speech)", 'value': 72},
-    {'label': "Speaking (voiced counting)", 'value': 72},
-    {'label': "Speaking (loud speech)", 'value': 142},
-    {'label': "Singing (whispered 'aah')", 'value': 103},
-    {'label': "Singing (voiced 'aah')", 'value': 970},
-]
-
-mask_types = [
-    {'label': "None (0% filtration)", 'value': 1},
-    {'label': "Quilter's Cotton (10% filtration)", 'value': 0.9},
-    {'label': "Silk (55% filtration)", 'value': 0.45},
-    {'label': "Flannel (60% filtration)", 'value': 0.40},
-    {'label': "Chiffon (70% filtration)", 'value': 0.30},
-    {'label': "Surgical (75% filtration)", 'value': 0.25},
-    {'label': "Cotton (80% filtration)", 'value': 0.20},
-    {'label': "N95 Respirator (85% filtration)", 'value': 0.15},
-    {'label': "Cotton+Chiffon (97% filtration)", 'value': 0.03},
-]
-
-# CSS Styles for Tabs (currently known issue in Dash with overriding default css)
-tab_style = {
-    'padding-left': '1em',
-    'padding-right': '1em',
-    'border-color': '#DDDDDD',
-    'font-size': '14px'
-}
-
-tab_style_selected = {
-    'padding-left': '1em',
-    'padding-right': '1em',
-    'border-color': '#DDDDDD',
-    'border-top-color': '#de1616',
-    'font-size': '14px'
-}
 
 # Main App
 layout = html.Div(children=[
@@ -296,241 +95,208 @@ layout = html.Div(children=[
                     children=[
                         dcc.Tabs(value='tab-1', children=[
                             dcc.Tab(
-                                label='About',
+                                label=desc.about_header,
                                 className='custom-tab',
-                                children=desc.about,
-                                style=tab_style,
-                                selected_style=tab_style_selected
+                                children=html.Span(desc.about, id='about-text'),
+                                style=ess.tab_style,
+                                selected_style=ess.tab_style_selected
                             ),
                             dcc.Tab(
-                                label='Room Specifications',
+                                label=desc.room_header,
                                 className='custom-tab',
                                 children=[
-                                          html.H6("Room Specifications"),
-                                          html.Div([html.Span(desc.floor_area_text, id='floor-area-text'),
-                                                    dcc.Input(id='floor-area', value=900,
-                                                              type='number')]),
-                                          html.Br(),
-                                          html.Div([html.Span(desc.ceiling_height_text, id='ceiling-height-text'),
-                                                    dcc.Input(id='ceiling-height', value=12,
-                                                              type='number')]),
-                                          html.Br(),
-                                          html.Div(["Ventilation System: ",
-                                                    html.Span(className='model-output-text-small',
-                                                              id='ventilation-type-output'),
-                                                    dcc.Dropdown(id='ventilation-type',
-                                                                 options=ventilation_types,
-                                                                 value=ventilation_default,
-                                                                 searchable=False,
-                                                                 clearable=False)
-                                                    ]),
-                                          html.Br(),
-                                          html.Div(["Filtration System: ",
-                                                    html.Span(className='model-output-text-small',
-                                                              id='filter-type-output'),
-                                                    dcc.Dropdown(id='filter-type',
-                                                                 options=filter_types,
-                                                                 value=filter_default,
-                                                                 searchable=False,
-                                                                 clearable=False)]),
-                                          html.Br(),
-                                          html.Div(["Recirculation Rate: ",
-                                                    html.Span(className='model-output-text-small',
-                                                              id='recirc-rate-output-2'),
-                                                    dcc.Dropdown(id='recirc-rate',
-                                                                 options=recirc_types,
-                                                                 value=recirc_default,
-                                                                 searchable=False,
-                                                                 clearable=False)]),
-                                          html.Br(),
-                                          html.Div('''Need more control over your inputs? Switch to 
-                                          Advanced Mode using the dropdown at the top of the 
-                                          page!'''),
+                                    html.H6(html.Span(desc.room_header, id='room-header-body')),
+                                    html.Div([html.Span(desc.floor_area_text, id='floor-area-text'),
+                                              dcc.Input(id='floor-area', value=900,
+                                                        type='number')]),
+                                    html.Br(),
+                                    html.Div([html.Span(desc.ceiling_height_text, id='ceiling-height-text'),
+                                              dcc.Input(id='ceiling-height', value=12,
+                                                        type='number')]),
+                                    html.Br(),
+                                    html.Div([html.Span(desc.ventilation_text, id='ventilation-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='ventilation-type-output'),
+                                              dcc.Dropdown(id='ventilation-type',
+                                                           options=ventilation_types,
+                                                           value=ventilation_default,
+                                                           searchable=False,
+                                                           clearable=False)
+                                              ]),
+                                    html.Br(),
+                                    html.Div([html.Span(desc.filtration_text, id='filtration-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='filter-type-output'),
+                                              dcc.Dropdown(id='filter-type',
+                                                           options=filter_types,
+                                                           value=filter_default,
+                                                           searchable=False,
+                                                           clearable=False)]),
+                                    html.Br(),
+                                    html.Div([html.Span(desc.recirc_text, id='recirc-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='recirc-rate-output-2'),
+                                              dcc.Dropdown(id='recirc-rate',
+                                                           options=recirc_types,
+                                                           value=recirc_default,
+                                                           searchable=False,
+                                                           clearable=False)]),
+                                    html.Br(),
+                                    html.Div([html.Span(desc.humidity_text, id='humidity-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='humidity-output'),
+                                              dcc.Slider(id='relative-humidity',
+                                                         min=0,
+                                                         max=0.99,
+                                                         step=0.01,
+                                                         value=0.6,
+                                                         marks=ess.humidity_marks)]),
+                                    html.Br(),
+                                    html.Br(),
+                                    html.Span(desc.need_more_ctrl_text, id='need-more-ctrl-text'),
                                 ],
-                                style=tab_style,
-                                selected_style=tab_style_selected
+                                style=ess.tab_style,
+                                selected_style=ess.tab_style_selected
                             ),
                             dcc.Tab(
-                                label='Human Behavior',
+                                label=desc.human_header,
                                 className='custom-tab',
                                 children=[
-                                          html.H6("Human Behavior"),
-                                          html.Div(["Exertion Level: ",
-                                                    dcc.Dropdown(id='exertion-level',
-                                                                 options=exertion_types,
-                                                                 value=0.49,
-                                                                 searchable=False,
-                                                                 clearable=False)]),
-                                          html.Br(),
-                                          html.Div(["Expiratory Activity: ",
-                                                    dcc.Dropdown(id='exp-activity',
-                                                                 options=expiratory_types,
-                                                                 value=29,
-                                                                 searchable=False,
-                                                                 clearable=False)]),
-                                          html.Br(),
-                                          html.Div(["Mask Type ",
-                                                    dcc.Dropdown(id='mask-type',
-                                                                 options=mask_types,
-                                                                 value=0.25,
-                                                                 searchable=False,
-                                                                 clearable=False)]),
-                                          html.Br(),
-                                          html.Div(["Mask Fit/Compliance: ",
-                                                    html.Span(className='model-output-text-small',
-                                                              id='mask-fit-output'),
-                                                    dcc.Slider(id='mask-fit',
-                                                               min=0,
-                                                               max=0.95,
-                                                               step=0.01,
-                                                               value=0.90,
-                                                               marks={
-                                                                   0: {'label': '0%: None',
-                                                                       'style': {
-                                                                           'max-width': '50px'}},
-                                                                   0.5: {'label': '50%: Poor'},
-                                                                   0.95: {'label': '95%: Good'}
-                                                               }),
-                                                    ]),
-                                          html.Br(),
-                                          html.Br(),
-                                          html.Div(["Risk Tolerance: ",
-                                                    html.Span(className='model-output-text-small',
-                                                              id='risk-tolerance-output'),
-                                                    desc.risk_tol_desc,
-                                                    dcc.Slider(id='risk-tolerance',
-                                                               min=0.01,
-                                                               max=1,
-                                                               step=0.01,
-                                                               value=0.1,
-                                                               marks={
-                                                                   0.01: {
-                                                                       'label': '0.01: Contact Tracing',
-                                                                       'style': {
-                                                                           'max-width': '50px'}},
-                                                                   1: {'label': '1.0: Unsafe'}
-                                                               })
-                                                    ]),
-                                          html.Br(),
-                                          html.Br(),
-                                          html.Div('''Need more control over your inputs? Switch to 
-                                          Advanced Mode using the dropdown at the top of the
-                                          page!'''),
+                                    html.H6(html.Span(desc.human_header, id='human-header-body')),
+                                    html.Div([html.Span(desc.exertion_text, id='exertion-text'),
+                                              dcc.Dropdown(id='exertion-level',
+                                                           options=ess.exertion_types,
+                                                           value=0.49,
+                                                           searchable=False,
+                                                           clearable=False)]),
+                                    html.Br(),
+                                    html.Div([html.Span(desc.breathing_text, id='breathing-text'),
+                                              dcc.Dropdown(id='exp-activity',
+                                                           options=ess.expiratory_types,
+                                                           value=29,
+                                                           searchable=False,
+                                                           clearable=False)]),
+                                    html.Br(),
+                                    html.Div([html.Span(desc.mask_type_text, id='mask-type-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='mask-eff-output'),
+                                              dcc.Dropdown(id='mask-type',
+                                                           options=ess.mask_types,
+                                                           value=0.75,
+                                                           searchable=False,
+                                                           clearable=False)]),
+                                    html.Br(),
+                                    html.Div([html.Span(desc.mask_fit_text, id='mask-fit-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='mask-fit-output'),
+                                              dcc.Slider(id='mask-fit',
+                                                         min=0,
+                                                         max=0.95,
+                                                         step=0.01,
+                                                         value=0.90,
+                                                         marks=ess.mask_fit_marks),
+                                              ]),
+                                    html.Br(),
+                                    html.Br(),
+                                    html.Div([html.Span(desc.risk_tolerance_text, id='risk-tol-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='risk-tolerance-output'),
+                                              html.Span(desc.risk_tol_desc, id='risk-tol-desc'),
+                                              dcc.Slider(id='risk-tolerance',
+                                                         min=0.01,
+                                                         max=1,
+                                                         step=0.01,
+                                                         value=0.1,
+                                                         marks=ess.risk_tol_marks)
+                                              ]),
+                                    html.Br(),
+                                    html.Br(),
+                                    html.Span(desc.need_more_ctrl_text, id='need-more-ctrl-text-2'),
                                 ],
-                                style=tab_style,
-                                selected_style=tab_style_selected
+                                style=ess.tab_style,
+                                selected_style=ess.tab_style_selected
                             ),
                             dcc.Tab(
-                                label='Frequently Asked Questions',
+                                label=desc.faq_header,
                                 className='custom-tab',
                                 children=[
-                                          desc.faq_top,
-                                          html.Br(),
-                                          html.H5("Does the model assume any other parameters?"),
-                                          html.Div('''
-                                              The model assumes a well-mixed room, but all 
-                                              parameters
-                                              are based on scientific studies of COVID-19 and aerosol 
-                                              transmission.
-                                              The model also assumes a given aerosol radius and viral
-                                              deactivation rate, which you can change below if
-                                              you'd like!
-                                          ''', className='faq-answer'),
-                                          html.Br(),
-                                          html.Div([
-                                              html.Div(["Aerosol Radius r\u0305 (\u03bcm): ",
-                                                        dcc.Input(id='aerosol-radius', value=2,
-                                                                  type='number')]),
-                                              html.Br(),
-                                              html.Div(["Viral Deactivation Rate \u03BB", html.Sub('v'), " (/hr): ",
-                                                        dcc.Input(id='viral-deact-rate', value=0.3,
-                                                                  type='number')]),
-                                          ], className='faq-answer'),
-                                          html.Br(),
-                                          html.Br(),
-                                          html.H5("What is this model calculating, exactly?"),
-                                          html.Div('''
-                                                See below for a list of values used in calculating
-                                                the output you see.
-                                            ''', className='faq-answer'),
-                                          html.Br(),
-                                          html.Div([
-                                              html.Div(["Outdoor air fraction Z", html.Sub('p'), ": ",
-                                                        html.Span(
-                                                            className='model-output-text-small',
-                                                            id='air-frac-output')]),
-                                              html.Div(["Aerosol filtration efficiency p", html.Sub('f'), ": ",
-                                                   html.Span(
-                                                       className='model-output-text-small',
-                                                       id='filtration-eff-output')]),
-                                              html.Div(["Breathing flow rate Q", html.Sub('b'), ": ",
-                                                        html.Span(
-                                                            className='model-output-text-small',
-                                                            id='breath-rate-output')]),
-                                              html.Div(["Infectiousness of exhaled air C", html.Sub('q'), ": ",
-                                                        html.Span(
-                                                            className='model-output-text-small',
-                                                            id='infect-air-output')]),
-                                              html.Div(["Mask passage probability p", html.Sub('m'), ": ",
-                                                        html.Span(
-                                                            className='model-output-text-small',
-                                                            id='mask-pass-output')]),
-                                              html.Div(["Room volume V: ",
-                                                        html.Span(
-                                                            className='model-output-text-small',
-                                                            id='room-vol-output')]),
-                                              html.Div(["Ventilation (outdoor) flow rate Q: ",
-                                                        html.Span(
-                                                            className='model-output-text-small',
-                                                            id='fresh-rate-output')]),
-                                              html.Div(["Return (recirculation) flow rate Q", html.Sub('f'), ": ",
-                                                        html.Span(
-                                                            className='model-output-text-small',
-                                                            id='recirc-rate-output')]),
-                                              html.Div(["Air filtration rate (\u03BB", html.Sub('f'), "): ",
-                                                        html.Span(
-                                                            className='model-output-text-small',
-                                                            id='air-filt-rate-output')]),
-                                              html.Div([
-                                                  "Effective aerosol settling speed v\u209B(r\u0305): ",
+                                    html.Span(desc.faq_top, id='faq-top'),
+                                    html.Br(),
+                                    html.Span(desc.values_interest_desc, id='values-interest-desc'),
+                                    html.Br(),
+                                    html.Div([
+                                        html.Div([html.Span(desc.outdoor_air_frac_label, id='z_p-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='air-frac-output')]),
+                                        html.Div([html.Span(desc.aerosol_eff_label, id='filt-eff-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='filtration-eff-output')]),
+                                        html.Div([html.Span(desc.breathing_rate_label, id='breath-rate-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='breath-rate-output')]),
+                                        html.Div([html.Span(desc.cq_label, id='cq-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='infect-air-output')]),
+                                        html.Div([html.Span(desc.mask_pass_prob_label, id='mask-pass-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='mask-pass-output')]),
+                                        html.Div([html.Span(desc.room_vol_label, id='room-vol-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='room-vol-output')]),
+                                        html.Div([html.Span(desc.vent_rate_Label, id='fresh-rate-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='fresh-rate-output')]),
+                                        html.Div([html.Span(desc.recirc_rate_label, id='recirc-rate-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='recirc-rate-output')]),
+                                        html.Div([html.Span(desc.air_filt_label, id='air-filt-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='air-filt-rate-output')]),
+                                        html.Div([html.Span(desc.eff_aerosol_rad_label, id='eff-rad-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='eff-rad-output')]),
+                                        html.Div([html.Span(desc.viral_deact_label, id='viral-deact-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='viral-deact-output')]),
+                                        html.Div([html.Span(desc.sett_speed_label, id='sett-speed-label'),
                                                   html.Span(
                                                       className='model-output-text-small',
                                                       id='sett-speed-output')]),
-                                              html.Div(["Concentration relaxation rate \u03BB", html.Sub('c'), ": ",
-                                                        html.Span(
-                                                            className='model-output-text-small',
-                                                            id='conc-relax-output')]),
-                                              html.Div(["Airborne transmission rate \u03B2\u2090: ",
-                                                        html.Span(
-                                                            className='model-output-text-small',
-                                                            id='airb-trans-output')]),
-                                          ], className='faq-answer'),
-                                          html.Br(),
-                                          html.H5("I like graphs. Do you have any graphs?"),
-                                          html.Div('''
-                                              Here you go!
-                                          ''', className='faq-answer'),
-                                          html.Div([
-                                              dcc.Graph(
-                                                  id='safety-graph',
-                                                  figure=fig
-                                              ),
-                                          ], className='faq-answer'),
-                                          html.Br(),
-                                          desc.faq_infect_rate,
-                                          html.Br(),
-                                          html.H5("I still have questions!"),
-                                          html.Div('''
-                                              If you'd like to see more references and/or further 
-                                              explanation, see the links
-                                              posted at the top of the webpage. You can also check 
-                                              out a bunch of other details regarding how
-                                              this model works, shown below:
-                                          ''', className='faq-answer'),
-                                          desc.assumptions_layout,
+                                        html.Div([html.Span(desc.conc_relax_rate_label, id='conc-relax-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='conc-relax-output')]),
+                                        html.Div([html.Span(desc.airb_trans_label, id='airb-trans-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='airb-trans-output')]),
+                                    ], className='faq-answer'),
+                                    html.Br(),
+                                    html.Span(desc.faq_graphs_text, id='faq-graphs-text'),
+                                    html.Div([
+                                        dcc.Graph(
+                                            id='safety-graph',
+                                            figure=fig
+                                        ),
+                                    ], className='faq-answer'),
+                                    html.Br(),
+                                    html.Span(desc.faq_infect_rate, id='faq-infect-rate'),
+                                    html.Br(),
+                                    html.Span(desc.assumptions_layout, id='assump-layout'),
                                 ],
-                                style=tab_style,
-                                selected_style=tab_style_selected
+                                style=ess.tab_style,
+                                selected_style=ess.tab_style_selected
                             )
                         ],
                                  colors={
@@ -542,61 +308,85 @@ layout = html.Div(children=[
                 html.Div(
                     className='card',
                     children=[html.Div(className='output-content', children=[
-                              html.H6("Current room: "),
-                              html.Div(
-                                  className='grid-preset',
-                                  children=[
-                                      html.Div(
-                                          id='presets-div',
-                                          children=[
-                                              dcc.Dropdown(id='presets',
-                                                           options=presets,
-                                                           value='classroom',
-                                                           searchable=False,
-                                                           clearable=False),
-                                          ]),
-                                  ], style={'max-width': '500px'}),
-                              html.H3(['''
-                                Based on this model, it should be safe* for this room to have:
-                            ''']),
-                              dcc.Loading(
-                                  id='loading',
-                                  type='circle',
-                                  children=[
-                                      html.H4(className='model-output-text', id='model-text-1',
-                                              children="2 people for 31 days"),
-                                      html.H4(className='model-output-text', id='model-text-2',
-                                              children="3 people for 15 days"),
-                                      html.H4(className='model-output-text', id='model-text-3',
-                                              children="4 people for 10 days"),
-                                      html.H4(className='model-output-text', id='model-text-4',
-                                              children="5 people for 8 days"),
-                                      html.H4(className='model-output-text', id='model-text-5',
-                                              children="10 people for 3 days"),
-                                      html.H4(className='model-output-text', id='model-text-6',
-                                              children="25 people for 31 hours"),
-                                      html.H4(className='model-output-text', id='model-text-7',
-                                              children="50 people for 15 hours"),
-                                      html.H4(className='model-output-text', id='model-text-8',
-                                              children="100 people for 8 hours"),
-                                  ],
-                                  color='#de1616',
-                              ),
-                              html.Br(),
-                              html.H3([
-                                  '''In comparison, current six feet distancing guidelines 
-                                  recommend no more than''',
-                                  html.Span(id='six-ft-output', children=''' 2 people ''',
-                                            style={'color': '#de1616'}),
-                                  ''' in this room.''']),
-                              html.Div(["*based on airborne transmission only (",
-                                        html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
-                                           children="what is airborne transmission?",
-                                           target='_blank'),),
-                                        html.Span(")"),
-                                        html.Span("")])
-                                 ]),
+                        html.H6(html.Span(desc.curr_room_header, id='curr-room-header')),
+                        html.Div(
+                            className='grid-preset',
+                            children=
+                            html.Div(
+                                id='presets-div',
+                                children=dcc.Dropdown(id='presets',
+                                                      options=ess.presets,
+                                                      value='classroom',
+                                                      searchable=False,
+                                                      clearable=False)),
+                            style={'max-width': '500px'}
+                        ),
+                        html.H3(html.Span(desc.main_panel_s1, id='main-panel-s1')),
+                        dcc.Loading(
+                            id='loading',
+                            type='circle',
+                            children=[
+                                html.H4(className='model-output-text', id='model-text-1',
+                                        children="2 people for 31 days"),
+                                html.H4(className='model-output-text', id='model-text-2',
+                                        children="3 people for 15 days"),
+                                html.H4(className='model-output-text', id='model-text-3',
+                                        children="4 people for 10 days"),
+                                html.H4(className='model-output-text', id='model-text-4',
+                                        children="5 people for 8 days"),
+                                html.H4(className='model-output-text', id='model-text-5',
+                                        children="10 people for 3 days"),
+                                html.H4(className='model-output-text', id='model-text-6',
+                                        children="25 people for 31 hours"),
+                                html.H4(className='model-output-text', id='model-text-7',
+                                        children="50 people for 15 hours"),
+                                html.H4(className='model-output-text', id='model-text-8',
+                                        children="100 people for 8 hours"),
+                            ],
+                            color='#de1616',
+                        ),
+                        html.Br(),
+                        html.H3([html.Span(desc.main_panel_six_ft_1, id='main-six-ft-1'),
+                                 html.Span(id='six-ft-output',
+                                           children=''' 2 people ''',
+                                           style={'color': '#de1616'}),
+                                 html.Span(desc.main_panel_six_ft_2, id='main-six-ft-2')]),
+                        html.Br(),
+                        html.Span(desc.main_airb_trans_only_disc, id='main-airb-trans-disc')
                     ]),
+                ]),
+                html.Div(
+                    className='card',
+                    children=[html.Div(className='output-content', children=[
+                        html.H3([html.Span(desc.n_input_text_1, id='n-input-text-1'),
+                                 html.Span([dcc.Input(id='n-input',
+                                                      value=10,
+                                                      type='number')]),
+                                 html.Span(desc.n_input_text_2, id='n-input-text-2'),
+                                 html.Span(id='t-output',
+                                           children="8 hours",
+                                           style={'color': '#de1616'}),
+                                 html.Span(desc.n_input_text_3, id='n-input-text-3')]),
+                        html.Br(),
+                        html.Span(desc.airb_trans_only_disc, id='airb-trans-only-disc-1')
+                    ])]
+                ),
+                html.Div(
+                    className='card',
+                    children=[html.Div(className='output-content', children=[
+                        html.H3([html.Span(desc.t_input_text_1, id='t-input-text-1'),
+                                 html.Span([dcc.Input(id='t-input',
+                                                      value=4,
+                                                      type='number')]),
+                                 html.Span(desc.t_input_text_2, id='t-input-text-2'),
+                                 html.Span(id='n-output',
+                                           children="5 occupants",
+                                           style={'color': '#de1616'}),
+                                 html.Span(desc.t_input_text_3, id='t-input-text-3')]),
+                        html.Br(),
+                        html.Span(desc.airb_trans_only_disc, id='airb-trans-only-disc-2')
+                    ])]
+                )
             ]
         ),
     ),
@@ -649,9 +439,13 @@ def update_units(search):
      Output('fresh-rate-output', 'children'),
      Output('recirc-rate-output', 'children'),
      Output('air-filt-rate-output', 'children'),
+     Output('eff-rad-output', 'children'),
+     Output('viral-deact-output', 'children'),
      Output('sett-speed-output', 'children'),
      Output('conc-relax-output', 'children'),
      Output('airb-trans-output', 'children'),
+     Output('t-output', 'children'),
+     Output('n-output', 'children'),
      Output('alert-no-update', 'children'),
      Output('alert-no-update', 'is_open')],
     [Input('floor-area', 'value'),
@@ -659,74 +453,37 @@ def update_units(search):
      Input('ventilation-type', 'value'),
      Input('recirc-rate', 'value'),
      Input('filter-type', 'value'),
+     Input('relative-humidity', 'value'),
      Input('exertion-level', 'value'),
      Input('exp-activity', 'value'),
      Input('mask-type', 'value'),
      Input('mask-fit', 'value'),
      Input('risk-tolerance', 'value'),
-     Input('aerosol-radius', 'value'),
-     Input('viral-deact-rate', 'value'),
+     Input('n-input', 'value'),
+     Input('t-input', 'value'),
      Input('url', 'search')]
 )
-def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
-                  breathing_flow_rate, infectiousness, mask_passage_prob, mask_fit, risk_tolerance, aerosol_radius,
-                  viral_deact_rate, search):
-    error_msg = ""
-
-    # Make sure none of our values are none
-    if floor_area is None:
-        error_msg = desc.error_list["floor_area"]
-    elif ceiling_height is None:
-        error_msg = desc.error_list["ceiling_height"]
-    elif aerosol_radius is None:
-        error_msg = desc.error_list["aerosol_radius"]
-    elif viral_deact_rate is None:
-        error_msg = desc.error_list["viral_deact_rate"]
+def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
+                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, n_max_input, exp_time_input, search):
+    def_aerosol_radius = 2
+    max_viral_deact_rate = 0.6
+    error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
+                                max_viral_deact_rate, n_max_input, exp_time_input)
 
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
     # Check our units!
-    params = ess.search_to_params(search)
-    my_units = "british"
-    if "units" in params:
-        my_units = params["units"]
+    my_units = ess.get_units(search)
 
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
-    preset_dd_value = 'custom'
-
-    if my_units == "british":
-        for setting_key in preset_settings:
-            setting = preset_settings[setting_key]
-            is_preset = setting['floor-area'] == floor_area and \
-                        setting['ceiling-height'] == ceiling_height and \
-                        setting['ventilation'] == air_exchange_rate and \
-                        setting['recirc-rate'] == recirc_rate and \
-                        setting['filtration'] == merv and \
-                        setting['exertion'] == breathing_flow_rate and \
-                        setting['exp-activity'] == infectiousness and \
-                        setting['masks'] == mask_passage_prob
-            if is_preset:
-                preset_dd_value = setting_key
-                break
-    elif my_units == "metric":
-        for setting_key in preset_settings_metric:
-            setting = preset_settings_metric[setting_key]
-            is_preset = setting['floor-area'] == floor_area and \
-                        setting['ceiling-height'] == ceiling_height and \
-                        setting['ventilation'] == air_exchange_rate and \
-                        setting['recirc-rate'] == recirc_rate and \
-                        setting['filtration'] == merv and \
-                        setting['exertion'] == breathing_flow_rate and \
-                        setting['exp-activity'] == infectiousness and \
-                        setting['masks'] == mask_passage_prob
-            if is_preset:
-                preset_dd_value = setting_key
-                break
+    preset_dd_value = ess.get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
+                                              breathing_flow_rate, infectiousness, mask_eff, my_units)
 
     # If metric, convert floor_area and ceiling_height to feet
     if my_units == "metric":
@@ -734,21 +491,20 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
         ceiling_height = ceiling_height * 3.281
 
     # Update model with newly-selected parameters
-    # Correct mask_passage_prob based on mask fit/compliance
-    mask_passage_prob = 1 - mask_passage_prob
-    mask_passage_prob = mask_passage_prob * mask_fit
-    mask_passage_prob = 1 - mask_passage_prob
+    # mask_passage_prob based on mask fit/compliance
+    mask_final_eff = mask_eff * mask_fit
+    mask_passage_prob = 1 - mask_final_eff
 
     # Calculate aerosol filtration efficiency
-    aerosol_filtration_eff = Indoors.merv_to_eff(merv, aerosol_radius)
+    aerosol_filtration_eff = Indoors.merv_to_eff(merv, def_aerosol_radius)
 
     # Convert recirc rate to outdoor air fraction
     outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + recirc_rate)
 
     myInd.physical_params = [floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction,
-                             aerosol_filtration_eff]
-    myInd.physio_params = [breathing_flow_rate, aerosol_radius]
-    myInd.disease_params = [infectiousness, viral_deact_rate]
+                             aerosol_filtration_eff, relative_humidity]
+    myInd.physio_params = [breathing_flow_rate, def_aerosol_radius]
+    myInd.disease_params = [infectiousness, max_viral_deact_rate]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     myInd.calc_vars()
 
@@ -760,12 +516,19 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     six_ft_text = ess.get_six_ft_text(myInd)
     interest_output = ess.get_interest_output_text(myInd, my_units)
 
+    exp_time_output = myInd.calc_max_time(n_max_input)
+    exp_time_text = ess.time_to_text(exp_time_output)
+
+    n_max_output = myInd.calc_n_max(exp_time_input)
+    n_max_text = ' {:.0f} people'.format(n_max_output)
+
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
            six_ft_text, preset_dd_value, interest_output[0], interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
-           interest_output[8], interest_output[9], interest_output[10], interest_output[11], error_msg, False
+           interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
+           interest_output[13], exp_time_text, n_max_text, error_msg, False
 
 
 # Update options based on selected presets, also if units changed
@@ -786,16 +549,17 @@ def update_presets(preset, search):
     if preset == 'custom':
         raise PreventUpdate
     else:
-        params = ess.search_to_params(search)
-        my_units = "british"
-        if "units" in params:
-            my_units = params["units"]
+        curr_settings = ess.preset_settings[preset]
 
+        my_units = ess.get_units(search)
         if my_units == "british":
-            curr_settings = preset_settings[preset]
+            floor_area = curr_settings['floor-area']
+            ceiling_height = curr_settings['ceiling-height']
         elif my_units == "metric":
-            curr_settings = preset_settings_metric[preset]
-        return curr_settings['floor-area'], curr_settings['ceiling-height'], curr_settings['ventilation'], \
+            floor_area = round(curr_settings['floor-area-metric'], 2)
+            ceiling_height = round(curr_settings['ceiling-height-metric'], 2)
+
+        return floor_area, ceiling_height, curr_settings['ventilation'], \
                curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['exertion'], \
                curr_settings['exp-activity'], curr_settings['masks']
 
@@ -827,6 +591,15 @@ def update_recirc_disp(recirc_rate):
     return ["{:.1f} recirculation ACH".format(recirc_rate)]
 
 
+# Relative Humidity slider value display
+@app.callback(
+    [Output('humidity-output', 'children')],
+    [Input('relative-humidity', 'value')]
+)
+def update_humid_disp(relative_humidity):
+    return ["{:.0f}%".format(relative_humidity * 100)]
+
+
 # Risk tolerance slider value display
 @app.callback(
     [Output('risk-tolerance-output', 'children')],
@@ -834,6 +607,15 @@ def update_recirc_disp(recirc_rate):
 )
 def update_risk_tol_disp(risk_tolerance):
     return ["{:.2f}".format(risk_tolerance)]
+
+
+# Mask Filtration Efficiency slider value display
+@app.callback(
+    [Output('mask-eff-output', 'children')],
+    [Input('mask-type', 'value')]
+)
+def update_mask_type_disp(mask_eff):
+    return ["{:.0f}%".format(mask_eff * 100)]
 
 
 # Mask Fit/Compliance slider value display
