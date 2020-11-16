@@ -292,8 +292,8 @@ transmissions during the expected occupancy period (see FAQ for details).''', st
 # Main Panel Text
 curr_room_header = "Current Room: "
 main_panel_s1 = "Based on this model, it should be safe* for this room to have: "
-main_panel_six_ft_1 = "In comparison, current six-foot or two-meter distancing would recommend no more than "
-main_panel_six_ft_2 = " in this room for an indefinite time."
+main_panel_six_ft_1 = "Note that the six-foot or two-meter distancing guideline would indicate that up to "
+main_panel_six_ft_2 = " would be safe in this room for an indefinite period."
 
 main_airb_trans_only_disc = html.Div(["*based on consideration of airborne transmission only (",
                                       html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
