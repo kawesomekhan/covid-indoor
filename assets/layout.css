@@ -43,14 +43,14 @@ body {
 }
 #header-left {
     padding: 16px;
-    width: 400px;
+    width: 500px;
 }
 
 /* Main Grid */
 .grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    grid-auto-rows: 615px 200px;
+    grid-auto-rows: 620px 230px;
     padding: 0;
 }
 .card {

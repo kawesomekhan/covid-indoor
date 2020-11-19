@@ -3,6 +3,8 @@ import dash_html_components as html
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
 
+descriptions: English
+
 """
 
 link_paper = "https://www.medrxiv.org/content/10.1101/2020.08.26.20182824v2"
