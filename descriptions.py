@@ -8,6 +8,132 @@ descriptions.py contains all English text used throughout the app (Basic, Advanc
 link_paper = "https://www.medrxiv.org/content/10.1101/2020.08.26.20182824v2"
 link_docs = "https://docs.google.com/document/d/1fB5pysccOHvxphpTmCG_TGdytavMmc1cUumn8m0pwzo/edit"
 
+vent_type_output_base = "{:.0f} ACH"
+filt_type_output_base = "MERV {:.0f}"
+recirc_type_output_base = "{:.1f} recirculation ACH"
+
+# Default dropdown options shared between basic mode and advanced mode
+humidity_marks = {
+    0: {'label': '0%: Very Dry', 'style': {'max-width': '25px'}},
+    0.2: {'label': '20%: Airplane', 'style': {'max-width': '50px'}},
+    0.3: {'label': '30%: Dry'},
+    0.6: {'label': '60%: Average'},
+    0.99: {'label': '99%: Very Humid'},
+}
+
+exertion_types = [
+    {'label': "Resting", 'value': 0.49},
+    {'label': "Standing", 'value': 0.54},
+    {'label': "Light Exercise", 'value': 1.38},
+    {'label': "Moderate Exercise", 'value': 2.35},
+    {'label': "Heavy Exercise", 'value': 3.30},
+]
+
+expiratory_types = [
+    {'label': "Breathing (light)", 'value': 1.1},
+    {'label': "Breathing (normal)", 'value': 4.2},
+    {'label': "Breathing (heavy)", 'value': 8.8},
+    # {'label': "Breathing (fast-deep)", 'value': 8.5},
+    {'label': "Talking (whisper)", 'value': 29},
+    # {'label': "Speaking (whispered counting)", 'value': 37},
+    {'label': "Talking (normal)", 'value': 72},
+    # {'label': "Speaking (voiced counting)", 'value': 72},
+    {'label': "Talking (loud)", 'value': 142},
+    # {'label': "Singing (whispered 'aah')", 'value': 103},
+    {'label': "Singing", 'value': 970},
+]
+
+mask_type_marks = {
+    0: {'label': "0% (none, face shield)", 'style': {'max-width': '50px'}},
+    0.1: {'label': "10% (coarse cotton)", 'style': {'max-width': '50px'}},
+    0.5: {'label': "50% (silk, flannel, chiffon)", 'style': {'max-width': '50px'}},
+    0.75: {'label': "75% (surgical, cotton)", 'style': {'max-width': '50px'}},
+    0.95: {'label': "95% (N95 respirator)", 'style': {'max-width': '50px'}},
+}
+
+mask_types = [
+    {'label': "None, Face Shield", 'value': 0},
+    {'label': "Coarse Cotton", 'value': 0.1},
+    {'label': "Silk, Flannel, Chiffon", 'value': 0.5},
+    {'label': "Surgical, Cotton", 'value': 0.75},
+    {'label': "N95 Respirator", 'value': 0.95},
+]
+
+mask_fit_marks = {
+    0: {'label': '0%: None', 'style': {'max-width': '50px'}},
+    0.5: {'label': '50%: Poor'},
+    0.95: {'label': '95%: Good'}
+}
+
+risk_tol_marks = {
+    0.01: {'label': '0.01: Safest', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: Safe', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: Unsafe'}
+}
+
+ventilation_types = [
+    {'label': "Closed windows", 'value': 0.3},
+    {'label': "Open windows", 'value': 2},
+    {'label': "Mechanical Ventilation", 'value': 3},
+    {'label': "Open windows with fans", 'value': 6},
+    {'label': "Better Mechanical Ventilation", 'value': 8},
+    {'label': "Laboratory, Restaurant", 'value': 9},
+    {'label': "Bar", 'value': 15},
+    {'label': "Hospital/Subway Car", 'value': 18},
+    {'label': "Toxic Laboratory/Airplane", 'value': 24},
+]
+
+filter_types = [
+    {'label': "None", 'value': 0},
+    {'label': "Residential Window AC", 'value': 2},
+    {'label': "Residential/Commercial/Industrial", 'value': 6},
+    {'label': "Residential/Commercial/Hospital", 'value': 10},
+    {'label': "Hospital & General Surgery", 'value': 14},
+    {'label': "HEPA", 'value': 17}
+]
+
+recirc_types = [
+    {'label': "None", 'value': 0},
+    {'label': "Slow", 'value': 0.3},
+    {'label': "Moderate", 'value': 1},
+    {'label': "Fast", 'value': 10},
+    {'label': "Airplane", 'value': 24},
+    {'label': "Subway Car", 'value': 54},
+]
+
+n_max_base_string = ' {:.0f} people'
+
+graph_title = "Occupancy vs. Exposure Time"
+graph_xtitle = "Maximum Exposure Time \u03C4 (hours)"
+graph_ytitle = "Maximum Occupancy N"
+transient_text = "Transient"
+steady_state_text = "Steady-State"
+
+six_ft_base_string = ' {} people'
+six_ft_base_string_one = ' {} person'
+
+units_hr = 'hours'
+units_min = 'minutes'
+units_days = 'days'
+
+units_hr_one = 'hour'
+units_min_one = 'minute'
+units_day_one = 'day'
+
+is_past_recovery_base_string = '{n_val} people for >{val:.0f} days,'
+model_output_base_string = '{n_val} people for '
+
+presets = [
+    {'label': "Custom", 'value': 'custom'},
+    {'label': "Suburban House", 'value': 'house'},
+    {'label': "Restaurant", 'value': 'restaurant'},
+    {'label': "Quiet Office", 'value': 'office'},
+    {'label': "Classroom Lecture", 'value': 'classroom'},
+    {'label': "New York City Subway Car", 'value': 'subway'},
+    {'label': "Boeing 737", 'value': 'airplane'},
+    {'label': "Church", 'value': 'church'},
+]
+
 error_list = {
     "floor_area": "Error: Floor area cannot be empty.",
     "ceiling_height": "Error: Ceiling height cannot be empty.",
@@ -127,7 +253,7 @@ recirc_text_adv = "Recirculation Rate (recirculation ACH): "
 humidity_text = "Relative Humidity: "
 
 need_more_ctrl_text = '''Need more control over your inputs? Switch to Advanced Mode using the dropdown at the top of 
-                         the page!'''
+                         the page.'''
 
 # Human Behavior
 exertion_text = "Exertion Level: "
@@ -295,11 +421,12 @@ main_panel_s1 = "Based on this model, it should be safe* for this room to have: 
 main_panel_six_ft_1 = "Note that the six-foot or two-meter distancing guideline would indicate that up to "
 main_panel_six_ft_2 = " would be safe in this room for an indefinite period."
 
-main_airb_trans_only_disc = html.Div(["*based on consideration of airborne transmission only (",
+main_airb_trans_only_disc = html.Div(["*The guideline is based on consideration of ",
                                       html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
-                                                       children="What is airborne transmission?",
+                                                       children="airborne transmission",
                                                        target='_blank'), ),
-                                      html.Span(").")], className='airborne-text')
+                                      html.Span(''' from a single infected person over the cumulative exposure time 
+                                      listed.''')], className='airborne-text')
 
 # Bottom panels text
 n_input_text_1 = "If this room has "
@@ -327,6 +454,7 @@ footer = html.Div([
               responsibility of the user. It is being made available without guarantee or warranty of any kind. The 
               authors do not accept any liability from its use.''')]),
     html.Br(),
-    html.Div("Special Thanks to  William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
-             "Marc Rosenbaum, and David Stark")
+    html.Div("Special thanks to  William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
+             "Marc Rosenbaum, and David Stark"),
+    html.Div("Translations by Huanhuan Tian, Hongbo Zhao, Juner Zhu")
 ], className='footer-small-text')

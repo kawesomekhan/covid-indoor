@@ -25,7 +25,7 @@ languages = [
     # {'label': "Espa\u00f1ol", 'value': "es"},
     # {'label': "Fran\u00e7ais", 'value': "fr"},
     # {'label': "한국어", 'value': "ko"},
-    # {'label': "简体中文", 'value': "zh"},
+    {'label': "简体中文", 'value': "zh"},
 ]
 
 # Used for Heroku deployment
@@ -104,8 +104,29 @@ app.layout = html.Div([
     html.Br(),
     html.Div(id='page-content'),
     html.Br(),
-    html.Div(desc.footer)
+    html.Div(desc.footer, id='footer-text')
 ])
+
+
+# Updates header based on language
+@app.callback(
+    [Output('header-text', 'children'),
+     Output('language-dd', 'children'),
+     Output('units-dd', 'children'),
+     Output('mode-dd', 'children'),
+     Output('units-setting', 'options'),
+     Output('app-mode', 'options'),
+     Output('footer-text', 'children')],
+    [Input('url', 'search')]
+)
+def update_header_and_footer(search):
+    params = ess.search_to_params(search)
+    if "lang" in params:
+        language = params["lang"]
+    else:
+        language = "en"
+
+    return ess.get_header_and_footer_text(language)
 
 
 # Updates page content and app dropdown based on URL
@@ -144,6 +165,8 @@ def update_units_search(units, lang, search):
         lang_str = ""
     elif lang == 'fr':
         lang_str = "lang=fr"
+    elif lang == 'zh':
+        lang_str = "lang=zh"
 
     search_terms = [units_str, lang_str]
     search_str = ""

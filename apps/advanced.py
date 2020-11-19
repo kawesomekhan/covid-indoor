@@ -35,7 +35,7 @@ def update_mask_fit_disp: Updates mask fit/compliance filtration display based o
 
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
-fig = ess.get_model_figure(myInd)
+fig = ess.get_model_figure(myInd, "en")
 
 # Main App
 layout = html.Div(children=[
@@ -56,6 +56,7 @@ layout = html.Div(children=[
                         className='card',
                         children=[dcc.Tabs(value='tab-1', children=[
                             dcc.Tab(
+                                id='adv-tab-a',
                                 label=desc.about_header,
                                 className='custom-tab',
                                 children=html.Span(desc.about, id='adv-about-text'),
@@ -63,6 +64,7 @@ layout = html.Div(children=[
                                 selected_style=ess.tab_style_selected
                             ),
                             dcc.Tab(
+                                id='adv-tab-b',
                                 label=desc.room_header,
                                 className='custom-tab',
                                 children=[
@@ -96,26 +98,27 @@ layout = html.Div(children=[
                                                          max=0.99,
                                                          step=0.01,
                                                          value=0.6,
-                                                         marks=ess.humidity_marks)]),
+                                                         marks=desc.humidity_marks)]),
                                 ],
                                 style=ess.tab_style,
                                 selected_style=ess.tab_style_selected
                             ),
                             dcc.Tab(
+                                id='adv-tab-c',
                                 label=desc.human_header,
                                 className='custom-tab',
                                 children=[
                                     html.H6(html.Span(desc.human_header, id='adv-human-header-body')),
                                     html.Div([html.Span(desc.exertion_text, id='adv-exertion-text'),
                                               dcc.Dropdown(id='adv-exertion-level',
-                                                           options=ess.exertion_types,
+                                                           options=desc.exertion_types,
                                                            value=0.49,
                                                            searchable=False,
                                                            clearable=False)]),
                                     html.Br(),
                                     html.Div([html.Span(desc.breathing_text, id='adv-breathing-text'),
                                               dcc.Dropdown(id='adv-exp-activity',
-                                                           options=ess.expiratory_types,
+                                                           options=desc.expiratory_types,
                                                            value=29,
                                                            searchable=False,
                                                            clearable=False)]),
@@ -128,7 +131,7 @@ layout = html.Div(children=[
                                                          max=1,
                                                          step=0.01,
                                                          value=0.75,
-                                                         marks=ess.mask_type_marks)]),
+                                                         marks=desc.mask_type_marks)]),
                                     html.Br(),
                                     html.Br(),
                                     html.Br(),
@@ -140,7 +143,7 @@ layout = html.Div(children=[
                                                          max=0.95,
                                                          step=0.01,
                                                          value=0.90,
-                                                         marks=ess.mask_fit_marks),
+                                                         marks=desc.mask_fit_marks),
                                               ]),
                                     html.Br(),
                                     html.Br(),
@@ -153,7 +156,7 @@ layout = html.Div(children=[
                                                          max=1,
                                                          step=0.01,
                                                          value=0.1,
-                                                         marks=ess.risk_tol_marks)
+                                                         marks=desc.risk_tol_marks)
                                               ]),
                                     html.Br(),
                                     html.Br(),
@@ -162,6 +165,7 @@ layout = html.Div(children=[
                                 selected_style=ess.tab_style_selected
                             ),
                             dcc.Tab(
+                                id='adv-tab-d',
                                 label=desc.other_io,
                                 className='custom-tab',
                                 children=[
@@ -262,7 +266,7 @@ layout = html.Div(children=[
                                 html.Div(
                                     id='adv-presets-div',
                                     children=dcc.Dropdown(id='adv-presets',
-                                                          options=ess.presets,
+                                                          options=desc.presets,
                                                           value='classroom',
                                                           searchable=False,
                                                           clearable=False)),
@@ -301,13 +305,13 @@ layout = html.Div(children=[
                                 color='#de1616',
                             ),
                             html.Br(),
-                            html.H3([html.Span(desc.main_panel_six_ft_1, id='main-six-ft-1'),
+                            html.H3([html.Span(desc.main_panel_six_ft_1, id='adv-main-six-ft-1'),
                                      html.Span(id='adv-six-ft-output',
                                                children=''' 2 people ''',
                                                style={'color': '#de1616'}),
-                                     html.Span(desc.main_panel_six_ft_2, id='main-six-ft-2')]),
+                                     html.Span(desc.main_panel_six_ft_2, id='adv-main-six-ft-2')]),
                             html.Br(),
-                            html.Span(desc.main_airb_trans_only_disc, id='main-airb-trans-disc')
+                            html.Span(desc.main_airb_trans_only_disc, id='adv-main-airb-trans-disc')
                         ])]),
                     html.Div(
                         className='card',
@@ -348,6 +352,72 @@ layout = html.Div(children=[
 ])
 
 
+# Updates all remaining text based on language
+@app.callback(
+    [Output('adv-tab-a', 'label'),
+     Output('adv-curr-room-header', 'children'),
+     Output('adv-presets', 'options'),
+     Output('adv-main-panel-s1', 'children'),
+     Output('adv-main-six-ft-1', 'children'),
+     Output('adv-main-six-ft-2', 'children'),
+     Output('adv-main-airb-trans-disc', 'children'),
+     Output('adv-n-input-text-1', 'children'),
+     Output('adv-n-input-text-2', 'children'),
+     Output('adv-n-input-text-3', 'children'),
+     Output('adv-airb-trans-only-disc-1', 'children'),
+     Output('adv-t-input-text-1', 'children'),
+     Output('adv-t-input-text-2', 'children'),
+     Output('adv-t-input-text-3', 'children'),
+     Output('adv-airb-trans-only-disc-2', 'children'),
+     Output('adv-about-text', 'children'),
+     Output('adv-tab-b', 'label'),
+     Output('adv-room-header-body', 'children'),
+     Output('adv-ventilation-text', 'children'),
+     Output('adv-ventilation-type', 'options'),
+     Output('adv-filtration-text', 'children'),
+     Output('adv-filter-type', 'options'),
+     Output('adv-recirc-text', 'children'),
+     Output('adv-humidity-text', 'children'),
+     Output('adv-relative-humidity', 'marks'),
+     Output('adv-tab-c', 'label'),
+     Output('adv-human-header-body', 'children'),
+     Output('adv-exertion-text', 'children'),
+     Output('adv-exertion-level', 'options'),
+     Output('adv-breathing-text', 'children'),
+     Output('adv-exp-activity', 'options'),
+     Output('adv-mask-type-text', 'children'),
+     Output('adv-mask-type', 'marks'),
+     Output('adv-mask-fit-text', 'children'),
+     Output('adv-mask-fit', 'marks'),
+     Output('adv-risk-tol-text', 'children'),
+     Output('adv-risk-tol-desc', 'children'),
+     Output('adv-risk-tolerance', 'marks'),
+     Output('adv-tab-d', 'label'),
+     Output('adv-other-io', 'children'),
+     Output('adv-aerosol-rad-text', 'children'),
+     Output('adv-viral-deact-text', 'children'),
+     Output('adv-val-interest-header', 'children'),
+     Output('adv-z_p-label', 'children'),
+     Output('adv-filt-eff-label', 'children'),
+     Output('adv-breath-rate-label', 'children'),
+     Output('adv-cq-label', 'children'),
+     Output('adv-mask-pass-label', 'children'),
+     Output('adv-room-vol-label', 'children'),
+     Output('adv-fresh-rate-label', 'children'),
+     Output('adv-recirc-rate-label', 'children'),
+     Output('adv-air-filt-label', 'children'),
+     Output('adv-eff-rad-label', 'children'),
+     Output('adv-viral-deact-label', 'children'),
+     Output('adv-sett-speed-label', 'children'),
+     Output('adv-conc-relax-label', 'children'),
+     Output('adv-airb-trans-label', 'children'),
+     Output('adv-graph-output-header', 'children')],
+    [Input('url', 'search')]
+)
+def update_lang(search):
+    return ess.get_lang_text_adv(ess.get_lang(search))
+
+
 # Updates labels based on unit system
 @app.callback(
     [Output('adv-floor-area-text', 'children'),
@@ -360,10 +430,7 @@ def update_units(search):
     if "units" in params:
         my_units = params["units"]
 
-    desc_file = desc
-    if "lang" in params:
-        if params["lang"] == "fr":
-            desc_file = desc_fr
+    desc_file = ess.get_desc_file(ess.get_lang(search))
 
     if my_units == "british":
         return [desc_file.floor_area_text, desc_file.ceiling_height_text]
@@ -423,8 +490,9 @@ def update_units(search):
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
                   breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, def_aerosol_radius,
                   max_viral_deact_rate, n_max_input, exp_time_input, search):
+    language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
-                                max_viral_deact_rate, n_max_input, exp_time_input)
+                                max_viral_deact_rate, language, n_max_input, exp_time_input)
 
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -465,18 +533,18 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.calc_vars()
 
     # Update the figure with a new model calculation
-    new_fig = ess.get_model_figure(myInd)
+    new_fig = ess.get_model_figure(myInd, language)
 
     # Update the red text output with new model calculations
-    model_output_text = ess.get_model_output_text(myInd)
-    six_ft_text = ess.get_six_ft_text(myInd)
+    model_output_text = ess.get_model_output_text(myInd, language)
+    six_ft_text = ess.get_six_ft_text(myInd, language)
     interest_output = ess.get_interest_output_text(myInd, my_units)
 
     exp_time_output = myInd.calc_max_time(n_max_input)
-    exp_time_text = ess.time_to_text(exp_time_output)
+    exp_time_text = ess.time_to_text(exp_time_output, language)
 
     n_max_output = myInd.calc_n_max(exp_time_input)
-    n_max_text = ' {:.0f} people'.format(n_max_output)
+    n_max_text = ess.get_n_max_text(n_max_output, language)
 
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \

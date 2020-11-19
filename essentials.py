@@ -1,70 +1,14 @@
 import plotly.graph_objects as go
+from dash.exceptions import PreventUpdate
 
 import descriptions as desc
+import descriptions_fr as desc_fr
+import descriptions_zh as desc_zh
 
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
 
 """
-
-# Default dropdown options shared between basic mode and advanced mode
-humidity_marks = {
-    0: {'label': '0%: Very Dry', 'style': {'max-width': '25px'}},
-    0.2: {'label': '20%: Airplane', 'style': {'max-width': '50px'}},
-    0.3: {'label': '30%: Dry'},
-    0.6: {'label': '60%: Average'},
-    0.99: {'label': '99%: Very Humid'},
-}
-
-exertion_types = [
-    {'label': "Resting", 'value': 0.49},
-    {'label': "Standing", 'value': 0.54},
-    {'label': "Light Exercise", 'value': 1.38},
-    {'label': "Moderate Exercise", 'value': 2.35},
-    {'label': "Heavy Exercise", 'value': 3.30},
-]
-
-expiratory_types = [
-    {'label': "Breathing (light)", 'value': 1.1},
-    {'label': "Breathing (normal)", 'value': 4.2},
-    {'label': "Breathing (heavy)", 'value': 8.8},
-    # {'label': "Breathing (fast-deep)", 'value': 8.5},
-    {'label': "Talking (whisper)", 'value': 29},
-    # {'label': "Speaking (whispered counting)", 'value': 37},
-    {'label': "Talking (normal)", 'value': 72},
-    # {'label': "Speaking (voiced counting)", 'value': 72},
-    {'label': "Talking (loud)", 'value': 142},
-    # {'label': "Singing (whispered 'aah')", 'value': 103},
-    {'label': "Singing", 'value': 970},
-]
-
-mask_type_marks = {
-    0: {'label': "0% (none, face shield)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (coarse cotton)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (silk, flannel, chiffon)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (surgical, cotton)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (N95 respirator)", 'style': {'max-width': '50px'}},
-}
-
-mask_types = [
-    {'label': "None, Face Shield", 'value': 0},
-    {'label': "Coarse Cotton", 'value': 0.1},
-    {'label': "Silk, Flannel, Chiffon", 'value': 0.5},
-    {'label': "Surgical, Cotton", 'value': 0.75},
-    {'label': "N95 Respirator", 'value': 0.95},
-]
-
-mask_fit_marks = {
-    0: {'label': '0%: None', 'style': {'max-width': '50px'}},
-    0.5: {'label': '50%: Poor'},
-    0.95: {'label': '95%: Good'}
-}
-
-risk_tol_marks = {
-    0.01: {'label': '0.01: Safest', 'style': {'max-width': '50px'}},
-    0.1: {'label': '0.10: Safe', 'style': {'max-width': '50px'}},
-    1: {'label': '1.00: Unsafe'}
-}
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
 tab_style = {
@@ -81,17 +25,6 @@ tab_style_selected = {
     'border-top-color': '#de1616',
     'font-size': '13px'
 }
-
-presets = [
-    {'label': "Custom", 'value': 'custom'},
-    {'label': "Suburban House", 'value': 'house'},
-    {'label': "Restaurant", 'value': 'restaurant'},
-    {'label': "Quiet Office", 'value': 'office'},
-    {'label': "Classroom Lecture", 'value': 'classroom'},
-    {'label': "New York City Subway Car", 'value': 'subway'},
-    {'label': "Boeing 737", 'value': 'airplane'},
-    {'label': "Church", 'value': 'church'},
-]
 
 preset_settings = {
     'house': {
@@ -192,6 +125,10 @@ preset_settings = {
     },
 }
 
+ventilation_default = preset_settings['classroom']['ventilation']
+filter_default = preset_settings['classroom']['filtration']
+recirc_default = preset_settings['classroom']['recirc-rate']
+
 # Nmax values for main red text output
 model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
 model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
@@ -202,28 +139,29 @@ recovery_time = 14  # Days
 
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
-                max_viral_deact_rate, n_max_input=2, exp_time_input=1):
+                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1):
     error_msg = ""
 
+    desc_file = get_desc_file(language)
     # Make sure none of our values are none
     if floor_area is None:
-        error_msg = desc.error_list["floor_area"]
+        error_msg = desc_file.error_list["floor_area"]
     elif ceiling_height is None:
-        error_msg = desc.error_list["ceiling_height"]
+        error_msg = desc_file.error_list["ceiling_height"]
     elif recirc_rate is None:
-        error_msg = desc.error_list["recirc_rate"]
+        error_msg = desc_file.error_list["recirc_rate"]
     elif max_aerosol_radius is None:
-        error_msg = desc.error_list["aerosol_radius"]
+        error_msg = desc_file.error_list["aerosol_radius"]
     elif max_viral_deact_rate is None:
-        error_msg = desc.error_list["viral_deact_rate"]
+        error_msg = desc_file.error_list["viral_deact_rate"]
     elif n_max_input is None or n_max_input < 2:
-        error_msg = desc.error_list["n_max_input"]
+        error_msg = desc_file.error_list["n_max_input"]
     elif exp_time_input == 0 or exp_time_input is None:
-        error_msg = desc.error_list["exp_time_input"]
+        error_msg = desc_file.error_list["exp_time_input"]
     elif air_exchange_rate == 0 or air_exchange_rate is None:
-        error_msg = desc.error_list["air_exchange_rate"]
+        error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
-        error_msg = desc.error_list["merv"]
+        error_msg = desc_file.error_list["merv"]
 
     return error_msg
 
@@ -236,6 +174,15 @@ def get_units(search):
         my_units = params["units"]
 
     return my_units
+
+
+# Returns language based on URL search
+def get_lang(search):
+    params = search_to_params(search)
+    if "lang" in params:
+        return params["lang"]
+    else:
+        return "en"
 
 
 # Gets the preset dropdown value based on given values. If no preset is found, return 'custom'
@@ -265,33 +212,25 @@ def get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_ra
     return preset_dd_value
 
 
-# # Get preset settings based on preset and units
-# def get_preset_settings(preset, units):
-#     if units == "british":
-#         return preset_settings[preset]
-#     elif units == "metric":
-#         metric_settings = preset_settings[preset]
-
-
-
 # Returns the plotly figure based on the supplied indoor model.
-def get_model_figure(indoor_model):
+def get_model_figure(indoor_model, language):
+    desc_file = get_desc_file(language)
     new_df = indoor_model.calc_n_max_series(2, 100, 1.0)
 
     new_fig = go.Figure()
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_trans"],
                                  mode='lines',
-                                 name='Transient',
+                                 name=desc_file.transient_text,
                                  line=go.scatter.Line(color="#8ad4ed")))
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_ss"],
                                  mode='lines',
-                                 name='Steady-State',
+                                 name=desc_file.steady_state_text,
                                  line=go.scatter.Line(color="#2490b5"),
                                  visible='legendonly'))
     new_fig.update_layout(transition_duration=500,
-                          title="Occupancy vs. Exposure Time", height=400,
-                          xaxis_title="Maximum Exposure Time \u03C4 (hours)",
-                          yaxis_title="Maximum Occupancy N",
+                          title=desc_file.graph_title, height=400,
+                          xaxis_title=desc_file.graph_xtitle,
+                          yaxis_title=desc_file.graph_ytitle,
                           font_family="Barlow",
                           template="simple_white",
                           hoverlabel=dict(
@@ -301,7 +240,8 @@ def get_model_figure(indoor_model):
 
 
 # Returns the big red output text.
-def get_model_output_text(indoor_model):
+def get_model_output_text(indoor_model, language):
+    desc_file = get_desc_file(language)
     # Check if we should use the normal n vals, or the big n vals
     n_val_series = model_output_n_vals
     if indoor_model.calc_max_time(model_output_n_vals[-1]) > 48 or indoor_model.get_six_ft_n() >= 100:
@@ -311,51 +251,68 @@ def get_model_output_text(indoor_model):
     index = 0
     for n_val in n_val_series:
         max_time = indoor_model.calc_max_time(n_val)  # hours
-        time_text = time_to_text(max_time)
+        time_text = time_to_text(max_time, language)
 
         is_past_recovery = round(max_time) > (24 * recovery_time)
         if is_past_recovery:
-            base_string = '{n_val} people for >{val:.0f} days,'
+            base_string = desc_file.is_past_recovery_base_string
             max_time = recovery_time
             model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
         else:
-            base_string = '{n_val} people for ' + time_text
+            base_string = desc_file.model_output_base_string + time_text
             model_output_text[index] = base_string.format(n_val=n_val)
 
         index += 1
 
-    model_output_text[-2] = model_output_text[-2] + ' or'
-    model_output_text[-1] = model_output_text[-1] + '.'
+    if language == "en":
+        model_output_text[-2] = model_output_text[-2] + ' or'
+        model_output_text[-1] = model_output_text[-1] + '.'
 
     return model_output_text
 
 
 # Returns the six feet distancing text.
-def get_six_ft_text(indoor_model):
+def get_six_ft_text(indoor_model, language):
+    desc_file = get_desc_file(language)
     six_ft_people = indoor_model.get_six_ft_n()
     if six_ft_people == 1:
-        six_ft_text = ' {} person'.format(six_ft_people)
+        six_ft_text = desc_file.six_ft_base_string_one.format(six_ft_people)
     else:
-        six_ft_text = ' {} people'.format(six_ft_people)
+        six_ft_text = desc_file.six_ft_base_string.format(six_ft_people)
 
     return six_ft_text
 
 
 # Converts a time (in hours) into a text with formatting based on minutes/hours/days
-def time_to_text(time):
-    units = 'hours'
-    if round(time) < 2:
-        units = 'minutes'
-        time = time * 60
-    elif round(time) > 48:
-        units = 'days'
-        time = time / 24
+def time_to_text(time, language):
+    desc_file = get_desc_file(language)
 
-    if round(time) == 1:
-        units = units[:-1]
+    if round(time) < 2:
+        time = time * 60
+        if round(time) == 1:
+            units = desc_file.units_min_one
+        else:
+            units = desc_file.units_min
+    elif round(time) > 48:
+        time = time / 24
+        if round(time) == 1:
+            units = desc_file.units_day_one
+        else:
+            units = desc_file.units_days
+    else:
+        if round(time) == 1:
+            units = desc_file.units_hr_one
+        else:
+            units = desc_file.units_hr
 
     base_string = '{val:.0f} ' + units
     return base_string.format(val=time)
+
+
+# Gets n max text
+def get_n_max_text(n, language):
+    desc_file = get_desc_file(language)
+    return desc_file.n_max_base_string.format(n)
 
 
 # Returns the output text for the variables of interest, shown in the FAQ/Other Inputs & Outputs tab.
@@ -424,3 +381,157 @@ def search_to_params(search):
         output_dict[param_split[0]] = param_split[1]
 
     return output_dict
+
+
+# Returns text for updating language from the given descriptions file.
+def get_lang_text_basic(language):
+    desc_file = get_desc_file(language)
+    return [desc_file.about_header,
+            desc_file.curr_room_header,
+            desc_file.presets,
+            desc_file.main_panel_s1,
+            desc_file.main_panel_six_ft_1,
+            desc_file.main_panel_six_ft_2,
+            desc_file.main_airb_trans_only_disc,
+            desc_file.n_input_text_1,
+            desc_file.n_input_text_2,
+            desc_file.n_input_text_3,
+            desc_file.airb_trans_only_disc,
+            desc_file.t_input_text_1,
+            desc_file.t_input_text_2,
+            desc_file.t_input_text_3,
+            desc_file.airb_trans_only_disc,
+            desc_file.about,
+            desc_file.room_header,
+            desc_file.room_header,
+            desc_file.ventilation_text,
+            desc_file.ventilation_types,
+            desc_file.filtration_text,
+            desc_file.filter_types,
+            desc_file.recirc_text,
+            desc_file.recirc_types,
+            desc_file.humidity_text,
+            desc_file.humidity_marks,
+            desc_file.need_more_ctrl_text,
+            desc_file.human_header,
+            desc_file.human_header,
+            desc_file.exertion_text,
+            desc_file.exertion_types,
+            desc_file.breathing_text,
+            desc_file.expiratory_types,
+            desc_file.mask_type_text,
+            desc_file.mask_types,
+            desc_file.mask_fit_text,
+            desc_file.mask_fit_marks,
+            desc_file.risk_tolerance_text,
+            desc_file.risk_tol_desc,
+            desc_file.risk_tol_marks,
+            desc_file.need_more_ctrl_text,
+            desc_file.faq_header,
+            desc_file.faq_top,
+            desc_file.values_interest_desc,
+            desc_file.outdoor_air_frac_label,
+            desc_file.aerosol_eff_label,
+            desc_file.breathing_rate_label,
+            desc_file.cq_label,
+            desc_file.mask_pass_prob_label,
+            desc_file.room_vol_label,
+            desc_file.vent_rate_Label,
+            desc_file.recirc_rate_label,
+            desc_file.air_filt_label,
+            desc_file.eff_aerosol_rad_label,
+            desc_file.viral_deact_label,
+            desc_file.sett_speed_label,
+            desc_file.conc_relax_rate_label,
+            desc_file.airb_trans_label,
+            desc_file.faq_graphs_text,
+            desc_file.faq_infect_rate,
+            desc_file.assumptions_layout]
+
+
+# Returns text for updating language from the given descriptions file.
+def get_lang_text_adv(language):
+    desc_file = get_desc_file(language)
+    return [desc_file.about_header,
+            desc_file.curr_room_header,
+            desc_file.presets,
+            desc_file.main_panel_s1,
+            desc_file.main_panel_six_ft_1,
+            desc_file.main_panel_six_ft_2,
+            desc_file.main_airb_trans_only_disc,
+            desc_file.n_input_text_1,
+            desc_file.n_input_text_2,
+            desc_file.n_input_text_3,
+            desc_file.airb_trans_only_disc,
+            desc_file.t_input_text_1,
+            desc_file.t_input_text_2,
+            desc_file.t_input_text_3,
+            desc_file.airb_trans_only_disc,
+            desc_file.about,
+            desc_file.room_header,
+            desc_file.room_header,
+            desc_file.ventilation_text,
+            desc_file.ventilation_types,
+            desc_file.filtration_text,
+            desc_file.filter_types,
+            desc_file.recirc_text,
+            desc_file.humidity_text,
+            desc_file.humidity_marks,
+            desc_file.human_header,
+            desc_file.human_header,
+            desc_file.exertion_text,
+            desc_file.exertion_types,
+            desc_file.breathing_text,
+            desc_file.expiratory_types,
+            desc_file.mask_type_text,
+            desc_file.mask_type_marks,
+            desc_file.mask_fit_text,
+            desc_file.mask_fit_marks,
+            desc_file.risk_tolerance_text,
+            desc_file.risk_tol_desc,
+            desc_file.risk_tol_marks,
+            desc_file.other_io,
+            desc_file.other_io,
+            desc_file.aerosol_radius_text,
+            desc_file.viral_deact_text,
+            desc_file.values_interest_header,
+            desc_file.outdoor_air_frac_label,
+            desc_file.aerosol_eff_label,
+            desc_file.breathing_rate_label,
+            desc_file.cq_label,
+            desc_file.mask_pass_prob_label,
+            desc_file.room_vol_label,
+            desc_file.vent_rate_Label,
+            desc_file.recirc_rate_label,
+            desc_file.air_filt_label,
+            desc_file.eff_aerosol_rad_label,
+            desc_file.viral_deact_label,
+            desc_file.sett_speed_label,
+            desc_file.conc_relax_rate_label,
+            desc_file.airb_trans_label,
+            desc_file.graph_output_header]
+
+
+# Get header and footer based on language
+def get_header_and_footer_text(language):
+    desc_file = get_desc_file(language)
+    return [desc_file.header,
+            desc_file.language_dd,
+            desc_file.units_dd,
+            desc_file.mode_dd,
+            desc_file.unit_settings,
+            desc_file.app_modes,
+            desc_file.footer]
+
+
+# Returns description file based on language
+def get_desc_file(language):
+    desc_file = desc
+    if language == "fr":
+        desc_file = desc_fr
+    elif language == "zh":
+        desc_file = desc_zh
+
+    return desc_file
+
+

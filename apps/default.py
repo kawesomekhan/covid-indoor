@@ -9,7 +9,6 @@ from indoors import Indoors
 
 from app import app
 import descriptions as desc
-import descriptions_fr as desc_fr
 import essentials as ess
 
 """
@@ -36,45 +35,7 @@ def update_mask_fit_disp: Updates mask fit/compliance filtration display based o
 
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
-fig = ess.get_model_figure(myInd)
-
-# Dropdown Preset Values
-# For changing ventilation types based on language: ventilation_types will be a dictionary in desc_fr with
-# the english labels (here) as the keys. We will
-# loop through each item in ventilation_types and create a new array of dicts with the french label, then return
-# that to the options.
-ventilation_default = ess.preset_settings['classroom']['ventilation']
-ventilation_types = [
-    {'label': "Closed windows", 'value': 0.3},
-    {'label': "Open windows", 'value': 2},
-    {'label': "Mechanical Ventilation", 'value': 3},
-    {'label': "Open windows with fans", 'value': 6},
-    {'label': "Better Mechanical Ventilation", 'value': 8},
-    {'label': "Laboratory, Restaurant", 'value': 9},
-    {'label': "Bar", 'value': 15},
-    {'label': "Hospital/Subway Car", 'value': 18},
-    {'label': "Toxic Laboratory/Airplane", 'value': 24},
-]
-
-filter_default = ess.preset_settings['classroom']['filtration']
-filter_types = [
-    {'label': "None", 'value': 0},
-    {'label': "Residential Window AC", 'value': 2},
-    {'label': "Residential/Commercial/Industrial", 'value': 6},
-    {'label': "Residential/Commercial/Hospital", 'value': 10},
-    {'label': "Hospital & General Surgery", 'value': 14},
-    {'label': "HEPA", 'value': 17}
-]
-
-recirc_default = ess.preset_settings['classroom']['recirc-rate']
-recirc_types = [
-    {'label': "None", 'value': 0},
-    {'label': "Slow", 'value': 0.3},
-    {'label': "Moderate", 'value': 1},
-    {'label': "Fast", 'value': 10},
-    {'label': "Airplane", 'value': 24},
-    {'label': "Subway Car", 'value': 54},
-]
+fig = ess.get_model_figure(myInd, "en")
 
 # Main App
 layout = html.Div(children=[
@@ -95,6 +56,7 @@ layout = html.Div(children=[
                     children=[
                         dcc.Tabs(value='tab-1', children=[
                             dcc.Tab(
+                                id='tab-a',
                                 label=desc.about_header,
                                 className='custom-tab',
                                 children=html.Span(desc.about, id='about-text'),
@@ -102,6 +64,7 @@ layout = html.Div(children=[
                                 selected_style=ess.tab_style_selected
                             ),
                             dcc.Tab(
+                                id='tab-b',
                                 label=desc.room_header,
                                 className='custom-tab',
                                 children=[
@@ -118,8 +81,8 @@ layout = html.Div(children=[
                                               html.Span(className='model-output-text-small',
                                                         id='ventilation-type-output'),
                                               dcc.Dropdown(id='ventilation-type',
-                                                           options=ventilation_types,
-                                                           value=ventilation_default,
+                                                           options=desc.ventilation_types,
+                                                           value=ess.ventilation_default,
                                                            searchable=False,
                                                            clearable=False)
                                               ]),
@@ -128,8 +91,8 @@ layout = html.Div(children=[
                                               html.Span(className='model-output-text-small',
                                                         id='filter-type-output'),
                                               dcc.Dropdown(id='filter-type',
-                                                           options=filter_types,
-                                                           value=filter_default,
+                                                           options=desc.filter_types,
+                                                           value=ess.filter_default,
                                                            searchable=False,
                                                            clearable=False)]),
                                     html.Br(),
@@ -137,8 +100,8 @@ layout = html.Div(children=[
                                               html.Span(className='model-output-text-small',
                                                         id='recirc-rate-output-2'),
                                               dcc.Dropdown(id='recirc-rate',
-                                                           options=recirc_types,
-                                                           value=recirc_default,
+                                                           options=desc.recirc_types,
+                                                           value=ess.recirc_default,
                                                            searchable=False,
                                                            clearable=False)]),
                                     html.Br(),
@@ -150,7 +113,7 @@ layout = html.Div(children=[
                                                          max=0.99,
                                                          step=0.01,
                                                          value=0.6,
-                                                         marks=ess.humidity_marks)]),
+                                                         marks=desc.humidity_marks)]),
                                     html.Br(),
                                     html.Br(),
                                     html.Span(desc.need_more_ctrl_text, id='need-more-ctrl-text'),
@@ -159,20 +122,21 @@ layout = html.Div(children=[
                                 selected_style=ess.tab_style_selected
                             ),
                             dcc.Tab(
+                                id='tab-c',
                                 label=desc.human_header,
                                 className='custom-tab',
                                 children=[
                                     html.H6(html.Span(desc.human_header, id='human-header-body')),
                                     html.Div([html.Span(desc.exertion_text, id='exertion-text'),
                                               dcc.Dropdown(id='exertion-level',
-                                                           options=ess.exertion_types,
+                                                           options=desc.exertion_types,
                                                            value=0.49,
                                                            searchable=False,
                                                            clearable=False)]),
                                     html.Br(),
                                     html.Div([html.Span(desc.breathing_text, id='breathing-text'),
                                               dcc.Dropdown(id='exp-activity',
-                                                           options=ess.expiratory_types,
+                                                           options=desc.expiratory_types,
                                                            value=29,
                                                            searchable=False,
                                                            clearable=False)]),
@@ -181,7 +145,7 @@ layout = html.Div(children=[
                                               html.Span(className='model-output-text-small',
                                                         id='mask-eff-output'),
                                               dcc.Dropdown(id='mask-type',
-                                                           options=ess.mask_types,
+                                                           options=desc.mask_types,
                                                            value=0.75,
                                                            searchable=False,
                                                            clearable=False)]),
@@ -194,7 +158,7 @@ layout = html.Div(children=[
                                                          max=0.95,
                                                          step=0.01,
                                                          value=0.90,
-                                                         marks=ess.mask_fit_marks),
+                                                         marks=desc.mask_fit_marks),
                                               ]),
                                     html.Br(),
                                     html.Br(),
@@ -207,7 +171,7 @@ layout = html.Div(children=[
                                                          max=1,
                                                          step=0.01,
                                                          value=0.1,
-                                                         marks=ess.risk_tol_marks)
+                                                         marks=desc.risk_tol_marks)
                                               ]),
                                     html.Br(),
                                     html.Br(),
@@ -217,6 +181,7 @@ layout = html.Div(children=[
                                 selected_style=ess.tab_style_selected
                             ),
                             dcc.Tab(
+                                id='tab-d',
                                 label=desc.faq_header,
                                 className='custom-tab',
                                 children=[
@@ -315,7 +280,7 @@ layout = html.Div(children=[
                             html.Div(
                                 id='presets-div',
                                 children=dcc.Dropdown(id='presets',
-                                                      options=ess.presets,
+                                                      options=desc.presets,
                                                       value='classroom',
                                                       searchable=False,
                                                       clearable=False)),
@@ -393,7 +358,76 @@ layout = html.Div(children=[
 ])
 
 
-# Updates labels & presets depending on selected unit system
+# Updates all remaining text based on language
+@app.callback(
+    [Output('tab-a', 'label'),
+     Output('curr-room-header', 'children'),
+     Output('presets', 'options'),
+     Output('main-panel-s1', 'children'),
+     Output('main-six-ft-1', 'children'),
+     Output('main-six-ft-2', 'children'),
+     Output('main-airb-trans-disc', 'children'),
+     Output('n-input-text-1', 'children'),
+     Output('n-input-text-2', 'children'),
+     Output('n-input-text-3', 'children'),
+     Output('airb-trans-only-disc-1', 'children'),
+     Output('t-input-text-1', 'children'),
+     Output('t-input-text-2', 'children'),
+     Output('t-input-text-3', 'children'),
+     Output('airb-trans-only-disc-2', 'children'),
+     Output('about-text', 'children'),
+     Output('tab-b', 'label'),
+     Output('room-header-body', 'children'),
+     Output('ventilation-text', 'children'),
+     Output('ventilation-type', 'options'),
+     Output('filtration-text', 'children'),
+     Output('filter-type', 'options'),
+     Output('recirc-text', 'children'),
+     Output('recirc-rate', 'options'),
+     Output('humidity-text', 'children'),
+     Output('relative-humidity', 'marks'),
+     Output('need-more-ctrl-text', 'children'),
+     Output('tab-c', 'label'),
+     Output('human-header-body', 'children'),
+     Output('exertion-text', 'children'),
+     Output('exertion-level', 'options'),
+     Output('breathing-text', 'children'),
+     Output('exp-activity', 'options'),
+     Output('mask-type-text', 'children'),
+     Output('mask-type', 'options'),
+     Output('mask-fit-text', 'children'),
+     Output('mask-fit', 'marks'),
+     Output('risk-tol-text', 'children'),
+     Output('risk-tol-desc', 'children'),
+     Output('risk-tolerance', 'marks'),
+     Output('need-more-ctrl-text-2', 'children'),
+     Output('tab-d', 'label'),
+     Output('faq-top', 'children'),
+     Output('values-interest-desc', 'children'),
+     Output('z_p-label', 'children'),
+     Output('filt-eff-label', 'children'),
+     Output('breath-rate-label', 'children'),
+     Output('cq-label', 'children'),
+     Output('mask-pass-label', 'children'),
+     Output('room-vol-label', 'children'),
+     Output('fresh-rate-label', 'children'),
+     Output('recirc-rate-label', 'children'),
+     Output('air-filt-label', 'children'),
+     Output('eff-rad-label', 'children'),
+     Output('viral-deact-label', 'children'),
+     Output('sett-speed-label', 'children'),
+     Output('conc-relax-label', 'children'),
+     Output('airb-trans-label', 'children'),
+     Output('faq-graphs-text', 'children'),
+     Output('faq-infect-rate', 'children'),
+     Output('assump-layout', 'children')],
+    [Input('url', 'search')]
+)
+def update_lang(search):
+    return ess.get_lang_text_basic(ess.get_lang(search))
+
+
+# Updates labels & presets depending on selected unit system (and language)
 @app.callback(
     [Output('floor-area-text', 'children'),
      Output('ceiling-height-text', 'children')],
@@ -405,10 +439,7 @@ def update_units(search):
     if "units" in params:
         my_units = params["units"]
 
-    desc_file = desc
-    if "lang" in params:
-        if params["lang"] == "fr":
-            desc_file = desc_fr
+    desc_file = ess.get_desc_file(ess.get_lang(search))
 
     if my_units == "british":
         return [desc_file.floor_area_text, desc_file.ceiling_height_text]
@@ -417,6 +448,7 @@ def update_units(search):
 
 
 # Model Update & Calculation
+# Also updates output if language is changed
 # See indoors.py def set_default_params(self) for parameter descriptions.
 @app.callback(
     [Output('safety-graph', 'figure'),
@@ -467,8 +499,9 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                   breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, n_max_input, exp_time_input, search):
     def_aerosol_radius = 2
     max_viral_deact_rate = 0.6
+    language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
-                                max_viral_deact_rate, n_max_input, exp_time_input)
+                                max_viral_deact_rate, language, n_max_input, exp_time_input)
 
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -509,18 +542,18 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.calc_vars()
 
     # Update the figure with a new model calculation
-    new_fig = ess.get_model_figure(myInd)
+    new_fig = ess.get_model_figure(myInd, language)
 
     # Update the red text output with new model calculations
-    model_output_text = ess.get_model_output_text(myInd)
-    six_ft_text = ess.get_six_ft_text(myInd)
+    model_output_text = ess.get_model_output_text(myInd, language)
+    six_ft_text = ess.get_six_ft_text(myInd, language)
     interest_output = ess.get_interest_output_text(myInd, my_units)
 
     exp_time_output = myInd.calc_max_time(n_max_input)
-    exp_time_text = ess.time_to_text(exp_time_output)
+    exp_time_text = ess.time_to_text(exp_time_output, language)
 
     n_max_output = myInd.calc_n_max(exp_time_input)
-    n_max_text = ' {:.0f} people'.format(n_max_output)
+    n_max_text = ess.get_n_max_text(n_max_output, language)
 
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
@@ -567,28 +600,34 @@ def update_presets(preset, search):
 # Ventilation ACH value display
 @app.callback(
     [Output('ventilation-type-output', 'children')],
-    [Input('ventilation-type', 'value')]
+    [Input('ventilation-type', 'value'),
+     Input('url', 'search')]
 )
-def update_vent_disp(air_exchange_rate):
-    return ["{:.0f} ACH".format(air_exchange_rate)]
+def update_vent_disp(air_exchange_rate, search):
+    desc_file = ess.get_desc_file(ess.get_lang(search))
+    return [desc_file.vent_type_output_base.format(air_exchange_rate)]
 
 
 # Filtration value display
 @app.callback(
     [Output('filter-type-output', 'children')],
-    [Input('filter-type', 'value')]
+    [Input('filter-type', 'value'),
+     Input('url', 'search')]
 )
-def update_filt_disp(merv):
-    return ["MERV {:.0f}".format(merv)]
+def update_filt_disp(merv, search):
+    desc_file = ess.get_desc_file(ess.get_lang(search))
+    return [desc_file.filt_type_output_base.format(merv)]
 
 
 # Recirculation value display
 @app.callback(
     [Output('recirc-rate-output-2', 'children')],
-    [Input('recirc-rate', 'value')]
+    [Input('recirc-rate', 'value'),
+     Input('url', 'search')]
 )
-def update_recirc_disp(recirc_rate):
-    return ["{:.1f} recirculation ACH".format(recirc_rate)]
+def update_recirc_disp(recirc_rate, search):
+    desc_file = ess.get_desc_file(ess.get_lang(search))
+    return [desc_file.recirc_type_output_base.format(recirc_rate)]
 
 
 # Relative Humidity slider value display
