@@ -4,6 +4,8 @@ from dash.exceptions import PreventUpdate
 import descriptions as desc
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
+import descriptions_id as desc_id
+import descriptions_ko as desc_ko
 
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
@@ -531,6 +533,10 @@ def get_desc_file(language):
         desc_file = desc_fr
     elif language == "zh":
         desc_file = desc_zh
+    elif language == "id":
+        desc_file = desc_id
+    elif language == "ko":
+        desc_file = desc_ko
 
     return desc_file
 

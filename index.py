@@ -24,7 +24,7 @@ languages = [
     {'label': "English", 'value': "en"},
     # {'label': "Espa\u00f1ol", 'value': "es"},
     {'label': "Fran\u00e7ais", 'value': "fr"},
-    # {'label': "한국어", 'value': "ko"},
+    {'label': "한국어", 'value': "ko"},
     {'label': "简体中文", 'value': "zh"},
 ]
 
@@ -163,10 +163,8 @@ def update_units_search(units, lang, search):
     lang_str = ""
     if lang == 'en':
         lang_str = ""
-    elif lang == 'fr':
-        lang_str = "lang=fr"
-    elif lang == 'zh':
-        lang_str = "lang=zh"
+    else:
+        lang_str = "lang=" + lang
 
     search_terms = [units_str, lang_str]
     search_str = ""

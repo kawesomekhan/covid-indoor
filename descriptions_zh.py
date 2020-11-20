@@ -427,5 +427,6 @@ footer = html.Div([
     html.Br(),
     html.Div("特别鸣谢 William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
              "Marc Rosenbaum, and David Stark"),
-    html.Div("Translations by Huanhuan Tian, Hongbo Zhao, Juner Zhu")
+    html.Div("John Bush, Laura Champion, Sung Jae Kim, Bonho Koo, Myungjin Seo, Huanhuan Tian, "
+             "Hongbo Zhao, Juner Zhu")
 ], className='footer-small-text')

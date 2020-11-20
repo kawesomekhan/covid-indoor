@@ -3,7 +3,7 @@ import dash_html_components as html
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
 
-descriptions: English
+descriptions: Indonesian
 
 """
 
@@ -68,7 +68,7 @@ mask_fit_marks = {
 }
 
 risk_tol_marks = {
-    0.01: {'label': '0.01: Safer', 'style': {'max-width': '50px'}},
+    0.01: {'label': '0.01: Safest', 'style': {'max-width': '50px'}},
     0.1: {'label': '0.10: Safe', 'style': {'max-width': '50px'}},
     1: {'label': '1.00: Unsafe'}
 }
@@ -458,6 +458,5 @@ footer = html.Div([
     html.Br(),
     html.Div("Special thanks to  William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
              "Marc Rosenbaum, and David Stark"),
-    html.Div("Translations by John Bush, Laura Champion, Sung Jae Kim, Bonho Koo, Myungjin Seo, Huanhuan Tian, "
-             "Hongbo Zhao, Juner Zhu")
+    html.Div("Translations by Huanhuan Tian, Hongbo Zhao, Juner Zhu")
 ], className='footer-small-text')

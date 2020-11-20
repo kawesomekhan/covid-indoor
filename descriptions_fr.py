@@ -449,7 +449,9 @@ t_input_text_1 = "Si des personnes passent environ "
 t_input_text_2 = " heures dans cet espace, leur nombre devrait être limité à "
 t_input_text_3 = "."
 
-airb_trans_only_disc = html.Div('''based on consideration of airborne transmission only.''', className='airborne-text')
+airb_trans_only_disc = html.Div('''Les recommandations sont basées sur la prise en compte de la transmission aérienne, 
+                                    par une seule personne contaminée, pendant la durée d'exposition 
+                                      cumulée indiquée.''', className='airborne-text')
 
 footer = html.Div([
     html.Div([html.Span('''Les présentes Recommandations de sécurité COVID-19 pour les espaces intérieurs sont un 
@@ -469,5 +471,6 @@ footer = html.Div([
     html.Br(),
     html.Div("Remerciements à William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
              "Marc Rosenbaum, and David Stark"),
-    html.Div("Huanhuan Tian, Hongbo Zhao, Juner Zhu")
+    html.Div("John Bush, Laura Champion, Sung Jae Kim, Bonho Koo, Myungjin Seo, Huanhuan Tian, "
+             "Hongbo Zhao, Juner Zhu")
 ], className='footer-small-text')
