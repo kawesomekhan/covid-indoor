@@ -12,6 +12,8 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 
 """
 
+m_to_ft = 3.28084
+
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
 tab_style = {
     'padding-left': '1em',
@@ -32,8 +34,8 @@ preset_settings = {
     'house': {
         'floor-area': 2000,
         'ceiling-height': 12,
-        'floor-area-metric': 2000 / 10.764,
-        'ceiling-height-metric': 12 / 10.764,
+        'floor-area-metric': 2000 / m_to_ft / m_to_ft,
+        'ceiling-height-metric': 12 / m_to_ft,
         'ventilation': 3,
         'filtration': 6,
         'recirc-rate': 1,
@@ -44,8 +46,8 @@ preset_settings = {
     'classroom': {
         'floor-area': 900,
         'ceiling-height': 12,
-        'floor-area-metric': 900 / 10.764,
-        'ceiling-height-metric': 12 / 10.764,
+        'floor-area-metric': 900 / m_to_ft / m_to_ft,
+        'ceiling-height-metric': 12 / m_to_ft,
         'ventilation': 3,
         'filtration': 6,
         'recirc-rate': 1,
@@ -56,8 +58,8 @@ preset_settings = {
     'restaurant': {
         'floor-area': 5000,
         'ceiling-height': 12,
-        'floor-area-metric': 5000 / 10.764,
-        'ceiling-height-metric': 12 / 10.764,
+        'floor-area-metric': 5000 / m_to_ft / m_to_ft,
+        'ceiling-height-metric': 12 / m_to_ft,
         'ventilation': 9,
         'filtration': 6,
         'recirc-rate': 1,
@@ -68,8 +70,8 @@ preset_settings = {
     'office': {
         'floor-area': 10000,
         'ceiling-height': 12,
-        'floor-area-metric': 10000 / 10.764,
-        'ceiling-height-metric': 12 / 10.764,
+        'floor-area-metric': 10000 / m_to_ft / m_to_ft,
+        'ceiling-height-metric': 12 / m_to_ft,
         'ventilation': 8,
         'filtration': 10,
         'recirc-rate': 1,
@@ -80,8 +82,8 @@ preset_settings = {
     'subway': {
         'floor-area': 580,
         'ceiling-height': 10,
-        'floor-area-metric': 580 / 10.764,
-        'ceiling-height-metric': 10 / 10.764,
+        'floor-area-metric': 580 / m_to_ft / m_to_ft,
+        'ceiling-height-metric': 10 / m_to_ft,
         'ventilation': 18,
         'filtration': 6,
         'recirc-rate': 54,
@@ -92,8 +94,8 @@ preset_settings = {
     'bus': {
         'floor-area': 380,
         'ceiling-height': 10,
-        'floor-area-metric': 380 / 10.764,
-        'ceiling-height-metric': 10 / 10.764,
+        'floor-area-metric': 380 / m_to_ft / m_to_ft,
+        'ceiling-height-metric': 10 / m_to_ft,
         'ventilation': 8,
         'filtration': 6,
         'recirc-rate': 1,
@@ -104,8 +106,8 @@ preset_settings = {
     'airplane': {
         'floor-area': 1440,
         'ceiling-height': 6.7,
-        'floor-area-metric': 1440 / 10.764,
-        'ceiling-height-metric': 6.7 / 10.764,
+        'floor-area-metric': 1440 / m_to_ft / m_to_ft,
+        'ceiling-height-metric': 6.7 / m_to_ft,
         'ventilation': 24,
         'filtration': 17,
         'recirc-rate': 24,
@@ -116,8 +118,8 @@ preset_settings = {
     'church': {
         'floor-area': 1900,
         'ceiling-height': 30,
-        'floor-area-metric': 1900 / 10.764,
-        'ceiling-height-metric': 30 / 10.764,
+        'floor-area-metric': 1900 / m_to_ft / m_to_ft,
+        'ceiling-height-metric': 30 / m_to_ft,
         'ventilation': 2,
         'filtration': 6,
         'recirc-rate': 1,
@@ -539,5 +541,40 @@ def get_desc_file(language):
         desc_file = desc_ko
 
     return desc_file
+
+
+# Converts floor area and ceiling height from one system to another system
+def convert_units(from_units, to_units, floor_area, ceiling_height):
+    if from_units != to_units:
+        # We are switching units, so convert the floor area and ceiling height
+        if to_units == "metric":
+            floor_area = round(floor_area / m_to_ft / m_to_ft, 2)
+            ceiling_height = round(ceiling_height / m_to_ft, 2)
+        elif to_units == "british":
+            floor_area = round(floor_area * m_to_ft * m_to_ft, 0)
+            ceiling_height = round(ceiling_height * m_to_ft, 1)
+
+    return [floor_area, ceiling_height]
+
+
+# Checks if we switched units, based on search url and current floor area and ceiling height labels
+def did_switch_units(search, floor_area_text, ceiling_height_text):
+    desc_file = get_desc_file(get_lang(search))
+    my_units = get_units(search)
+    # Check if we are switching unit systems
+    # What unit system are we using?
+    curr_units = ""
+    if floor_area_text == desc_file.floor_area_text and ceiling_height_text == desc_file.ceiling_height_text:
+        curr_units = "british"
+    else:
+        curr_units = "metric"
+
+    if curr_units != my_units:
+        return curr_units
+    else:
+        return ""
+
+
+
 
 

@@ -2,7 +2,7 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 import indoors as ind
 from indoors import Indoors
@@ -418,26 +418,6 @@ def update_lang(search):
     return ess.get_lang_text_adv(ess.get_lang(search))
 
 
-# Updates labels based on unit system
-@app.callback(
-    [Output('adv-floor-area-text', 'children'),
-     Output('adv-ceiling-height-text', 'children')],
-    [Input('url', 'search')]
-)
-def update_units(search):
-    params = ess.search_to_params(search)
-    my_units = "british"
-    if "units" in params:
-        my_units = params["units"]
-
-    desc_file = ess.get_desc_file(ess.get_lang(search))
-
-    if my_units == "british":
-        return [desc_file.floor_area_text, desc_file.ceiling_height_text]
-    else:
-        return [desc_file.floor_area_text_metric, desc_file.ceiling_height_text_metric]
-
-
 # Model Update & Calculation
 # See indoors.py def set_default_params(self) for parameter descriptions.
 @app.callback(
@@ -485,11 +465,13 @@ def update_units(search):
      Input('adv-viral-deact-rate', 'value'),
      Input('adv-n-input', 'value'),
      Input('adv-t-input', 'value'),
-     Input('url', 'search')]
+     Input('url', 'search')],
+    [State('adv-floor-area-text', 'children'),
+     State('adv-ceiling-height-text', 'children')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
                   breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, def_aerosol_radius,
-                  max_viral_deact_rate, n_max_input, exp_time_input, search):
+                  max_viral_deact_rate, n_max_input, exp_time_input, search, floor_area_text, ceiling_height_text):
     language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
                                 max_viral_deact_rate, language, n_max_input, exp_time_input)
@@ -502,8 +484,11 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
-    # Check our units!
+    # Check our units! Did we switch? If so, convert values before calculating
     my_units = ess.get_units(search)
+    curr_units = ess.did_switch_units(search, floor_area_text, ceiling_height_text)
+    if curr_units != "":
+        [floor_area, ceiling_height] = ess.convert_units(curr_units, my_units, floor_area, ceiling_height)
 
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
     preset_dd_value = ess.get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
@@ -556,6 +541,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
 
 
 # Update options based on selected presets, also if units changed
+# Updates labels depending on selected unit system (and language)
 @app.callback(
     [Output('adv-floor-area', 'value'),
      Output('adv-ceiling-height', 'value'),
@@ -564,28 +550,54 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
      Output('adv-filter-type', 'value'),
      Output('adv-exertion-level', 'value'),
      Output('adv-exp-activity', 'value'),
-     Output('adv-mask-type', 'value')],
+     Output('adv-mask-type', 'value'),
+     Output('adv-floor-area-text', 'children'),
+     Output('adv-ceiling-height-text', 'children')],
     [Input('adv-presets', 'value'),
-     Input('url', 'search')]
+     Input('url', 'search')],
+    [State('adv-floor-area-text', 'children'),
+     State('adv-ceiling-height-text', 'children'),
+     State('adv-floor-area', 'value'),
+     State('adv-ceiling-height', 'value')]
 )
-def update_presets(preset, search):
+def update_presets_and_units(preset, search, floor_area_text, ceiling_height_text, curr_floor_area,
+                             curr_ceiling_height):
+    desc_file = ess.get_desc_file(ess.get_lang(search))
+    my_units = ess.get_units(search)
+    curr_units = ess.did_switch_units(search, floor_area_text, ceiling_height_text)
+    did_switch = False
+    if curr_units != "":
+        did_switch = True
+        [floor_area, ceiling_height] = ess.convert_units(curr_units, my_units, curr_floor_area, curr_ceiling_height)
+
+    if my_units == "british":
+        text_output = [desc_file.floor_area_text, desc_file.ceiling_height_text]
+    else:
+        text_output = [desc_file.floor_area_text_metric, desc_file.ceiling_height_text_metric]
+
     # Update the room and behavior options based on the selected preset
     if preset == 'custom':
-        raise PreventUpdate
+        if did_switch:
+            return floor_area, ceiling_height, dash.no_update, \
+                   dash.no_update, dash.no_update, dash.no_update, \
+                   dash.no_update, dash.no_update, text_output[0], text_output[1]
+        else:
+            return dash.no_update, dash.no_update, dash.no_update, \
+                   dash.no_update, dash.no_update, dash.no_update, \
+                   dash.no_update, dash.no_update, text_output[0], text_output[1]
     else:
         curr_settings = ess.preset_settings[preset]
-
-        my_units = ess.get_units(search)
-        if my_units == "british":
-            floor_area = curr_settings['floor-area']
-            ceiling_height = curr_settings['ceiling-height']
-        elif my_units == "metric":
-            floor_area = round(curr_settings['floor-area-metric'], 2)
-            ceiling_height = round(curr_settings['ceiling-height-metric'], 2)
+        if not did_switch:
+            if my_units == "british":
+                floor_area = curr_settings['floor-area']
+                ceiling_height = curr_settings['ceiling-height']
+            elif my_units == "metric":
+                floor_area = round(curr_settings['floor-area-metric'], 2)
+                ceiling_height = round(curr_settings['ceiling-height-metric'], 2)
 
         return floor_area, ceiling_height, curr_settings['ventilation'], \
                curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['exertion'], \
-               curr_settings['exp-activity'], curr_settings['masks']
+               curr_settings['exp-activity'], curr_settings['masks'], text_output[0], text_output[1]
 
 
 # Relative Humidity slider value display
