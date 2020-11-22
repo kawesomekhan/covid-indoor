@@ -493,6 +493,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
     preset_dd_value = ess.get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
                                               breathing_flow_rate, infectiousness, mask_eff, my_units)
+    # preset_dd_value = dash.no_update
 
     # If metric, convert floor_area and ceiling_height to feet
     if my_units == "metric":

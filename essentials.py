@@ -566,8 +566,12 @@ def did_switch_units(search, floor_area_text, ceiling_height_text):
     curr_units = ""
     if floor_area_text == desc_file.floor_area_text and ceiling_height_text == desc_file.ceiling_height_text:
         curr_units = "british"
-    else:
+    elif floor_area_text == desc_file.floor_area_text_metric and \
+         ceiling_height_text == desc_file.ceiling_height_text_metric:
         curr_units = "metric"
+    else:
+        # Changed languages
+        curr_units = ""
 
     if curr_units != my_units:
         return curr_units

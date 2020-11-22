@@ -501,9 +501,9 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
         [floor_area, ceiling_height] = ess.convert_units(curr_units, my_units, floor_area, ceiling_height)
 
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
-    print("Floor area: " + str(floor_area))
     preset_dd_value = ess.get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
                                               breathing_flow_rate, infectiousness, mask_eff, my_units)
+    # preset_dd_value = dash.no_update
 
     # If metric, convert floor_area and ceiling_height to feet
     if my_units == "metric":
