@@ -12,6 +12,10 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 
 """
 
+accent_color = '#de1616'
+light_accent_color = '#f06767'
+dash_blue = '#8ad4ed'
+
 m_to_ft = 3.28084
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
@@ -217,20 +221,71 @@ def get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_ra
 
 
 # Returns the plotly figure based on the supplied indoor model.
-def get_model_figure(indoor_model, language):
+# indoor_model: The model to use
+# language: The language
+# transient_only: Whether to exclude the steady-state output.
+# is_readout: If true, will generate an annotated readout of the graph
+def get_model_figure(indoor_model, language, transient_only=False, is_readout=False, input_axis='y', input_val=0):
     desc_file = get_desc_file(language)
-    new_df = indoor_model.calc_n_max_series(2, 100, 1.0)
-
     new_fig = go.Figure()
+
+    if transient_only:
+        trans_color = accent_color
+    else:
+        trans_color = dash_blue
+
+    if transient_only:
+        if input_axis == 'y':
+            output_val = indoor_model.calc_max_time(input_val)
+            # Get the horizontal trace
+            horiz_trace = go.Scatter(x=[0, output_val],
+                                     y=[input_val, input_val],
+                                     mode='lines',
+                                     line=go.scatter.Line(color=light_accent_color, dash='dash'))
+            # Get the vertical trace
+            vert_trace = go.Scatter(x=[output_val, output_val],
+                                    y=[0, input_val],
+                                    mode='lines',
+                                    line=go.scatter.Line(color=light_accent_color, dash='dash'))
+
+            new_fig.add_trace(horiz_trace)
+            new_fig.add_trace(vert_trace)
+            y_max = input_val + (input_val * 2)
+            x_max = output_val + (output_val * 2)
+            y_min = indoor_model.calc_n_max(x_max)
+            x_min = indoor_model.calc_max_time(y_max)
+            new_df = indoor_model.calc_n_max_series(x_min, x_max, (x_max - x_min) / 100)
+            new_fig.update_yaxes(range=[0, y_max])
+            new_fig.update_xaxes(range=[0, x_max])
+            # Add frames here
+            frames = []
+            new_fig.update_layout(updatemenus=[dict(type="buttons", buttons=[dict(label="Play",
+                                                                                  method="animate",
+                                                                                  args=[None])])])
+
+        else:
+            # Input axis is x
+            output_val = indoor_model.calc_n_max(input_val)
+            # Get the vertical trace
+            vert_trace = go.Scatter(x=[input_val, input_val], y=[0, output_val])
+            # Get the horizontal trace based
+            horiz_trace = go.Scatter(x=[0, input_val], y=[output_val, output_val])
+            new_fig.add_trace(horiz_trace)
+
+        new_fig.update_layout(showlegend=False)
+    else:
+        new_df = indoor_model.calc_n_max_series(2, 100, 1.0)
+
+        new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_ss"],
+                                     mode='lines',
+                                     name=desc_file.steady_state_text,
+                                     line=go.scatter.Line(color="#2490b5"),
+                                     visible='legendonly'))
+
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_trans"],
                                  mode='lines',
                                  name=desc_file.transient_text,
-                                 line=go.scatter.Line(color="#8ad4ed")))
-    new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_ss"],
-                                 mode='lines',
-                                 name=desc_file.steady_state_text,
-                                 line=go.scatter.Line(color="#2490b5"),
-                                 visible='legendonly'))
+                                 line=go.scatter.Line(color=trans_color)))
     new_fig.update_layout(transition_duration=500,
                           title=desc_file.graph_title, height=400,
                           xaxis_title=desc_file.graph_xtitle,
@@ -239,7 +294,8 @@ def get_model_figure(indoor_model, language):
                           template="simple_white",
                           hoverlabel=dict(
                               font_family="Barlow"
-                          ))
+                          ),
+                          )
     return new_fig
 
 
