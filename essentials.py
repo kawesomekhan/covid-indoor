@@ -14,7 +14,7 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 
 normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
-translation_credits = '''Khoiruddin Ad-Damaki, John Bush, Laura Champion, Sung Jae Kim, Bonho Koo, Myungjin Seo, 
+translation_credits = '''Khoiruddin Ad-Damaki, John Bush, Laura Champion, Surya Effendy, Sung Jae Kim, Bonho Koo, Myungjin Seo, 
                         Huanhuan Tian, Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 m_to_ft = 3.28084

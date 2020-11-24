@@ -84,7 +84,7 @@ presets = [
     {'label': "Restoran", 'value': 'restaurant'},
     {'label': "Kantor yang Sepi", 'value': 'office'},
     {'label': "Ruang Kuliah", 'value': 'classroom'},
-    {'label': "Mobil Kereta Bawah Tanah Kota New York", 'value': 'subway'},
+    {'label': "Kereta Jalur Bawah Tanah New York", 'value': 'subway'},
     {'label': "Boeing 737", 'value': 'airplane'},
     {'label': "Gereja", 'value': 'church'},
 ]
@@ -181,7 +181,7 @@ ventilation_types = [
     {'label': "Ventilasi Mekanis yang Lebih Baik", 'value': 8},
     {'label': "Laboratorium, Restoran", 'value': 9},
     {'label': "Bar", 'value': 15},
-    {'label': "Rumah Sakit/Mobil Jalur Bawah Tanah", 'value': 18},
+    {'label': "Rumah Sakit/Kereta Jalur Bawah Tanah", 'value': 18},
     {'label': "Toxic Laboratory/Pesawat", 'value': 24},
 ]
 
@@ -206,7 +206,7 @@ recirc_types = [
     {'label': "Sedang", 'value': 1},
     {'label': "Cepat", 'value': 10},
     {'label': "Pesawat Terbang", 'value': 24},
-    {'label': "Mobil Jalur Bawah Tanah", 'value': 54},
+    {'label': "Kereta Jalur Bawah Tanah", 'value': 54},
 ]
 
 humidity_text = "Humiditas Relatif: "
