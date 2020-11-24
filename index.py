@@ -24,6 +24,7 @@ languages = [
     {'label': "English", 'value': "en"},
     # {'label': "Espa\u00f1ol", 'value': "es"},
     {'label': "Fran\u00e7ais", 'value': "fr"},
+    {'label': "Bahasa Indonesia", 'value': "id"},
     {'label': "한국어", 'value': "ko"},
     {'label': "简体中文", 'value': "zh"},
 ]
