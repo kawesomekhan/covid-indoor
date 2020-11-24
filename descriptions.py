@@ -443,8 +443,5 @@ footer = html.Div([
               responsibility of the user. It is being made available without guarantee or warranty of any kind. The 
               authors do not accept any liability from its use.''')]),
     html.Br(),
-    html.Div("Special thanks to  William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
-             "Marc Rosenbaum, and David Stark"),
-    html.Div("Translations by John Bush, Laura Champion, Sung Jae Kim, Bonho Koo, Myungjin Seo, Huanhuan Tian, "
-             "Hongbo Zhao, Juner Zhu")
+    html.Div("Special thanks to: ")
 ], className='footer-small-text')

@@ -1,5 +1,5 @@
 import plotly.graph_objects as go
-from dash.exceptions import PreventUpdate
+import dash_html_components as html
 
 import descriptions as desc
 import descriptions_fr as desc_fr
@@ -11,6 +11,11 @@ import descriptions_ko as desc_ko
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
 
 """
+
+normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
+                 David Stark'''
+translation_credits = '''Khoiruddin Ad-Damaki, John Bush, Laura Champion, Sung Jae Kim, Bonho Koo, Myungjin Seo, 
+                        Huanhuan Tian, Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 m_to_ft = 3.28084
 
@@ -519,13 +524,17 @@ def get_lang_text_adv(language):
 # Get header and footer based on language
 def get_header_and_footer_text(language):
     desc_file = get_desc_file(language)
+    footer = html.Div([desc_file.footer,
+                       html.Div(normal_credits),
+                       html.Div(translation_credits)],
+                      className='footer-small-text')
     return [desc_file.header,
             desc_file.language_dd,
             desc_file.units_dd,
             desc_file.mode_dd,
             desc_file.unit_settings,
             desc_file.app_modes,
-            desc_file.footer]
+            footer]
 
 
 # Returns description file based on language

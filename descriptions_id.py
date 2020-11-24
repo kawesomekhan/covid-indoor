@@ -445,8 +445,5 @@ footer = html.Div([
               jawab pengguna sepenuhnya. Pedoman tersebut tersedia tanpa jaminan atau jaminan apa pun. Penulis tidak 
               bertanggung jawab atas penggunaannya.''')]),
     html.Br(),
-    html.Div("Ucapan Terimakasih kepada William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
-             "Marc Rosenbaum, and David Stark"),
-    html.Div("John Bush, Laura Champion, Sung Jae Kim, Bonho Koo, Myungjin Seo, Huanhuan Tian, "
-             "Hongbo Zhao, Juner Zhu")
+    html.Div("Ucapan Terimakasih kepada: ")
 ], className='footer-small-text')

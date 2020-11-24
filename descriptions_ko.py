@@ -428,8 +428,5 @@ footer = html.Div([
               본 가이드라인은 어떠한 종류의 보장이나 보증을 제공하지 않습니다. 저자들은 본 가이드라인의 사용에 따른 어떠한 법적 책임도 
               지지 않습니다.''')]),
     html.Br(),
-    html.Div("William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
-             "Marc Rosenbaum, and David Stark 에게 감사의 말씀을 드립니다."),
-    html.Div("John Bush, Laura Champion, Sung Jae Kim, Bonho Koo, Myungjin Seo, Huanhuan Tian, "
-             "Hongbo Zhao, Juner Zhu 에게 감사의 말씀을 드립니다.")
+    html.Div("에게 감사의 말씀을 드립니다 ")
 ], className='footer-small-text')
