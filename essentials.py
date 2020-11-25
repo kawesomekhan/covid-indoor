@@ -2,6 +2,7 @@ import plotly.graph_objects as go
 import dash_html_components as html
 
 import descriptions as desc
+import descriptions_es as desc_es
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
 import descriptions_id as desc_id
@@ -14,8 +15,9 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 
 normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
-translation_credits = '''Khoiruddin Ad-Damaki, John Bush, Laura Champion, Surya Effendy, Sung Jae Kim, Bonho Koo, Myungjin Seo, 
-                        Huanhuan Tian, Gede Wenten, Hongbo Zhao, Juner Zhu'''
+translation_credits = '''Khoiruddin Ad-Damaki, John Bush, Rafael Suarez Camacho, 
+                        Laura Champion, Surya Effendy, Sung Jae Kim, Bonho Koo, John Ochsendorf, Juan Puyo, 
+                        Myungjin Seo, Huanhuan Tian, Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 m_to_ft = 3.28084
 
@@ -548,6 +550,8 @@ def get_desc_file(language):
         desc_file = desc_id
     elif language == "ko":
         desc_file = desc_ko
+    elif language == "es":
+        desc_file = desc_es
 
     return desc_file
 
