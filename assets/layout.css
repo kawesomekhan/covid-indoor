@@ -16,6 +16,9 @@ body {
 #window-height {
     display: none;
 }
+#calc-temp {
+    display: none;
+}
 
 /* Error Message */
 .error-alert {
@@ -109,8 +112,8 @@ body {
 .nt-output-text {
 
 }
-.nt-output-graph {
-
+#t-output-graph {
+    width: 100%;
 }
 
 /* Tabs */
@@ -143,7 +146,12 @@ body {
 /* Intermediate Size */
 @media only screen and (max-width: 1400px) {
     .grid {
-        grid-auto-rows: 700px 200px;
+        grid-auto-rows: 700px auto;
+    }
+    /* Graph Output Grid */
+    .nt-output-grid {
+        display: grid;
+        grid-template-columns: 1fr;
     }
 }
 
@@ -180,6 +188,21 @@ body {
     .card {
         min-width: 0;
         padding: 1em;
+    }
+    #main-output-card {
+        grid-column-start: 0;
+        grid-column-end: 1;
+    }
+    #t-output-card {
+        grid-column-start: 0;
+        grid-column-end: 1;
+    }
+    #n-output-card {
+        grid-column-start: 0;
+        grid-column-end: 1;
+    }
+    .nt-output-graph {
+        display: none;
     }
 
     /* Tabs */
