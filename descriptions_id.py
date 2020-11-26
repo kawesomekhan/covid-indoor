@@ -3,154 +3,16 @@ import dash_html_components as html
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
 
-descriptions: Indonesian
+Indonesian
 
 """
 
 link_paper = "https://www.medrxiv.org/content/10.1101/2020.08.26.20182824v2"
 link_docs = "https://docs.google.com/document/d/1fB5pysccOHvxphpTmCG_TGdytavMmc1cUumn8m0pwzo/edit"
 
-vent_type_output_base = "{:.0f} ACH"
-filt_type_output_base = "MERV {:.0f}"
-recirc_type_output_base = "{:.1f} recirculation ACH"
-
-# Default dropdown options shared between basic mode and advanced mode
-humidity_marks = {
-    0: {'label': '0%: Very Dry', 'style': {'max-width': '25px'}},
-    0.2: {'label': '20%: Airplane', 'style': {'max-width': '50px'}},
-    0.3: {'label': '30%: Dry'},
-    0.6: {'label': '60%: Average'},
-    0.99: {'label': '99%: Very Humid'},
-}
-
-exertion_types = [
-    {'label': "Resting", 'value': 0.49},
-    {'label': "Standing", 'value': 0.54},
-    {'label': "Light Exercise", 'value': 1.38},
-    {'label': "Moderate Exercise", 'value': 2.35},
-    {'label': "Heavy Exercise", 'value': 3.30},
-]
-
-expiratory_types = [
-    {'label': "Breathing (light)", 'value': 1.1},
-    {'label': "Breathing (normal)", 'value': 4.2},
-    {'label': "Breathing (heavy)", 'value': 8.8},
-    # {'label': "Breathing (fast-deep)", 'value': 8.5},
-    {'label': "Talking (whisper)", 'value': 29},
-    # {'label': "Speaking (whispered counting)", 'value': 37},
-    {'label': "Talking (normal)", 'value': 72},
-    # {'label': "Speaking (voiced counting)", 'value': 72},
-    {'label': "Talking (loud)", 'value': 142},
-    # {'label': "Singing (whispered 'aah')", 'value': 103},
-    {'label': "Singing", 'value': 970},
-]
-
-mask_type_marks = {
-    0: {'label': "0% (none, face shield)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (coarse cotton)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (silk, flannel, chiffon)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (surgical, cotton)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (N95 respirator)", 'style': {'max-width': '50px'}},
-}
-
-mask_types = [
-    {'label': "None, Face Shield", 'value': 0},
-    {'label': "Coarse Cotton", 'value': 0.1},
-    {'label': "Silk, Flannel, Chiffon", 'value': 0.5},
-    {'label': "Surgical, Cotton", 'value': 0.75},
-    {'label': "N95 Respirator", 'value': 0.95},
-]
-
-mask_fit_marks = {
-    0: {'label': '0%: None', 'style': {'max-width': '50px'}},
-    0.5: {'label': '50%: Poor'},
-    0.95: {'label': '95%: Good'}
-}
-
-risk_tol_marks = {
-    0.01: {'label': '0.01: Safest', 'style': {'max-width': '50px'}},
-    0.1: {'label': '0.10: Safe', 'style': {'max-width': '50px'}},
-    1: {'label': '1.00: Unsafe'}
-}
-
-ventilation_types = [
-    {'label': "Closed windows", 'value': 0.3},
-    {'label': "Open windows", 'value': 2},
-    {'label': "Mechanical Ventilation", 'value': 3},
-    {'label': "Open windows with fans", 'value': 6},
-    {'label': "Better Mechanical Ventilation", 'value': 8},
-    {'label': "Laboratory, Restaurant", 'value': 9},
-    {'label': "Bar", 'value': 15},
-    {'label': "Hospital/Subway Car", 'value': 18},
-    {'label': "Toxic Laboratory/Airplane", 'value': 24},
-]
-
-filter_types = [
-    {'label': "None", 'value': 0},
-    {'label': "Residential Window AC", 'value': 2},
-    {'label': "Residential/Commercial/Industrial", 'value': 6},
-    {'label': "Residential/Commercial/Hospital", 'value': 10},
-    {'label': "Hospital & General Surgery", 'value': 14},
-    {'label': "HEPA", 'value': 17}
-]
-
-recirc_types = [
-    {'label': "None", 'value': 0},
-    {'label': "Slow", 'value': 0.3},
-    {'label': "Moderate", 'value': 1},
-    {'label': "Fast", 'value': 10},
-    {'label': "Airplane", 'value': 24},
-    {'label': "Subway Car", 'value': 54},
-]
-
-n_max_base_string = ' {:.0f} people'
-
-graph_title = "Occupancy vs. Exposure Time"
-graph_xtitle = "Maximum Exposure Time \u03C4 (hours)"
-graph_ytitle = "Maximum Occupancy N"
-transient_text = "Transient"
-steady_state_text = "Steady-State"
-
-six_ft_base_string = ' {} people'
-six_ft_base_string_one = ' {} person'
-
-units_hr = 'hours'
-units_min = 'minutes'
-units_days = 'days'
-
-units_hr_one = 'hour'
-units_min_one = 'minute'
-units_day_one = 'day'
-
-is_past_recovery_base_string = '{n_val} people for >{val:.0f} days,'
-model_output_base_string = '{n_val} people for '
-
-presets = [
-    {'label': "Custom", 'value': 'custom'},
-    {'label': "Suburban House", 'value': 'house'},
-    {'label': "Restaurant", 'value': 'restaurant'},
-    {'label': "Quiet Office", 'value': 'office'},
-    {'label': "Classroom Lecture", 'value': 'classroom'},
-    {'label': "New York City Subway Car", 'value': 'subway'},
-    {'label': "Boeing 737", 'value': 'airplane'},
-    {'label': "Church", 'value': 'church'},
-]
-
-error_list = {
-    "floor_area": "Error: Floor area cannot be empty.",
-    "ceiling_height": "Error: Ceiling height cannot be empty.",
-    "recirc_rate": "Error: Recirculation rate cannot be empty.",
-    "aerosol_radius": "Error: Aerosol radius cannot be empty.",
-    "viral_deact_rate": "Error: Viral deactivation rate cannot be empty.",
-    "n_max_input": "Error: Number of people cannot be less than 2.",
-    "exp_time_input": "Error: Exposure time must be greater than 0.",
-    "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
-    "merv": "Error: Filtration System (MERV) cannot be empty."
-}
-
 # Header
 header = html.Div([
-    html.H1(children='COVID-19 Indoor Safety Guideline'),
+    html.H1(children='Pedoman Keamanan Dalam Ruangan Untuk COVID-19'),
     html.Div([
         html.Div([html.Span(html.A(href="https://www.linkedin.com/in/kasim-k-a92620b1/",
                                    children="Kasim Khan",
@@ -159,7 +21,7 @@ header = html.Div([
                   html.Span(html.A(href="https://math.mit.edu/~bush/",
                                    children="John W. M. Bush",
                                    target='_blank')),
-                  ", and ",
+                  ", dan ",
                   html.Span(html.A(href="https://www.mit.edu/~bazant/",
                                    children="Martin Z. Bazant",
                                    target='_blank')),
@@ -186,277 +48,402 @@ header = html.Div([
 ])
 
 # Menu dropdowns
-language_dd = "Language: "
-units_dd = "Units: "
-mode_dd = "Mode: "
+language_dd = "Bahasa: "
 
 # Unit systems
+units_dd = "Satuan: "
 unit_settings = [
     {'label': "British", 'value': "british"},
     {'label': "Metric", 'value': "metric"},
 ]
 
 # Modes
+mode_dd = "Mode: "
 app_modes = [
-    {'label': "Basic", 'value': "basic"},
-    {'label': "Advanced", 'value': "advanced"},
+    {'label': "Dasar", 'value': "basic"},
+    {'label': "Lanjut", 'value': "advanced"},
 ]
 
-# Tabs
-about_header = "About"
-room_header = "Room Specifications"
-human_header = "Human Behavior"
-faq_header = "Frequently Asked Questions"
-other_io = "Other Inputs & Outputs"
+error_list = {
+    "floor_area": "Error: Area lantai tidak boleh kosong.",
+    "ceiling_height": "Error: Tinggi langit-langit tidak boleh kosong.",
+    "recirc_rate": "Error: Laju resirkulasi tidak boleh kosong.",
+    "aerosol_radius": "Error: Radius aerosol tidak boleh kosong.",
+    "viral_deact_rate": "Error: Tingkat deaktivasi virus tidak boleh kosong.",
+    "n_max_input": "Error: Jumlah orang tidak boleh kurang dari 2.",
+    "exp_time_input": "Error: Waktu pemaparan harus lebih dari 0.",
+    "air_exchange_rate": "Error: Tingkat Ventilasi (ACH) harus lebih besar dari 0.",
+    "merv": "Error: Sistem Filtrasi (MERV) tidak boleh kosong."
+}
+
+# Main Panel Text
+curr_room_header = "Ruangan saat ini: "
+presets = [
+    {'label': "Custom", 'value': 'custom'},
+    {'label': "Rumah Pinggiran Kota", 'value': 'house'},
+    {'label': "Restoran", 'value': 'restaurant'},
+    {'label': "Kantor yang Sepi", 'value': 'office'},
+    {'label': "Ruang Kuliah", 'value': 'classroom'},
+    {'label': "Kereta Jalur Bawah Tanah New York", 'value': 'subway'},
+    {'label': "Boeing 737", 'value': 'airplane'},
+    {'label': "Gereja", 'value': 'church'},
+]
+
+main_panel_s1 = "Berdasarkan model ini, ruangan ini akan aman* jika memiliki: "
+
+units_hr = 'jam'
+units_min = 'menit'
+units_days = 'hari'
+
+units_hr_one = 'jam'
+units_min_one = 'menit'
+units_day_one = 'hari'
+
+is_past_recovery_base_string = '{n_val} orang selama >{val:.0f} jam,'
+model_output_base_string = '{n_val} orang selama '
+
+main_panel_six_ft_1 = "Perhatikan bahwa pedoman jarak enam kaki atau dua meter akan menunjukkan bahwa "
+main_panel_six_ft_2 = " akan aman di ruangan ini untuk waktu yang tidak terbatas."
+
+six_ft_base_string = ' hingga {} orang'
+six_ft_base_string_one = ' hingga {} orang'
+
+graph_title = "Penggunaan Ruang vs. Waktu Paparan"
+graph_xtitle = "Waktu paparan maksimum \u03C4 (jam)"
+graph_ytitle = "Maximum Occupancy N"
+transient_text = "Transien"
+steady_state_text = "Kondisi tunak"
+
+main_airb_trans_only_disc = html.Div(["*Panduan ini berdasarkan pertimbangan ",
+                                      html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
+                                                       children="penularan melalui udara",
+                                                       target='_blank'), ),
+                                      html.Span(''' dari satu orang yang terinfeksi selama waktu paparan kumulatif 
+                                      tertentu (lihat daftar).''')], className='airborne-text')
+
+airb_trans_only_disc = html.Div('''Panduan ini berdasarkan pertimbangan penularan melalui udara dari satu orang 
+yang terinfeksi selama waktu paparan kumulatif tertentu (lihat daftar). ''', className='airborne-text')
+
+# Bottom panels text
+n_input_text_1 = "Jika ruangan ini berisi "
+n_input_text_2 = " orang, penghuninya seharusnya aman selama "
+n_input_text_3 = "."
+
+t_input_text_1 = "Jika orang-orang menempati ruang tersebut selama kira-kira "
+t_input_text_2 = " jam, jumlah orang yang bisa menempati ruang tersebut seharusnya dibatasi sebanyak "
+n_max_base_string = ' {:.0f} orang'
+t_input_text_3 = "."
 
 # About
+about_header = "Tentang"
 about = html.Div([
-    html.H6("About", style={'margin': '0'}),
-    html.Div('''To mitigate the spread of COVID-19, official public health guidelines have recommended limits on: 
-    person-to-person distance (6 feet / 2 meters), occupancy time (15 minutes), maximum occupancy (25 people), 
-    or minimum ventilation (6 air changes per hour).'''),
+    html.H6("Tentang", style={'margin': '0'}),
+    html.Div('''Untuk mengurangi penyebaran COVID-19, pedoman kesehatan masyarakat resmi telah merekomendasikan 
+    batasan pada: jarak orang-ke-orang (6 kaki / 2 meter), waktu tinggal (15 menit), kapasitas maksimum (25 orang), 
+    atau ventilasi minimum (6 perubahan udara per jam).'''),
     html.Br(),
-    html.Div([html.Span('''There is growing '''),
-              html.A(children="scientific evidence",
+    html.Div([html.Span('''Ada '''),
+              html.A(children="bukti ilmiah",
                      href=link_docs,
                      target='_blank'),
-              html.Span(''' for airborne transmission of COVID-19, which occurs when 
-    infectious aerosol droplets are exchanged by breathing shared indoor air. While public health organizations are 
-    beginning to acknowledge airborne transmission, they have yet to provide a safety guideline that incorporates all 
-    the relevant variables.''')]),
+              html.Span(''' yang berkembang untuk penularan COVID-19 melalui udara, yang terjadi ketika tetesan 
+              aerosol yang menular dipertukarkan dengan menghirup udara dalam ruangan bersama. Sementara organisasi 
+              kesehatan masyarakat mulai mengakui penularan melalui udara, mereka belum memberikan pedoman 
+              keselamatan yang memasukkan semua variabel yang relevan.''')]),
     html.Br(),
-    html.Div([html.Span('''This app, developed by Kasim Khan in collaboration with Martin Z. Bazant and John W. M. Bush, 
-    uses a '''),
-              html.A(children="theoretical model",
+    html.Div([html.Span('''Aplikasi ini, dikembangkan oleh Kasim Khan bekerja sama dengan Martin Z. Bazant dan John 
+    W. M. Bush, menggunakan '''),
+              html.A(children="model teoritis",
                      href=link_paper,
                      target='_blank'),
-              html.Span(''' to calculate safe exposure times and occupancy levels for indoor spaces.  By adjusting 
-    room specifications, ventilation and filtration rates, face-mask usage, respiratory activities, 
-    and risk tolerance (in the other tabs), you can see how to mitigate indoor COVID-19 transmission in different 
-    indoor spaces.''')]),
+              html.Span(''' untuk menghitung waktu paparan yang aman dan kapasitas ruangan. Dengan menyesuaikan 
+              spesifikasi ruangan, tingkat ventilasi dan filtrasi, penggunaan masker, aktivitas pernapasan, 
+              dan toleransi risiko (di tab lain), Anda dapat melihat cara mengurangi penularan COVID-19 dalam ruangan 
+              (indoor), di berbagai ruangan yang berbeda.''')]),
 ])
 
 # Room Specifications
-floor_area_text = "Total floor area (sq. ft.): "
-floor_area_text_metric = "Total floor area (m²): "
+room_header = "Spesifikasi Ruangan"
 
-ceiling_height_text = "Average ceiling height (ft.): "
-ceiling_height_text_metric = "Average ceiling height (m): "
+floor_area_text = "Total luas lantai (sq. ft.): "
+floor_area_text_metric = "Total luas lantai (m²): "
+ceiling_height_text = "Tinggi langit-langit rata-rata (ft.): "
+ceiling_height_text_metric = "Tinggi langit-langit rata-rata (m): "
 
-ventilation_text = "Ventilation System: "
-ventilation_text_adv = "Ventilation System (ACH): "
+ventilation_text = "Sistem Ventilasi: "
+vent_type_output_base = "{:.0f} ACH"
+ventilation_text_adv = "Sistem Ventilasi (ACH): "
+ventilation_types = [
+    {'label': "Jendela-jendela tertutup", 'value': 0.3},
+    {'label': "Jendela-jendela terbuka", 'value': 2},
+    {'label': "Ventilasi Mekanis", 'value': 3},
+    {'label': "Jendela-jendela terbuka dengan kipas angin", 'value': 6},
+    {'label': "Ventilasi Mekanis yang Lebih Baik", 'value': 8},
+    {'label': "Laboratorium, Restoran", 'value': 9},
+    {'label': "Bar", 'value': 15},
+    {'label': "Rumah Sakit/Kereta Jalur Bawah Tanah", 'value': 18},
+    {'label': "Toxic Laboratory/Pesawat", 'value': 24},
+]
 
-filtration_text = "Filtration System: "
-filtration_text_adv = "Filtration System (MERV): "
+filtration_text = "Sistem Filtrasi: "
+filt_type_output_base = "MERV {:.0f}"
+filtration_text_adv = "Sistem Filtrasi (MERV): "
+filter_types = [
+    {'label': "Tidak Ada", 'value': 0},
+    {'label': "Jendela Perumahan AC", 'value': 2},
+    {'label': "Perumahan/Komersial/Industri", 'value': 6},
+    {'label': "Perumahan/Komersial/Rumah Sakit", 'value': 10},
+    {'label': "Rumah Sakit & Bedah Umum", 'value': 14},
+    {'label': "HEPA", 'value': 17}
+]
 
-recirc_text = "Recirculation Rate: "
-recirc_text_adv = "Recirculation Rate (recirculation ACH): "
+recirc_text = "Laju Resirkulasi: "
+recirc_type_output_base = "{:.1f} recirculation ACH"
+recirc_text_adv = "Laju Resirkulasi (recirculation ACH): "
+recirc_types = [
+    {'label': "Tidak Ada", 'value': 0},
+    {'label': "Lambat", 'value': 0.3},
+    {'label': "Sedang", 'value': 1},
+    {'label': "Cepat", 'value': 10},
+    {'label': "Pesawat Terbang", 'value': 24},
+    {'label': "Kereta Jalur Bawah Tanah", 'value': 54},
+]
 
-humidity_text = "Relative Humidity: "
+humidity_text = "Humiditas Relatif: "
+humidity_marks = {
+    0: {'label': '0%: Sangat kering', 'style': {'max-width': '25px'}},
+    0.2: {'label': '20%: Pesawat terbang', 'style': {'max-width': '50px'}},
+    0.3: {'label': '30%: Kering'},
+    0.6: {'label': '60%: Rata-rata'},
+    0.99: {'label': '99%: Sangat Lembab'},
+}
 
-need_more_ctrl_text = '''Need more control over your inputs? Switch to Advanced Mode using the dropdown at the top of 
-                         the page.'''
+need_more_ctrl_text = '''Perlu lebih banyak kontrol atas input Anda? Beralih ke Mode Lanjutan menggunakan pilihan di 
+bagian atas halaman. '''
 
+human_header = "Kebiasaan Manusia"
 # Human Behavior
-exertion_text = "Exertion Level: "
+exertion_text = "Tingkat Pengerahan Tenaga: "
+exertion_types = [
+    {'label': "Beristirahat", 'value': 0.49},
+    {'label': "Berdiri", 'value': 0.54},
+    {'label': "Olahraga Ringan", 'value': 1.38},
+    {'label': "Olahraga Sedang", 'value': 2.35},
+    {'label': "Olahraga Berat", 'value': 3.30},
+]
 
-breathing_text = "Respiratory Activity: "
+breathing_text = "Aktivitas Pernafasan: "
+expiratory_types = [
+    {'label': "Bernafas (ringan)", 'value': 1.1},
+    {'label': "Bernafas (normal)", 'value': 4.2},
+    {'label': "Bernafas (berat)", 'value': 8.8},
+    # {'label': "Breathing (fast-deep)", 'value': 8.5},
+    {'label': "Berbicara (berbisik)", 'value': 29},
+    # {'label': "Speaking (whispered counting)", 'value': 37},
+    {'label': "Berbicara (normal)", 'value': 72},
+    # {'label': "Speaking (voiced counting)", 'value': 72},
+    {'label': "Berbicara (nyaring)", 'value': 142},
+    # {'label': "Singing (whispered 'aah')", 'value': 103},
+    {'label': "Bernyanyi", 'value': 970},
+]
 
-mask_type_text = "Mask Type/Efficiency: "
+mask_type_text = "Efisiensi Filtrasi Masker (tipe makser): "
+mask_type_marks = {
+    0: {'label': "0% (tidak ada, pelindung wajah)", 'style': {'max-width': '50px'}},
+    0.1: {'label': "10% (kapas kasar)", 'style': {'max-width': '50px'}},
+    0.5: {'label': "50% (sutra, flanel, sifon)", 'style': {'max-width': '50px'}},
+    0.75: {'label': "75% (bedah, kapas)", 'style': {'max-width': '50px'}},
+    0.95: {'label': "95% (respirator N95)", 'style': {'max-width': '50px'}},
+}
+mask_types = [
+    {'label': "Tidak ada, Pelindung Wajah", 'value': 0},
+    {'label': "Kapas Kasar", 'value': 0.1},
+    {'label': "Sutra, Flanel, Sifon", 'value': 0.5},
+    {'label': "Bedah, Kapas", 'value': 0.75},
+    {'label': "Respirator N95", 'value': 0.95},
+]
 
-mask_fit_text = "Mask Fit/Compliance: "
+mask_fit_text = "Kesesuaian Masker: "
+mask_fit_marks = {
+    0: {'label': '0%: Tidak ada', 'style': {'max-width': '50px'}},
+    0.5: {'label': '50%: Buruk'},
+    0.95: {'label': '95%: Bagus'}
+}
 
-risk_tolerance_text = "Risk Tolerance: "
+risk_tolerance_text = "Toleransi Risiko: "
+risk_tol_desc = html.Div('''Populasi yang lebih rentan seperti orang tua atau mereka yang memiliki kondisi medis yang 
+sudah ada sebelumnya memerlukan toleransi risiko yang lebih rendah. Toleransi risiko yang lebih tinggi berarti lebih 
+banyak transmisi yang diharapkan selama waktu tinggal yang diharapkan (lihat FAQ untuk detailnya).''',
+                         style={'font-size': '13px', 'margin-left': '20px'})
+risk_tol_marks = {
+    0.01: {'label': '0.01: Lebih Aman', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: Aman', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: Tidak Aman'}
+}
 
-# FAQ/Other Inputs and Outputs
-assumptions_layout = html.Div([
-    html.H5("More Questions?"),
-    html.Div([html.Span('''For more detailed explanations and references, see "'''),
-              html.A(children="Beyond 6 Feet",
-                     href=link_paper,
-                     target='_blank'),
-              html.Span('''" and other links posted at the top of the webpage.''')]),
-])
+# FAQ/Other Inputs & Outputs
+faq_header = "Pertanyaan yang Sering Diajukan"
+other_io = "Inputs & Outputs Lainnya"
 
 faq_top = html.Div([
-    html.H6("Frequently Asked Questions"),
-    html.H5("Why isn't 6 feet/2 meter spacing enough?"),
+    html.H6("Pertanyaan yang Sering Diajukan"),
+    html.H5("Mengapa jarak 6 kaki / 2 meter tidak cukup?"),
     html.Div([
-        html.Div([html.Span('''6 feet/2 meter spacing protects you from large drops ejected by an infected person coughing, 
-        as do face masks; however, it doesn’t protect against '''),
-                  html.A(children="airborne transmission",
+        html.Div([html.Span('''Jarak 6 kaki / 2 meter melindungi Anda dari tetesan besar yang dikeluarkan oleh orang 
+        yang terinfeksi yang batuk, seperti halnya masker wajah; namun, ini tidak melindungi dari '''),
+                  html.A(children="penularan melalui udara",
                          href=link_docs,
                          target='_blank'),
-                  html.Span(''' by infectious aerosols that are 
-        suspended in the air and can be mixed throughout a room. Indoors, people are no safer from airborne 
-        transmission at 6 feet than 60 feet. ''')]),
+                  html.Span(''' oleh aerosol infeksius yang tersuspensi di udara dan dapat bercampur di seluruh 
+                  ruangan. Di dalam ruangan, orang tidak lebih aman dari penularan melalui udara pada jarak 6 kaki 
+                  dari 60 kaki.''')]),
     ], className='faq-answer'),
     html.Br(),
-    html.H5("Are there other modes of transmission?"),
+    html.H5("Apakah ada cara penularan lain?"),
     html.Div([
-        html.Div([html.A(children="Airborne transmission",
+        html.Div([html.A(children="Penularan melalui udara",
                          href=link_docs,
                          target='_blank'),
-                  html.Span(''' is thought to be dominant for COVID-19, but other modes are possible, such as `fomite’ 
-                  transmission through direct contact with infectious residues on surfaces, `large-droplet' 
-                  transmission via coughing or sneezing, and `short-range aerosol' transmission from the respiratory 
-                  jet of an infected person over a prolonged period. While the latter two modes may be significant, 
-                  they are largely eliminated when face masks or shields are worn; however, the risk of airborne 
-                  transmission remains.''')]),
+                  html.Span(''' dianggap dominan untuk COVID-19, tetapi mode lain dimungkinkan, seperti penularan 
+                  ‘fomite’ melalui kontak langsung dengan residu infeksi di permukaan, transmisi ‘tetesan besar’ 
+                  melalui batuk atau bersin, dan ‘aerosol jarak pendek’ transmisi dari pernapasan orang yang 
+                  terinfeksi dalam waktu lama. Meskipun dua mode terakhir mungkin signifikan, mode ini sebagian besar 
+                  dihilangkan saat masker wajah atau penutup wajah dikenakan; namun, risiko penularan melalui udara 
+                  tetap ada.''')]),
     ], className='faq-answer'),
     html.Br(),
-    html.H5("Can we really assume a well-mixed room?"),
+    html.H5("Bisakah kita benar-benar menganggap udara di suatu ruangan tercampur dengan baik? "),
     html.Div([
-        html.Div([html.Span('''There are many contributors to mixing in indoor spaces, including buoyancy-driven 
-        flows (from heaters, air conditioners or windows), forced convection from vents and fans, and human motion 
-        and respiration. While there are exceptions, as discussed in the '''),
-                  html.A(children="paper",
+        html.Div([html.Span('''Ada banyak kontributor untuk pencampuran di ruang dalam ruangan, termasuk aliran yang 
+        digerakkan oleh daya apung (dari pemanas, AC atau jendela), konveksi paksa dari ventilasi dan kipas angin, 
+        serta gerakan dan pernapasan manusia. Meskipun ada pengecualian, seperti yang dibahas di '''),
+                  html.A(children="makalah ini",
                          href=link_paper,
                          target='_blank'),
-                  html.Span(''', the assumption of well-mixedness is widely used in the theoretical modeling of 
-                  airborne disease transmission.''')]),
+                  html.Span(''', asumsi campuran baik digunakan secara luas dalam pemodelan teoretis penularan 
+                  penyakit melalui udara.''')]),
     ], className='faq-answer'),
     html.Br(),
-    html.H5("Does the guideline hold for very large spaces?"),
+    html.H5("Apakah pedoman tersebut berlaku untuk ruang yang sangat besar?"),
     html.Div([
-        html.Div([html.Span('''In concert halls, stadiums, or other large, ventilated spaces with large numbers of 
-        people, the risk of airborne transmission is significant and properly captured by the guideline.  However, 
-        when masks or face shields are not worn, there is an additional risk of short-range transmission through 
-        respiratory jets, estimated in the '''),
-                  html.A(children="paper",
+        html.Div([html.Span('''Di gedung konser, stadion, atau ruang berventilasi besar lainnya dengan banyak orang, 
+        risiko penularan melalui udara menjadi signifikan dan tercakup di dalam pedoman. Namun, jika masker atau 
+        pelindung wajah tidak dipakai, ada risiko tambahan penularan jarak pendek melalui jet pernapasan, yang telah 
+        diperkirakan di '''),
+                  html.A(children="makalah ini",
                          href=link_paper,
                          target='_blank'),
                   html.Span('''.''')]),
     ], className='faq-answer'),
     html.Br(),
-    html.H5("Why does ceiling height matter?"),
+    html.H5("Mengapa ketinggian langit-langit menjadi penting?"),
     html.Div([
-        '''Ceiling height influences the total room volume, which is required for estimating the concentration of 
-        infectious aerosols (# of aerosols per unit volume). This concentration is needed to estimate the room’s 
-        COVID-19 transmission risk.'''
+        '''Ketinggian langit-langit mempengaruhi total volume ruangan, yang diperlukan untuk memperkirakan 
+        konsentrasi aerosol infeksius (#aerosol per satuan volume). Konsentrasi ini diperlukan untuk memperkirakan 
+        risiko penularan COVID-19 dalam ruangan. '''
     ], className='faq-answer'),
     html.Br(),
-    html.H5("I know my ACH/MERV numbers. Where can I enter them?"),
+    html.H5("Saya tahu angka ACH / MERV saya. Di mana saya bisa memasukkannya?"),
     html.Div('''
-        If you need more control over your inputs, switch to Advanced Mode using the dropdown at the top of
-        the webpage.
+        Jika Anda membutuhkan lebih banyak kontrol atas input Anda, alihkan ke Mode Lanjutan menggunakan menu di bagian 
+        atas halaman web.
     ''', className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([
-    html.H5("Are there any hidden parameters in Basic Mode?"),
-    html.Div([html.Span('''All of the relevant physical parameters are detailed in the '''),
-              html.A(children="paper",
+    html.H5("Apakah ada parameter tersembunyi dalam Mode Dasar?"),
+    html.Div([html.Span('''Semua parameter fisik yang relevan secara terperinci di laporkan di '''),
+              html.A(children="makalah ini",
                      href=link_paper,
                      target='_blank'),
-              html.Span('''. In Basic Mode, the app assumes a default effective aerosol radius of 2 μm (at 60% 
-              humidity) and a maximum viral deactivation rate of 0.6 /hr (at ~100% humidity), both of which increase 
-              with relative humidity (RH). Estimates for the viral deactivation rate err on the conservative side of 
-              slower deactivation.  The viral deactivation rate can be increased by ultraviolet radiation (UV-C) or 
-              chemical disinfectants (e.g. hydrogen peroxide, ozone). The app also estimates the key disease 
-              parameter, the infectiousness of exhaled air, C'''),
+              html.Span('''. Dalam Mode Dasar, aplikasi mengasumsikan radius aerosol efektif 2 μm (pada kelembapan 
+              60%) dan tingkat deaktivasi virus maksimum 0,6 / jam (pada ~ 100% kelembapan), keduanya meningkat 
+              dengan kelembapan relatif (RH). Perkiraan tingkat galat deaktivasi virus di sisi konservatif deaktivasi 
+              yang lebih lambat. Tingkat deaktivasi virus dapat ditingkatkan dengan radiasi ultraviolet (UV-C) atau 
+              disinfektan kimiawi (misalnya hidrogen peroksida, ozon). Aplikasi ini juga memperkirakan parameter 
+              utama penyakit, penularan melalui hembusan udara, C'''),
               html.Sub("q"),
-              html.Span(''' (infection quanta per unit volume), from the specified 
-              respiratory activity, using tabulated values in Figure 2 of the '''),
-              html.A(children="paper",
+              html.Span(''' (kuanta infeksi per unit volume), dari aktivitas pernapasan tertentu, menggunakan nilai 
+              tabulasi pada Gambar 2 dari '''),
+              html.A(children="makalah ini",
                      href=link_paper,
                      target='_blank'),
-              html.Span('''. You define these parameters yourself in Advanced Mode.''')],
+              html.Span('''. Anda menentukan sendiri parameter ini dalam Mode Lanjutan.''')],
              className='faq-answer'),
 ])
-aerosol_radius_text = "Effective Aerosol Radius (at RH = 60%), r\u0305 (\u03bcm): "
-viral_deact_text = html.Span(["Maximum Viral Deactivation Rate (at RH = 100%), \u03BB", html.Sub('vmax'), " (/hr): "])
+
+aerosol_radius_text = "Radius Aerosol Efektif (pada RH = 60%), r\u0305 (\u03bcm): "
+viral_deact_text = html.Span(["Tingkat Deaktivasi Virus Maksimum (pada RH = 100%), \u03BB", html.Sub('vmax'), " (/hr): "])
 
 values_interest_header = "Calculated Values of Interest: "
 values_interest_desc = html.Div([
-    html.H5("What exactly is this app calculating?"),
+    html.H5("Apa sebenarnya yang dihitung aplikasi ini?"),
     html.Div([
-        html.Div([html.Span('''Given a risk tolerance for airborne transmission, the app calculates the maximum 
-        allowable cumulative exposure time, the product of room occupancy and time in the presence of an infected 
-        person.  The app also calculates related quantities, defined in the '''),
-                  html.A(children="paper",
+        html.Div([html.Span('''Dengan adanya toleransi risiko untuk penularan melalui udara, aplikasi ini menghitung 
+        waktu paparan kumulatif maksimum yang diizinkan, produk dari penghuni ruangan, dan waktu dimana ada orang 
+        yang terinfeksi. Aplikasi ini juga menghitung kuantitas terkait, yang dijelaskan di '''),
+                  html.A(children="makalah ini",
                          href=link_paper,
                          target='_blank'),
-                  html.Span(''', that may be of interest:''')]),
+                  html.Span(''', yang mungkin menarik:''')]),
     ], className='faq-answer'),
 ])
-outdoor_air_frac_label = html.Span(["Outdoor air fraction Z", html.Sub('p'), ": "])
-aerosol_eff_label = html.Span(["Aerosol filtration efficiency p", html.Sub('f'), ": "])
-breathing_rate_label = html.Span(["Breathing flow rate Q", html.Sub('b'), ": "])
-cq_label = html.Span(["Infectiousness of exhaled air C", html.Sub('q'), ": "])
-mask_pass_prob_label = html.Span(["Mask passage probability p", html.Sub('m'), ": "])
-room_vol_label = html.Span(["Room volume V: "])
-vent_rate_Label = html.Span(["Ventilation (outdoor) flow rate Q: "])
-recirc_rate_label = html.Span(["Return (recirculation) flow rate Q", html.Sub('f'), ": "])
-air_filt_label = html.Span(["Air filtration rate (\u03BB", html.Sub('f'), "): "])
-eff_aerosol_rad_label = html.Span(["Humidity-adjusted aerosol radius r\u0305", html.Sub('eff'), ": "])
-viral_deact_label = html.Span(["Humidity-adjusted viral deactivation rate \u03BB", html.Sub('v'), ": "])
-sett_speed_label = html.Span(["Effective aerosol settling speed v\u209B(r\u0305", html.Sub('eff'), "): "])
-conc_relax_rate_label = html.Span(["Concentration relaxation rate \u03BB", html.Sub('c'), ": "])
-airb_trans_label = html.Span(["Airborne transmission rate \u03B2\u2090: "])
+outdoor_air_frac_label = html.Span(["Fraksi udara luar ruangan Z", html.Sub('p'), ": "])
+aerosol_eff_label = html.Span(["Efisiensi filtrasi aerosol p", html.Sub('f'), ": "])
+breathing_rate_label = html.Span(["Laju aliran pernafasan Q", html.Sub('b'), ": "])
+cq_label = html.Span(["Penularan dari hembusan udara C", html.Sub('q'), ": "])
+mask_pass_prob_label = html.Span(["Kemungkinan lolos melalui masker p", html.Sub('m'), ": "])
+room_vol_label = html.Span(["Volume ruangan V: "])
+vent_rate_Label = html.Span(["Laju aliran ventilasi (luar ruangan) Q: "])
+recirc_rate_label = html.Span(["Laju alir resirkulasi Q", html.Sub('f'), ": "])
+air_filt_label = html.Span(["Laju alir filtrasi udara (\u03BB", html.Sub('f'), "): "])
+eff_aerosol_rad_label = html.Span(["Jari-jari aerosol yang disesuaikan dengan kelembaban r\u0305", html.Sub('eff'), ": "])
+viral_deact_label = html.Span(["Tingkat deaktivasi virus yang disesuaikan dengan kelembaban \u03BB", html.Sub('v'), ": "])
+sett_speed_label = html.Span(["Kecepatan pengendapan aerosol yang v\u209B(r\u0305", html.Sub('eff'), "): "])
+conc_relax_rate_label = html.Span(["Laju relaksasi konsentrasi \u03BB", html.Sub('c'), ": "])
+airb_trans_label = html.Span(["Laju penularan melalui udara \u03B2\u2090: "])
 
-graph_output_header = "Graph Output: "
+graph_output_header = ""
 faq_graphs_text = html.Div([
-    html.H5("Graph Output: "),
+    html.H5(""),
     # html.Div("Here you go!", className='faq-answer'),
 ])
 
 faq_infect_rate = html.Div([
-    html.H5("Does this model account for the prevalence of infection in the local population?"),
-    html.Div(['''No. The model calculates the risk of transmission from a single infected person. It thus implicitly 
-    assumes that the prevalence of infection in the population is relatively low.  In this limit, the risk of 
-    transmission increases with the expected number of infected persons in the room, specifically the product of the 
-    occupancy and the prevalence in the population.  The tolerance should be lowered in proportion to this number if 
-    it exceeds one.  Conversely, when the expected number of infected persons in the room approaches zero, 
-    the tolerance could be proportionally increased until the recommended restrictions are deemed unnecessary. '''],
+    html.H5("Apakah model ini memperhitungkan prevalensi infeksi pada populasi lokal?"),
+    html.Div(['''Tidak. Model tersebut menghitung risiko penularan dari satu orang yang terinfeksi. Dengan demikian 
+    secara implisit mengasumsikan bahwa prevalensi infeksi pada populasi relatif rendah. Dalam batasan ini, 
+    risiko penularan meningkat dengan perkiraan jumlah orang yang terinfeksi di ruangan tersebut, khususnya produk 
+    penghuni ruangan, dan prevalensi dalam populasi. Toleransi harus diturunkan sebanding dengan angka ini jika 
+    melebihi satu. Sebaliknya, ketika perkiraan jumlah orang yang terinfeksi di ruangan itu mendekati nol, 
+    toleransi dapat ditingkatkan secara proporsional hingga pembatasan yang direkomendasikan dianggap tidak perlu. 
+    '''],
              className='faq-answer'),
 ])
 
-risk_tol_desc = html.Div('''More vulnerable populations such as the elderly or those with preexisting medical 
-conditions require a lower risk tolerance (~0.01). A higher risk tolerance will mean more expected 
-transmissions during the expected occupancy period (see FAQ for details).''', style={'font-size': '13px',
-                                                                                     'margin-left': '20px'})
-
-# Main Panel Text
-curr_room_header = "Current Room: "
-main_panel_s1 = "Based on this model, it should be safe* for this room to have: "
-main_panel_six_ft_1 = "Note that the six-foot or two-meter distancing guideline would indicate that up to "
-main_panel_six_ft_2 = " would be safe in this room for an indefinite period."
-
-main_airb_trans_only_disc = html.Div(["*The guideline is based on consideration of ",
-                                      html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
-                                                       children="airborne transmission",
-                                                       target='_blank'), ),
-                                      html.Span(''' from a single infected person over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
-
-# Bottom panels text
-n_input_text_1 = "If this room has "
-n_input_text_2 = " people, its occupants should be safe for "
-n_input_text_3 = "."
-
-t_input_text_1 = "If people spend approximately "
-t_input_text_2 = " hours here, the occupancy should be limited to "
-t_input_text_3 = "."
-
-airb_trans_only_disc = html.Div('''based on consideration of airborne transmission only.''', className='airborne-text')
-
-footer = html.Div([
-    html.Div([html.Span('''The COVID-19 Indoor Safety Guideline is an evolving tool intended to familiarize the 
-    interested user with the factors influencing the risk of indoor airborne transmission of COVID-19, and to assist 
-    in the quantitative assessment of risk in various settings. We note that uncertainty in and intrinsic variability 
-    of model parameters may lead to errors as large as an order of magnitude, which may be compensated for by 
-    choosing a sufficiently small risk tolerance. Our guideline does not take into account short-range transmission 
-    through respiratory jets, which may substantially elevate risk when face masks are not being worn, in a manner 
-    discussed in the '''),
-              html.A(children="accompanying manuscript",
+assumptions_layout = html.Div([
+    html.H5("Pertanyaan Lain?"),
+    html.Div([html.Span('''Untuk penjelasan lebih detil dan referensi, lihat "'''),
+              html.A(children="Beyond 6 Feet",
                      href=link_paper,
                      target='_blank'),
-              html.Span(''' (Bazant & Bush, 2020). Use of the COVID-19 Indoor Safety Guideline is the sole 
-              responsibility of the user. It is being made available without guarantee or warranty of any kind. The 
-              authors do not accept any liability from its use.''')]),
+              html.Span('''" dan tautan lain yang dipasang di bagian atas halaman web.''')]),
+])
+
+footer = html.Div([
+    html.Div([html.Span('''Pedoman Keamanan Dalam Ruangan COVID-19 adalah alat yang berkembang yang dimaksudkan untuk 
+    membiasakan pengguna yang tertarik dengan faktor-faktor yang mempengaruhi risiko penularan COVID-19 melalui udara 
+    dalam ruangan, dan untuk membantu dalam penilaian kuantitatif risiko di berbagai pengaturan. Kami mencatat bahwa 
+    ketidakpastian dan variabilitas intrinsik dari parameter model dapat menyebabkan kesalahan sebesar urutan 
+    besarnya, yang dapat dikompensasikan dengan memilih toleransi risiko yang cukup kecil. Pedoman kami tidak 
+    memperhitungkan transmisi jarak pendek melalui jet pernapasan, yang secara substansial dapat meningkatkan risiko 
+    saat masker tidak dipakai, dengan cara yang dibahas dalam '''),
+              html.A(children="manuskrip yang menyertai",
+                     href=link_paper,
+                     target='_blank'),
+              html.Span(''' (Bazant & Bush, 2020). Penggunaan Pedoman Keamanan Dalam Ruangan COVID-19 adalah tanggung 
+              jawab pengguna sepenuhnya. Pedoman tersebut tersedia tanpa jaminan atau jaminan apa pun. Penulis tidak 
+              bertanggung jawab atas penggunaannya.''')]),
     html.Br(),
-    html.Div("Special thanks to  William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
-             "Marc Rosenbaum, and David Stark"),
-    html.Div("Translations by Huanhuan Tian, Hongbo Zhao, Juner Zhu")
+    html.Div("Ucapan Terimakasih kepada: ")
 ], className='footer-small-text')

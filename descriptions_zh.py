@@ -425,8 +425,5 @@ footer = html.Div([
               html.Span('''手稿中进行了讨论）。用户自身须对使用该《 MIT新冠肺炎室内安全指南》负责。
               开发者不作任何形式的保证或担保，并对其使用不承担任何责任。''')]),
     html.Br(),
-    html.Div("特别鸣谢 William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, "
-             "Marc Rosenbaum, and David Stark"),
-    html.Div("John Bush, Laura Champion, Sung Jae Kim, Bonho Koo, Myungjin Seo, Huanhuan Tian, "
-             "Hongbo Zhao, Juner Zhu")
+    html.Div("特别鸣谢")
 ], className='footer-small-text')

@@ -1,7 +1,8 @@
 import plotly.graph_objects as go
-from dash.exceptions import PreventUpdate
+import dash_html_components as html
 
 import descriptions as desc
+import descriptions_es as desc_es
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
 import descriptions_id as desc_id
@@ -11,6 +12,13 @@ import descriptions_ko as desc_ko
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
 
 """
+
+
+normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
+                 David Stark'''
+translation_credits = '''Khoiruddin Ad-Damaki, John Bush, Rafael Suarez Camacho, 
+                        Laura Champion, Surya Effendy, Sung Jae Kim, Bonho Koo, John Ochsendorf, Juan Puyo, 
+                        Myungjin Seo, Huanhuan Tian, Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 accent_color = '#de1616'
 light_accent_color = '#f06767'
@@ -444,8 +452,23 @@ def search_to_params(search):
 
 
 # Returns text for updating language from the given descriptions file.
-def get_lang_text_basic(language):
+def get_lang_text_basic(language, disp_width):
     desc_file = get_desc_file(language)
+
+    humidity_marks = desc_file.humidity_marks
+    risk_tol_marks = desc_file.risk_tol_marks
+    if disp_width < 1200:
+        # use our mobile marks
+        humidity_marks = {
+            0: desc_file.humidity_marks[0],
+            0.6: desc_file.humidity_marks[0.6],
+            0.99: desc_file.humidity_marks[0.99],
+        }
+        risk_tol_marks = {
+            0.1: desc_file.risk_tol_marks[0.1],
+            1: desc_file.risk_tol_marks[1]
+        }
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -471,7 +494,7 @@ def get_lang_text_basic(language):
             desc_file.recirc_text,
             desc_file.recirc_types,
             desc_file.humidity_text,
-            desc_file.humidity_marks,
+            humidity_marks,
             desc_file.need_more_ctrl_text,
             desc_file.human_header,
             desc_file.human_header,
@@ -485,7 +508,7 @@ def get_lang_text_basic(language):
             desc_file.mask_fit_marks,
             desc_file.risk_tolerance_text,
             desc_file.risk_tol_desc,
-            desc_file.risk_tol_marks,
+            risk_tol_marks,
             desc_file.need_more_ctrl_text,
             desc_file.faq_header,
             desc_file.faq_top,
@@ -510,8 +533,28 @@ def get_lang_text_basic(language):
 
 
 # Returns text for updating language from the given descriptions file.
-def get_lang_text_adv(language):
+def get_lang_text_adv(language, disp_width):
     desc_file = get_desc_file(language)
+
+    humidity_marks = desc_file.humidity_marks
+    risk_tol_marks = desc_file.risk_tol_marks
+    mask_type_marks = desc_file.mask_type_marks
+    if disp_width < 1200:
+        # use our mobile marks
+        humidity_marks = {
+            0: desc_file.humidity_marks[0],
+            0.6: desc_file.humidity_marks[0.6],
+            0.99: desc_file.humidity_marks[0.99],
+        }
+        risk_tol_marks = {
+            0.1: desc_file.risk_tol_marks[0.1],
+            1: desc_file.risk_tol_marks[1]
+        }
+        mask_type_marks = {
+            0: desc_file.mask_type_marks[0],
+            0.75: desc_file.mask_type_marks[0.75]
+        }
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -536,7 +579,7 @@ def get_lang_text_adv(language):
             desc_file.filter_types,
             desc_file.recirc_text,
             desc_file.humidity_text,
-            desc_file.humidity_marks,
+            humidity_marks,
             desc_file.human_header,
             desc_file.human_header,
             desc_file.exertion_text,
@@ -544,12 +587,12 @@ def get_lang_text_adv(language):
             desc_file.breathing_text,
             desc_file.expiratory_types,
             desc_file.mask_type_text,
-            desc_file.mask_type_marks,
+            mask_type_marks,
             desc_file.mask_fit_text,
             desc_file.mask_fit_marks,
             desc_file.risk_tolerance_text,
             desc_file.risk_tol_desc,
-            desc_file.risk_tol_marks,
+            risk_tol_marks,
             desc_file.other_io,
             desc_file.other_io,
             desc_file.aerosol_radius_text,
@@ -575,13 +618,17 @@ def get_lang_text_adv(language):
 # Get header and footer based on language
 def get_header_and_footer_text(language):
     desc_file = get_desc_file(language)
+    footer = html.Div([desc_file.footer,
+                       html.Div(normal_credits),
+                       html.Div(translation_credits)],
+                      className='footer-small-text')
     return [desc_file.header,
             desc_file.language_dd,
             desc_file.units_dd,
             desc_file.mode_dd,
             desc_file.unit_settings,
             desc_file.app_modes,
-            desc_file.footer]
+            footer]
 
 
 # Returns description file based on language
@@ -595,6 +642,8 @@ def get_desc_file(language):
         desc_file = desc_id
     elif language == "ko":
         desc_file = desc_ko
+    elif language == "es":
+        desc_file = desc_es
 
     return desc_file
 
