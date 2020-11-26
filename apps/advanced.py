@@ -259,90 +259,102 @@ layout = html.Div(children=[
                     html.Div(
                         className='card',
                         children=[html.Div(className='output-content', children=[
-                            html.H6(html.Span(desc.curr_room_header, id='adv-curr-room-header')),
-                            html.Div(
-                                className='grid-preset',
-                                children=
+                            html.Div([
+                                html.H6(html.Span(desc.curr_room_header, id='adv-curr-room-header')),
                                 html.Div(
-                                    id='adv-presets-div',
-                                    children=dcc.Dropdown(id='adv-presets',
-                                                          options=desc.presets,
-                                                          value='classroom',
-                                                          searchable=False,
-                                                          clearable=False)),
-                                style={'max-width': '500px'}
-                            ),
-                            html.H3(html.Span(desc.main_panel_s1, id='adv-main-panel-s1')),
-                            dcc.Loading(
-                                id='adv-loading',
-                                type='circle',
-                                children=[
-                                    html.H4(className='model-output-text',
-                                            id='adv-model-text-1',
-                                            children="2 people for 31 days"),
-                                    html.H4(className='model-output-text',
-                                            id='adv-model-text-2',
-                                            children="3 people for 15 days"),
-                                    html.H4(className='model-output-text',
-                                            id='adv-model-text-3',
-                                            children="4 people for 10 days"),
-                                    html.H4(className='model-output-text',
-                                            id='adv-model-text-4',
-                                            children="5 people for 8 days"),
-                                    html.H4(className='model-output-text',
-                                            id='adv-model-text-5',
-                                            children="10 people for 3 days"),
-                                    html.H4(className='model-output-text',
-                                            id='adv-model-text-6',
-                                            children="25 people for 31 hours"),
-                                    html.H4(className='model-output-text',
-                                            id='adv-model-text-7',
-                                            children="50 people for 15 hours"),
-                                    html.H4(className='model-output-text',
-                                            id='adv-model-text-8',
-                                            children="100 people for 8 hours"),
-                                ],
-                                color='#de1616',
-                            ),
-                            html.Br(),
-                            html.H3([html.Span(desc.main_panel_six_ft_1, id='adv-main-six-ft-1'),
-                                     html.Span(id='adv-six-ft-output',
-                                               children=''' 2 people ''',
-                                               style={'color': '#de1616'}),
-                                     html.Span(desc.main_panel_six_ft_2, id='adv-main-six-ft-2')]),
-                            html.Br(),
-                            html.Span(desc.main_airb_trans_only_disc, id='adv-main-airb-trans-disc')
+                                    className='grid-preset',
+                                    children=
+                                    html.Div(
+                                        id='adv-presets-div',
+                                        children=dcc.Dropdown(id='adv-presets',
+                                                              options=desc.presets,
+                                                              value='classroom',
+                                                              searchable=False,
+                                                              clearable=False)),
+                                    style={'max-width': '500px'}
+                                ),
+                                html.H3(html.Span(desc.main_panel_s1, id='adv-main-panel-s1')),
+                                dcc.Loading(
+                                    id='adv-loading',
+                                    type='circle',
+                                    children=[
+                                        html.H4(className='model-output-text',
+                                                id='adv-model-text-1',
+                                                children="2 people for 31 days"),
+                                        html.H4(className='model-output-text',
+                                                id='adv-model-text-2',
+                                                children="3 people for 15 days"),
+                                        html.H4(className='model-output-text',
+                                                id='adv-model-text-3',
+                                                children="4 people for 10 days"),
+                                        html.H4(className='model-output-text',
+                                                id='adv-model-text-4',
+                                                children="5 people for 8 days"),
+                                        html.H4(className='model-output-text',
+                                                id='adv-model-text-5',
+                                                children="10 people for 3 days"),
+                                        html.H4(className='model-output-text',
+                                                id='adv-model-text-6',
+                                                children="25 people for 31 hours"),
+                                        html.H4(className='model-output-text',
+                                                id='adv-model-text-7',
+                                                children="50 people for 15 hours"),
+                                        html.H4(className='model-output-text',
+                                                id='adv-model-text-8',
+                                                children="100 people for 8 hours"),
+                                    ],
+                                    color='#de1616',
+                                ),
+                                html.Br(),
+                                html.H3([html.Span(desc.main_panel_six_ft_1, id='adv-main-six-ft-1'),
+                                         html.Span(id='adv-six-ft-output',
+                                                   children=''' 2 people ''',
+                                                   style={'color': '#de1616'}),
+                                         html.Span(desc.main_panel_six_ft_2, id='adv-main-six-ft-2')]),
+                                html.Br(),
+                            ], className='panel-main-output'),
+                            html.Div([
+                                html.Span(desc.main_airb_trans_only_disc, id='adv-main-airb-trans-disc')
+                            ], className='panel-airb-desc')
                         ])]),
                     html.Div(
                         className='card',
                         children=[html.Div(className='output-content', children=[
-                            html.H3([html.Span(desc.n_input_text_1, id='adv-n-input-text-1'),
-                                     html.Span([dcc.Input(id='adv-n-input',
-                                                          value=10,
-                                                          type='number')]),
-                                     html.Span(desc.n_input_text_2, id='adv-n-input-text-2'),
-                                     html.Span(id='adv-t-output',
-                                               children="8 hours",
-                                               style={'color': '#de1616'}),
-                                     html.Span(desc.n_input_text_3, id='adv-n-input-text-3')]),
-                            html.Br(),
-                            html.Span(desc.airb_trans_only_disc, id='adv-airb-trans-only-disc-1')
+                            html.Div([
+                                html.H3([html.Span(desc.n_input_text_1, id='adv-n-input-text-1'),
+                                         html.Span([dcc.Input(id='adv-n-input',
+                                                              value=10,
+                                                              type='number')]),
+                                         html.Span(desc.n_input_text_2, id='adv-n-input-text-2'),
+                                         html.Span(id='adv-t-output',
+                                                   children="8 hours",
+                                                   style={'color': '#de1616'}),
+                                         html.Span(desc.n_input_text_3, id='adv-n-input-text-3')]),
+                                html.Br(),
+                            ], className='panel-main-output'),
+                            html.Div([
+                                html.Span(desc.airb_trans_only_disc, id='adv-airb-trans-only-disc-1')
+                            ], className='panel-airb-desc')
                         ])]
                     ),
                     html.Div(
                         className='card',
                         children=[html.Div(className='output-content', children=[
-                            html.H3([html.Span(desc.t_input_text_1, id='adv-t-input-text-1'),
-                                     html.Span([dcc.Input(id='adv-t-input',
-                                                          value=4,
-                                                          type='number')]),
-                                     html.Span(desc.t_input_text_2, id='adv-t-input-text-2'),
-                                     html.Span(id='adv-n-output',
-                                               children="5 occupants",
-                                               style={'color': '#de1616'}),
-                                     html.Span(desc.t_input_text_3, id='adv-t-input-text-3')]),
-                            html.Br(),
-                            html.Span(desc.airb_trans_only_disc, id='adv-airb-trans-only-disc-2')
+                            html.Div([
+                                html.H3([html.Span(desc.t_input_text_1, id='adv-t-input-text-1'),
+                                         html.Span([dcc.Input(id='adv-t-input',
+                                                              value=4,
+                                                              type='number')]),
+                                         html.Span(desc.t_input_text_2, id='adv-t-input-text-2'),
+                                         html.Span(id='adv-n-output',
+                                                   children="5 occupants",
+                                                   style={'color': '#de1616'}),
+                                         html.Span(desc.t_input_text_3, id='adv-t-input-text-3')]),
+                                html.Br(),
+                            ], className='panel-main-output'),
+                            html.Div([
+                                html.Span(desc.airb_trans_only_disc, id='adv-airb-trans-only-disc-2')
+                            ], className='panel-airb-desc'),
                         ])]
                     )
                 ]
