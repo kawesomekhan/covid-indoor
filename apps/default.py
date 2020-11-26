@@ -272,6 +272,7 @@ layout = html.Div(children=[
                     ], style={'margin': '1em', 'padding': '0', 'border': 'none'}),
                 html.Div(
                     className='card',
+                    id='main-output-card',
                     children=[html.Div(className='output-content', children=[
                         html.Div([
                             html.H6(html.Span(desc.curr_room_header, id='curr-room-header')),
@@ -326,18 +327,30 @@ layout = html.Div(children=[
                 ]),
                 html.Div(
                     className='card',
+                    id='t-output-card',
                     children=[html.Div(className='output-content', children=[
                         html.Div([
-                            html.H3([html.Span(desc.n_input_text_1, id='n-input-text-1'),
-                                     html.Span([dcc.Input(id='n-input',
-                                                          value=10,
-                                                          type='number')]),
-                                     html.Span(desc.n_input_text_2, id='n-input-text-2'),
-                                     html.Span(id='t-output',
-                                               children="8 hours",
-                                               style={'color': '#de1616'}),
-                                     html.Span(desc.n_input_text_3, id='n-input-text-3')]),
-                            html.Br(),
+                          html.Div([
+                            html.Div([
+                              html.H3([
+                                  html.Span(desc.n_input_text_1, id='n-input-text-1'),
+                                   html.Span([dcc.Input(id='n-input',
+                                                        value=10,
+                                                        type='number')]),
+                                   html.Span(desc.n_input_text_2, id='n-input-text-2'),
+                                   html.Span(id='t-output',
+                                             children="8 hours",
+                                             style={'color': '#de1616'}),
+                                   html.Span(desc.n_input_text_3, id='n-input-text-3')
+                              ]),
+                              html.Br(),
+                            ], className='nt-output-text'),
+                            html.Div([
+                                dcc.Graph(
+                                    id='t-output-graph'
+                                ),
+                            ], className='nt-output-graph'),
+                          ], className='nt-output-grid')),
                         ], className='panel-main-output'),
                         html.Div([
                             html.Span(desc.airb_trans_only_disc, id='airb-trans-only-disc-1')
@@ -346,18 +359,27 @@ layout = html.Div(children=[
                 ),
                 html.Div(
                     className='card',
+                    id='n-output-card',
                     children=[html.Div(className='output-content', children=[
                         html.Div([
-                            html.H3([html.Span(desc.t_input_text_1, id='t-input-text-1'),
-                                     html.Span([dcc.Input(id='t-input',
-                                                          value=4,
-                                                          type='number')]),
-                                     html.Span(desc.t_input_text_2, id='t-input-text-2'),
-                                     html.Span(id='n-output',
-                                               children="5 occupants",
-                                               style={'color': '#de1616'}),
-                                     html.Span(desc.t_input_text_3, id='t-input-text-3')]),
-                            html.Br(),
+                          html.Div([
+                            html.Div([
+                              html.H3([html.Span(desc.t_input_text_1, id='t-input-text-1'),
+                                         html.Span([dcc.Input(id='t-input',
+                                                              value=4,
+                                                              type='number')]),
+                                         html.Span(desc.t_input_text_2, id='t-input-text-2'),
+                                         html.Span(id='n-output',
+                                                   children="5 occupants",
+                                                   style={'color': '#de1616'}),
+                                         html.Span(desc.t_input_text_3, id='t-input-text-3')]),
+                                html.Br(),
+                            ], className='nt-output-text'),
+                            
+                          ], className='nt-output-grid'),
+                          html.Div([
+
+                          ], className='nt-output-graph'),
                         ], className='panel-main-output'),
                         html.Div([
                             html.Span(desc.airb_trans_only_disc, id='airb-trans-only-disc-2')
@@ -472,7 +494,8 @@ def update_lang(search, window_width):
      Output('t-output', 'children'),
      Output('n-output', 'children'),
      Output('alert-no-update', 'children'),
-     Output('alert-no-update', 'is_open')],
+     Output('alert-no-update', 'is_open'),
+     Output('t-output-graph', 'figure')],
     [Input('floor-area', 'value'),
      Input('ceiling-height', 'value'),
      Input('ventilation-type', 'value'),
@@ -505,7 +528,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True, \
+               dash.no_update
 
     # Check our units! Did we switch? If so, convert values before calculating
     my_units = ess.get_units(search)
@@ -541,8 +565,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     myInd.calc_vars()
 
-    # Update the figure with a new model calculation
-    new_fig = ess.get_model_figure(myInd, language)
+    # Update the figures with a new model calculation
+    new_fig = ess.get_model_figure(myInd, language, False, False)
 
     # Update the red text output with new model calculations
     model_output_text = ess.get_model_output_text(myInd, language)
@@ -551,6 +575,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
 
     exp_time_output = myInd.calc_max_time(n_max_input)
     exp_time_text = ess.time_to_text(exp_time_output, language)
+    new_t_fig = ess.get_model_figure(myInd, language, True, True, 'y', n_max_input)
 
     n_max_output = myInd.calc_n_max(exp_time_input)
     n_max_text = ess.get_n_max_text(n_max_output, language)
@@ -561,7 +586,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            six_ft_text, preset_dd_value, interest_output[0], interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
            interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
-           interest_output[13], exp_time_text, n_max_text, error_msg, False
+           interest_output[13], exp_time_text, n_max_text, error_msg, False, new_t_fig
 
 
 # Update options based on selected presets, also if units changed
