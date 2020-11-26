@@ -395,8 +395,23 @@ def search_to_params(search):
 
 
 # Returns text for updating language from the given descriptions file.
-def get_lang_text_basic(language):
+def get_lang_text_basic(language, disp_width):
     desc_file = get_desc_file(language)
+
+    humidity_marks = desc_file.humidity_marks
+    risk_tol_marks = desc_file.risk_tol_marks
+    if disp_width < 1200:
+        # use our mobile marks
+        humidity_marks = {
+            0: desc_file.humidity_marks[0],
+            0.6: desc_file.humidity_marks[0.6],
+            0.99: desc_file.humidity_marks[0.99],
+        }
+        risk_tol_marks = {
+            0.1: desc_file.risk_tol_marks[0.1],
+            1: desc_file.risk_tol_marks[1]
+        }
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -422,7 +437,7 @@ def get_lang_text_basic(language):
             desc_file.recirc_text,
             desc_file.recirc_types,
             desc_file.humidity_text,
-            desc_file.humidity_marks,
+            humidity_marks,
             desc_file.need_more_ctrl_text,
             desc_file.human_header,
             desc_file.human_header,
@@ -436,7 +451,7 @@ def get_lang_text_basic(language):
             desc_file.mask_fit_marks,
             desc_file.risk_tolerance_text,
             desc_file.risk_tol_desc,
-            desc_file.risk_tol_marks,
+            risk_tol_marks,
             desc_file.need_more_ctrl_text,
             desc_file.faq_header,
             desc_file.faq_top,
@@ -461,8 +476,28 @@ def get_lang_text_basic(language):
 
 
 # Returns text for updating language from the given descriptions file.
-def get_lang_text_adv(language):
+def get_lang_text_adv(language, disp_width):
     desc_file = get_desc_file(language)
+
+    humidity_marks = desc_file.humidity_marks
+    risk_tol_marks = desc_file.risk_tol_marks
+    mask_type_marks = desc_file.mask_type_marks
+    if disp_width < 1200:
+        # use our mobile marks
+        humidity_marks = {
+            0: desc_file.humidity_marks[0],
+            0.6: desc_file.humidity_marks[0.6],
+            0.99: desc_file.humidity_marks[0.99],
+        }
+        risk_tol_marks = {
+            0.1: desc_file.risk_tol_marks[0.1],
+            1: desc_file.risk_tol_marks[1]
+        }
+        mask_type_marks = {
+            0: desc_file.mask_type_marks[0],
+            0.75: desc_file.mask_type_marks[0.75]
+        }
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -487,7 +522,7 @@ def get_lang_text_adv(language):
             desc_file.filter_types,
             desc_file.recirc_text,
             desc_file.humidity_text,
-            desc_file.humidity_marks,
+            humidity_marks,
             desc_file.human_header,
             desc_file.human_header,
             desc_file.exertion_text,
@@ -495,12 +530,12 @@ def get_lang_text_adv(language):
             desc_file.breathing_text,
             desc_file.expiratory_types,
             desc_file.mask_type_text,
-            desc_file.mask_type_marks,
+            mask_type_marks,
             desc_file.mask_fit_text,
             desc_file.mask_fit_marks,
             desc_file.risk_tolerance_text,
             desc_file.risk_tol_desc,
-            desc_file.risk_tol_marks,
+            risk_tol_marks,
             desc_file.other_io,
             desc_file.other_io,
             desc_file.aerosol_radius_text,

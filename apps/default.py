@@ -433,10 +433,11 @@ layout = html.Div(children=[
      Output('faq-graphs-text', 'children'),
      Output('faq-infect-rate', 'children'),
      Output('assump-layout', 'children')],
-    [Input('url', 'search')]
+    [Input('url', 'search'),
+     Input('window-width', 'children')]
 )
-def update_lang(search):
-    return ess.get_lang_text_basic(ess.get_lang(search))
+def update_lang(search, window_width):
+    return ess.get_lang_text_basic(ess.get_lang(search), int(window_width))
 
 
 # Model Update & Calculation

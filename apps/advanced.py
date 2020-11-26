@@ -424,10 +424,11 @@ layout = html.Div(children=[
      Output('adv-conc-relax-label', 'children'),
      Output('adv-airb-trans-label', 'children'),
      Output('adv-graph-output-header', 'children')],
-    [Input('url', 'search')]
+    [Input('url', 'search'),
+     Input('window-width', 'children')]
 )
-def update_lang(search):
-    return ess.get_lang_text_adv(ess.get_lang(search))
+def update_lang(search, window_width):
+    return ess.get_lang_text_adv(ess.get_lang(search), int(window_width))
 
 
 # Model Update & Calculation

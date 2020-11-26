@@ -9,6 +9,14 @@ body {
     background-color: #fafafa
 }
 
+/* Window div style */
+#window-width {
+    display: none;
+}
+#window-height {
+    display: none;
+}
+
 /* Error Message */
 .error-alert {
     position: fixed;

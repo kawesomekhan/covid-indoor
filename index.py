@@ -105,8 +105,34 @@ app.layout = html.Div([
     html.Br(),
     html.Div(id='page-content'),
     html.Br(),
-    html.Div(desc.footer, id='footer-text')
+    html.Div(desc.footer, id='footer-text'),
+
+    html.Div(id='window-width'),
+    html.Div(id='window-height'),
 ])
+
+
+# Updates window width div on page update
+app.clientside_callback(
+    """
+    function() {
+        return window.innerWidth;
+    }
+    """,
+    Output('window-width', 'children'),
+    Input('url', 'search'),
+)
+
+# Updates window height div on page update
+app.clientside_callback(
+    """
+    function() {
+        return window.innerHeight;
+    }
+    """,
+    Output('window-height', 'children'),
+    Input('url', 'search'),
+)
 
 
 # Updates header based on language
