@@ -25,8 +25,8 @@ flipped_output_langs = ["hi"]
 normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
 translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, John Bush, Rafael Suarez Camacho, 
-                        Laura Champion, Surya Effendy, Anders Flodmarke, 
-                        Sung Jae Kim, Vaclav Klika, Bonho Koo, John Ochsendorf, 
+                        Laura Champion, Inga Dorner, Surya Effendy, Anders Flodmarke, 
+                        Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
                         Michal Pavelka, Juan Puyo, Myungjin Seo, Huanhuan Tian, Ettore Virga, Chenyu Wen, 
                         Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
