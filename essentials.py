@@ -3,6 +3,7 @@ import dash_html_components as html
 
 import descriptions as desc
 import descriptions_cs as desc_cs
+import descriptions_de as desc_de
 import descriptions_es as desc_es
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
@@ -594,6 +595,8 @@ def get_desc_file(language):
         desc_file = desc_fr
     elif language == "cs":
         desc_file = desc_cs
+    elif language == "de":
+        desc_file = desc_de
     elif language == "zh":
         desc_file = desc_zh
     elif language == "hi":
