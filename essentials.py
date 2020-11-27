@@ -2,6 +2,7 @@ import plotly.graph_objects as go
 import dash_html_components as html
 
 import descriptions as desc
+import descriptions_cs as desc_cs
 import descriptions_es as desc_es
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
@@ -22,8 +23,9 @@ flipped_output_langs = ["hi"]
 normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
 translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, John Bush, Rafael Suarez Camacho, 
-                        Laura Champion, Surya Effendy, Sung Jae Kim, Bonho Koo, John Ochsendorf, Juan Puyo, 
-                        Myungjin Seo, Huanhuan Tian, Ettore Virga, Gede Wenten, Hongbo Zhao, Juner Zhu'''
+                        Laura Champion, Surya Effendy, Sung Jae Kim, Vaclav Klika, Bonho Koo, John Ochsendorf, 
+                        Michal Pavelka, Juan Puyo, Myungjin Seo, Huanhuan Tian, Ettore Virga, Gede Wenten, Hongbo Zhao, 
+                        Juner Zhu'''
 
 m_to_ft = 3.28084
 
@@ -588,6 +590,8 @@ def get_desc_file(language):
     desc_file = desc
     if language == "fr":
         desc_file = desc_fr
+    elif language == "cs":
+        desc_file = desc_cs
     elif language == "zh":
         desc_file = desc_zh
     elif language == "hi":
