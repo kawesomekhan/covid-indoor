@@ -103,6 +103,12 @@ body {
     grid-column-start: 3;
     grid-column-end: 4;
 }
+.mobile-card {
+    display: none;
+}
+#mobile-graph {
+    height: 350px;
+}
 
 /* N & tau output graphs and text */
 .nt-output-grid {
@@ -203,6 +209,9 @@ body {
     }
     .nt-output-graph {
         display: none;
+    }
+    .mobile-card {
+        display: inline;
     }
 
     /* Tabs */

@@ -241,10 +241,8 @@ def get_model_figure(indoor_model, language, window_width, transient_only=False,
     new_fig = go.Figure()
     line_dashed_red = go.scatter.Line(color=light_accent_color, dash='dash')
     line_dashed_black = go.scatter.Line(color='#000000', dash='dash')
-    if transient_only:
-        trans_color = accent_color
-    else:
-        trans_color = dash_blue
+    trans_color = accent_color
+    ss_color = light_accent_color
 
     if transient_only:
         if input_axis == 'y':
@@ -339,7 +337,7 @@ def get_model_figure(indoor_model, language, window_width, transient_only=False,
         new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_ss"],
                                      mode='lines',
                                      name=desc_file.steady_state_text,
-                                     line=go.scatter.Line(color="#2490b5"),
+                                     line=go.scatter.Line(color=ss_color),
                                      visible='legendonly'))
 
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_trans"],
@@ -359,6 +357,7 @@ def get_model_figure(indoor_model, language, window_width, transient_only=False,
         new_fig.update_layout(font=dict(family="Barlow",
                                         size=10))
         new_fig.update_layout(margin=dict(r=5, l=5))
+        new_fig.update_layout(showlegend=False)
     else:
         new_fig.update_layout(font=dict(family="Barlow",
                                         size=12))
