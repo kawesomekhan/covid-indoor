@@ -5,8 +5,11 @@ import descriptions as desc
 import descriptions_es as desc_es
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
+import descriptions_hi as desc_hi
 import descriptions_id as desc_id
+import descriptions_it as desc_it
 import descriptions_ko as desc_ko
+import descriptions_nl as desc_nl
 
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
@@ -15,9 +18,9 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 
 normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
-translation_credits = '''Khoiruddin Ad-Damaki, John Bush, Rafael Suarez Camacho, 
+translation_credits = '''Khoiruddin Ad-Damaki, Antonio Bertei, John Bush, Rafael Suarez Camacho, 
                         Laura Champion, Surya Effendy, Sung Jae Kim, Bonho Koo, John Ochsendorf, Juan Puyo, 
-                        Myungjin Seo, Huanhuan Tian, Gede Wenten, Hongbo Zhao, Juner Zhu'''
+                        Myungjin Seo, Huanhuan Tian, Ettore Virga, Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 accent_color = '#de1616'
 light_accent_color = '#f06767'
@@ -693,10 +696,16 @@ def get_desc_file(language):
         desc_file = desc_fr
     elif language == "zh":
         desc_file = desc_zh
+    elif language == "hi":
+        desc_file = desc_hi
     elif language == "id":
         desc_file = desc_id
+    elif language == "it":
+        desc_file = desc_it
     elif language == "ko":
         desc_file = desc_ko
+    elif language == "nl":
+        desc_file = desc_nl
     elif language == "es":
         desc_file = desc_es
 
