@@ -16,9 +16,12 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 
 """
 
+# Languages where the time comes before the occupancy in the big red output
+flipped_output_langs = ["hi"]
+
 normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
-translation_credits = '''Khoiruddin Ad-Damaki, Antonio Bertei, John Bush, Rafael Suarez Camacho, 
+translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, John Bush, Rafael Suarez Camacho, 
                         Laura Champion, Surya Effendy, Sung Jae Kim, Bonho Koo, John Ochsendorf, Juan Puyo, 
                         Myungjin Seo, Huanhuan Tian, Ettore Virga, Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
@@ -273,7 +276,10 @@ def get_model_output_text(indoor_model, language):
             max_time = recovery_time
             model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
         else:
-            base_string = desc_file.model_output_base_string + time_text
+            if language in flipped_output_langs:
+                base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
+            else:
+                base_string = desc_file.model_output_base_string + time_text
             model_output_text[index] = base_string.format(n_val=n_val)
 
         index += 1
@@ -354,7 +360,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f} /hr'.format(indoor_model.viral_deact_rate),
             '{:,.2f} ft/min'.format(indoor_model.sett_speed * 3.281 / 60),  # m/hr to ft/min
             '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
-            '{:,.2f} /hr (x10,000)'.format(indoor_model.airb_trans_rate * 10000),
+            '{:,.2f} /hr (÷10,000)'.format(indoor_model.airb_trans_rate * 10000),
         ]
     elif units == "metric":
         interest_output = [
@@ -371,7 +377,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f} /hr'.format(indoor_model.viral_deact_rate),
             '{:,.2f} m/hr'.format(indoor_model.sett_speed),
             '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
-            '{:,.2f} /hr (x10,000)'.format(indoor_model.airb_trans_rate * 10000),
+            '{:,.2f} /hr (÷10,000)'.format(indoor_model.airb_trans_rate * 10000),
         ]
 
     return interest_output
