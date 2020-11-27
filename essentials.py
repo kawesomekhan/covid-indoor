@@ -11,6 +11,7 @@ import descriptions_id as desc_id
 import descriptions_it as desc_it
 import descriptions_ko as desc_ko
 import descriptions_nl as desc_nl
+import descriptions_sv as desc_sv
 
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
@@ -23,9 +24,10 @@ flipped_output_langs = ["hi"]
 normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
 translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, John Bush, Rafael Suarez Camacho, 
-                        Laura Champion, Surya Effendy, Sung Jae Kim, Vaclav Klika, Bonho Koo, John Ochsendorf, 
-                        Michal Pavelka, Juan Puyo, Myungjin Seo, Huanhuan Tian, Ettore Virga, Gede Wenten, Hongbo Zhao, 
-                        Juner Zhu'''
+                        Laura Champion, Surya Effendy, Anders Flodmarke, 
+                        Sung Jae Kim, Vaclav Klika, Bonho Koo, John Ochsendorf, 
+                        Michal Pavelka, Juan Puyo, Myungjin Seo, Huanhuan Tian, Ettore Virga, Chenyu Wen, 
+                        Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 m_to_ft = 3.28084
 
@@ -606,6 +608,8 @@ def get_desc_file(language):
         desc_file = desc_nl
     elif language == "es":
         desc_file = desc_es
+    elif language == "sv":
+        desc_file = desc_sv
 
     return desc_file
 
