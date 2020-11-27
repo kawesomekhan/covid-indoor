@@ -5,9 +5,11 @@ import descriptions as desc
 import descriptions_es as desc_es
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
+import descriptions_hi as desc_hi
 import descriptions_id as desc_id
 import descriptions_it as desc_it
 import descriptions_ko as desc_ko
+import descriptions_nl as desc_nl
 
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
@@ -582,12 +584,16 @@ def get_desc_file(language):
         desc_file = desc_fr
     elif language == "zh":
         desc_file = desc_zh
+    elif language == "hi":
+        desc_file = desc_hi
     elif language == "id":
         desc_file = desc_id
     elif language == "it":
         desc_file = desc_it
     elif language == "ko":
         desc_file = desc_ko
+    elif language == "nl":
+        desc_file = desc_nl
     elif language == "es":
         desc_file = desc_es
 
