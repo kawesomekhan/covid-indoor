@@ -3,6 +3,7 @@ import dash_html_components as html
 
 import descriptions as desc
 import descriptions_cs as desc_cs
+import descriptions_da as desc_da
 import descriptions_de as desc_de
 import descriptions_es as desc_es
 import descriptions_fr as desc_fr
@@ -24,9 +25,9 @@ flipped_output_langs = ["hi"]
 
 normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
-translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, John Bush, Rafael Suarez Camacho, 
-                        Laura Champion, Inga Dorner, Surya Effendy, Anders Flodmarke, 
-                        Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
+translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, Henrik Bruus, John Bush, 
+                        Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, 
+                        Anders Flodmarke, Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
                         Michal Pavelka, Juan Puyo, Myungjin Seo, Huanhuan Tian, Ettore Virga, Chenyu Wen, 
                         Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
@@ -595,6 +596,8 @@ def get_desc_file(language):
         desc_file = desc_fr
     elif language == "cs":
         desc_file = desc_cs
+    elif language == "da":
+        desc_file = desc_da
     elif language == "de":
         desc_file = desc_de
     elif language == "zh":

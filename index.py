@@ -19,6 +19,7 @@ Advanced Mode), Unit Systems, Languages, and running the app.
 languages = [
     # {'label': "العربية", 'value': "ar"},
     {'label': "Čeština", 'value': "cs"},
+    {'label': "Dansk", 'value': "da"},
     {'label': "Deutsch", 'value': "de"},
     # {'label': "Ελληνικά", 'value': "el"},
     {'label': "English", 'value': "en"},
