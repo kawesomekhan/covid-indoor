@@ -2,6 +2,7 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import flask
 
 from app import app
 from apps import default, advanced
@@ -45,17 +46,10 @@ app.index_string = '''
         {%metas%}
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>COVID-19 Indoor Safety Guideline</title>
-        {%favicon%}
-        {%css%}
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-143756813-2"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'UA-143756813-2');
-        </script>
+        {%favicon%}
+        {%css%}
     </head>
     <body>
         {%app_entry%}
@@ -239,6 +233,21 @@ def update_app_mode(mode):
         return "/"
     elif mode == 'advanced':
         return "/apps/advanced"
+
+
+@app.server.route("/")
+def index():
+    response = flask.Response()
+    response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains; preload"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; " \
+                                                  "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com;" \
+                                                  "font-src 'self' https://fonts.googleapis.com;" \
+                                                  "style-src 'self' https://fonts.googleapis.com;" \
+                                                  "frame-ancestors none;"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
 
 
 if __name__ == "__main__":
