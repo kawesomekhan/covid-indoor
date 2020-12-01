@@ -159,6 +159,12 @@ class Indoors:
         floor_area = self.physical_params[0]  # ft2
         return math.floor(floor_area / 36)
 
+    # Get the maximum number of people this room can physically have (based on floor area)
+    def get_n_max(self):
+        floor_area = self.physical_params[0]  # ft2
+        flr_rad = 2  # ft
+        return math.floor(floor_area / flr_rad ** 2)
+
     # Sets default parameters.
     def set_default_params(self):
         # Physical Parameters

@@ -281,27 +281,36 @@ def get_model_output_text(indoor_model, language):
 
     model_output_text = ["", "", "", "", "", "", "", ""]
     index = 0
+    close_ind_rev = 0
     for n_val in n_val_series:
-        max_time = indoor_model.calc_max_time(n_val)  # hours
-        time_text = time_to_text(max_time, language)
-
-        is_past_recovery = round(max_time) > (24 * recovery_time)
-        if is_past_recovery:
-            base_string = desc_file.is_past_recovery_base_string
-            max_time = recovery_time
-            model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
+        # First check: is this a feasible number of people?
+        n_max = indoor_model.get_n_max()
+        if n_val > n_max:
+            close_ind_rev = index - len(n_val_series)
+            break
         else:
-            if language in flipped_output_langs:
-                base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
+            max_time = indoor_model.calc_max_time(n_val)  # hours
+            time_text = time_to_text(max_time, language)
+
+            is_past_recovery = round(max_time) > (24 * recovery_time)
+            if is_past_recovery:
+                base_string = desc_file.is_past_recovery_base_string
+                max_time = recovery_time
+                model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
             else:
-                base_string = desc_file.model_output_base_string + time_text
-            model_output_text[index] = base_string.format(n_val=n_val)
+                if language in flipped_output_langs:
+                    base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
+                else:
+                    base_string = desc_file.model_output_base_string + time_text
+                model_output_text[index] = base_string.format(n_val=n_val)
 
         index += 1
 
     if language == "en":
-        model_output_text[-2] = model_output_text[-2] + ' or'
-        model_output_text[-1] = model_output_text[-1] + '.'
+        if close_ind_rev >= -len(model_output_text) + 2:
+            model_output_text[close_ind_rev - 2] = model_output_text[close_ind_rev - 2] + ' or'
+        if close_ind_rev >= -len(model_output_text) + 1:
+            model_output_text[close_ind_rev - 1] = model_output_text[close_ind_rev - 1] + '.'
 
     return model_output_text
 
