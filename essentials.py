@@ -60,7 +60,8 @@ preset_settings = {
         'recirc-rate': 1,
         'exertion': 0.49,
         'exp-activity': 29,
-        'masks': 0.75
+        'masks': 0.75,
+        'rh': 0.6
     },
     'classroom': {
         'floor-area': 900,
@@ -72,7 +73,8 @@ preset_settings = {
         'recirc-rate': 1,
         'exertion': 0.49,
         'exp-activity': 29,
-        'masks': 0.75
+        'masks': 0.75,
+        'rh': 0.6
     },
     'restaurant': {
         'floor-area': 5000,
@@ -84,7 +86,8 @@ preset_settings = {
         'recirc-rate': 1,
         'exertion': 0.49,
         'exp-activity': 72,
-        'masks': 0
+        'masks': 0,
+        'rh': 0.6
     },
     'office': {
         'floor-area': 10000,
@@ -96,7 +99,8 @@ preset_settings = {
         'recirc-rate': 1,
         'exertion': 0.54,
         'exp-activity': 29,
-        'masks': 0.75
+        'masks': 0.75,
+        'rh': 0.6
     },
     'subway': {
         'floor-area': 580,
@@ -108,7 +112,8 @@ preset_settings = {
         'recirc-rate': 54,
         'exertion': 0.54,
         'exp-activity': 29,
-        'masks': 0.75
+        'masks': 0.75,
+        'rh': 0.6
     },
     'bus': {
         'floor-area': 380,
@@ -120,7 +125,8 @@ preset_settings = {
         'recirc-rate': 1,
         'exertion': 0.54,
         'exp-activity': 29,
-        'masks': 0.75
+        'masks': 0.75,
+        'rh': 0.6
     },
     'airplane': {
         'floor-area': 1440,
@@ -132,7 +138,8 @@ preset_settings = {
         'recirc-rate': 24,
         'exertion': 0.54,
         'exp-activity': 72,
-        'masks': 0.75
+        'masks': 0.75,
+        'rh': 0.2
     },
     'church': {
         'floor-area': 1900,
@@ -144,7 +151,8 @@ preset_settings = {
         'recirc-rate': 1,
         'exertion': 0.54,
         'exp-activity': 72,
-        'masks': 0.75
+        'masks': 0.75,
+        'rh': 0.6
     },
 }
 
@@ -210,7 +218,7 @@ def get_lang(search):
 
 # Gets the preset dropdown value based on given values. If no preset is found, return 'custom'
 def get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, breathing_flow_rate,
-                        infectiousness, mask_eff, units):
+                        infectiousness, mask_eff, relative_humidity, units):
     preset_dd_value = 'custom'
     for setting_key in preset_settings:
         setting = preset_settings[setting_key]
@@ -227,7 +235,8 @@ def get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_ra
                     setting['filtration'] == merv and \
                     setting['exertion'] == breathing_flow_rate and \
                     setting['exp-activity'] == infectiousness and \
-                    setting['masks'] == mask_eff
+                    setting['masks'] == mask_eff and \
+                    setting['rh'] == relative_humidity
         if is_preset:
             preset_dd_value = setting_key
             break

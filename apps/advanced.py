@@ -505,7 +505,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
 
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
     preset_dd_value = ess.get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
-                                              breathing_flow_rate, infectiousness, mask_eff, my_units)
+                                              breathing_flow_rate, infectiousness, mask_eff, relative_humidity,
+                                              my_units)
     # preset_dd_value = dash.no_update
 
     # If metric, convert floor_area and ceiling_height to feet
@@ -565,6 +566,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
      Output('adv-exertion-level', 'value'),
      Output('adv-exp-activity', 'value'),
      Output('adv-mask-type', 'value'),
+     Output('adv-relative-humidity', 'value'),
      Output('adv-floor-area-text', 'children'),
      Output('adv-ceiling-height-text', 'children')],
     [Input('adv-presets', 'value'),
@@ -594,11 +596,11 @@ def update_presets_and_units(preset, search, floor_area_text, ceiling_height_tex
         if did_switch:
             return floor_area, ceiling_height, dash.no_update, \
                    dash.no_update, dash.no_update, dash.no_update, \
-                   dash.no_update, dash.no_update, text_output[0], text_output[1]
+                   dash.no_update, dash.no_update, dash.no_update, text_output[0], text_output[1]
         else:
             return dash.no_update, dash.no_update, dash.no_update, \
                    dash.no_update, dash.no_update, dash.no_update, \
-                   dash.no_update, dash.no_update, text_output[0], text_output[1]
+                   dash.no_update, dash.no_update, dash.no_update, text_output[0], text_output[1]
     else:
         curr_settings = ess.preset_settings[preset]
         if not did_switch:
@@ -611,7 +613,8 @@ def update_presets_and_units(preset, search, floor_area_text, ceiling_height_tex
 
         return floor_area, ceiling_height, curr_settings['ventilation'], \
                curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['exertion'], \
-               curr_settings['exp-activity'], curr_settings['masks'], text_output[0], text_output[1]
+               curr_settings['exp-activity'], curr_settings['masks'], curr_settings['rh'], \
+               text_output[0], text_output[1]
 
 
 # Relative Humidity slider value display
