@@ -76,7 +76,7 @@ body {
 .grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    grid-auto-rows: 620px auto;
+    grid-auto-rows: 1fr auto;
     padding: 0;
 }
 .card {
@@ -97,6 +97,7 @@ body {
 .tab-content {
     padding: 1em;
     height: 100%;
+    max-height: 450px;
     margin: 2em;
     margin-left: 1em;
     overflow-y: scroll;
@@ -120,7 +121,7 @@ body {
 /* Intermediate Size */
 @media only screen and (max-width: 1400px) {
     .grid {
-        grid-auto-rows: 700px 200px;
+        grid-auto-rows: 1fr auto;
     }
 }
 
@@ -162,6 +163,7 @@ body {
     /* Tabs */
     .tab-content {
         height: auto;
+        max-height: inherit;
         overflow: visible;
     }
     .output-tray {
