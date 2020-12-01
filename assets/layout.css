@@ -16,6 +16,9 @@ body {
 #window-height {
     display: none;
 }
+#calc-temp {
+    display: none;
+}
 
 /* Error Message */
 .error-alert {
@@ -75,19 +78,48 @@ body {
 /* Main Grid */
 .grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 2fr 1fr 3fr;
     grid-auto-rows: 1fr auto;
     padding: 0;
 }
 .card {
     position: relative;
-    min-width: 500px;
     padding: 1.5em;
     margin: 1em;
     height: auto;
     background-color: #ffffff;
     border: solid 1px #DDDDDD;
     box-shadow: 0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24)
+}
+#main-output-card {
+    grid-column-start: 2;
+    grid-column-end: 4;
+}
+#t-output-card {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+#n-output-card {
+    grid-column-start: 3;
+    grid-column-end: 4;
+}
+.mobile-card {
+    display: none;
+}
+#mobile-graph {
+    height: 350px;
+}
+
+/* N & tau output graphs and text */
+.nt-output-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.nt-output-text {
+
+}
+#t-output-graph {
+    width: 100%;
 }
 
 /* Tabs */
@@ -122,6 +154,11 @@ body {
 @media only screen and (max-width: 1400px) {
     .grid {
         grid-auto-rows: 1fr auto;
+    }
+    /* Graph Output Grid */
+    .nt-output-grid {
+        display: grid;
+        grid-template-columns: 1fr;
     }
 }
 
@@ -158,6 +195,24 @@ body {
     .card {
         min-width: 0;
         padding: 1em;
+    }
+    #main-output-card {
+        grid-column-start: 0;
+        grid-column-end: 1;
+    }
+    #t-output-card {
+        grid-column-start: 0;
+        grid-column-end: 1;
+    }
+    #n-output-card {
+        grid-column-start: 0;
+        grid-column-end: 1;
+    }
+    .nt-output-graph {
+        display: none;
+    }
+    .mobile-card {
+        display: inline;
     }
 
     /* Tabs */

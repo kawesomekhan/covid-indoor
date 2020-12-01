@@ -114,6 +114,7 @@ app.layout = html.Div([
 
     html.Div(id='window-width'),
     html.Div(id='window-height'),
+    html.Div(id='calc-temp'),
 ])
 
 

@@ -35,7 +35,7 @@ def update_mask_fit_disp: Updates mask fit/compliance filtration display based o
 
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
-fig = ess.get_model_figure(myInd, "en")
+fig = ess.get_model_figure(myInd, "en", 1920)
 
 # Main App
 layout = html.Div(children=[
@@ -480,11 +480,13 @@ def update_lang(search, window_width):
      Input('adv-t-input', 'value'),
      Input('url', 'search')],
     [State('adv-floor-area-text', 'children'),
-     State('adv-ceiling-height-text', 'children')]
+     State('adv-ceiling-height-text', 'children'),
+     State('window-width', 'children')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
                   breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, def_aerosol_radius,
-                  max_viral_deact_rate, n_max_input, exp_time_input, search, floor_area_text, ceiling_height_text):
+                  max_viral_deact_rate, n_max_input, exp_time_input, search, floor_area_text, ceiling_height_text,
+                  window_width):
     language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
                                 max_viral_deact_rate, language, n_max_input, exp_time_input)
@@ -532,7 +534,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.calc_vars()
 
     # Update the figure with a new model calculation
-    new_fig = ess.get_model_figure(myInd, language)
+    new_fig = ess.get_model_figure(myInd, language, window_width)
 
     # Update the red text output with new model calculations
     model_output_text = ess.get_model_output_text(myInd, language)

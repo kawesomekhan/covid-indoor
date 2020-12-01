@@ -31,6 +31,10 @@ translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei,
                         Michal Pavelka, Juan Puyo, Myungjin Seo, Huanhuan Tian, Ettore Virga, Chenyu Wen, 
                         Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
+accent_color = '#de1616'
+light_accent_color = '#f06767'
+dash_blue = '#8ad4ed'
+
 m_to_ft = 3.28084
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
@@ -236,22 +240,121 @@ def get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_ra
 
 
 # Returns the plotly figure based on the supplied indoor model.
-def get_model_figure(indoor_model, language):
+# indoor_model: The model to use
+# language: The language
+# transient_only: Whether to exclude the steady-state output.
+# is_readout: If true, will generate an annotated readout of the graph
+def get_model_figure(indoor_model, language, window_width, transient_only=False,
+                     is_readout=False, input_axis='y', input_val=0):
     desc_file = get_desc_file(language)
-    new_df = indoor_model.calc_n_max_series(2, 100, 1.0)
-
     new_fig = go.Figure()
+    line_dashed_red = go.scatter.Line(color=light_accent_color, dash='dash')
+    line_dashed_black = go.scatter.Line(color='#000000', dash='dash')
+    trans_color = accent_color
+    ss_color = light_accent_color
+
+    if transient_only:
+        if input_axis == 'y':
+            output_val = indoor_model.calc_max_time(input_val)
+            line_dashed = go.scatter.Line(color=light_accent_color, dash='dash')
+            # Get the horizontal trace
+            horiz_trace = go.Scatter(x=[0, output_val],
+                                     y=[input_val, input_val],
+                                     mode='lines+markers',
+                                     line=line_dashed_black)
+            # Get the vertical trace
+            vert_trace = go.Scatter(x=[output_val, output_val],
+                                    y=[0, input_val],
+                                    mode='lines',
+                                    line=line_dashed_red)
+            new_fig.add_trace(horiz_trace)
+            new_fig.add_trace(vert_trace)
+            new_fig.frames = [
+                go.Frame(data=[go.Scatter(x=[0, 0.1], y=[input_val, input_val], mode='lines+markers', line=line_dashed),
+                               vert_trace]),
+                go.Frame(data=[
+                    go.Scatter(x=[0, output_val], y=[input_val, input_val], mode='lines+markers', line=line_dashed),
+                    vert_trace]),
+                go.Frame(data=[
+                    go.Scatter(x=[0, output_val], y=[input_val, input_val], mode='lines+markers', line=line_dashed),
+                    go.Scatter(x=[output_val, output_val], y=[0, input_val], mode='lines+markers', line=line_dashed)])]
+
+            y_max = input_val + (input_val * 2)
+            x_max = output_val + (output_val * 2)
+            y_min = indoor_model.calc_n_max(x_max)
+            x_min = indoor_model.calc_max_time(y_max)
+            new_df = indoor_model.calc_n_max_series(x_min, x_max, (x_max - x_min) / 100)
+            y_label = input_val
+            x_label = output_val
+            horiz_color = '#000000'
+            vert_color = accent_color
+            # new_fig.update_layout(updatemenus=[dict(type="buttons", buttons=[dict(label="Play",
+            #                                                                       method="animate",
+            #                                                                       args=[None])])])
+        else:
+            # Input axis is x
+            output_val = indoor_model.calc_n_max(input_val)
+            # Get the horizontal trace
+            horiz_trace = go.Scatter(x=[0, input_val],
+                                     y=[output_val, output_val],
+                                     mode='lines+markers',
+                                     line=line_dashed_red)
+            # Get the vertical trace
+            vert_trace = go.Scatter(x=[input_val, input_val],
+                                    y=[0, output_val],
+                                    mode='lines',
+                                    line=line_dashed_black)
+            new_fig.add_trace(horiz_trace)
+            new_fig.add_trace(vert_trace)
+            x_max = input_val + (input_val * 2)
+            y_max = output_val + (output_val * 2)
+            y_min = indoor_model.calc_n_max(x_max)
+            x_min = indoor_model.calc_max_time(y_max)
+            new_df = indoor_model.calc_n_max_series(x_min, x_max, (x_max - x_min) / 100)
+            y_label = output_val
+            x_label = input_val
+            horiz_color = accent_color
+            vert_color = '#000000'
+
+        new_fig.update_layout(showlegend=False)
+        new_fig.update_yaxes(range=[0, y_max])
+        new_fig.update_xaxes(range=[0, x_max])
+        new_fig.update_layout(margin=dict())
+        new_fig.add_annotation(x=-0.1, y=y_label + 0.1,
+                               xref='paper',
+                               text=str(round(y_label)),
+                               showarrow=False,
+                               font=dict(
+                                   color=horiz_color,
+                                   size=16
+                               ),
+                               align='center',
+                               bgcolor='#ffffff')
+        new_fig.add_annotation(x=x_label, y=-0.1,
+                               yref='paper',
+                               text=str(round(x_label)),
+                               showarrow=False,
+                               font=dict(
+                                   color=vert_color,
+                                   size=16
+                               ),
+                               align='center',
+                               bgcolor='#ffffff')
+    else:
+        new_df = indoor_model.calc_n_max_series(2, 100, 1.0)
+
+        new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_ss"],
+                                     mode='lines',
+                                     name=desc_file.steady_state_text,
+                                     line=go.scatter.Line(color=ss_color),
+                                     visible='legendonly'))
+
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_trans"],
                                  mode='lines',
                                  name=desc_file.transient_text,
-                                 line=go.scatter.Line(color="#8ad4ed")))
-    new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_ss"],
-                                 mode='lines',
-                                 name=desc_file.steady_state_text,
-                                 line=go.scatter.Line(color="#2490b5"),
-                                 visible='legendonly'))
+                                 line=go.scatter.Line(color=trans_color)))
     new_fig.update_layout(transition_duration=500,
-                          title=desc_file.graph_title, height=400,
+                          title=desc_file.graph_title,
                           xaxis_title=desc_file.graph_xtitle,
                           yaxis_title=desc_file.graph_ytitle,
                           font_family="Barlow",
@@ -259,6 +362,14 @@ def get_model_figure(indoor_model, language):
                           hoverlabel=dict(
                               font_family="Barlow"
                           ))
+    if window_width < 1200:
+        new_fig.update_layout(font=dict(family="Barlow",
+                                        size=10))
+        new_fig.update_layout(margin=dict(r=5, l=5))
+        new_fig.update_layout(showlegend=False)
+    else:
+        new_fig.update_layout(font=dict(family="Barlow",
+                                        size=12))
     return new_fig
 
 
@@ -644,7 +755,7 @@ def did_switch_units(search, floor_area_text, ceiling_height_text):
     if floor_area_text == desc_file.floor_area_text and ceiling_height_text == desc_file.ceiling_height_text:
         curr_units = "british"
     elif floor_area_text == desc_file.floor_area_text_metric and \
-         ceiling_height_text == desc_file.ceiling_height_text_metric:
+            ceiling_height_text == desc_file.ceiling_height_text_metric:
         curr_units = "metric"
     else:
         # Changed languages
@@ -654,8 +765,3 @@ def did_switch_units(search, floor_area_text, ceiling_height_text):
         return curr_units
     else:
         return ""
-
-
-
-
-
