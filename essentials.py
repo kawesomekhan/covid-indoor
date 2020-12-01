@@ -2,6 +2,9 @@ import plotly.graph_objects as go
 import dash_html_components as html
 
 import descriptions as desc
+import descriptions_cs as desc_cs
+import descriptions_da as desc_da
+import descriptions_de as desc_de
 import descriptions_es as desc_es
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
@@ -10,17 +13,23 @@ import descriptions_id as desc_id
 import descriptions_it as desc_it
 import descriptions_ko as desc_ko
 import descriptions_nl as desc_nl
+import descriptions_sv as desc_sv
 
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
 
 """
 
+# Languages where the time comes before the occupancy in the big red output
+flipped_output_langs = ["hi"]
+
 normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
-translation_credits = '''Khoiruddin Ad-Damaki, Antonio Bertei, John Bush, Rafael Suarez Camacho, 
-                        Laura Champion, Surya Effendy, Sung Jae Kim, Bonho Koo, John Ochsendorf, Juan Puyo, 
-                        Myungjin Seo, Huanhuan Tian, Ettore Virga, Gede Wenten, Hongbo Zhao, Juner Zhu'''
+translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, Henrik Bruus, John Bush, 
+                        Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, 
+                        Anders Flodmarke, Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
+                        Michal Pavelka, Juan Puyo, Myungjin Seo, Huanhuan Tian, Ettore Virga, Chenyu Wen, 
+                        Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 accent_color = '#de1616'
 light_accent_color = '#f06767'
@@ -384,7 +393,10 @@ def get_model_output_text(indoor_model, language):
             max_time = recovery_time
             model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
         else:
-            base_string = desc_file.model_output_base_string + time_text
+            if language in flipped_output_langs:
+                base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
+            else:
+                base_string = desc_file.model_output_base_string + time_text
             model_output_text[index] = base_string.format(n_val=n_val)
 
         index += 1
@@ -465,7 +477,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f} /hr'.format(indoor_model.viral_deact_rate),
             '{:,.2f} ft/min'.format(indoor_model.sett_speed * 3.281 / 60),  # m/hr to ft/min
             '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
-            '{:,.2f} /hr (x10,000)'.format(indoor_model.airb_trans_rate * 10000),
+            '{:,.2f} /hr (÷10,000)'.format(indoor_model.airb_trans_rate * 10000),
         ]
     elif units == "metric":
         interest_output = [
@@ -482,7 +494,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f} /hr'.format(indoor_model.viral_deact_rate),
             '{:,.2f} m/hr'.format(indoor_model.sett_speed),
             '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
-            '{:,.2f} /hr (x10,000)'.format(indoor_model.airb_trans_rate * 10000),
+            '{:,.2f} /hr (÷10,000)'.format(indoor_model.airb_trans_rate * 10000),
         ]
 
     return interest_output
@@ -693,6 +705,12 @@ def get_desc_file(language):
     desc_file = desc
     if language == "fr":
         desc_file = desc_fr
+    elif language == "cs":
+        desc_file = desc_cs
+    elif language == "da":
+        desc_file = desc_da
+    elif language == "de":
+        desc_file = desc_de
     elif language == "zh":
         desc_file = desc_zh
     elif language == "hi":
@@ -707,6 +725,8 @@ def get_desc_file(language):
         desc_file = desc_nl
     elif language == "es":
         desc_file = desc_es
+    elif language == "sv":
+        desc_file = desc_sv
 
     return desc_file
 

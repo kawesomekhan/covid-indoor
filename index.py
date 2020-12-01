@@ -18,17 +18,19 @@ Advanced Mode), Unit Systems, Languages, and running the app.
 # Languages
 languages = [
     # {'label': "العربية", 'value': "ar"},
-    # {'label': "Čeština", 'value': "cs"},
-    # {'label': "Deutsch", 'value': "de"},
+    {'label': "Čeština", 'value': "cs"},
+    {'label': "Dansk", 'value': "da"},
+    {'label': "Deutsch", 'value': "de"},
     # {'label': "Ελληνικά", 'value': "el"},
     {'label': "English", 'value': "en"},
     {'label': "Espa\u00f1ol", 'value': "es"},
     {'label': "Fran\u00e7ais", 'value': "fr"},
-    # {'label': "हिन्दी", 'value': "hi"},
+    {'label': "हिन्दी", 'value': "hi"},
     {'label': "Bahasa Indonesia", 'value': "id"},
     {'label': "Italiano", 'value': "it"},
     {'label': "한국어", 'value': "ko"},
     # {'label': "Nederlands", 'value': "nl"},
+    {'label': "Svenska", 'value': "sv"},
     {'label': "简体中文", 'value': "zh"},
 ]
 
