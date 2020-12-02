@@ -45,7 +45,12 @@ app.index_string = '''
 <html>
     <head>
         {%metas%}
+        <!-- Socials meta -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:url" content="https://indoor-covid-safety.herokuapp.com/"/>
+        <meta property="og:title" content="COVID-19 Indoor Safety Guideline"/>
+        <meta property="og:description" content="See how to mitigate indoor COVID-19 transmission in different indoor spaces."/>
+        <meta property="og:image" content="assets/COVID_header_1.png"/>
         <title>COVID-19 Indoor Safety Guideline</title>
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-143756813-2"></script>
@@ -56,6 +61,8 @@ app.index_string = '''
             
             gtag('config', 'UA-143756813-2');
         </script>
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/5863bb1ed6.js" crossorigin="anonymous"></script>
         {%favicon%}
         {%css%}
     </head>
@@ -79,6 +86,22 @@ app.layout = html.Div([
         ]),
         html.Div(className='card-header', children=[
             html.Div(id='header-left', children=[
+                html.Div([
+                    html.Img(src="assets/MIT_logo.svg", className='mit-logo', id='mit-logo-mobile'),
+                    html.A(className='fab fa-facebook-f',
+                           href='https://www.facebook.com/sharer/sharer.php?u=https://indoor-covid-safety.herokuapp.com/',
+                           target='_blank'),
+                    html.A(className='fab fa-twitter',
+                           href='https://twitter.com/share?ref_src=twsrc%5Etfw',
+                           target='_blank'),
+                    html.A(className='fab fa-linkedin-in',
+                           href='https://www.linkedin.com/cws/share?url=https://indoor-covid-safety.herokuapp.com/',
+                           target='_blank'),
+                    html.A(className='fab fa-github',
+                           href='https://github.com/kawesomekhan/covid-indoor',
+                           target='_blank'),
+                    html.Img(src="assets/MIT_logo.svg", className='mit-logo', id='mit-logo-desktop'),
+                ], id='socials'),
                 html.Div(className='grid-settings', children=[
                     html.Div(className='card-settings', children=[
                         html.Div(html.Span(desc.language_dd, id='language-dd'), className='settings-header'),

@@ -18,6 +18,27 @@
 
 }
 
+/* Social Icons */
+.fab {
+    padding: 8px;
+    font-size: 26px;
+    width: 50px;
+    text-align: center;
+    text-decoration: none;
+    margin: 8px 2px;
+    color: #545454;
+}
+.fab:hover {
+    opacity: 0.7;
+    color: #545454;
+}
+.mit-logo {
+    padding: 8px;
+    height: 32px;
+    margin: 5px 2px;
+    margin-left: 8px;
+}
+
 /* For default, desktop layout */
 body {
     font-family: 'Barlow', sans-serif;
@@ -83,6 +104,20 @@ six-ft-output {
 
 /* Small-width/mobile layout */
 @media only screen and (max-width: 800px) {
+    .mit-logo {
+        height: 24px;
+        margin-left: 0;
+    }
+    .fab {
+        padding: 0;
+        font-size: 24px;
+        width: 50px;
+        text-align: center;
+        text-decoration: none;
+        margin: 12px 2px;
+        color: #545454;
+    }
+
     body {
         font-family: 'Barlow', sans-serif;
         font-size: var(--mobile-font-size);

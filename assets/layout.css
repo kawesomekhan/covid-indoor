@@ -42,6 +42,16 @@ body {
 .card-settings {
     padding: 8px;
 }
+#socials {
+    display: flex;
+    justify-content: flex-end;
+}
+#mit-logo-mobile {
+    display: none;
+}
+#mit-logo-desktop {
+    display: inline-block;
+}
 
 /* Header Grid */
 .grid-header {
@@ -127,6 +137,17 @@ body {
 
 /* Small-width/mobile layout */
 @media only screen and (max-width: 1200px) {
+    #socials {
+        display: none;
+        justify-content: flex-start;
+    }
+    #mit-logo-mobile {
+        display: inline-block;
+    }
+    #mit-logo-desktop {
+        display: none;
+    }
+
     /* Settings Grid */
     .grid-settings {
         display: grid;
