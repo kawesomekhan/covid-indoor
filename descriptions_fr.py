@@ -293,7 +293,7 @@ faq_top = html.Div([
                          target='_blank'),
                   html.Span(''', via des aérosols infectieux en suspension dans l'air, qui peuvent être répartis dans 
                   toute la pièce. A l'intérieur, une personne n'est pas mieux protégée contre la contamination par 
-                  aérosols à 2 mètres qu'à 20 mètres.''')]),
+                  aérosols à 20 mètres qu'à deux mètres.''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Y a-t-il d'autres modes de transmission?"),

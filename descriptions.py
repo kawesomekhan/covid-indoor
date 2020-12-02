@@ -90,7 +90,7 @@ presets = [
     {'label': "Church", 'value': 'church'},
 ]
 
-main_panel_s1 = "To reduce COVID-19 transmission*, this room should have: "
+main_panel_s1 = "To reduce COVID-19 transmission*, this room should have no more than: "
 
 units_hr = 'hours'
 units_min = 'minutes'
@@ -297,7 +297,7 @@ faq_top = html.Div([
                          target='_blank'),
                   html.Span(''' by infectious aerosols that are 
         suspended in the air and can be mixed throughout a room. Indoors, people are no safer from airborne 
-        transmission at 6 feet than 60 feet. ''')]),
+        transmission at 60 feet than 6 feet. ''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Are there other modes of transmission?"),
