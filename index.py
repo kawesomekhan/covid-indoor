@@ -45,6 +45,12 @@ app.index_string = '''
 <html>
     <head>
         {%metas%}
+        <!-- Socials meta -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:url" content="https://indoor-covid-safety.herokuapp.com/"/>
+        <meta property="og:title" content="COVID-19 Indoor Safety Guideline"/>
+        <meta property="og:description" content="See how to mitigate indoor COVID-19 transmission in different indoor spaces."/>
+        <meta property="og:image" content="assets/COVID_header_1.png"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>COVID-19 Indoor Safety Guideline</title>
         <!-- Global site tag (gtag.js) - Google Analytics -->
