@@ -9,6 +9,7 @@ descriptions: English
 
 link_paper = "https://www.medrxiv.org/content/10.1101/2020.08.26.20182824v2"
 link_docs = "https://docs.google.com/document/d/1fB5pysccOHvxphpTmCG_TGdytavMmc1cUumn8m0pwzo/edit"
+link_nature = "https://www.nature.com/articles/d41586-020-02058-1"
 
 # Header
 header = html.Div([
@@ -89,7 +90,7 @@ presets = [
     {'label': "Church", 'value': 'church'},
 ]
 
-main_panel_s1 = "Based on this model, it should be safe* for this room to have: "
+main_panel_s1 = "To reduce COVID-19 transmission*, this room should have: "
 
 units_hr = 'hours'
 units_min = 'minutes'
@@ -102,8 +103,8 @@ units_day_one = 'day'
 is_past_recovery_base_string = '{n_val} people for >{val:.0f} days,'
 model_output_base_string = '{n_val} people for '
 
-main_panel_six_ft_1 = "Note that the six-foot or two-meter distancing guideline would indicate that up to "
-main_panel_six_ft_2 = " would be safe in this room for an indefinite period."
+main_panel_six_ft_1 = "In contrast, the six-foot or two-meter distancing guideline would limit occupancy to "
+main_panel_six_ft_2 = " which becomes unsafe after "
 
 six_ft_base_string = ' {} people'
 six_ft_base_string_one = ' {} person'
@@ -114,11 +115,12 @@ graph_ytitle = "Maximum Occupancy N"
 transient_text = "Transient"
 steady_state_text = "Steady-State"
 
-main_airb_trans_only_disc = html.Div(["*The guideline is based on consideration of ",
-                                      html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
-                                                       children="airborne transmission",
+main_airb_trans_only_disc = html.Div(["*The guideline restricts the expected number of ",
+                                      html.Span(html.A(href=link_docs,
+                                                       children="airborne transmissions",
                                                        target='_blank'), ),
-                                      html.Span(''' from a single infected person over the cumulative exposure time 
+                                      html.Span(''' per infected person to be less than the risk tolerance 
+                                      over the cumulative exposure time 
                                       listed.''')], className='airborne-text')
 
 airb_trans_only_disc = html.Div('''based on consideration of airborne transmission only.''', className='airborne-text')
@@ -126,7 +128,7 @@ airb_trans_only_disc = html.Div('''based on consideration of airborne transmissi
 # Bottom panels text
 n_input_text_1 = "If this room has "
 n_max_base_string = ' {:.0f} people'
-n_input_text_2 = " people, its occupants should be safe for "
+n_input_text_2 = " people, its occupants will become unsafe after "
 n_input_text_3 = "."
 
 t_input_text_1 = "If people spend approximately "
@@ -378,9 +380,11 @@ values_interest_header = "Calculated Values of Interest: "
 values_interest_desc = html.Div([
     html.H5("What exactly is this app calculating?"),
     html.Div([
-        html.Div([html.Span('''Given a risk tolerance for airborne transmission, the app calculates the maximum 
-        allowable cumulative exposure time, the product of room occupancy and time in the presence of an infected 
-        person.  The app also calculates related quantities, defined in the '''),
+        html.Div([html.Span('''The app calculates the maximum allowable cumulative exposure time, 
+        the product of room occupancy and time, in an indoor space. The spread of COVID-19 is limited by requiring that 
+        the expected number of transmissions per infected individual, the “indoor reproductive number", be less than
+        the chosen risk tolerance.
+        The app also calculates related quantities, defined in the '''),
                   html.A(children="paper",
                          href=link_paper,
                          target='_blank'),
@@ -410,12 +414,12 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("Does this model account for the prevalence of infection in the local population?"),
-    html.Div(['''No. The model calculates the risk of transmission from a single infected person. It thus implicitly 
-    assumes that the prevalence of infection in the population is relatively low.  In this limit, the risk of 
-    transmission increases with the expected number of infected persons in the room, specifically the product of the 
-    occupancy and the prevalence in the population.  The tolerance should be lowered in proportion to this number if 
-    it exceeds one.  Conversely, when the expected number of infected persons in the room approaches zero, 
-    the tolerance could be proportionally increased until the recommended restrictions are deemed unnecessary. '''],
+    html.Div(['''No. To limit the spread of COVID-19, our guideline bounds the expected number of transmissions per 
+    infected person, or indoor reproductive number.  To account for the prevalence of infection in the population, 
+    the tolerance should be divided by the expected number of infected persons, specifically the product of the 
+    prevalence and the occupancy. When the expected number of infected persons in the room approaches zero, 
+    the cumulative-exposure-time limit increases proportionally. 
+    Consideration of the prevalence of infection may be treated in the Advanced Mode in the near future.'''],
              className='faq-answer'),
 ])
 

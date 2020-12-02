@@ -2,6 +2,7 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import dash._callback_context
 import flask
 
 from app import app
@@ -48,6 +49,13 @@ app.index_string = '''
         <title>COVID-19 Indoor Safety Guideline</title>
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-143756813-2"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            
+            gtag('config', 'UA-143756813-2');
+        </script>
         {%favicon%}
         {%css%}
     </head>
