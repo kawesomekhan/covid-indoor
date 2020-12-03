@@ -14,10 +14,11 @@ csp = {
                     'https://www.google-analytics.com'],
     'script-src': ['\'self\'',
                    'https://www.googletagmanager.com',
-                   'https://www.google-analytics.com'],
+                   'https://www.google-analytics.com',
+                   '\'unsafe-inline\''],
     'style-src': ['\'self\'',
                   'https://fonts.googleapis.com',
-                  'unsafe-inline'],
+                  '\'unsafe-inline\''],
     'font-src': ['\'self\'',
                  'https://fonts.googleapis.com',
                  'https://fonts.gstatic.com',]
