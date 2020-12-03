@@ -10,14 +10,16 @@ app.py is to be imported by other files (default.py, advanced.py, index.py) to b
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 csp = {
-    'default-src': '\'self\'',
+    'default-src': ['\'self\'',
+                    'https://www.google-analytics.com'],
     'script-src': ['\'self\'',
                    'https://www.googletagmanager.com',
                    'https://www.google-analytics.com'],
     'style-src': ['\'self\'',
                   'https://fonts.googleapis.com'],
     'font-src': ['\'self\'',
-                 'https://fonts.googleapis.com']
+                 'https://fonts.googleapis.com',
+                 'https://fonts.gstatic.com',]
 }
 
 Talisman(app.server, content_security_policy=csp)
