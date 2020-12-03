@@ -9,6 +9,12 @@ app.py is to be imported by other files (default.py, advanced.py, index.py) to b
 # Dash App Setup
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
-Talisman(app.server, force_https=True)
+csp = {
+    'default-src': '\'self\'',
+    'script-src': ['\'self\'',
+                   'https://www.googletagmanager.com/gtag/js?id=UA-143756813-2'],
+}
+
+Talisman(app.server, content_security_policy=csp)
 
 curr_units = 'british'

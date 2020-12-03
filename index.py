@@ -56,13 +56,6 @@ app.index_string = '''
         <title>COVID-19 Indoor Safety Guideline</title>
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-143756813-2"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            
-            gtag('config', 'UA-143756813-2');
-        </script>
         {%favicon%}
         {%css%}
     </head>
