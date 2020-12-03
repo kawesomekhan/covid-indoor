@@ -243,20 +243,5 @@ def update_app_mode(mode):
         return "/apps/advanced"
 
 
-@app.server.route("/")
-def index():
-    response = flask.Response()
-    response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains; preload"
-    response.headers["Content-Security-Policy"] = "default-src 'self'; " \
-                                                  "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com;" \
-                                                  "font-src 'self' https://fonts.googleapis.com;" \
-                                                  "style-src 'self' https://fonts.googleapis.com;" \
-                                                  "frame-ancestors none;"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["X-XSS-Protection"] = "1; mode=block"
-    return response
-
-
 if __name__ == "__main__":
     app.run_server(debug=False)

@@ -103,6 +103,14 @@ body {
     overflow-y: scroll;
     overflow-x: hidden;
 }
+#tab-a, #tab-b, #tab-c, #tab-d, #adv-tab-a, #adv-tab-b, #adv-tab-c, #adv-tab-d {
+    padding-left: 1em;
+    padding-right: 1em;
+    border-left-color: #DDDDDD;
+    border-right-color: #DDDDDD;
+    border-bottom-color: #DDDDDD;
+    font-size: 13px;
+}
 
 /* Bottom Panels */
 #adv-n-input {

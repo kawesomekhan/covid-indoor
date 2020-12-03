@@ -59,9 +59,7 @@ layout = html.Div(children=[
                                 id='adv-tab-a',
                                 label=desc.about_header,
                                 className='custom-tab',
-                                children=html.Span(desc.about, id='adv-about-text'),
-                                style=ess.tab_style,
-                                selected_style=ess.tab_style_selected
+                                children=html.Span(desc.about, id='adv-about-text')
                             ),
                             dcc.Tab(
                                 id='adv-tab-b',
@@ -99,9 +97,7 @@ layout = html.Div(children=[
                                                          step=0.01,
                                                          value=0.6,
                                                          marks=desc.humidity_marks)]),
-                                ],
-                                style=ess.tab_style,
-                                selected_style=ess.tab_style_selected
+                                ]
                             ),
                             dcc.Tab(
                                 id='adv-tab-c',
@@ -160,9 +156,7 @@ layout = html.Div(children=[
                                               ]),
                                     html.Br(),
                                     html.Br(),
-                                ],
-                                style=ess.tab_style,
-                                selected_style=ess.tab_style_selected
+                                ]
                             ),
                             dcc.Tab(
                                 id='adv-tab-d',
@@ -247,9 +241,7 @@ layout = html.Div(children=[
                                             figure=fig
                                         ),
                                     ]),
-                                ],
-                                style=ess.tab_style,
-                                selected_style=ess.tab_style_selected
+                                ]
                             )
                         ],
                                            colors={

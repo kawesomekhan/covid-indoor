@@ -16,7 +16,8 @@ csp = {
                    'https://www.googletagmanager.com',
                    'https://www.google-analytics.com'],
     'style-src': ['\'self\'',
-                  'https://fonts.googleapis.com'],
+                  'https://fonts.googleapis.com',
+                  'unsafe-inline'],
     'font-src': ['\'self\'',
                  'https://fonts.googleapis.com',
                  'https://fonts.gstatic.com',]

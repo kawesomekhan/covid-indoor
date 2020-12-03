@@ -59,9 +59,7 @@ layout = html.Div(children=[
                                 id='tab-a',
                                 label=desc.about_header,
                                 className='custom-tab',
-                                children=html.Span(desc.about, id='about-text'),
-                                style=ess.tab_style,
-                                selected_style=ess.tab_style_selected
+                                children=html.Span(desc.about, id='about-text')
                             ),
                             dcc.Tab(
                                 id='tab-b',
@@ -117,9 +115,7 @@ layout = html.Div(children=[
                                     html.Br(),
                                     html.Br(),
                                     html.Span(desc.need_more_ctrl_text, id='need-more-ctrl-text'),
-                                ],
-                                style=ess.tab_style,
-                                selected_style=ess.tab_style_selected
+                                ]
                             ),
                             dcc.Tab(
                                 id='tab-c',
@@ -176,9 +172,7 @@ layout = html.Div(children=[
                                     html.Br(),
                                     html.Br(),
                                     html.Span(desc.need_more_ctrl_text, id='need-more-ctrl-text-2'),
-                                ],
-                                style=ess.tab_style,
-                                selected_style=ess.tab_style_selected
+                                ]
                             ),
                             dcc.Tab(
                                 id='tab-d',
@@ -259,9 +253,7 @@ layout = html.Div(children=[
                                     html.Span(desc.faq_infect_rate, id='faq-infect-rate'),
                                     html.Br(),
                                     html.Span(desc.assumptions_layout, id='assump-layout'),
-                                ],
-                                style=ess.tab_style,
-                                selected_style=ess.tab_style_selected
+                                ]
                             )
                         ],
                                  colors={
