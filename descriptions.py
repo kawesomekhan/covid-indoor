@@ -10,6 +10,7 @@ descriptions: English
 link_paper = "https://www.medrxiv.org/content/10.1101/2020.08.26.20182824v2"
 link_docs = "https://docs.google.com/document/d/1fB5pysccOHvxphpTmCG_TGdytavMmc1cUumn8m0pwzo/edit"
 link_nature = "https://www.nature.com/articles/d41586-020-02058-1"
+link_mooc = "https://www.edx.org/course/physics-of-covid-19-transmission?utm_campaign=mitx&utm_medium=partner-marketing&utm_source=affiliate&utm_content=10.s95x-app"
 
 # Header
 header = html.Div([
@@ -171,6 +172,12 @@ about = html.Div([
     room specifications, ventilation and filtration rates, face-mask usage, respiratory activities, 
     and risk tolerance (in the other tabs), you can see how to mitigate indoor COVID-19 transmission in different 
     indoor spaces.''')]),
+    html.Br(),
+    html.Div([html.Span('''The science behind the app is also taught in a free, self-paced massive, open online 
+    course (MOOC) on edX: '''),
+              html.A(children="10.S95x Physics of COVID-19 Transmission",
+                     href=link_mooc,
+                     target='_blank')])
 ])
 
 # Room Specifications
