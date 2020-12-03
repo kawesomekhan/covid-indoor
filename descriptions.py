@@ -78,7 +78,7 @@ error_list = {
 }
 
 # Main Panel Text
-curr_room_header = "Current Room: "
+curr_room_header = "Current Room Specifications: "
 presets = [
     {'label': "Custom", 'value': 'custom'},
     {'label': "Suburban House", 'value': 'house'},
@@ -88,6 +88,16 @@ presets = [
     {'label': "New York City Subway Car", 'value': 'subway'},
     {'label': "Boeing 737", 'value': 'airplane'},
     {'label': "Church", 'value': 'church'},
+]
+
+curr_human_header = "Current Human Behavior: "
+presets_human = [
+    {'label': "Custom", 'value': 'custom'},
+    {'label': "Masks, Standing & Talking", 'value': 'masks-2'},
+    {'label': "Masks, Sitting & Talking", 'value': 'masks-3'},
+    {'label': "Masks, Sitting & Whispering", 'value': 'masks-1'},
+    {'label': "No Masks, Standing & Talking", 'value': 'no-masks-2'},
+    {'label': "No Masks, Sitting & Talking", 'value': 'no-masks-1'},
 ]
 
 main_panel_s1 = "To reduce COVID-19 transmission*, this room should have no more than: "

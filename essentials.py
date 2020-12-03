@@ -49,7 +49,7 @@ tab_style_selected = {
     'font-size': '13px'
 }
 
-preset_settings = {
+room_preset_settings = {
     'house': {
         'floor-area': 2000,
         'ceiling-height': 12,
@@ -58,9 +58,6 @@ preset_settings = {
         'ventilation': 3,
         'filtration': 6,
         'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 29,
-        'masks': 0.75,
         'rh': 0.6
     },
     'classroom': {
@@ -71,9 +68,6 @@ preset_settings = {
         'ventilation': 3,
         'filtration': 6,
         'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 29,
-        'masks': 0.75,
         'rh': 0.6
     },
     'restaurant': {
@@ -84,9 +78,6 @@ preset_settings = {
         'ventilation': 9,
         'filtration': 6,
         'recirc-rate': 1,
-        'exertion': 0.49,
-        'exp-activity': 72,
-        'masks': 0,
         'rh': 0.6
     },
     'office': {
@@ -97,9 +88,6 @@ preset_settings = {
         'ventilation': 8,
         'filtration': 10,
         'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.75,
         'rh': 0.6
     },
     'subway': {
@@ -110,9 +98,6 @@ preset_settings = {
         'ventilation': 18,
         'filtration': 6,
         'recirc-rate': 54,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.75,
         'rh': 0.6
     },
     'bus': {
@@ -123,9 +108,6 @@ preset_settings = {
         'ventilation': 8,
         'filtration': 6,
         'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 29,
-        'masks': 0.75,
         'rh': 0.6
     },
     'airplane': {
@@ -136,9 +118,6 @@ preset_settings = {
         'ventilation': 24,
         'filtration': 17,
         'recirc-rate': 24,
-        'exertion': 0.54,
-        'exp-activity': 72,
-        'masks': 0.75,
         'rh': 0.2
     },
     'church': {
@@ -149,16 +128,46 @@ preset_settings = {
         'ventilation': 2,
         'filtration': 6,
         'recirc-rate': 1,
-        'exertion': 0.54,
-        'exp-activity': 72,
-        'masks': 0.75,
         'rh': 0.6
     },
 }
 
-ventilation_default = preset_settings['classroom']['ventilation']
-filter_default = preset_settings['classroom']['filtration']
-recirc_default = preset_settings['classroom']['recirc-rate']
+human_preset_settings = {
+    'masks-3': {
+        'exertion': 0.49,
+        'expiratory': 72,
+        'masks': 0.75,
+        'mask-fit': 0.9
+    },
+    'masks-2': {
+        'exertion': 0.54,
+        'expiratory': 72,
+        'masks': 0.75,
+        'mask-fit': 0.9
+    },
+    'masks-1': {
+        'exertion': 0.49,
+        'expiratory': 29,
+        'masks': 0.75,
+        'mask-fit': 0.9
+    },
+    'no-masks-1': {
+        'exertion': 0.49,
+        'expiratory': 72,
+        'masks': 0,
+        'mask-fit': 0.9
+    },
+    'no-masks-2': {
+        'exertion': 0.54,
+        'expiratory': 72,
+        'masks': 0,
+        'mask-fit': 0.9
+    }
+}
+
+ventilation_default = room_preset_settings['classroom']['ventilation']
+filter_default = room_preset_settings['classroom']['filtration']
+recirc_default = room_preset_settings['classroom']['recirc-rate']
 
 # Nmax values for main red text output
 model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
@@ -217,11 +226,11 @@ def get_lang(search):
 
 
 # Gets the preset dropdown value based on given values. If no preset is found, return 'custom'
-def get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, breathing_flow_rate,
-                        infectiousness, mask_eff, relative_humidity, units):
+def get_room_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
+                             units):
     preset_dd_value = 'custom'
-    for setting_key in preset_settings:
-        setting = preset_settings[setting_key]
+    for setting_key in room_preset_settings:
+        setting = room_preset_settings[setting_key]
 
         if units == "british":
             is_right_volume = setting['floor-area'] == floor_area and \
@@ -233,10 +242,23 @@ def get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_ra
                     setting['ventilation'] == air_exchange_rate and \
                     setting['recirc-rate'] == recirc_rate and \
                     setting['filtration'] == merv and \
-                    setting['exertion'] == breathing_flow_rate and \
-                    setting['exp-activity'] == infectiousness and \
-                    setting['masks'] == mask_eff and \
                     setting['rh'] == relative_humidity
+        if is_preset:
+            preset_dd_value = setting_key
+            break
+
+    return preset_dd_value
+
+
+# Gets the preset dropdown value based on given values. If no preset is found, return 'custom'
+def get_human_preset_dd_value(exertion, expiratory_activity, masks, mask_fit, units):
+    preset_dd_value = 'custom'
+    for setting_key in human_preset_settings:
+        setting = human_preset_settings[setting_key]
+        is_preset = setting['exertion'] == exertion and \
+                    setting['expiratory'] == expiratory_activity and \
+                    setting['masks'] == masks and \
+                    setting['mask-fit'] == mask_fit
         if is_preset:
             preset_dd_value = setting_key
             break

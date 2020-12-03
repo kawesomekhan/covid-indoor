@@ -33,6 +33,16 @@ body {
     border-radius: 0.25rem;
 }
 
+/* Presets Grid */
+.grid-presets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0px;
+}
+.card-presets {
+    padding: 8px;
+}
+
 /* Settings Grid */
 .grid-settings {
     display: grid;
@@ -135,6 +145,16 @@ body {
 
 /* Small-width/mobile layout */
 @media only screen and (max-width: 1200px) {
+    /* Presets Grid */
+    .grid-presets {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding: 0px;
+    }
+    .card-presets {
+        padding: 0;
+    }
+
     /* Settings Grid */
     .grid-settings {
         display: grid;

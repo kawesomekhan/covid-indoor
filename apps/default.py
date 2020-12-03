@@ -266,18 +266,26 @@ layout = html.Div(children=[
                     className='card',
                     children=[html.Div(className='output-content', children=[
                         html.Div([
-                            html.H6(html.Span(desc.curr_room_header, id='curr-room-header')),
                             html.Div(
-                                className='grid-preset',
-                                children=
-                                html.Div(
-                                    id='presets-div',
-                                    children=dcc.Dropdown(id='presets',
-                                                          options=desc.presets,
-                                                          value='classroom',
-                                                          searchable=False,
-                                                          clearable=False)),
-                                style={'max-width': '500px'}
+                                className='grid-presets',
+                                children=[
+                                    html.Div([
+                                        html.H6(html.Span(desc.curr_room_header, id='curr-room-header')),
+                                        dcc.Dropdown(id='presets',
+                                                     options=desc.presets,
+                                                     value='classroom',
+                                                     searchable=False,
+                                                     clearable=False)
+                                    ], className='card-presets'),
+                                    html.Div([
+                                        html.H6(html.Span(desc.curr_human_header, id='curr-human-header')),
+                                        dcc.Dropdown(id='presets-human',
+                                                     options=desc.presets_human,
+                                                     value='masks-1',
+                                                     searchable=False,
+                                                     clearable=False)
+                                    ], className='card-presets')
+                                ],
                             ),
                             html.H3(html.Span(desc.main_panel_s1, id='main-panel-s1')),
                             dcc.Loading(
@@ -316,7 +324,7 @@ layout = html.Div(children=[
                             html.Span(desc.main_airb_trans_only_disc, id='main-airb-trans-disc')
                         ], className='panel-airb-desc')
                     ]),
-                ]),
+                              ]),
                 html.Div(
                     className='card',
                     children=[html.Div(className='output-content', children=[
@@ -449,6 +457,7 @@ def update_lang(search, window_width):
      Output('six-ft-output', 'children'),
      Output('six-ft-output-t', 'children'),
      Output('presets', 'value'),
+     Output('presets-human', 'value'),
      Output('air-frac-output', 'children'),
      Output('filtration-eff-output', 'children'),
      Output('breath-rate-output', 'children'),
@@ -495,7 +504,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
 
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -508,10 +517,11 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
         [floor_area, ceiling_height] = ess.convert_units(curr_units, my_units, floor_area, ceiling_height)
 
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
-    preset_dd_value = ess.get_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
-                                              breathing_flow_rate, infectiousness, mask_eff, relative_humidity,
-                                              my_units)
+    preset_dd_value = ess.get_room_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
+                                                   relative_humidity, my_units)
     # preset_dd_value = dash.no_update
+    human_preset_dd_value = ess.get_human_preset_dd_value(breathing_flow_rate, infectiousness, mask_eff, mask_fit,
+                                                          my_units)
 
     # If metric, convert floor_area and ceiling_height to feet
     if my_units == "metric":
@@ -557,7 +567,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
-           six_ft_text, six_ft_exp_time, preset_dd_value, interest_output[0], interest_output[1], interest_output[2], \
+           six_ft_text, six_ft_exp_time, preset_dd_value, human_preset_dd_value, interest_output[0], \
+           interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
            interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
            interest_output[13], exp_time_text, n_max_text, error_msg, False
@@ -571,9 +582,6 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
      Output('ventilation-type', 'value'),
      Output('recirc-rate', 'value'),
      Output('filter-type', 'value'),
-     Output('exertion-level', 'value'),
-     Output('exp-activity', 'value'),
-     Output('mask-type', 'value'),
      Output('relative-humidity', 'value'),
      Output('floor-area-text', 'children'),
      Output('ceiling-height-text', 'children')],
@@ -584,8 +592,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
      State('floor-area', 'value'),
      State('ceiling-height', 'value')]
 )
-def update_presets_and_units(preset, search, floor_area_text, ceiling_height_text, curr_floor_area,
-                             curr_ceiling_height):
+def update_room_presets_and_units(preset, search, floor_area_text, ceiling_height_text, curr_floor_area,
+                                  curr_ceiling_height):
     desc_file = ess.get_desc_file(ess.get_lang(search))
     my_units = ess.get_units(search)
     curr_units = ess.did_switch_units(search, floor_area_text, ceiling_height_text)
@@ -603,14 +611,12 @@ def update_presets_and_units(preset, search, floor_area_text, ceiling_height_tex
     if preset == 'custom':
         if did_switch:
             return floor_area, ceiling_height, dash.no_update, \
-                   dash.no_update, dash.no_update, dash.no_update, \
                    dash.no_update, dash.no_update, dash.no_update, text_output[0], text_output[1]
         else:
             return dash.no_update, dash.no_update, dash.no_update, \
-                   dash.no_update, dash.no_update, dash.no_update, \
                    dash.no_update, dash.no_update, dash.no_update, text_output[0], text_output[1]
     else:
-        curr_settings = ess.preset_settings[preset]
+        curr_settings = ess.room_preset_settings[preset]
         if not did_switch:
             if my_units == "british":
                 floor_area = curr_settings['floor-area']
@@ -620,9 +626,26 @@ def update_presets_and_units(preset, search, floor_area_text, ceiling_height_tex
                 ceiling_height = round(curr_settings['ceiling-height-metric'], 2)
 
         return floor_area, ceiling_height, curr_settings['ventilation'], \
-               curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['exertion'], \
-               curr_settings['exp-activity'], curr_settings['masks'], curr_settings['rh'], \
+               curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['rh'], \
                text_output[0], text_output[1]
+
+
+# Update options based on selected presets
+@app.callback(
+    [Output('exertion-level', 'value'),
+     Output('exp-activity', 'value'),
+     Output('mask-type', 'value'),
+     Output('mask-fit', 'value')],
+    [Input('presets-human', 'value')]
+)
+def update_human_presets(preset):
+    # Update the room and behavior options based on the selected preset
+    if preset == 'custom':
+            return dash.no_update, dash.no_update, dash.no_update, dash.no_update
+    else:
+        curr_settings = ess.human_preset_settings[preset]
+        return curr_settings['exertion'], curr_settings['expiratory'], curr_settings['masks'], \
+               curr_settings['mask-fit'],
 
 
 # Ventilation ACH value display
