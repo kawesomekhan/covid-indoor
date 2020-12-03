@@ -12,7 +12,12 @@ app = dash.Dash(__name__, suppress_callback_exceptions=True)
 csp = {
     'default-src': '\'self\'',
     'script-src': ['\'self\'',
-                   'https://www.googletagmanager.com/gtag/js?id=UA-143756813-2'],
+                   'https://www.googletagmanager.com',
+                   'https://www.google-analytics.com'],
+    'style-src': ['\'self\'',
+                  'https://fonts.googleapis.com'],
+    'font-src': ['\'self\'',
+                 'https://fonts.googleapis.com']
 }
 
 Talisman(app.server, content_security_policy=csp)
