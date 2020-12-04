@@ -101,6 +101,13 @@ presets_human = [
     {'label': "No Masks, Sitting & Talking", 'value': 'no-masks-1'},
 ]
 
+curr_risk_header = "Current Risk Tolerance: "
+presets_risk = [
+    {'label': "Very Conservative", 'value': 0.01},
+    {'label': "Conservative", 'value': 0.1},
+    {'label': "Less Conservative", 'value': 0.3},
+]
+
 main_panel_s1 = "To reduce COVID-19 transmission*, this room should have no more than: "
 
 units_hr = 'hours'
@@ -268,17 +275,17 @@ expiratory_types = [
 mask_type_text = "Mask Type/Efficiency: "
 mask_type_marks = {
     0: {'label': "0% (none, face shield)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (coarse cotton)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (silk, flannel, chiffon)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (surgical, cotton)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (N95 respirator)", 'style': {'max-width': '50px'}},
+    0.5: {'label': "50% (cotton, flannel)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "70% (multilayer cotton, silk)", 'style': {'max-width': '50px'}},
+    0.90: {'label': "90% (dispos-able surgical)", 'style': {'max-width': '50px'}},
+    0.99: {'label': "99% (N95 resp-irator)", 'style': {'max-width': '50px'}},
 }
 mask_types = [
     {'label': "None, Face Shield", 'value': 0},
-    {'label': "Coarse Cotton", 'value': 0.1},
-    {'label': "Silk, Flannel, Chiffon", 'value': 0.5},
-    {'label': "Surgical, Cotton", 'value': 0.75},
-    {'label': "N95 Respirator", 'value': 0.95},
+    {'label': "Cotton, Flannel", 'value': 0.5},
+    {'label': "Multilayer Cotton, Silk", 'value': 0.7},
+    {'label': "Disposable Surgical", 'value': 0.9},
+    {'label': "N95 Respirator", 'value': 0.99},
 ]
 
 mask_fit_text = "Mask Fit/Compliance: "
@@ -366,6 +373,12 @@ faq_top = html.Div([
         If you need more control over your inputs, switch to Advanced Mode using the dropdown at the top of
         the webpage.
     ''', className='faq-answer'),
+    html.Br(),
+    html.H5("Why do N95 Respirators have 99% efficiency?"),
+    html.Div('''
+    N95 respirators have at least 95% efficiency at particle sizes of 0.3 μm, 10 times smaller than the particles 
+    considered in COVID-19 transmission models. At these larger particle sizes, N95 respirators become much more
+    efficient than 95%, approaching levels close to 100%. ''', className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([

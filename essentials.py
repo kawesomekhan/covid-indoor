@@ -136,32 +136,32 @@ human_preset_settings = {
     'masks-3': {
         'exertion': 0.49,
         'expiratory': 72,
-        'masks': 0.75,
-        'mask-fit': 0.9
+        'masks': 0.9,
+        'mask-fit': 0.95
     },
     'masks-2': {
         'exertion': 0.54,
         'expiratory': 72,
-        'masks': 0.75,
-        'mask-fit': 0.9
+        'masks': 0.9,
+        'mask-fit': 0.95
     },
     'masks-1': {
         'exertion': 0.49,
         'expiratory': 29,
-        'masks': 0.75,
-        'mask-fit': 0.9
+        'masks': 0.9,
+        'mask-fit': 0.95
     },
     'no-masks-1': {
         'exertion': 0.49,
         'expiratory': 72,
         'masks': 0,
-        'mask-fit': 0.9
+        'mask-fit': 0.95
     },
     'no-masks-2': {
         'exertion': 0.54,
         'expiratory': 72,
         'masks': 0,
-        'mask-fit': 0.9
+        'mask-fit': 0.95
     }
 }
 

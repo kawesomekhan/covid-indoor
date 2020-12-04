@@ -142,7 +142,7 @@ layout = html.Div(children=[
                                                         id='mask-eff-output'),
                                               dcc.Dropdown(id='mask-type',
                                                            options=desc.mask_types,
-                                                           value=0.75,
+                                                           value=0.90,
                                                            searchable=False,
                                                            clearable=False)]),
                                     html.Br(),
@@ -153,7 +153,7 @@ layout = html.Div(children=[
                                                          min=0,
                                                          max=0.95,
                                                          step=0.01,
-                                                         value=0.90,
+                                                         value=0.95,
                                                          marks=desc.mask_fit_marks),
                                               ]),
                                     html.Br(),
@@ -284,7 +284,15 @@ layout = html.Div(children=[
                                                      value='masks-1',
                                                      searchable=False,
                                                      clearable=False)
-                                    ], className='card-presets')
+                                    ], className='card-presets'),
+                                    # html.Div([
+                                    #     html.H6(html.Span(desc.curr_risk_header, id='curr-risk-tol')),
+                                    #     dcc.Dropdown(id='presets-risk',
+                                    #                  options=desc.presets_risk,
+                                    #                  value=0.1,
+                                    #                  searchable=False,
+                                    #                  clearable=False)
+                                    # ], className='card-presets')
                                 ],
                             ),
                             html.H3(html.Span(desc.main_panel_s1, id='main-panel-s1')),
