@@ -377,7 +377,7 @@ faq_top = html.Div([
     html.H5("Why do N95 Respirators have 99% efficiency?"),
     html.Div('''
     N95 respirators have at least 95% efficiency at particle sizes of 0.3 μm, 10 times smaller than the particles 
-    considered in COVID-19 transmission models. At these larger particle sizes, N95 respirators become much more
+    considered in COVID-19 transmission models. At larger particle sizes, N95 respirators become much more
     efficient than 95%, approaching levels close to 100%. ''', className='faq-answer'),
 ])
 
