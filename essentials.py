@@ -550,7 +550,8 @@ def get_lang_text_adv(language, disp_width):
         }
         mask_type_marks = {
             0: desc_file.mask_type_marks[0],
-            0.75: desc_file.mask_type_marks[0.75]
+            0.50: desc_file.mask_type_marks[0.50],
+            0.90: desc_file.mask_type_marks[0.90]
         }
 
     return [desc_file.about_header,
