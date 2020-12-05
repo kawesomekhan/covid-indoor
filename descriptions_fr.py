@@ -125,6 +125,13 @@ units_day_one = 'jours'
 is_past_recovery_base_string = '{n_val} personnes pendant >{val:.0f} jours,'
 model_output_base_string = '{n_val} personnes pendant '
 
+main_panel_six_ft_1 = "Par contraste, la règle de distanciation de 2 mètres limiterait à "
+main_panel_six_ft_2 = " ce qui devient risqué à partir de "
+
+six_ft_base_string = ' {} people'
+six_ft_base_string_one = ' {} person'
+
+
 presets = [
     {'label': "Customiser", 'value': 'custom'},
     {'label': "Maison individuelle", 'value': 'house'},
@@ -245,6 +252,12 @@ about = html.Div([
               ventilation et de filtration de l'air, l'usage de masques, le type d'activité respiratoire ainsi que le 
               degré de risque toléré (dans les autres tabs), vous pourrez mieux comprendre comment limiter le risque 
               de transmission de la COVID-19 dans différents espaces intérieurs.''')]),
+    html.Br(),
+    html.Div([html.Span('''La science au cœur de cette app est aussi enseignée dans un cours en ligne (MOOC) gratuit, en anglais, 
+    sur edX: '''),
+              html.A(children="10.S95x Physics of COVID-19 Transmission",
+                     href=link_mooc,
+                     target='_blank')])
 ])
 
 # Room Specifications
@@ -358,6 +371,12 @@ faq_top = html.Div([
         Si vous avez besoin de plus de contrôle sur vos paramètres, passez en Mode avancé, par le menu en 
         haut de la page.
     ''', className='faq-answer'),
+    html.Br(),
+					     html.H5("Pourquoi les masques FFP2 ont-ils 99% d'efficacité ?"),
+					     html.Div('''
+					     Les masques FFP2 ont au moins 95% d'efficacité pour des tailles de particules de 0,3 μm, soit 10 fois plus petites que les particules
+					     considérées dans les modèles de transmission COVID-19. Pour ces particules plus grosses, le taux d'efficacité des FFP2 dépasse
+					     95%, et s'approche de 100%. ''', className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([
