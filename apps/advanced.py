@@ -310,7 +310,8 @@ layout = html.Div(children=[
                                          html.Span(id='adv-six-ft-output',
                                                    children=''' 2 people ''',
                                                    style={'color': '#de1616'}),
-                                         html.Span(desc.main_panel_six_ft_2, id='adv-main-six-ft-2')]),
+                                         html.Span(desc.main_panel_six_ft_2, id='adv-main-six-ft-2'),
+                                         html.Span(id='adv-six-ft-output-t', style={'color': '#de1616'})]),
                                 html.Br(),
                             ], className='panel-main-output'),
                             html.Div([
@@ -444,6 +445,7 @@ def update_lang(search, window_width):
      Output('adv-model-text-7', 'children'),
      Output('adv-model-text-8', 'children'),
      Output('adv-six-ft-output', 'children'),
+     Output('adv-six-ft-output-t', 'children'),
      Output('adv-presets', 'value'),
      Output('adv-presets-human', 'value'),
      Output('adv-air-frac-output', 'children'),
@@ -493,7 +495,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
@@ -540,6 +542,10 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Update the red text output with new model calculations
     model_output_text = ess.get_model_output_text(myInd, language)
     six_ft_text = ess.get_six_ft_text(myInd, language)
+    if language == "en":
+        six_ft_exp_time = ess.time_to_text(myInd.calc_max_time(myInd.get_six_ft_n()), language) + "."
+    else:
+        six_ft_exp_time = ""
     interest_output = ess.get_interest_output_text(myInd, my_units)
 
     exp_time_output = myInd.calc_max_time(n_max_input)
@@ -551,8 +557,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
-           six_ft_text, preset_dd_value, human_preset_dd_value, interest_output[0], interest_output[1], \
-           interest_output[2], \
+           six_ft_text, six_ft_exp_time, preset_dd_value, human_preset_dd_value, interest_output[0], \
+           interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
            interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
            interest_output[13], exp_time_text, n_max_text, error_msg, False
