@@ -40,7 +40,7 @@ expiratory_types = [
     # {'label': "Speaking (whispered counting)", 'value': 37},
     {'label': "Dialogue normal", 'value': 72},
     # {'label': "Speaking (voiced counting)", 'value': 72},
-    {'label': "Parler fort", 'value': 142},
+    {'label': "Dialogue crié", 'value': 142},
     # {'label': "Singing (whispered 'aah')", 'value': 103},
     {'label': "Chant", 'value': 970},
 ]
@@ -49,8 +49,8 @@ mask_type_marks = {
     0: {'label': "0% (pas de masque, visière)", 'style': {'max-width': '50px'}},
     0.1: {'label': "10% (coton épais)", 'style': {'max-width': '50px'}},
     0.5: {'label': "50% (soie, flanelle, mousseline)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (masque chirurgical, coton fin)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (FFP2)", 'style': {'max-width': '50px'}},
+    0.75: {'label': "75% (masque chirurgical, ou coton fin)", 'style': {'max-width': '50px'}},
+    0.95: {'label': "95% (masque FFP2)", 'style': {'max-width': '50px'}},
 }
 
 mask_types = [
@@ -58,12 +58,12 @@ mask_types = [
     {'label': "Coton épais", 'value': 0.1},
     {'label': "Soie, flanelle, mousseline", 'value': 0.5},
     {'label': "Masque chirurgical, coton fin", 'value': 0.75},
-    {'label': "FFP2", 'value': 0.95},
+    {'label': "Masque FFP2", 'value': 0.95},
 ]
 
 mask_fit_marks = {
     0: {'label': '0%: Aucun', 'style': {'max-width': '50px'}},
-    0.5: {'label': '50%: Mediocre'},
+    0.5: {'label': '50%: Médiocre'},
     0.95: {'label': '95%: Bon'}
 }
 
@@ -79,17 +79,17 @@ ventilation_types = [
     {'label': "Ventilation mécanique", 'value': 3},
     {'label': "Fenêtres ouvertes avec ventilateurs", 'value': 6},
     {'label': "Ventilation mécanique supérieure", 'value': 8},
-    {'label': "Laboratoire, restaurant", 'value': 9},
+    {'label': "Laboratoire, Restaurant", 'value': 9},
     {'label': "Bar", 'value': 15},
-    {'label': "Hôpital/Wagon du métro", 'value': 18},
-    {'label': "Laboratoire sécurisé/Avion", 'value': 24},
+    {'label': "Hôpital", 'value': 18},
+    {'label': "Laboratoire sécurisé, Avion", 'value': 24},
 ]
 
 filter_types = [
     {'label': "Aucun", 'value': 0},
     {'label': "Climatiseur de fenêtre (résidentiel)", 'value': 2},
-    {'label': "Résidentiel/Commercial/industriel", 'value': 6},
-    {'label': "Résidentiel/Commercial/Hôpital", 'value': 10},
+    {'label': "Résidentiel/Commerces/Industrie", 'value': 6},
+    {'label': "Résidentiel/Commerces/Hôpital", 'value': 10},
     {'label': "Hôpital & cabinet médical", 'value': 14},
     {'label': "HEPA", 'value': 17}
 ]
@@ -129,9 +129,9 @@ presets = [
     {'label': "Customiser", 'value': 'custom'},
     {'label': "Maison individuelle", 'value': 'house'},
     {'label': "Restaurant", 'value': 'restaurant'},
-    {'label': "Bureaux calmes", 'value': 'office'},
-    {'label': "Cours dans une salle de classe", 'value': 'classroom'},
-    {'label': "Wagon de métro", 'value': 'subway'},
+    {'label': "Bureaux", 'value': 'office'},
+    {'label': "Classe", 'value': 'classroom'},
+    {'label': "Wagon de métro (New-York)", 'value': 'subway'},
     {'label': "Boeing 737", 'value': 'airplane'},
     {'label': "Eglise", 'value': 'church'},
 ]
@@ -165,7 +165,7 @@ header = html.Div([
                                    target='_blank')),
                   ""]),
         html.Div([html.Span(["Au-delà des 2 mètres : recommandations pour limiter le risque de transmission aérosol "
-                             "de la COVID-19 à l'intérieur ("]),
+                             "de la COVID-19 en lieux clos ("]),
                   html.Span(html.A(href=link_paper,
                                    target='_blank',
                                    children='''Bazant & Bush, 2020''')),
@@ -205,7 +205,7 @@ app_modes = [
 
 # Tabs
 about_header = "A propos"
-room_header = "Caractéristiques de la pièce"
+room_header = "Caractéristiques de l'espace"
 human_header = "Comportement humain"
 faq_header = "Questions fréquentes"
 other_io = "Autres entrées et résultats"
@@ -213,10 +213,8 @@ other_io = "Autres entrées et résultats"
 # About
 about = html.Div([
     html.H6("A propos", style={'margin': '0'}),
-    html.Div('''Pour atténuer la diffusion de la COVID-19, les recommandations officielles de santé publique posent 
-    des limites concernant : la distance entre 2 personnes (2 mètres), le temps d'occupation d'un espace (15 
-    minutes), le taux maximum d'occupation (25 personnes), ou la ventilation minimum (6 renouvellements d'air par 
-    heure).'''),
+    html.Div('''Pour réduire la transmission de la COVID-19, les recommandations officielles de santé publique
+    limitent la distance entre 2 personnes (1 à 2 mètres), le temps d'occupation et le taux d'occupation d'un espace, et préconisent la ventilation.'''),
     html.Br(),
     html.Div([html.Span('''Il y a de plus en plus de '''),
               html.A(children="preuves scientifiques",
@@ -225,7 +223,7 @@ about = html.Div([
               html.Span(''' de la transmission aérienne de la COVID-19. Elle a lieu lorsque des particules aérosol 
               infectieuses sont échangées, en respirant l'air partagé des espaces intérieurs clos. Les autorités de 
               santé publique commencent à reconnaître la transmission par aérosols de la COVID-19, mais elles n'ont 
-              pas encore fourni de recommandations de sécurité prenant en compte tous les paramètres pertinents.''')]),
+              pas encore fourni de recommandations de sécurité prenant en compte tous les paramètres utiles.''')]),
     html.Br(),
     html.Div([html.Span('''Cett app, développée par Karim Khan en collaboration avec Martin Z. Bazant et John W. M. 
     Bush, utilise un '''),
@@ -235,7 +233,7 @@ about = html.Div([
               html.Span(''' pour calculer la durée d'exposition et le taux d'occupation acceptables en termes de 
               sécurité, pour des espaces intérieurs. En ajustant les caractéristiques du lieu, les taux de 
               ventilation et de filtration de l'air, l'usage de masques, le type d'activité respiratoire ainsi que le 
-              degré de risque toléré (dans les autres tabs), vous pourrez mieux comprendre comment atténuer le risque 
+              degré de risque toléré (dans les autres tabs), vous pourrez mieux comprendre comment limiter le risque 
               de transmission de la COVID-19 dans différents espaces intérieurs.''')]),
 ])
 
@@ -257,7 +255,7 @@ recirc_text_adv = "Taux de renouvellement horaire (ACH): "
 
 humidity_text = "Humidité relative : "
 
-need_more_ctrl_text = '''Si vous souhaitez plus de contrôle sur vos paramètres, passez en Mode avancé en utilisant le 
+need_more_ctrl_text = '''Si vous souhaitez plus de contrôle sur vos paramètres, passez en Mode avancé, par le 
                       menu en haut de la page.'''
 
 # Human Behavior
@@ -273,8 +271,9 @@ risk_tolerance_text = "Seuil de tolérance du risque: "
 
 # FAQ/Other Inputs and Outputs
 assumptions_layout = html.Div([
-    html.H5("Encore des questions? "),
-    html.Div([html.Span('''Pour des explications plus détaillées et des références, voir "Au-delà des 2 mètres : recommandations pour limiter le risque de transmission aérosol de la COVID-19 à l'intérieur." ('''),
+    html.H5("Encore des questions ? "),
+    html.Div([html.Span('''Pour des explications plus détaillées et des références, voir "Au-delà des 2 mètres : recommandations pour limiter le risque de transmission aérosol "
+                             "de la COVID-19 en lieux clos" ('''),
               html.A(children="Bazant & Bush, 2020",
                      href=link_paper,
                      target='_blank'),
@@ -283,9 +282,9 @@ assumptions_layout = html.Div([
 
 faq_top = html.Div([
     html.H6("Questions fréquentes"),
-    html.H5("Pourquoi une distance de 2 mètres entre les personnes n'est-elle pas suffisante?"),
+    html.H5("Pourquoi une distance de 2 mètres entre les personnes ne suffit-elle pas ?"),
     html.Div([
-        html.Div([html.Span('''Une distance de deux mètres vous protège contre les grosses gouttelettes éjectées par 
+        html.Div([html.Span('''Une distance de 2 mètres vous protège contre les grosses gouttelettes éjectées par 
         une personne contaminée qui tousse. Les masques vous en protègent aussi. Cependant, cette distance ne vous 
         protège pas contre la '''),
                   html.A(children="transmission aérienne",
@@ -293,7 +292,7 @@ faq_top = html.Div([
                          target='_blank'),
                   html.Span(''', via des aérosols infectieux en suspension dans l'air, qui peuvent être répartis dans 
                   toute la pièce. A l'intérieur, une personne n'est pas mieux protégée contre la contamination par 
-                  aérosols à 20 mètres qu'à deux mètres.''')]),
+                  aérosols à 20 mètres qu'à 2 mètres.''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Y a-t-il d'autres modes de transmission?"),
@@ -303,7 +302,7 @@ faq_top = html.Div([
                          target='_blank'),
                   html.Span(''' est considérée comme dominante pour le COVID-19, mais d'autres modes sont possibles. 
                   Parmi eux, la transmission par "fomites" (contact direct avec des résidus infectieux déposés sur 
-                  des surfaces), ou par les gouttelettes (ou postillons) émises par une personne qui tousse ou 
+                  des surfaces), ou par les postillons émis par une personne qui tousse ou 
                   éternue, et enfin la transmission par des "aérosols à courte portée" issus de l'expectoration d'une 
                   personne contaminée, pendant une durée prolongée. Ces derniers modes peuvent être significatifs, 
                   mais ils sont largement éliminés lorsque des masques et visières sont portés ; cependant, 
@@ -316,7 +315,7 @@ faq_top = html.Div([
     html.Div([
         html.Div([html.Span('''Il y a de nombreux facteurs qui contribuent au brassage de l'air d'un espace 
         intérieur, parmi lesquels les flux de convection naturelle (venus des radiateurs, climatiseurs, fenêtres) ou 
-        forcée (grilles de ventilation et ventilateurs), ainsi que les mouvements et la respiration des humains. S'il 
+        forcée (grilles de ventilation et ventilateurs), ainsi que les mouvements et la respiration des personnes. S'il 
         y a des exceptions, comme précisé dans '''),
                   html.A(children="l'article de Bazant & Bush",
                          href=link_paper,
@@ -337,16 +336,16 @@ faq_top = html.Div([
                   html.Span('''.''')]),
     ], className='faq-answer'),
     html.Br(),
-    html.H5("Pourquoi la hauteur du plafond est-elle importante?"),
+    html.H5("Pourquoi la hauteur du plafond est-elle importante ?"),
     html.Div([
-        '''La hauteur du plafond détermine le volume total de la pièce, nécessaire pour estimer la concentration en 
-        aérosols contaminants (quantité d'aérosols par unité de volume). Connaître cette concentration est nécessaire 
+        '''Elle détermine le volume total de la pièce, nécessaire pour estimer la concentration en 
+        aérosols contaminants (quantité d'aérosols par unité de volume), ce qui est ensuite nécessaire 
         pour estimer le risque de transmission du COVID-19 dans cet espace.'''
     ], className='faq-answer'),
     html.Br(),
     html.H5("Je connais mes valeurs ACH/MERV. Où puis-je les saisir?"),
     html.Div('''
-        Si vous avez besoin de plus de contrôle sur vos paramètres, passez en Mode avancé en utilisant le menu en 
+        Si vous avez besoin de plus de contrôle sur vos paramètres, passez en Mode avancé, par le menu en 
         haut de la page.
     ''', className='faq-answer'),
 ])
@@ -442,7 +441,7 @@ main_airb_trans_only_disc = html.Div(["Les recommandations sont basées sur la p
 
 # Bottom panels text
 n_input_text_1 = "Si cet espace contient "
-n_input_text_2 = " personnes, ses occupants devraient être en sécurité pendant "
+n_input_text_2 = " personnes, elles devraient être en sécurité pendant "
 n_input_text_3 = "."
 
 t_input_text_1 = "Si des personnes passent environ "
@@ -465,7 +464,7 @@ footer = html.Div([
               html.A(children="Bazant & Bush, 2020",
                      href=link_paper,
                      target='_blank'),
-              html.Span('''). L'usage des Recommandations de sécurité COVID-19 pour les espaces intérieurs est placé 
+              html.Span('''). L'usage des Recommandations COVID-19 pour limiter la transmission en lieux clos est placé 
               sous la seule responsabilité de l'utilisateur. L'outil est mis à la disposition du public sans garantie 
               d'aucune sorte. Les auteurs n'acceptent aucune responsabilité liée à son utilisation.''')]),
     html.Br(),
