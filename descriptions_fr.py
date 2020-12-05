@@ -136,6 +136,16 @@ presets = [
     {'label': "Eglise", 'value': 'church'},
 ]
 
+curr_human_header = "Comportement des personnes : "
+presets_human = [
+    {'label': "Customiser", 'value': 'custom'},
+    {'label': "Masques, debout, dialogue", 'value': 'masks-2'},
+    {'label': "Masques, assis, dialogue", 'value': 'masks-3'},
+    {'label': "Masques, assis, murmures", 'value': 'masks-1'},
+    {'label': "Pas de masques, debout, dialogue", 'value': 'no-masks-2'},
+    {'label': "Pas de masques, assis, dialogue", 'value': 'no-masks-1'},
+]
+
 error_list = {
     "floor_area": "Erreur : la surface au sol doit être renseignée.",
     "ceiling_height": "Erreur : la hauteur sous plafond doit être renseignée.",
