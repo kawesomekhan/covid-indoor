@@ -82,7 +82,7 @@ ventilation_types = [
     {'label': "Ventilation mécanique supérieure", 'value': 8},
     {'label': "Laboratoire, Restaurant", 'value': 9},
     {'label': "Bar", 'value': 15},
-    {'label': "Hôpital", 'value': 18},
+    {'label': "Hôpital, Rame de métro", 'value': 18},
     {'label': "Laboratoire sécurisé, Avion", 'value': 24},
 ]
 
@@ -101,7 +101,7 @@ recirc_types = [
     {'label': "Modéré", 'value': 1},
     {'label': "Rapide", 'value': 10},
     {'label': "Avion", 'value': 24},
-    {'label': "Wagon de métro", 'value': 54},
+    {'label': "Rame de métro", 'value': 54},
 ]
 
 n_max_base_string = ' {:.0f}'
@@ -139,7 +139,7 @@ presets = [
     {'label': "Restaurant", 'value': 'restaurant'},
     {'label': "Bureaux", 'value': 'office'},
     {'label': "Classe", 'value': 'classroom'},
-    {'label': "Wagon de métro (New-York)", 'value': 'subway'},
+    {'label': "Rame de métro", 'value': 'subway'},
     {'label': "Boeing 737", 'value': 'airplane'},
     {'label': "Eglise", 'value': 'church'},
 ]
