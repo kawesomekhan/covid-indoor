@@ -9,6 +9,7 @@ descriptions_fr: French
 
 link_paper = "https://www.medrxiv.org/content/10.1101/2020.08.26.20182824v2"
 link_docs = "https://docs.google.com/document/d/1fB5pysccOHvxphpTmCG_TGdytavMmc1cUumn8m0pwzo/edit"
+link_mooc = "https://www.edx.org/course/physics-of-covid-19-transmission?utm_campaign=mitx&utm_medium=partner-marketing&utm_source=affiliate&utm_content=10.s95x-app"
 
 vent_type_output_base = "{:.0f} ACH"
 filt_type_output_base = "MERV {:.0f}"
