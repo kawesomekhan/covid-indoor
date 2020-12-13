@@ -417,7 +417,7 @@ layout = html.Div(children=[
                                             html.Span(desc.main_panel_s2_c, id='main-panel-s2-c')
                                         ]),
                                         dcc.Loading(
-                                            id='loading',
+                                            id='loading-c',
                                             type='circle',
                                             children=[
                                                 html.H4(className='model-output-text', id='model-text-1-c',

@@ -207,8 +207,8 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
         error_msg = desc_file.error_list["merv"]
-    # elif prevalence_b <= 0 or prevalence_b >= 5 or prevalence_c <= 0 or prevalence_c >= 5:
-    #     error_msg = desc_file.error_list["prevalence"]
+    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 99 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 99:
+        error_msg = desc_file.error_list["prevalence"]
 
     return error_msg
 
@@ -568,13 +568,6 @@ def get_lang_text_adv(language, disp_width):
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
             desc_file.main_airb_trans_only_disc,
-            desc_file.n_input_text_1,
-            desc_file.n_input_text_2,
-            desc_file.n_input_text_3,            desc_file.airb_trans_only_disc,
-            desc_file.t_input_text_1,
-            desc_file.t_input_text_2,
-            desc_file.t_input_text_3,
-            desc_file.airb_trans_only_disc,
             desc_file.about,
             desc_file.room_header,
             desc_file.room_header,
@@ -595,8 +588,6 @@ def get_lang_text_adv(language, disp_width):
             mask_type_marks,
             desc_file.mask_fit_text,
             desc_file.mask_fit_marks,
-            desc_file.risk_tolerance_text,
-            desc_file.risk_tol_desc,
             risk_tol_marks,
             desc_file.other_io,
             desc_file.other_io,

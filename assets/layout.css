@@ -43,6 +43,9 @@ body {
 .card-presets {
     padding: 8px;
 }
+#adv-mobile-risk-break {
+    display: none;
+}
 
 /* Settings Grid */
 .grid-settings {
@@ -97,7 +100,7 @@ body {
     border: solid 1px #DDDDDD;
     box-shadow: 0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24)
 }
-#card-tab {
+#card-tab, #adv-card-tab {
     grid-row-start: 1;
     grid-row-end: 3;
 }
@@ -126,7 +129,8 @@ body {
 }
 
 /* Bottom Panels */
-#adv-n-input, #n-input, #n-input-b, #n-input-c, #adv-t-input, #t-input, #t-input-b, #t-input-c, #prev-input-b, #prev-input-c {
+#adv-n-input, #n-input, #n-input-b, #n-input-c, #adv-n-input-b, #adv-n-input-c, #adv-t-input, #t-input,
+#t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c, #prev-input-b, #prev-input-c, #adv-prev-input-b, #adv-prev-input-c {
     width: var(--big-number-input-width);
 }
 
@@ -137,6 +141,9 @@ body {
     }
     .grid-presets {
         grid-template-columns: 1fr 1fr;
+    }
+    #adv-mobile-risk-break {
+        display: inline-block;
     }
 }
 

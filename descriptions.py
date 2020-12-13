@@ -76,7 +76,7 @@ error_list = {
     "exp_time_input": "Error: Exposure time must be greater than 0.",
     "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
     "merv": "Error: Filtration System (MERV) cannot be empty.",
-    "prevalence": "Error: Prevalence must be greater than 0% and less than 5%."
+    "prevalence": "Error: Prevalence must be greater than 0% and less than 99%."
 }
 
 # Main Panel Text
@@ -324,7 +324,7 @@ conditions require a lower risk tolerance (~0.01). A higher risk tolerance will 
 transmissions during the expected occupancy period (see FAQ for details).''', style={'font-size': '13px',
                                                                                      'margin-left': '20px'})
 risk_tol_marks = {
-    0.01: {'label': '0.01: Safer', 'style': {'max-width': '50px'}},
+    # 0.01: {'label': '0.01: Safer', 'style': {'max-width': '50px'}},
     0.1: {'label': '0.10: Safe', 'style': {'max-width': '50px'}},
     1: {'label': '1.00: Unsafe'}
 }
