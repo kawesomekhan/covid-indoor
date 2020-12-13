@@ -75,7 +75,8 @@ error_list = {
     "n_max_input": "Error: Number of people cannot be less than 2.",
     "exp_time_input": "Error: Exposure time must be greater than 0.",
     "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
-    "merv": "Error: Filtration System (MERV) cannot be empty."
+    "merv": "Error: Filtration System (MERV) cannot be empty.",
+    "prevalence": "Error: Prevalence must be greater than 0% and less than 5%."
 }
 
 # Main Panel Text
@@ -103,12 +104,19 @@ presets_human = [
 
 curr_risk_header = "Current Risk Tolerance: "
 presets_risk = [
-    {'label': "Very Conservative", 'value': 0.01},
-    {'label': "Conservative", 'value': 0.1},
-    {'label': "Less Conservative", 'value': 0.3},
+    {'label': "Very Low", 'value': 0.01},
+    {'label': "Low", 'value': 0.1},
+    {'label': "Moderate", 'value': 0.3},
 ]
 
-main_panel_s1 = "To reduce COVID-19 transmission*, this room should have no more than: "
+main_panel_s1 = '''To limit COVID-19 transmission* after an infected person enters this space, 
+there should be no more than: '''
+
+main_panel_s1_b = '''To limit COVID-19 transmission* in a population where '''
+main_panel_s2_b = '''% are infected, this space should have no more than: '''
+
+main_panel_s1_c = '''To limit my chance of being infected by COVID-19 in a space where '''
+main_panel_s2_c = '''% are infected, this space should have no more than: '''
 
 units_hr = 'hours'
 units_min = 'minutes'
@@ -133,11 +141,25 @@ graph_ytitle = "Maximum Occupancy N"
 transient_text = "Transient"
 steady_state_text = "Steady-State"
 
-main_airb_trans_only_disc = html.Div(["*The guideline restricts the expected number of ",
+main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
                                       html.Span(html.A(href=link_docs,
                                                        children="airborne transmissions",
                                                        target='_blank'), ),
                                       html.Span(''' per infected person to be less than the risk tolerance 
+                                      over the cumulative exposure time 
+                                      listed.''')], className='airborne-text')
+main_airb_trans_only_desc_b = html.Div(["*The guideline restricts the probability of one ",
+                                      html.Span(html.A(href=link_docs,
+                                                       children="airborne transmission",
+                                                       target='_blank'), ),
+                                      html.Span(''' per infected person to be less than the risk tolerance 
+                                      over the cumulative exposure time 
+                                      listed.''')], className='airborne-text')
+main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probability of ",
+                                      html.Span(html.A(href=link_docs,
+                                                       children="airborne transmission",
+                                                       target='_blank'), ),
+                                      html.Span(''' to a particular individual to be less than the risk tolerance 
                                       over the cumulative exposure time 
                                       listed.''')], className='airborne-text')
 

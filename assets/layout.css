@@ -1,7 +1,7 @@
 /* CSS related to app layout */
 
 :root {
-    --big-number-input-width: 100px;
+    --big-number-input-width: 90px;
 }
 
 /* For default, desktop layout */
@@ -111,14 +111,15 @@ body {
 }
 .tab-content {
     padding: 1em;
+    padding-top: 0;
     height: 100%;
-    max-height: 450px;
+    max-height: 600px;
     margin: 2em;
     margin-left: 1em;
     overflow-y: scroll;
     overflow-x: hidden;
 }
-#tab-a, #tab-b, #tab-c, #tab-d, #adv-tab-a, #adv-tab-b, #adv-tab-c, #adv-tab-d {
+#tab-a, #tab-b, #tab-c, #tab-d, #adv-tab-a, #adv-tab-b, #adv-tab-c, #adv-tab-d, #output-panel-tab-a, #output-panel-tab-b, #output-panel-tab-c  {
     padding-left: 1em;
     padding-right: 1em;
     border-left-color: #DDDDDD;
@@ -128,16 +129,7 @@ body {
 }
 
 /* Bottom Panels */
-#adv-n-input {
-    width: var(--big-number-input-width);
-}
-#n-input {
-    width: var(--big-number-input-width);
-}
-#adv-t-input {
-    width: var(--big-number-input-width);
-}
-#t-input {
+#adv-n-input, #n-input, #n-input-b, #n-input-c, #adv-t-input, #t-input, #t-input-b, #t-input-c, #prev-input-b, #prev-input-c {
     width: var(--big-number-input-width);
 }
 

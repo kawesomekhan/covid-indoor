@@ -170,8 +170,8 @@ filter_default = room_preset_settings['classroom']['filtration']
 recirc_default = room_preset_settings['classroom']['recirc-rate']
 
 # Nmax values for main red text output
-model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
-model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
+model_output_n_vals = [2, 5, 10, 25, 100]
+model_output_n_vals_big = [25, 100, 250, 500, 1000]
 
 # Max time reported in the big red text output
 recovery_time = 14  # Days
@@ -179,7 +179,8 @@ recovery_time = 14  # Days
 
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
-                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1):
+                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, n_max_input_b=2, exp_time_input_b=1,
+                prevalence_b=1):
     error_msg = ""
 
     desc_file = get_desc_file(language)
@@ -198,10 +199,16 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["n_max_input"]
     elif exp_time_input == 0 or exp_time_input is None:
         error_msg = desc_file.error_list["exp_time_input"]
+    elif n_max_input_b is None or n_max_input_b < 2:
+        error_msg = desc_file.error_list["n_max_input"]
+    elif exp_time_input_b == 0 or exp_time_input_b is None:
+        error_msg = desc_file.error_list["exp_time_input"]
     elif air_exchange_rate == 0 or air_exchange_rate is None:
         error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
         error_msg = desc_file.error_list["merv"]
+    elif prevalence_b <= 0 or prevalence_b >= 5:
+        error_msg = desc_file.error_list["prevalence"]
 
     return error_msg
 
@@ -294,14 +301,15 @@ def get_model_figure(indoor_model, language):
 
 
 # Returns the big red output text.
-def get_model_output_text(indoor_model, language):
+def get_model_output_text(indoor_model, risk_type, language):
     desc_file = get_desc_file(language)
     # Check if we should use the normal n vals, or the big n vals
     n_val_series = model_output_n_vals
-    if indoor_model.calc_max_time(model_output_n_vals[-1]) > 48 or indoor_model.get_six_ft_n() >= 100:
+    if indoor_model.calc_max_time(model_output_n_vals[-1], risk_type) > 48 or \
+            indoor_model.get_six_ft_n() >= model_output_n_vals[-1]:
         n_val_series = model_output_n_vals_big
 
-    model_output_text = ["", "", "", "", "", "", "", ""]
+    model_output_text = ["", "", "", "", ""]
     index = 0
     close_ind_rev = 0
     for n_val in n_val_series:
@@ -311,7 +319,7 @@ def get_model_output_text(indoor_model, language):
             close_ind_rev = index - len(n_val_series)
             break
         else:
-            max_time = indoor_model.calc_max_time(n_val)  # hours
+            max_time = indoor_model.calc_max_time(n_val, risk_type)  # hours
             time_text = time_to_text(max_time, language)
 
             is_past_recovery = round(max_time) > (24 * recovery_time)
@@ -328,11 +336,11 @@ def get_model_output_text(indoor_model, language):
 
         index += 1
 
-    if language == "en":
-        if close_ind_rev >= -len(model_output_text) + 2:
-            model_output_text[close_ind_rev - 2] = model_output_text[close_ind_rev - 2] + ' or'
-        if close_ind_rev >= -len(model_output_text) + 1:
-            model_output_text[close_ind_rev - 1] = model_output_text[close_ind_rev - 1] + '.'
+    # if language == "en":
+    #     if close_ind_rev >= -len(model_output_text) + 2:
+    #         model_output_text[close_ind_rev - 2] = model_output_text[close_ind_rev - 2] + ' or'
+    #     if close_ind_rev >= -len(model_output_text) + 1:
+    #         model_output_text[close_ind_rev - 1] = model_output_text[close_ind_rev - 1] + '.'
 
     return model_output_text
 
@@ -352,6 +360,7 @@ def get_six_ft_text(indoor_model, language):
 # Converts a time (in hours) into a text with formatting based on minutes/hours/days
 def time_to_text(time, language):
     desc_file = get_desc_file(language)
+    has_recovered = False
 
     if round(time) < 2:
         time = time * 60
@@ -364,6 +373,7 @@ def time_to_text(time, language):
         if round(time) == 1:
             units = desc_file.units_day_one
         else:
+            has_recovered = time > recovery_time
             units = desc_file.units_days
     else:
         if round(time) == 1:
@@ -371,8 +381,12 @@ def time_to_text(time, language):
         else:
             units = desc_file.units_hr
 
-    base_string = '{val:.0f} ' + units
-    return base_string.format(val=time)
+    if has_recovered:
+        base_string = '>{val:.0f} ' + units
+        return base_string.format(val=recovery_time)
+    else:
+        base_string = '{val:.0f} ' + units
+        return base_string.format(val=time)
 
 
 # Gets n max text
@@ -474,14 +488,6 @@ def get_lang_text_basic(language, disp_width):
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
             desc_file.main_airb_trans_only_disc,
-            desc_file.n_input_text_1,
-            desc_file.n_input_text_2,
-            desc_file.n_input_text_3,
-            desc_file.airb_trans_only_disc,
-            desc_file.t_input_text_1,
-            desc_file.t_input_text_2,
-            desc_file.t_input_text_3,
-            desc_file.airb_trans_only_disc,
             desc_file.about,
             desc_file.room_header,
             desc_file.room_header,

@@ -9,6 +9,8 @@ the mathematical model can be found at: Martin Z. Bazant and John W. M. Bush, me
 
 http://web.mit.edu/bazant/www/COVID-19/
 
+type: 'conditional' 'prevalence' 'personal'
+
 Properties:
 Model Parameters
 Calculated Variables
@@ -36,6 +38,7 @@ class Indoors:
     physio_params = []
     disease_params = []
     prec_params = []
+    prevalence = 0.01
 
     # Calculated Variables
     room_vol = 0  # ft3
@@ -122,9 +125,17 @@ class Indoors:
 
     # Calculate maximum people allowed in the room given an exposure time (hours), using the
     # transient model
-    def calc_n_max(self, exp_time):
+    def calc_n_max(self, exp_time, risk_type='conditional'):
         risk_tolerance = self.prec_params[1]  # no units
-        n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.airb_trans_rate * exp_time))
+        if risk_type == 'conditional':
+            n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.airb_trans_rate * exp_time))
+        elif risk_type == 'prevalence':
+            n_max = ((risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time))) / (self.prevalence * (1 - self.prevalence) * self.airb_trans_rate * exp_time)) ** 0.5
+        elif risk_type == 'personal':
+            risk_tolerance = risk_tolerance / self.prevalence
+            n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.airb_trans_rate * exp_time))
+        else:
+            n_max = 0
         return n_max
 
     # Calculate maximum people allowed in the room given an exposure time (hours), using the
@@ -135,8 +146,12 @@ class Indoors:
         return n_max
 
     # Calculate maximum exposure time allowed given a capacity (# people), transient
-    def calc_max_time(self, n_max):
+    def calc_max_time(self, n_max, risk_type='conditional'):
         risk_tolerance = self.prec_params[1]  # no units
+        if risk_type == 'prevalence':
+            risk_tolerance = ((n_max - 1) * risk_tolerance) / (n_max * n_max * self.prevalence * (1 - self.prevalence))
+        elif risk_type == 'personal':
+            risk_tolerance = risk_tolerance / self.prevalence
 
         exp_time_ss = risk_tolerance / ((n_max - 1) * self.airb_trans_rate)  # hrs, steady-state
         exp_time_trans = exp_time_ss * (1 + (1 + 4 / (self.conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient
@@ -191,6 +206,9 @@ class Indoors:
         mask_passage_prob = 0.1  # 1 = no masks, ~0.1 cloth, <0.05 N95
         risk_tolerance = 0.1  # expected transmissions per infector
         self.prec_params = [mask_passage_prob, risk_tolerance]
+
+        # Prevalence
+        self.prevalence = 0.01
 
     # Convert MERV rating to aerosol filtration efficiency
     # merv: if not integer, floor it
