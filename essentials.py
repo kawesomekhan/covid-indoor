@@ -34,6 +34,10 @@ translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei,
 m_to_ft = 3.28084
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
+tabs_card_style = {'margin': '1em', 'padding': '0', 'border': 'none'}
+
+main_panel_tab_style = {'margin-top': '0'}
+
 tab_style = {
     'padding-left': '1em',
     'padding-right': '1em',
@@ -180,7 +184,7 @@ recovery_time = 14  # Days
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
                 max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, n_max_input_b=2, exp_time_input_b=1,
-                prevalence_b=1):
+                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1):
     error_msg = ""
 
     desc_file = get_desc_file(language)
@@ -195,20 +199,16 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["aerosol_radius"]
     elif max_viral_deact_rate is None:
         error_msg = desc_file.error_list["viral_deact_rate"]
-    elif n_max_input is None or n_max_input < 2:
+    elif n_max_input is None or n_max_input < 2 or n_max_input_b is None or n_max_input_b < 2 or n_max_input_c is None or n_max_input_c < 2:
         error_msg = desc_file.error_list["n_max_input"]
-    elif exp_time_input == 0 or exp_time_input is None:
-        error_msg = desc_file.error_list["exp_time_input"]
-    elif n_max_input_b is None or n_max_input_b < 2:
-        error_msg = desc_file.error_list["n_max_input"]
-    elif exp_time_input_b == 0 or exp_time_input_b is None:
+    elif exp_time_input == 0 or exp_time_input is None or exp_time_input_b == 0 or exp_time_input_b is None or exp_time_input_c == 0 or exp_time_input_c is None:
         error_msg = desc_file.error_list["exp_time_input"]
     elif air_exchange_rate == 0 or air_exchange_rate is None:
         error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
         error_msg = desc_file.error_list["merv"]
-    elif prevalence_b <= 0 or prevalence_b >= 5:
-        error_msg = desc_file.error_list["prevalence"]
+    # elif prevalence_b <= 0 or prevalence_b >= 5 or prevalence_c <= 0 or prevalence_c >= 5:
+    #     error_msg = desc_file.error_list["prevalence"]
 
     return error_msg
 
@@ -390,9 +390,12 @@ def time_to_text(time, language):
 
 
 # Gets n max text
-def get_n_max_text(n, language):
+def get_n_max_text(n, n_max, language):
     desc_file = get_desc_file(language)
-    return desc_file.n_max_base_string.format(n)
+    if n > n_max:
+        return desc_file.n_max_overflow_base_string.format(n_max)
+    else:
+        return desc_file.n_max_base_string.format(n)
 
 
 # Returns the output text for the variables of interest, shown in the FAQ/Other Inputs & Outputs tab.
@@ -510,9 +513,7 @@ def get_lang_text_basic(language, disp_width):
             desc_file.mask_types,
             desc_file.mask_fit_text,
             desc_file.mask_fit_marks,
-            desc_file.risk_tolerance_text,
-            desc_file.risk_tol_desc,
-            risk_tol_marks,
+            desc_file.presets_risk,
             desc_file.need_more_ctrl_text,
             desc_file.faq_header,
             desc_file.faq_top,

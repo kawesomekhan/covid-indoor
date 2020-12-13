@@ -37,8 +37,6 @@ def update_mask_fit_disp: Updates mask fit/compliance filtration display based o
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd, "en")
 
-tabs_card_style = {'margin': '1em', 'padding': '0', 'border': 'none'}
-
 # Main App
 layout = html.Div(children=[
     dbc.Alert(
@@ -161,19 +159,6 @@ layout = html.Div(children=[
                                               ]),
                                     html.Br(),
                                     html.Br(),
-                                    html.Div([html.Span(desc.risk_tolerance_text, id='risk-tol-text'),
-                                              html.Span(className='model-output-text-small',
-                                                        id='risk-tolerance-output'),
-                                              html.Span(desc.risk_tol_desc, id='risk-tol-desc'),
-                                              dcc.Slider(id='risk-tolerance',
-                                                         min=0.01,
-                                                         max=1,
-                                                         step=0.01,
-                                                         value=0.1,
-                                                         marks=desc.risk_tol_marks)
-                                              ]),
-                                    html.Br(),
-                                    html.Br(),
                                     html.Span(desc.need_more_ctrl_text, id='need-more-ctrl-text-2'),
                                 ]
                             ),
@@ -264,7 +249,7 @@ layout = html.Div(children=[
                                      "primary": "#de1616"
                                  }),
                         html.Br()
-                    ], style=tabs_card_style),
+                    ], style=ess.tabs_card_style),
                 html.Div(
                     className='card',
                     children=[
@@ -288,7 +273,10 @@ layout = html.Div(children=[
                                                  clearable=False)
                                 ], className='card-presets'),
                                 html.Div([
-                                    html.H6(html.Span(desc.curr_risk_header, id='curr-risk-tol')),
+                                    html.H6([
+                                        html.Span(desc.curr_risk_header, id='curr-risk-tol'),
+                                        html.Span(id='risk-tolerance-output')
+                                    ]),
                                     dcc.Dropdown(id='presets-risk',
                                                  options=desc.presets_risk,
                                                  value=0.1,
@@ -354,7 +342,6 @@ layout = html.Div(children=[
                                         html.Span(desc.main_airb_trans_only_disc, id='main-airb-trans-disc')
                                     ], className='panel-airb-desc')
                                 ]),
-                                style={'margin-top': '0'}
                             ),
                             dcc.Tab(
                                 id='output-panel-tab-b',
@@ -366,7 +353,8 @@ layout = html.Div(children=[
                                             html.Span(desc.main_panel_s1_b, id='main-panel-s1-b'),
                                             html.Span(dcc.Input(id='prev-input-b',
                                                                 value=1,
-                                                                type='number')),
+                                                                type='number',
+                                                                step=0.1)),
                                             html.Span(desc.main_panel_s2_b, id='main-panel-s2-b')
                                         ]),
                                         dcc.Loading(
@@ -413,7 +401,6 @@ layout = html.Div(children=[
                                         html.Span(desc.main_airb_trans_only_desc_b, id='main-airb-trans-desc-b')
                                     ], className='panel-airb-desc')
                                 ]),
-                                style={'margin-top': '0'}
                             ),
                             dcc.Tab(
                                 id='output-panel-tab-c',
@@ -425,7 +412,8 @@ layout = html.Div(children=[
                                             html.Span(desc.main_panel_s1_c, id='main-panel-s1-c'),
                                             html.Span(dcc.Input(id='prev-input-c',
                                                                 value=1,
-                                                                type='number')),
+                                                                type='number',
+                                                                step=0.1)),
                                             html.Span(desc.main_panel_s2_c, id='main-panel-s2-c')
                                         ]),
                                         dcc.Loading(
@@ -472,14 +460,13 @@ layout = html.Div(children=[
                                         html.Span(desc.main_airb_trans_only_desc_c, id='main-airb-trans-desc-c')
                                     ], className='panel-airb-desc')
                                 ]),
-                                style={'margin-top': '0'}
                             ),
                         ],
                             colors={
                                 "border": "#c9c9c9",
                                 "primary": "#de1616"
                             })
-                    ], style=tabs_card_style
+                    ], style=ess.tabs_card_style
                 )
             ]
         ),
@@ -518,9 +505,7 @@ layout = html.Div(children=[
      Output('mask-type', 'options'),
      Output('mask-fit-text', 'children'),
      Output('mask-fit', 'marks'),
-     Output('risk-tol-text', 'children'),
-     Output('risk-tol-desc', 'children'),
-     Output('risk-tolerance', 'marks'),
+     Output('presets-risk', 'options'),
      Output('need-more-ctrl-text-2', 'children'),
      Output('tab-d', 'label'),
      Output('faq-top', 'children'),
@@ -564,10 +549,17 @@ def update_lang(search, window_width):
      Output('model-text-3-b', 'children'),
      Output('model-text-4-b', 'children'),
      Output('model-text-5-b', 'children'),
+     Output('model-text-1-c', 'children'),
+     Output('model-text-2-c', 'children'),
+     Output('model-text-3-c', 'children'),
+     Output('model-text-4-c', 'children'),
+     Output('model-text-5-c', 'children'),
      Output('six-ft-output', 'children'),
      Output('six-ft-output-t', 'children'),
      Output('six-ft-output-b', 'children'),
      Output('six-ft-output-t-b', 'children'),
+     Output('six-ft-output-c', 'children'),
+     Output('six-ft-output-t-c', 'children'),
      Output('presets', 'value'),
      Output('presets-human', 'value'),
      Output('air-frac-output', 'children'),
@@ -588,6 +580,8 @@ def update_lang(search, window_width):
      Output('n-output', 'children'),
      Output('t-output-b', 'children'),
      Output('n-output-b', 'children'),
+     Output('t-output-c', 'children'),
+     Output('n-output-c', 'children'),
      Output('alert-no-update', 'children'),
      Output('alert-no-update', 'is_open')],
     [Input('floor-area', 'value'),
@@ -600,26 +594,29 @@ def update_lang(search, window_width):
      Input('exp-activity', 'value'),
      Input('mask-type', 'value'),
      Input('mask-fit', 'value'),
-     Input('risk-tolerance', 'value'),
+     Input('presets-risk', 'value'),
      Input('n-input', 'value'),
      Input('t-input', 'value'),
      Input('n-input-b', 'value'),
      Input('t-input-b', 'value'),
+     Input('n-input-c', 'value'),
+     Input('t-input-c', 'value'),
      Input('prev-input-b', 'value'),
+     Input('prev-input-c', 'value'),
      Input('url', 'search')],
     [State('floor-area-text', 'children'),
      State('ceiling-height-text', 'children')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
                   breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, n_max_input, exp_time_input,
-                  n_max_input_b, exp_time_input_b, prevalence_b,
+                  n_max_input_b, exp_time_input_b, n_max_input_c, exp_time_input_c, prevalence_b, prevalence_c,
                   search, floor_area_text, ceiling_height_text):
     def_aerosol_radius = 2
     max_viral_deact_rate = 0.6
     language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
                                 max_viral_deact_rate, language, n_max_input, exp_time_input, n_max_input_b,
-                                exp_time_input_b, prevalence_b)
+                                exp_time_input_b, n_max_input_c, exp_time_input_c, prevalence_b, prevalence_c)
 
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -627,6 +624,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
@@ -680,11 +679,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     else:
         six_ft_exp_time = ""
 
-    exp_time_output = myInd.calc_max_time(n_max_input, 'conditional')
-    exp_time_text = ess.time_to_text(exp_time_output, language)
-
-    n_max_output = myInd.calc_n_max(exp_time_input, 'conditional')
-    n_max_text = ess.get_n_max_text(n_max_output, language)
+    exp_time_text = ess.time_to_text(myInd.calc_max_time(n_max_input, 'conditional'), language)
+    n_max_text = ess.get_n_max_text(myInd.calc_n_max(exp_time_input, 'conditional'), myInd.get_n_max(), language)
 
     # Prevalence Outputs (Given the prevalence of infection...)
     myInd.prevalence = prevalence_b / 100
@@ -695,23 +691,31 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     else:
         six_ft_exp_time_b = ""
 
-    exp_time_output_b = myInd.calc_max_time(n_max_input_b, 'prevalence')
-    exp_time_text_b = ess.time_to_text(exp_time_output_b, language)
+    exp_time_text_b = ess.time_to_text(myInd.calc_max_time(n_max_input_b, 'prevalence'), language)
+    n_max_text_b = ess.get_n_max_text(myInd.calc_n_max(exp_time_input_b, 'prevalence'), myInd.get_n_max(), language)
 
-    n_max_output_b = myInd.calc_n_max(exp_time_input_b, 'prevalence')
-    # print(n_max_output_b)
-    n_max_text_b = ess.get_n_max_text(n_max_output_b, language)
+    # Personal Outputs (To limit my personal risk...)
+    myInd.prevalence = prevalence_c / 100
+    model_output_text_c = ess.get_model_output_text(myInd, 'personal', language)
+    six_ft_text_c = ess.get_six_ft_text(myInd, language)
+    if language == "en":
+        six_ft_exp_time_c = ess.time_to_text(myInd.calc_max_time(myInd.get_six_ft_n(), 'personal'), language) + "."
+    else:
+        six_ft_exp_time_c = ""
+
+    exp_time_text_c = ess.time_to_text(myInd.calc_max_time(n_max_input_c, 'personal'), language)
+    n_max_text_c = ess.get_n_max_text(myInd.calc_n_max(exp_time_input_c, 'personal'), myInd.get_n_max(), language)
 
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text_b[0], model_output_text_b[1], model_output_text_b[2], \
-           model_output_text_b[3], model_output_text_b[4],\
-           six_ft_text, six_ft_exp_time, six_ft_text_b, six_ft_exp_time_b, preset_dd_value, human_preset_dd_value, \
-           interest_output[0], \
-           interest_output[1], interest_output[2], \
-           interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
-           interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
-           interest_output[13], exp_time_text, n_max_text, exp_time_text_b, n_max_text_b, error_msg, False
+           model_output_text_b[3], model_output_text_b[4], model_output_text_c[0], model_output_text_c[1], \
+           model_output_text_c[2], model_output_text_c[3], model_output_text_c[4], six_ft_text, six_ft_exp_time, \
+           six_ft_text_b, six_ft_exp_time_b, six_ft_text_c, six_ft_exp_time_c, preset_dd_value, human_preset_dd_value, \
+           interest_output[0], interest_output[1], interest_output[2], interest_output[3], interest_output[4], \
+           interest_output[5], interest_output[6], interest_output[7], interest_output[8], interest_output[9], \
+           interest_output[10], interest_output[11], interest_output[12], interest_output[13], \
+           exp_time_text, n_max_text, exp_time_text_b, n_max_text_b, exp_time_text_c, n_max_text_c, error_msg, False
 
 
 # Update options based on selected presets, also if units changed
@@ -833,7 +837,7 @@ def update_humid_disp(relative_humidity):
 # Risk tolerance slider value display
 @app.callback(
     [Output('risk-tolerance-output', 'children')],
-    [Input('risk-tolerance', 'value')]
+    [Input('presets-risk', 'value')]
 )
 def update_risk_tol_disp(risk_tolerance):
     return ["{:.2f}".format(risk_tolerance)]

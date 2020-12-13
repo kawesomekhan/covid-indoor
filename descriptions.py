@@ -83,13 +83,13 @@ error_list = {
 curr_room_header = "Current Room Specifications: "
 presets = [
     {'label': "Custom", 'value': 'custom'},
-    {'label': "Suburban House", 'value': 'house'},
-    {'label': "Restaurant", 'value': 'restaurant'},
-    {'label': "Quiet Office", 'value': 'office'},
     {'label': "Classroom Lecture", 'value': 'classroom'},
+    {'label': "Suburban House", 'value': 'house'},
+    {'label': "Church", 'value': 'church'},
+    {'label': "Restaurant", 'value': 'restaurant'},
+    {'label': "Office/Workplace", 'value': 'office'},
     {'label': "New York City Subway Car", 'value': 'subway'},
     {'label': "Boeing 737", 'value': 'airplane'},
-    {'label': "Church", 'value': 'church'},
 ]
 
 curr_human_header = "Current Human Behavior: "
@@ -104,9 +104,9 @@ presets_human = [
 
 curr_risk_header = "Current Risk Tolerance: "
 presets_risk = [
-    {'label': "Very Low", 'value': 0.01},
+    {'label': "Very Low (vulnerable populations)", 'value': 0.01},
     {'label': "Low", 'value': 0.1},
-    {'label': "Moderate", 'value': 0.3},
+    {'label': "Moderate (less vulnerable populations)", 'value': 0.3},
 ]
 
 main_panel_s1 = '''To limit COVID-19 transmission* after an infected person enters this space, 
@@ -168,6 +168,7 @@ airb_trans_only_disc = html.Div('''based on consideration of airborne transmissi
 # Bottom panels text
 n_input_text_1 = "If this room has "
 n_max_base_string = ' {:.0f} people'
+n_max_overflow_base_string = ' >{:.0f} people'
 n_input_text_2 = " people, its occupants will become unsafe after "
 n_input_text_3 = "."
 

@@ -69,12 +69,9 @@ body {
 .output-content {
     display: grid;
     grid-template-rows: 1fr auto;
-    padding-right: 1em;
-    height: 100%;
 }
 .panel-main-output {
-    overflow-y: scroll;
-    overflow-x: hidden;
+
 }
 /* Card Footer/Disclaimer Text */
 .airborne-text {
@@ -87,7 +84,7 @@ body {
 .grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: auto 1fr;
     padding: 0;
 }
 .card {
