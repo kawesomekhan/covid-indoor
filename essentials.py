@@ -32,6 +32,7 @@ translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei,
                         Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 m_to_ft = 3.28084
+month_to_hour = 730.001
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
 tabs_card_style = {'margin': '1em', 'padding': '0', 'border': 'none'}
@@ -137,33 +138,45 @@ room_preset_settings = {
 }
 
 human_preset_settings = {
-    'masks-3': {
+    'masks-1': {
         'exertion': 0.49,
-        'expiratory': 72,
+        'expiratory': 4.2,
         'masks': 0.9,
         'mask-fit': 0.95
     },
     'masks-2': {
-        'exertion': 0.54,
+        'exertion': 0.49,
         'expiratory': 72,
         'masks': 0.9,
         'mask-fit': 0.95
     },
-    'masks-1': {
-        'exertion': 0.49,
-        'expiratory': 29,
+    'masks-3': {
+        'exertion': 2.35,
+        'expiratory': 8.8,
         'masks': 0.9,
         'mask-fit': 0.95
     },
     'no-masks-1': {
         'exertion': 0.49,
-        'expiratory': 72,
+        'expiratory': 4.2,
         'masks': 0,
         'mask-fit': 0.95
     },
     'no-masks-2': {
-        'exertion': 0.54,
+        'exertion': 0.49,
         'expiratory': 72,
+        'masks': 0,
+        'mask-fit': 0.95
+    },
+    'no-masks-3': {
+        'exertion': 2.35,
+        'expiratory': 8.8,
+        'masks': 0,
+        'mask-fit': 0.95
+    },
+    'singing-1': {
+        'exertion': 1,
+        'expiratory': 970,
         'masks': 0,
         'mask-fit': 0.95
     }
@@ -207,7 +220,7 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
         error_msg = desc_file.error_list["merv"]
-    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 99 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 99:
+    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 100000 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 100000:
         error_msg = desc_file.error_list["prevalence"]
 
     return error_msg
@@ -320,19 +333,12 @@ def get_model_output_text(indoor_model, risk_type, language):
             break
         else:
             max_time = indoor_model.calc_max_time(n_val, risk_type)  # hours
-            time_text = time_to_text(max_time, language)
-
-            is_past_recovery = round(max_time) > (24 * recovery_time)
-            if is_past_recovery:
-                base_string = desc_file.is_past_recovery_base_string
-                max_time = recovery_time
-                model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
+            time_text = time_to_text(max_time, True, language)
+            if language in flipped_output_langs:
+                base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
             else:
-                if language in flipped_output_langs:
-                    base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
-                else:
-                    base_string = desc_file.model_output_base_string + time_text
-                model_output_text[index] = base_string.format(n_val=n_val)
+                base_string = desc_file.model_output_base_string + time_text
+            model_output_text[index] = base_string.format(n_val=n_val)
 
         index += 1
 
@@ -358,25 +364,37 @@ def get_six_ft_text(indoor_model, language):
 
 
 # Converts a time (in hours) into a text with formatting based on minutes/hours/days
-def time_to_text(time, language):
+def time_to_text(time, keep_hours, language):
     desc_file = get_desc_file(language)
     has_recovered = False
+    pretty_time = time
 
     if round(time) < 2:
-        time = time * 60
-        if round(time) == 1:
+        pretty_time_range = "Minutes"
+        pretty_time = time * 60
+        if round(pretty_time) == 1:
             units = desc_file.units_min_one
         else:
             units = desc_file.units_min
+    elif round(time) > month_to_hour:
+        pretty_time_range = "Months"
+        pretty_time = time / month_to_hour
+        if round(pretty_time) == 1:
+            units = desc_file.units_month_one
+        else:
+            has_recovered = pretty_time > recovery_time
+            units = desc_file.units_months
     elif round(time) > 48:
-        time = time / 24
-        if round(time) == 1:
+        pretty_time_range = "Days"
+        pretty_time = time / 24
+        if round(pretty_time) == 1:
             units = desc_file.units_day_one
         else:
-            has_recovered = time > recovery_time
+            has_recovered = pretty_time > recovery_time
             units = desc_file.units_days
     else:
-        if round(time) == 1:
+        pretty_time_range = "Hours"
+        if round(pretty_time) == 1:
             units = desc_file.units_hr_one
         else:
             units = desc_file.units_hr
@@ -385,8 +403,25 @@ def time_to_text(time, language):
         base_string = '>{val:.0f} ' + units
         return base_string.format(val=recovery_time)
     else:
-        base_string = '{val:.0f} ' + units
-        return base_string.format(val=time)
+        if keep_hours:
+            long_units = units
+            if round(time) == 1:
+                units = desc_file.units_hr_one
+            else:
+                units = desc_file.units_hr
+
+            if pretty_time_range == "Hours":
+                base_string = '{val:,.0f} ' + units
+                return base_string.format(val=time)
+            elif pretty_time_range == "Days" or pretty_time_range == "Months":
+                base_string = '{val:,.0f} ' + units + ' ({longval:,.0f} ' + long_units + ')'
+                return base_string.format(val=time, longval=pretty_time)
+            else:
+                base_string = '{val:,.0f} ' + long_units
+                return base_string.format(val=pretty_time)
+        else:
+            base_string = '{val:,.0f} ' + units
+            return base_string.format(val=pretty_time)
 
 
 # Gets n max text
@@ -444,6 +479,24 @@ def get_interest_output_text(indoor_model, units):
         ]
 
     return interest_output
+
+
+# Returns the value for Qb given the units.
+def get_qb_text(indoor_model, units):
+    breathing_flow_rate = indoor_model.physio_params[0]
+    if units == 'british':
+        return '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60)  # m3/hr to ft3/min
+    elif units == 'metric':
+        return '{:,.2f} m\u00B3/hr'.format(breathing_flow_rate)
+
+
+# Returns the value for Cq given the units.
+def get_cq_text(indoor_model, units):
+    infectiousness = indoor_model.disease_params[0]
+    if units == 'british':
+        return '{:,.2f} q/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
+    elif units == 'metric':
+        return '{:,.2f} q/m\u00B3'.format(infectiousness)
 
 
 # Returns a dictionary of parameters and values given by the search url.

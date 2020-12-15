@@ -1,4 +1,5 @@
 import dash_html_components as html
+import descriptions_links as links
 
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
@@ -7,43 +8,36 @@ descriptions: English
 
 """
 
-link_paper = "https://www.medrxiv.org/content/10.1101/2020.08.26.20182824v2"
-link_docs = "https://docs.google.com/document/d/1fB5pysccOHvxphpTmCG_TGdytavMmc1cUumn8m0pwzo/edit"
-link_nature = "https://www.nature.com/articles/d41586-020-02058-1"
-link_mooc = "https://www.edx.org/course/physics-of-covid-19-transmission?utm_campaign=mitx&utm_medium=partner-marketing&utm_source=affiliate&utm_content=10.s95x-app"
 
 # Header
 header = html.Div([
     html.H1(children='COVID-19 Indoor Safety Guideline'),
     html.Div([
-        html.Div([html.Span(html.A(href="https://www.linkedin.com/in/kasim-k-a92620b1/",
+        html.Div([html.Span(html.A(href=links.link_kasim,
                                    children="Kasim Khan",
                                    target='_blank')),
                   ", ",
-                  html.Span(html.A(href="https://math.mit.edu/~bush/",
+                  html.Span(html.A(href=links.link_bush,
                                    children="John W. M. Bush",
                                    target='_blank')),
                   ", and ",
-                  html.Span(html.A(href="https://www.mit.edu/~bazant/",
+                  html.Span(html.A(href=links.link_bazant,
                                    children="Martin Z. Bazant",
                                    target='_blank')),
                   ""]),
         html.Div([html.Span(["Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19 ("]),
-                  html.Span(html.A(href=link_paper,
+                  html.Span(html.A(href=links.link_paper,
                                    target='_blank',
                                    children='''Bazant & Bush, 2020''')),
                   html.Span(")")]),
         html.Div([
-            html.A(href='http://web.mit.edu/bazant/www/COVID-19/',
-                   children='''
-                            http://web.mit.edu/bazant/www/COVID-19/
-                        ''', target='_blank'),
+            html.A(href=links.link_bazant_covid,
+                   children=links.link_bazant_covid,
+                   target='_blank'),
         ]),
         html.Div([
-            html.A(href='https://github.com/kawesomekhan/covid-indoor',
-                   children=[
-                       "https://github.com/kawesomekhan/covid-indoor"
-                   ],
+            html.A(href=links.link_github,
+                   children=links.link_github,
                    target='_blank'),
         ]),
     ], className='header-small-text')
@@ -76,7 +70,7 @@ error_list = {
     "exp_time_input": "Error: Exposure time must be greater than 0.",
     "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
     "merv": "Error: Filtration System (MERV) cannot be empty.",
-    "prevalence": "Error: Prevalence must be greater than 0% and less than 99%."
+    "prevalence": "Error: Incidence rate must be greater than 0 and less than 100,000."
 }
 
 # Main Panel Text
@@ -95,36 +89,48 @@ presets = [
 curr_human_header = "Current Human Behavior: "
 presets_human = [
     {'label': "Custom", 'value': 'custom'},
-    {'label': "Masks, Standing & Talking", 'value': 'masks-2'},
-    {'label': "Masks, Sitting & Talking", 'value': 'masks-3'},
-    {'label': "Masks, Sitting & Whispering", 'value': 'masks-1'},
-    {'label': "No Masks, Standing & Talking", 'value': 'no-masks-2'},
-    {'label': "No Masks, Sitting & Talking", 'value': 'no-masks-1'},
+    {'label': "Masks, Resting", 'value': 'masks-1'},
+    {'label': "Masks, Speaking", 'value': 'masks-2'},
+    {'label': "Masks, Exercise", 'value': 'masks-3'},
+    {'label': "No Masks, Resting", 'value': 'no-masks-1'},
+    {'label': "No Masks, Speaking", 'value': 'no-masks-2'},
+    {'label': "No Masks, Exercise", 'value': 'no-masks-3'},
+    {'label': "No Masks, Singing", 'value': 'singing-1'},
 ]
 
 curr_risk_header = "Current Risk Tolerance: "
 presets_risk = [
-    {'label': "Very Low (vulnerable populations)", 'value': 0.01},
+    {'label': "Very Low (more vulnerable populations)", 'value': 0.01},
     {'label': "Low", 'value': 0.1},
-    {'label': "Moderate (less vulnerable populations)", 'value': 0.3},
+    {'label': "High (less vulnerable populations)", 'value': 1},
 ]
 
 main_panel_s1 = '''To limit COVID-19 transmission* after an infected person enters this space, 
 there should be no more than: '''
 
-main_panel_s1_b = '''To limit COVID-19 transmission* in a population where '''
-main_panel_s2_b = '''% are infected, this space should have no more than: '''
+main_panel_s1_b = html.Span([
+    html.Span('''To limit COVID-19 transmission* in a population with an incidence rate'''),
+    html.Sup('''1'''),
+    html.Span(''' of ''')
+])
+main_panel_s2_b = ''' per 100,000, this space should have no more than: '''
 
-main_panel_s1_c = '''To limit my chance of being infected by COVID-19 in a space where '''
-main_panel_s2_c = '''% are infected, this space should have no more than: '''
+main_panel_s1_c = html.Span([
+    html.Span('''To limit my chance of being infected by COVID-19 in a population with an incidence rate'''),
+    html.Sup('''1'''),
+    html.Span(''' of ''')
+])
+main_panel_s2_c = ''' per 100,000, this space should have no more than: '''
 
 units_hr = 'hours'
 units_min = 'minutes'
 units_days = 'days'
+units_months = 'months'
 
 units_hr_one = 'hour'
 units_min_one = 'minute'
 units_day_one = 'day'
+units_month_one = 'month'
 
 is_past_recovery_base_string = '{n_val} people for >{val:.0f} days,'
 model_output_base_string = '{n_val} people for '
@@ -142,21 +148,21 @@ transient_text = "Transient"
 steady_state_text = "Steady-State"
 
 main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
-                                      html.Span(html.A(href=link_docs,
+                                      html.Span(html.A(href=links.link_docs,
                                                        children="airborne transmissions",
                                                        target='_blank'), ),
                                       html.Span(''' per infected person to be less than the risk tolerance 
                                       over the cumulative exposure time 
                                       listed.''')], className='airborne-text')
 main_airb_trans_only_desc_b = html.Div(["*The guideline restricts the probability of one ",
-                                      html.Span(html.A(href=link_docs,
+                                      html.Span(html.A(href=links.link_docs,
                                                        children="airborne transmission",
                                                        target='_blank'), ),
                                       html.Span(''' per infected person to be less than the risk tolerance 
                                       over the cumulative exposure time 
                                       listed.''')], className='airborne-text')
 main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probability of ",
-                                      html.Span(html.A(href=link_docs,
+                                      html.Span(html.A(href=links.link_docs,
                                                        children="airborne transmission",
                                                        target='_blank'), ),
                                       html.Span(''' to a particular individual to be less than the risk tolerance 
@@ -164,6 +170,17 @@ main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probabilit
                                       listed.''')], className='airborne-text')
 
 airb_trans_only_disc = html.Div('''based on consideration of airborne transmission only.''', className='airborne-text')
+
+incidence_rate_refs = html.Div([html.Sup('''1'''),
+                                html.Span('''To estimate your local incidence rate, here are some helpful resources: '''),
+                                      html.Span(html.A(href=links.link_jhu_dashboard,
+                                                       children="JHU COVID-19 Dashboard",
+                                                       target='_blank')),
+                                      html.Span(''', '''),
+                                html.Span(html.A(href=links.link_cdc_dashboard,
+                                                 children="CDC COVID-19 Data Tracker",
+                                                 target='_blank')),
+                                ], className='airborne-text')
 
 # Bottom panels text
 n_input_text_1 = "If this room has "
@@ -186,7 +203,7 @@ about = html.Div([
     html.Br(),
     html.Div([html.Span('''There is growing '''),
               html.A(children="scientific evidence",
-                     href=link_docs,
+                     href=links.link_docs,
                      target='_blank'),
               html.Span(''' for airborne transmission of COVID-19, which occurs when 
     infectious aerosol droplets are exchanged by breathing shared indoor air. While public health organizations are 
@@ -196,7 +213,7 @@ about = html.Div([
     html.Div([html.Span('''This app, developed by Kasim Khan in collaboration with Martin Z. Bazant and John W. M. Bush, 
     uses a '''),
               html.A(children="theoretical model",
-                     href=link_paper,
+                     href=links.link_paper,
                      target='_blank'),
               html.Span(''' to calculate safe exposure times and occupancy levels for indoor spaces.  By adjusting 
     room specifications, ventilation and filtration rates, face-mask usage, respiratory activities, 
@@ -206,7 +223,7 @@ about = html.Div([
     html.Div([html.Span('''The science behind the app is also taught in a free, self-paced massive, open online 
     course (MOOC) on edX: '''),
               html.A(children="10.S95x Physics of COVID-19 Transmission",
-                     href=link_mooc,
+                     href=links.link_mooc,
                      target='_blank')])
 ])
 
@@ -271,10 +288,11 @@ need_more_ctrl_text = '''Need more control over your inputs? Switch to Advanced 
 
 human_header = "Human Behavior"
 # Human Behavior
-exertion_text = "Exertion Level: "
+exertion_text = "Breathing Rate: "
 exertion_types = [
     {'label': "Resting", 'value': 0.49},
     {'label': "Standing", 'value': 0.54},
+    {'label': "Singing", 'value': 1},
     {'label': "Light Exercise", 'value': 1.38},
     {'label': "Moderate Exercise", 'value': 2.35},
     {'label': "Heavy Exercise", 'value': 3.30},
@@ -325,8 +343,8 @@ transmissions during the expected occupancy period (see FAQ for details).''', st
                                                                                      'margin-left': '20px'})
 risk_tol_marks = {
     # 0.01: {'label': '0.01: Safer', 'style': {'max-width': '50px'}},
-    0.1: {'label': '0.10: Safe', 'style': {'max-width': '50px'}},
-    1: {'label': '1.00: Unsafe'}
+    0.1: {'label': '0.10: Low', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: High'}
 }
 
 # FAQ/Other Inputs & Outputs
@@ -340,7 +358,7 @@ faq_top = html.Div([
         html.Div([html.Span('''6 feet/2 meter spacing protects you from large drops ejected by an infected person coughing, 
         as do face masks; however, it doesn’t protect against '''),
                   html.A(children="airborne transmission",
-                         href=link_docs,
+                         href=links.link_docs,
                          target='_blank'),
                   html.Span(''' by infectious aerosols that are 
         suspended in the air and can be mixed throughout a room. Indoors, people are no safer from airborne 
@@ -350,7 +368,7 @@ faq_top = html.Div([
     html.H5("Are there other modes of transmission?"),
     html.Div([
         html.Div([html.A(children="Airborne transmission",
-                         href=link_docs,
+                         href=links.link_docs,
                          target='_blank'),
                   html.Span(''' is thought to be dominant for COVID-19, but other modes are possible, such as `fomite’ 
                   transmission through direct contact with infectious residues on surfaces, `large-droplet' 
@@ -366,7 +384,7 @@ faq_top = html.Div([
         flows (from heaters, air conditioners or windows), forced convection from vents and fans, and human motion 
         and respiration. While there are exceptions, as discussed in the '''),
                   html.A(children="paper",
-                         href=link_paper,
+                         href=links.link_paper,
                          target='_blank'),
                   html.Span(''', the assumption of well-mixedness is widely used in the theoretical modeling of 
                   airborne disease transmission.''')]),
@@ -379,7 +397,7 @@ faq_top = html.Div([
         when masks or face shields are not worn, there is an additional risk of short-range transmission through 
         respiratory jets, estimated in the '''),
                   html.A(children="paper",
-                         href=link_paper,
+                         href=links.link_paper,
                          target='_blank'),
                   html.Span('''.''')]),
     ], className='faq-answer'),
@@ -408,7 +426,7 @@ faq_other_params_text = html.Div([
     html.H5("Are there any hidden parameters in Basic Mode?"),
     html.Div([html.Span('''All of the relevant physical parameters are detailed in the '''),
               html.A(children="paper",
-                     href=link_paper,
+                     href=links.link_paper,
                      target='_blank'),
               html.Span('''. In Basic Mode, the app assumes a default effective aerosol radius of 2 μm (at 60% 
               humidity) and a maximum viral deactivation rate of 0.6 /hr (at ~100% humidity), both of which increase 
@@ -420,7 +438,7 @@ faq_other_params_text = html.Div([
               html.Span(''' (infection quanta per unit volume), from the specified 
               respiratory activity, using tabulated values in Figure 2 of the '''),
               html.A(children="paper",
-                     href=link_paper,
+                     href=links.link_paper,
                      target='_blank'),
               html.Span('''. You define these parameters yourself in Advanced Mode.''')],
              className='faq-answer'),
@@ -439,7 +457,7 @@ values_interest_desc = html.Div([
         the chosen risk tolerance.
         The app also calculates related quantities, defined in the '''),
                   html.A(children="paper",
-                         href=link_paper,
+                         href=links.link_paper,
                          target='_blank'),
                   html.Span(''', that may be of interest:''')]),
     ], className='faq-answer'),
@@ -480,7 +498,7 @@ assumptions_layout = html.Div([
     html.H5("More Questions?"),
     html.Div([html.Span('''For more detailed explanations and references, see "'''),
               html.A(children="Beyond 6 Feet",
-                     href=link_paper,
+                     href=links.link_paper,
                      target='_blank'),
               html.Span('''" and other links posted at the top of the webpage.''')]),
 ])
@@ -494,7 +512,7 @@ footer = html.Div([
     through respiratory jets, which may substantially elevate risk when face masks are not being worn, in a manner 
     discussed in the '''),
               html.A(children="accompanying manuscript",
-                     href=link_paper,
+                     href=links.link_paper,
                      target='_blank'),
               html.Span(''' (Bazant & Bush, 2020). Use of the COVID-19 Indoor Safety Guideline is the sole 
               responsibility of the user. It is being made available without guarantee or warranty of any kind. The 

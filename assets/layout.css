@@ -2,6 +2,7 @@
 
 :root {
     --big-number-input-width: 90px;
+    --prevalence-input-width: 120px;
 }
 
 /* For default, desktop layout */
@@ -78,7 +79,6 @@ body {
 }
 /* Card Footer/Disclaimer Text */
 .airborne-text {
-    padding-top: 1em;
     bottom: 1em;
 }
 
@@ -112,6 +112,7 @@ body {
 .tab-content {
     padding: 1em;
     padding-top: 0;
+    padding-bottom: 0;
     height: 100%;
     max-height: 600px;
     margin: 2em;
@@ -128,10 +129,12 @@ body {
     font-size: 13px;
 }
 
-/* Bottom Panels */
 #adv-n-input, #n-input, #n-input-b, #n-input-c, #adv-n-input-b, #adv-n-input-c, #adv-t-input, #t-input,
-#t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c, #prev-input-b, #prev-input-c, #adv-prev-input-b, #adv-prev-input-c {
+#t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c {
     width: var(--big-number-input-width);
+}
+#prev-input-b, #prev-input-c, #adv-prev-input-b, #adv-prev-input-c {
+    width: var(--prevalence-input-width);
 }
 
 /* Intermediate Size */
