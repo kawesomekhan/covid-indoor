@@ -678,38 +678,32 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     interest_output = ess.get_interest_output_text(myInd, my_units)
 
     # Conditional Outputs (If an infected person enters...)
-    model_output_text = ess.get_model_output_text(myInd, 'conditional', language)
+    model_output_text = ess.get_model_output_text(myInd, 'conditional', ess.covid_recovery_time, language)
     six_ft_text = ess.get_six_ft_text(myInd, language)
-    if language == "en":
-        six_ft_exp_time = ess.time_to_text(myInd.calc_max_time(myInd.get_six_ft_n(), 'conditional'), True, language) + "."
-    else:
-        six_ft_exp_time = ""
+    six_ft_exp_time = ess.get_six_ft_exp_time(myInd, 'conditional', ess.covid_recovery_time, language)
 
-    exp_time_text = ess.time_to_text(myInd.calc_max_time(n_max_input, 'conditional'), True, language)
+    exp_time_text = ess.time_to_text(myInd.calc_max_time(n_max_input, 'conditional'), True, ess.covid_recovery_time,
+                                     language)
     n_max_text = ess.get_n_max_text(myInd.calc_n_max(exp_time_input, 'conditional'), myInd.get_n_max(), language)
 
     # Prevalence Outputs (Given the prevalence of infection...)
     myInd.prevalence = prevalence_b / 100000
-    model_output_text_b = ess.get_model_output_text(myInd, 'prevalence', language)
+    model_output_text_b = ess.get_model_output_text(myInd, 'prevalence', -1, language)
     six_ft_text_b = ess.get_six_ft_text(myInd, language)
-    if language == "en":
-        six_ft_exp_time_b = ess.time_to_text(myInd.calc_max_time(myInd.get_six_ft_n(), 'prevalence'), True, language) + "."
-    else:
-        six_ft_exp_time_b = ""
+    six_ft_exp_time_b = ess.get_six_ft_exp_time(myInd, 'personal', -1, language)
 
-    exp_time_text_b = ess.time_to_text(myInd.calc_max_time(n_max_input_b, 'prevalence'), True, language)
+    exp_time_text_b = ess.time_to_text(myInd.calc_max_time(n_max_input_b, 'prevalence'), True, -1,
+                                       language)
     n_max_text_b = ess.get_n_max_text(myInd.calc_n_max(exp_time_input_b, 'prevalence'), myInd.get_n_max(), language)
 
     # Personal Outputs (To limit my personal risk...)
     myInd.prevalence = prevalence_c / 100000
-    model_output_text_c = ess.get_model_output_text(myInd, 'personal', language)
+    model_output_text_c = ess.get_model_output_text(myInd, 'personal', -1, language)
     six_ft_text_c = ess.get_six_ft_text(myInd, language)
-    if language == "en":
-        six_ft_exp_time_c = ess.time_to_text(myInd.calc_max_time(myInd.get_six_ft_n(), 'personal'), True, language) + "."
-    else:
-        six_ft_exp_time_c = ""
+    six_ft_exp_time_c = ess.get_six_ft_exp_time(myInd, 'personal', -1, language)
 
-    exp_time_text_c = ess.time_to_text(myInd.calc_max_time(n_max_input_c, 'personal'), True, language)
+    exp_time_text_c = ess.time_to_text(myInd.calc_max_time(n_max_input_c, 'personal'), True, -1,
+                                       language)
     n_max_text_c = ess.get_n_max_text(myInd.calc_n_max(exp_time_input_c, 'personal'), myInd.get_n_max(), language)
 
     # Update all relevant display items (figure, red output text)

@@ -33,6 +33,7 @@ translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei,
 
 m_to_ft = 3.28084
 month_to_hour = 730.001
+month_to_day = 30.4167
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
 tabs_card_style = {'margin': '1em', 'padding': '0', 'border': 'none'}
@@ -191,7 +192,7 @@ model_output_n_vals = [2, 5, 10, 25, 100]
 model_output_n_vals_big = [25, 100, 250, 500, 1000]
 
 # Max time reported in the big red text output
-recovery_time = 14  # Days
+covid_recovery_time = 14  # Days
 
 
 # Determines what error message we should use, if any
@@ -314,7 +315,9 @@ def get_model_figure(indoor_model, language):
 
 
 # Returns the big red output text.
-def get_model_output_text(indoor_model, risk_type, language):
+# recovery_time: Time to recovery in days
+# If recovery time is -1, will not limit the output.
+def get_model_output_text(indoor_model, risk_type, recovery_time, language):
     desc_file = get_desc_file(language)
     # Check if we should use the normal n vals, or the big n vals
     n_val_series = model_output_n_vals
@@ -333,7 +336,7 @@ def get_model_output_text(indoor_model, risk_type, language):
             break
         else:
             max_time = indoor_model.calc_max_time(n_val, risk_type)  # hours
-            time_text = time_to_text(max_time, True, language)
+            time_text = time_to_text(max_time, True, recovery_time, language)
             if language in flipped_output_langs:
                 base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
             else:
@@ -363,11 +366,36 @@ def get_six_ft_text(indoor_model, language):
     return six_ft_text
 
 
-# Converts a time (in hours) into a text with formatting based on minutes/hours/days
-def time_to_text(time, keep_hours, language):
+# Returns the six feet distancing time.
+# recovery_time: Time to recovery in days
+# If recovery time is -1, will not limit the output.
+def get_six_ft_exp_time(indoor_model, risk_type, recovery_time, language):
+    if language == "en":
+        six_ft_n = indoor_model.get_six_ft_n()
+        if six_ft_n < 2:
+            six_ft_exp_time = "<" + time_to_text(indoor_model.calc_max_time(2, risk_type), True, recovery_time,
+                                                 language) + "."
+        else:
+            six_ft_exp_time = time_to_text(indoor_model.calc_max_time(six_ft_n, risk_type), True, recovery_time,
+                                           language) + "."
+    else:
+        six_ft_exp_time = ""
+
+    return six_ft_exp_time
+
+
+# Converts a time (in hours) into a text with formatting based on minutes/hours/days.
+# recovery_time: Time to recovery in days
+# If recovery time is -1, will not limit the output.
+def time_to_text(time, keep_hours, recovery_time, language):
     desc_file = get_desc_file(language)
-    has_recovered = False
     pretty_time = time
+
+    if recovery_time != -1:
+        if round(time) > recovery_time * 24:
+            units = desc_file.units_days
+            base_string = '>{val:.0f} ' + units
+            return base_string.format(val=recovery_time)
 
     if round(time) < 2:
         pretty_time_range = "Minutes"
@@ -382,7 +410,6 @@ def time_to_text(time, keep_hours, language):
         if round(pretty_time) == 1:
             units = desc_file.units_month_one
         else:
-            has_recovered = pretty_time > recovery_time
             units = desc_file.units_months
     elif round(time) > 48:
         pretty_time_range = "Days"
@@ -390,7 +417,6 @@ def time_to_text(time, keep_hours, language):
         if round(pretty_time) == 1:
             units = desc_file.units_day_one
         else:
-            has_recovered = pretty_time > recovery_time
             units = desc_file.units_days
     else:
         pretty_time_range = "Hours"
@@ -399,34 +425,32 @@ def time_to_text(time, keep_hours, language):
         else:
             units = desc_file.units_hr
 
-    if has_recovered:
-        base_string = '>{val:.0f} ' + units
-        return base_string.format(val=recovery_time)
-    else:
-        if keep_hours:
-            long_units = units
-            if round(time) == 1:
-                units = desc_file.units_hr_one
-            else:
-                units = desc_file.units_hr
-
-            if pretty_time_range == "Hours":
-                base_string = '{val:,.0f} ' + units
-                return base_string.format(val=time)
-            elif pretty_time_range == "Days" or pretty_time_range == "Months":
-                base_string = '{val:,.0f} ' + units + ' ({longval:,.0f} ' + long_units + ')'
-                return base_string.format(val=time, longval=pretty_time)
-            else:
-                base_string = '{val:,.0f} ' + long_units
-                return base_string.format(val=pretty_time)
+    if keep_hours:
+        long_units = units
+        if round(time) == 1:
+            units = desc_file.units_hr_one
         else:
+            units = desc_file.units_hr
+
+        if pretty_time_range == "Hours":
             base_string = '{val:,.0f} ' + units
+            return base_string.format(val=time)
+        elif pretty_time_range == "Days" or pretty_time_range == "Months":
+            base_string = '{val:,.0f} ' + units + ' ({longval:,.0f} ' + long_units + ')'
+            return base_string.format(val=time, longval=pretty_time)
+        else:
+            base_string = '{val:,.0f} ' + long_units
             return base_string.format(val=pretty_time)
+    else:
+        base_string = '{val:,.0f} ' + units
+        return base_string.format(val=pretty_time)
 
 
 # Gets n max text
 def get_n_max_text(n, n_max, language):
     desc_file = get_desc_file(language)
+    if n < 2:
+        return "<" + desc_file.n_max_base_string.format(2)
     if n > n_max:
         return desc_file.n_max_overflow_base_string.format(n_max)
     else:
