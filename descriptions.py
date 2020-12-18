@@ -82,7 +82,7 @@ error_list = {
 curr_room_header = "Current Room Specifications: "
 presets = [
     {'label': "Custom", 'value': 'custom'},
-    {'label': "Suburban House", 'value': 'house'},
+    {'label': "Living Room", 'value': 'living-room'},
     {'label': "Restaurant", 'value': 'restaurant'},
     {'label': "Quiet Office", 'value': 'office'},
     {'label': "Classroom Lecture", 'value': 'classroom'},

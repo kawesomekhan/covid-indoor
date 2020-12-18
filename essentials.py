@@ -60,6 +60,16 @@ room_preset_settings = {
         'recirc-rate': 1,
         'rh': 0.6
     },
+    'living-room': {
+        'floor-area': 400,
+        'ceiling-height': 9,
+        'floor-area-metric': 400 / m_to_ft / m_to_ft,
+        'ceiling-height-metric': 9 / m_to_ft,
+        'ventilation': 3,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'rh': 0.6
+    },
     'classroom': {
         'floor-area': 900,
         'ceiling-height': 12,
@@ -71,9 +81,9 @@ room_preset_settings = {
         'rh': 0.6
     },
     'restaurant': {
-        'floor-area': 5000,
+        'floor-area': 1000,
         'ceiling-height': 12,
-        'floor-area-metric': 5000 / m_to_ft / m_to_ft,
+        'floor-area-metric': 1000 / m_to_ft / m_to_ft,
         'ceiling-height-metric': 12 / m_to_ft,
         'ventilation': 9,
         'filtration': 6,
