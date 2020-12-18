@@ -559,7 +559,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     exp_time_text = ess.time_to_text(exp_time_output, language)
 
     n_max_output = myInd.calc_n_max(exp_time_input)
-    n_max_text = ess.get_n_max_text(n_max_output, language)
+    n_max_text = ess.get_n_max_text(n_max_output, myInd.get_n_max(), language)
 
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \

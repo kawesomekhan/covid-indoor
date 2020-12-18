@@ -412,9 +412,14 @@ def time_to_text(time, language):
 
 
 # Gets n max text
-def get_n_max_text(n, language):
+def get_n_max_text(n, n_max, language):
     desc_file = get_desc_file(language)
-    return desc_file.n_max_base_string.format(n)
+    if n < 2:
+        return "<" + desc_file.n_max_base_string.format(2)
+    if n > n_max:
+        return ">" + desc_file.n_max_base_string.format(n_max)
+    else:
+        return desc_file.n_max_base_string.format(n)
 
 
 # Returns the output text for the variables of interest, shown in the FAQ/Other Inputs & Outputs tab.
