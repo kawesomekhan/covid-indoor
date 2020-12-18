@@ -664,7 +664,7 @@ def update_human_presets(preset):
 )
 def update_vent_disp(air_exchange_rate, search):
     desc_file = ess.get_desc_file(ess.get_lang(search))
-    return [desc_file.vent_type_output_base.format(air_exchange_rate)]
+    return [html.Span([desc_file.vent_type_output_base.format(air_exchange_rate), desc_file.vent_type_output_units])]
 
 
 # Filtration value display
@@ -686,7 +686,7 @@ def update_filt_disp(merv, search):
 )
 def update_recirc_disp(recirc_rate, search):
     desc_file = ess.get_desc_file(ess.get_lang(search))
-    return [desc_file.recirc_type_output_base.format(recirc_rate)]
+    return [html.Span([desc_file.recirc_type_output_base.format(recirc_rate), desc_file.recirc_type_output_units])]
 
 
 # Relative Humidity slider value display

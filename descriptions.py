@@ -197,9 +197,10 @@ floor_area_text_metric = "Total floor area (m²): "
 ceiling_height_text = "Average ceiling height (ft.): "
 ceiling_height_text_metric = "Average ceiling height (m): "
 
-ventilation_text = "Ventilation System: "
-vent_type_output_base = "{:.0f} ACH"
-ventilation_text_adv = "Ventilation System (ACH): "
+ventilation_text = "Ventilation: "
+vent_type_output_base = "{:.1f} "
+vent_type_output_units = html.Span(["hr", html.Sup("-1"), " (ACH)"])
+ventilation_text_adv = html.Span(["Ventilation (hr", html.Sup("-1"), ", ACH): "])
 ventilation_types = [
     {'label': "Closed windows", 'value': 0.3},
     {'label': "Open windows", 'value': 2},
@@ -225,8 +226,9 @@ filter_types = [
 ]
 
 recirc_text = "Recirculation Rate: "
-recirc_type_output_base = "{:.1f} recirculation ACH"
-recirc_text_adv = "Recirculation Rate (recirculation ACH): "
+recirc_type_output_base = "{:.1f} "
+recirc_type_output_units = html.Span(["hr", html.Sup("-1")])
+recirc_text_adv = html.Span(["Recirculation Rate (hr", html.Sup("-1"), "): "])
 recirc_types = [
     {'label': "None", 'value': 0},
     {'label': "Slow", 'value': 0.3},
@@ -250,7 +252,7 @@ need_more_ctrl_text = '''Need more control over your inputs? Switch to Advanced 
 
 human_header = "Human Behavior"
 # Human Behavior
-exertion_text = "Exertion Level: "
+exertion_text = "Breathing Rate: "
 exertion_types = [
     {'label': "Resting", 'value': 0.49},
     {'label': "Standing", 'value': 0.54},
