@@ -110,7 +110,8 @@ presets_risk = [
     {'label': "Less Conservative", 'value': 0.3},
 ]
 
-main_panel_s1 = "To reduce COVID-19 transmission*, this room should have no more than: "
+main_panel_s1 = '''To limit COVID-19 transmission* after an infected person enters this space, there should be no 
+more than: '''
 
 units_hr = 'hours'
 units_min = 'minutes'
