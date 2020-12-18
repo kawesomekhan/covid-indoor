@@ -560,10 +560,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Update the red text output with new model calculations
     model_output_text = ess.get_model_output_text(myInd, language)
     six_ft_text = ess.get_six_ft_text(myInd, language)
-    if language == "en":
-        six_ft_exp_time = ess.time_to_text(myInd.calc_max_time(myInd.get_six_ft_n()), language) + "."
-    else:
-        six_ft_exp_time = ""
+    six_ft_exp_time = ess.get_six_ft_exp_time(myInd, language)
     interest_output = ess.get_interest_output_text(myInd, my_units)
 
     exp_time_output = myInd.calc_max_time(n_max_input)

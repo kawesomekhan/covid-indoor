@@ -371,6 +371,20 @@ def get_six_ft_text(indoor_model, language):
     return six_ft_text
 
 
+# Returns the six feet distancing time.
+def get_six_ft_exp_time(indoor_model, language):
+    if language == "en":
+        six_ft_n = indoor_model.get_six_ft_n()
+        if six_ft_n < 2:
+            six_ft_exp_time = "<" + time_to_text(indoor_model.calc_max_time(2), language) + "."
+        else:
+            six_ft_exp_time = time_to_text(indoor_model.calc_max_time(six_ft_n), language) + "."
+    else:
+        six_ft_exp_time = ""
+
+    return six_ft_exp_time
+
+
 # Converts a time (in hours) into a text with formatting based on minutes/hours/days
 def time_to_text(time, language):
     desc_file = get_desc_file(language)
