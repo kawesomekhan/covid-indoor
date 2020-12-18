@@ -262,7 +262,7 @@ mask_types = [
     {'label': "Nessun, schermo facciale", 'value': 0},
     {'label': "Cotone", 'value': 0.1},
     {'label': "Seta, flanella, chiffon", 'value': 0.5},
-    {'label': "Chirurgica, cotone", 'value': 0.75},
+    {'label': "Chirurgica, cotone", 'value': 0.9},
     {'label': "Mascherina di protezione N95", 'value': 0.95},
 ]
 

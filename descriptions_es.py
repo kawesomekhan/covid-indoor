@@ -260,7 +260,7 @@ mask_types = [
     {'label': "Ninguna, Protector Facial (Careta)", 'value': 0},
     {'label': "Algodón Grueso", 'value': 0.1},
     {'label': "Seda, Flánel, Chifón/Raso/Gasa", 'value': 0.5},
-    {'label': "Quirúrgica, Algodón", 'value': 0.75},
+    {'label': "Quirúrgica, Algodón", 'value': 0.9},
     {'label': "Respirador N95", 'value': 0.95},
 ]
 

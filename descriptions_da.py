@@ -259,7 +259,7 @@ mask_types = [
     {'label': "Ingen, ansigtsvisir", 'value': 0},
     {'label': "Groft bomuld", 'value': 0.1},
     {'label': "Silke, flannel, chiffon", 'value': 0.5},
-    {'label': "Medicinsk mundbind", 'value': 0.75},
+    {'label': "Medicinsk mundbind", 'value': 0.9},
     {'label': "N95 Respirator", 'value': 0.95},
 ]
 

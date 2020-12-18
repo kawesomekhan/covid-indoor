@@ -259,7 +259,7 @@ mask_types = [
     {'label': "Ingen, Ansiktsskydd/visir", 'value': 0},
     {'label': "Grov bomull", 'value': 0.1},
     {'label': "Silke, Flanell, Chiffong", 'value': 0.5},
-    {'label': "Kirurgisk, Bomull", 'value': 0.75},
+    {'label': "Kirurgisk, Bomull", 'value': 0.9},
     {'label': "N95-andningsskydd", 'value': 0.95},
 ]
 

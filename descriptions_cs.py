@@ -261,7 +261,7 @@ mask_types = [
     {'label': "Žádné, obličejový štít", 'value': 0},
     {'label': "Rouška z hrubé bavlny", 'value': 0.1},
     {'label': "Rouška z hedvábí, flanelu nebo šifonu", 'value': 0.5},
-    {'label': "Chirurgická rouška nebo rouška z jemné bavlny", 'value': 0.75},
+    {'label': "Chirurgická rouška nebo rouška z jemné bavlny", 'value': 0.9},
     {'label': "Respirátor KN95", 'value': 0.95},
 ]
 

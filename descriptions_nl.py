@@ -259,7 +259,7 @@ mask_types = [
     {'label': "None, Face Shield", 'value': 0},
     {'label': "Coarse Cotton", 'value': 0.1},
     {'label': "Silk, Flannel, Chiffon", 'value': 0.5},
-    {'label': "Surgical, Cotton", 'value': 0.75},
+    {'label': "Surgical, Cotton", 'value': 0.9},
     {'label': "N95 Respirator", 'value': 0.95},
 ]
 

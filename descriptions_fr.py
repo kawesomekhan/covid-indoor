@@ -58,7 +58,7 @@ mask_types = [
     {'label': "Pas de masque, visière", 'value': 0},
     {'label': "Coton épais", 'value': 0.1},
     {'label': "Soie, flanelle, mousseline", 'value': 0.5},
-    {'label': "Masque chirurgical, coton fin", 'value': 0.75},
+    {'label': "Masque chirurgical, coton fin", 'value': 0.9},
     {'label': "Masque FFP2", 'value': 0.95},
 ]
 

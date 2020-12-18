@@ -54,7 +54,7 @@ mask_types = [
     {'label': "无，或者面罩", 'value': 0},
     {'label': "粗棉", 'value': 0.1},
     {'label': "真丝，法兰绒，雪纺", 'value': 0.5},
-    {'label': "医用口罩，棉口罩", 'value': 0.75},
+    {'label': "医用口罩，棉口罩", 'value': 0.9},
     {'label': "N95 呼吸器", 'value': 0.95},
 ]
 
