@@ -133,7 +133,7 @@ layout = html.Div(children=[
                                     html.Div([html.Span(desc.breathing_text, id='breathing-text'),
                                               dcc.Dropdown(id='exp-activity',
                                                            options=desc.expiratory_types,
-                                                           value=29,
+                                                           value=72,
                                                            searchable=False,
                                                            clearable=False)]),
                                     html.Br(),

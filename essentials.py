@@ -133,33 +133,45 @@ room_preset_settings = {
 }
 
 human_preset_settings = {
-    'masks-3': {
+    'masks-1': {
         'exertion': 0.49,
-        'expiratory': 72,
+        'expiratory': 4.2,
         'masks': 0.9,
         'mask-fit': 0.95
     },
     'masks-2': {
-        'exertion': 0.54,
+        'exertion': 0.49,
         'expiratory': 72,
         'masks': 0.9,
         'mask-fit': 0.95
     },
-    'masks-1': {
-        'exertion': 0.49,
-        'expiratory': 29,
+    'masks-3': {
+        'exertion': 2.35,
+        'expiratory': 8.8,
         'masks': 0.9,
         'mask-fit': 0.95
     },
     'no-masks-1': {
         'exertion': 0.49,
-        'expiratory': 72,
+        'expiratory': 4.2,
         'masks': 0,
         'mask-fit': 0.95
     },
     'no-masks-2': {
-        'exertion': 0.54,
+        'exertion': 0.49,
         'expiratory': 72,
+        'masks': 0,
+        'mask-fit': 0.95
+    },
+    'no-masks-3': {
+        'exertion': 2.35,
+        'expiratory': 8.8,
+        'masks': 0,
+        'mask-fit': 0.95
+    },
+    'singing-1': {
+        'exertion': 1,
+        'expiratory': 970,
         'masks': 0,
         'mask-fit': 0.95
     }

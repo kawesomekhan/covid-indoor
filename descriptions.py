@@ -94,11 +94,13 @@ presets = [
 curr_human_header = "Current Human Behavior: "
 presets_human = [
     {'label': "Custom", 'value': 'custom'},
-    {'label': "Masks, Standing & Talking", 'value': 'masks-2'},
-    {'label': "Masks, Sitting & Talking", 'value': 'masks-3'},
-    {'label': "Masks, Sitting & Whispering", 'value': 'masks-1'},
-    {'label': "No Masks, Standing & Talking", 'value': 'no-masks-2'},
-    {'label': "No Masks, Sitting & Talking", 'value': 'no-masks-1'},
+    {'label': "Masks, Resting", 'value': 'masks-1'},
+    {'label': "Masks, Speaking", 'value': 'masks-2'},
+    {'label': "Masks, Exercise", 'value': 'masks-3'},
+    {'label': "No Masks, Resting", 'value': 'no-masks-1'},
+    {'label': "No Masks, Speaking", 'value': 'no-masks-2'},
+    {'label': "No Masks, Exercise", 'value': 'no-masks-3'},
+    {'label': "No Masks, Singing", 'value': 'singing-1'},
 ]
 
 curr_risk_header = "Current Risk Tolerance: "
