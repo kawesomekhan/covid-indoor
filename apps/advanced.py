@@ -106,6 +106,8 @@ layout = html.Div(children=[
                                 children=[
                                     html.H6(html.Span(desc.human_header, id='adv-human-header-body')),
                                     html.Div([html.Span(desc.exertion_text, id='adv-exertion-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='adv-qb-output'),
                                               dcc.Dropdown(id='adv-exertion-level',
                                                            options=desc.exertion_types,
                                                            value=0.49,
@@ -113,6 +115,8 @@ layout = html.Div(children=[
                                                            clearable=False)]),
                                     html.Br(),
                                     html.Div([html.Span(desc.breathing_text, id='adv-breathing-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='adv-cq-output'),
                                               dcc.Dropdown(id='adv-exp-activity',
                                                            options=desc.expiratory_types,
                                                            value=72,
@@ -464,6 +468,8 @@ def update_lang(search, window_width):
      Output('adv-airb-trans-output', 'children'),
      Output('adv-t-output', 'children'),
      Output('adv-n-output', 'children'),
+     Output('adv-qb-output', 'children'),
+     Output('adv-cq-output', 'children'),
      Output('adv-alert-no-update', 'children'),
      Output('adv-alert-no-update', 'is_open')],
     [Input('adv-floor-area', 'value'),
@@ -493,8 +499,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                                 max_viral_deact_rate, language, n_max_input, exp_time_input)
 
     if error_msg != "":
-        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -536,6 +542,10 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     myInd.calc_vars()
 
+    # Get human behavior output text
+    qb_text = ess.get_qb_text(myInd, my_units)
+    cq_text = ess.get_cq_text(myInd, my_units)
+
     # Update the figure with a new model calculation
     new_fig = ess.get_model_figure(myInd, language)
 
@@ -558,7 +568,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
            interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
-           interest_output[13], exp_time_text, n_max_text, error_msg, False
+           interest_output[13], exp_time_text, n_max_text, qb_text, cq_text, error_msg, False
 
 
 # Update options based on selected presets, also if units changed

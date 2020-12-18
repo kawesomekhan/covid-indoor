@@ -124,6 +124,8 @@ layout = html.Div(children=[
                                 children=[
                                     html.H6(html.Span(desc.human_header, id='human-header-body')),
                                     html.Div([html.Span(desc.exertion_text, id='exertion-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='qb-output'),
                                               dcc.Dropdown(id='exertion-level',
                                                            options=desc.exertion_types,
                                                            value=0.49,
@@ -131,6 +133,8 @@ layout = html.Div(children=[
                                                            clearable=False)]),
                                     html.Br(),
                                     html.Div([html.Span(desc.breathing_text, id='breathing-text'),
+                                              html.Span(className='model-output-text-small',
+                                                        id='cq-output'),
                                               dcc.Dropdown(id='exp-activity',
                                                            options=desc.expiratory_types,
                                                            value=72,
@@ -482,6 +486,8 @@ def update_lang(search, window_width):
      Output('airb-trans-output', 'children'),
      Output('t-output', 'children'),
      Output('n-output', 'children'),
+     Output('qb-output', 'children'),
+     Output('cq-output', 'children'),
      Output('alert-no-update', 'children'),
      Output('alert-no-update', 'is_open')],
     [Input('floor-area', 'value'),
@@ -513,7 +519,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
@@ -554,6 +560,10 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     myInd.calc_vars()
 
+    # Get human behavior output text
+    qb_text = ess.get_qb_text(myInd, my_units)
+    cq_text = ess.get_cq_text(myInd, my_units)
+
     # Update the figure with a new model calculation
     new_fig = ess.get_model_figure(myInd, language)
 
@@ -576,7 +586,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            interest_output[1], interest_output[2], \
            interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
            interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
-           interest_output[13], exp_time_text, n_max_text, error_msg, False
+           interest_output[13], exp_time_text, n_max_text, qb_text, cq_text, error_msg, False
 
 
 # Update options based on selected presets, also if units changed
@@ -646,7 +656,7 @@ def update_room_presets_and_units(preset, search, floor_area_text, ceiling_heigh
 def update_human_presets(preset):
     # Update the room and behavior options based on the selected preset
     if preset == 'custom':
-            return dash.no_update, dash.no_update, dash.no_update, dash.no_update
+        return dash.no_update, dash.no_update, dash.no_update, dash.no_update
     else:
         curr_settings = ess.human_preset_settings[preset]
         return curr_settings['exertion'], curr_settings['expiratory'], curr_settings['masks'], \

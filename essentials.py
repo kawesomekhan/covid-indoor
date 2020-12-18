@@ -465,6 +465,24 @@ def get_interest_output_text(indoor_model, units):
     return interest_output
 
 
+# Returns the value for Qb given the units.
+def get_qb_text(indoor_model, units):
+    breathing_flow_rate = indoor_model.physio_params[0]
+    if units == 'british':
+        return '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60)  # m3/hr to ft3/min
+    elif units == 'metric':
+        return '{:,.2f} m\u00B3/hr'.format(breathing_flow_rate)
+
+
+# Returns the value for Cq given the units.
+def get_cq_text(indoor_model, units):
+    infectiousness = indoor_model.disease_params[0]
+    if units == 'british':
+        return '{:,.2f} q/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
+    elif units == 'metric':
+        return '{:,.2f} q/m\u00B3'.format(infectiousness)
+
+
 # Returns a dictionary of parameters and values given by the search url.
 # Key: Parameter name
 # Value: Parameter value
