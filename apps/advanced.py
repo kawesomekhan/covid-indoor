@@ -54,6 +54,7 @@ layout = html.Div(children=[
                 children=[
                     html.Div(
                         className='card',
+                        id='adv-main-tabs',
                         children=[dcc.Tabs(value='tab-1', children=[
                             dcc.Tab(
                                 id='adv-tab-a',

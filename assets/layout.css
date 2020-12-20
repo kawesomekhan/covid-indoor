@@ -187,6 +187,9 @@ body {
         min-width: 0;
         padding: 1em;
     }
+    #main-tabs, #adv-main-tabs {
+        grid-row-start: 4;
+    }
 
     /* Tabs */
     .tab-content {
