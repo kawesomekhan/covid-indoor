@@ -326,6 +326,8 @@ layout = html.Div(children=[
                                     ], className='panel-main-output'),
                                     html.Br(),
                                     html.Div(desc.main_airb_trans_only_disc, id='main-airb-trans-disc',
+                                             className='panel-airb-desc'),
+                                    html.Div(desc.other_risk_modes_desc, id='other-risk-modes-desc',
                                              className='panel-airb-desc')
                                 ])
                 ),

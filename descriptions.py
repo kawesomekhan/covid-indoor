@@ -154,6 +154,10 @@ main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability 
                                       html.Span(''' per infected person to be less than the risk tolerance 
                                       over the cumulative exposure time 
                                       listed.''')], className='airborne-text')
+
+other_risk_modes_desc = html.Div('''Other risk scenarios, in which the prevalence of infection in the population and 
+the risk to a specific individual are considered, are in Advanced Mode.''')
+
 main_airb_trans_only_desc_b = html.Div(["*The guideline restricts the probability of one ",
                                       html.Span(html.A(href=links.link_docs,
                                                        children="airborne transmission",
