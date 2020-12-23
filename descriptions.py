@@ -109,14 +109,14 @@ main_panel_s1 = '''To limit COVID-19 transmission* after an infected person ente
 there should be no more than: '''
 
 main_panel_s1_b = html.Span([
-    html.Span('''To limit COVID-19 transmission* in a population with an incidence rate'''),
+    html.Span('''To limit COVID-19 transmission* in a population with a prevalence'''),
     html.Sup('''1'''),
     html.Span(''' of ''')
 ])
 main_panel_s2_b = ''' per 100,000, this space should have no more than: '''
 
 main_panel_s1_c = html.Span([
-    html.Span('''To limit my chance of being infected by COVID-19 in a population with an incidence rate'''),
+    html.Span('''To limit my chance of being infected by COVID-19 in a population with a prevalence'''),
     html.Sup('''1'''),
     html.Span(''' of ''')
 ])
@@ -172,11 +172,11 @@ main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probabilit
 airb_trans_only_disc = html.Div('''based on consideration of airborne transmission only.''', className='airborne-text')
 
 incidence_rate_refs = html.Div([html.Sup('''1'''),
-                                html.Span('''To estimate your local incidence rate, here are some helpful resources: '''),
-                                      html.Span(html.A(href=links.link_jhu_dashboard,
-                                                       children="JHU COVID-19 Dashboard",
-                                                       target='_blank')),
-                                      html.Span(''', '''),
+                                html.Span('''To estimate your local prevalence, here are some helpful resources: '''),
+                                      # html.Span(html.A(href=links.link_jhu_dashboard,
+                                      #                  children="JHU COVID-19 Dashboard",
+                                      #                  target='_blank')),
+                                      # html.Span(''', '''),
                                 html.Span(html.A(href=links.link_cdc_dashboard,
                                                  children="CDC COVID-19 Data Tracker",
                                                  target='_blank')),
