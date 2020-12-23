@@ -194,6 +194,10 @@ body {
         min-width: 0;
         padding: 1em;
     }
+    #card-tab, #adv-card-tab {
+        grid-row-start: 5;
+        grid-row-end: 6;
+    }
 
     /* Tabs */
     .tab-content {

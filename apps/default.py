@@ -295,13 +295,7 @@ layout = html.Div(children=[
                 ),
                 html.Div(
                     className='card',
-                    children=[
-                        dcc.Tabs([
-                            dcc.Tab(
-                                id='output-panel-tab-a',
-                                label="If an infected person enters...",
-                                className='custom-tab',
-                                children=html.Div(className='output-content', children=[
+                    children=html.Div(className='output-content', children=[
                                     html.Div([
                                         html.H3(html.Span(desc.main_panel_s1, id='main-panel-s1')),
                                         dcc.Loading(
@@ -322,22 +316,6 @@ layout = html.Div(children=[
                                             color='#de1616',
                                         ),
                                         html.Br(),
-                                        html.H4([
-                                            html.Span([dcc.Input(id='n-input',
-                                                                 value=10,
-                                                                 type='number')]),
-                                            html.Span(" people for ", style={'color': '#000000'}),
-                                            html.Span(id='t-output', children="8 hours"),
-                                        ], className='model-output-text', style={'padding-bottom': '.2em'}),
-                                        html.H4([
-                                            html.Span(id='n-output', children="5 people"),
-                                            html.Span(" for ", style={'color': '#000000'}),
-                                            html.Span([dcc.Input(id='t-input',
-                                                                 value=4,
-                                                                 type='number')]),
-                                            html.Span(" hours", style={'color': '#000000'})
-                                        ], className='model-output-text'),
-                                        html.Br(),
                                         html.H4([html.Span(desc.main_panel_six_ft_1, id='main-six-ft-1'),
                                                  html.Span(id='six-ft-output',
                                                            children=''' 2 people ''',
@@ -349,138 +327,47 @@ layout = html.Div(children=[
                                     html.Br(),
                                     html.Div(desc.main_airb_trans_only_disc, id='main-airb-trans-disc',
                                              className='panel-airb-desc')
-                                ]),
-                            ),
-                            dcc.Tab(
-                                id='output-panel-tab-b',
-                                label="Given the prevalence of infection...",
-                                className='custom-tab',
-                                children=html.Div(className='output-content', children=[
-                                    html.Div([
-                                        html.H3([
-                                            html.Span(desc.main_panel_s1_b, id='main-panel-s1-b'),
-                                            html.Span(dcc.Input(id='prev-input-b',
-                                                                value=100,
-                                                                type='number')),
-                                            html.Span(desc.main_panel_s2_b, id='main-panel-s2-b')
-                                        ]),
-                                        dcc.Loading(
-                                            id='loading-b',
-                                            type='circle',
-                                            children=[
-                                                html.H4(className='model-output-text', id='model-text-1-b',
-                                                        children="2 people for 31 days"),
-                                                html.H4(className='model-output-text', id='model-text-2-b',
-                                                        children="5 people for 8 days"),
-                                                html.H4(className='model-output-text', id='model-text-3-b',
-                                                        children="10 people for 3 days"),
-                                                html.H4(className='model-output-text', id='model-text-4-b',
-                                                        children="25 people for 31 hours"),
-                                                html.H4(className='model-output-text', id='model-text-5-b',
-                                                        children="100 people for 8 hours"),
-                                            ],
-                                            color='#de1616',
-                                        ),
-                                        html.Br(),
-                                        html.H4([
-                                            html.Span([dcc.Input(id='n-input-b',
-                                                                 value=10,
-                                                                 type='number')]),
-                                            html.Span(" people for ", style={'color': '#000000'}),
-                                            html.Span(id='t-output-b', children="8 hours"),
-                                        ], className='model-output-text', style={'padding-bottom': '.2em'}),
-                                        html.H4([
-                                            html.Span(id='n-output-b', children="5 people"),
-                                            html.Span(" for ", style={'color': '#000000'}),
-                                            html.Span([dcc.Input(id='t-input-b',
-                                                                 value=4,
-                                                                 type='number')]),
-                                            html.Span(" hours", style={'color': '#000000'})
-                                        ], className='model-output-text'),
-                                        html.Br(),
-                                        html.H4([html.Span(desc.main_panel_six_ft_1, id='main-six-ft-1-b'),
-                                                 html.Span(id='six-ft-output-b',
-                                                           children=''' 2 people ''',
-                                                           style={'color': '#de1616'}),
-                                                 html.Span(desc.main_panel_six_ft_2, id='main-six-ft-2-b'),
-                                                 html.Span(id='six-ft-output-t-b', style={'color': '#de1616'})],
-                                                style={'color': '#000000'}),
-                                    ], className='panel-main-output'),
-                                    html.Br(),
-                                    html.Div(desc.main_airb_trans_only_desc_b, id='main-airb-trans-desc-b',
-                                             className='panel-airb-desc'),
-                                    html.Div(desc.incidence_rate_refs, id='incidence-rate-refs-b',
-                                             className='panel-airb-desc')
-                                ]),
-                            ),
-                            dcc.Tab(
-                                id='output-panel-tab-c',
-                                label="To limit my personal risk...",
-                                className='custom-tab',
-                                children=html.Div(className='output-content', children=[
-                                    html.Div([
-                                        html.H3([
-                                            html.Span(desc.main_panel_s1_c, id='main-panel-s1-c'),
-                                            html.Span(dcc.Input(id='prev-input-c',
-                                                                value=100,
-                                                                type='number')),
-                                            html.Span(desc.main_panel_s2_c, id='main-panel-s2-c')
-                                        ]),
-                                        dcc.Loading(
-                                            id='loading-c',
-                                            type='circle',
-                                            children=[
-                                                html.H4(className='model-output-text', id='model-text-1-c',
-                                                        children="2 people for 31 days"),
-                                                html.H4(className='model-output-text', id='model-text-2-c',
-                                                        children="5 people for 8 days"),
-                                                html.H4(className='model-output-text', id='model-text-3-c',
-                                                        children="10 people for 3 days"),
-                                                html.H4(className='model-output-text', id='model-text-4-c',
-                                                        children="25 people for 31 hours"),
-                                                html.H4(className='model-output-text', id='model-text-5-c',
-                                                        children="100 people for 8 hours"),
-                                            ],
-                                            color='#de1616',
-                                        ),
-                                        html.Br(),
-                                        html.H4([
-                                            html.Span([dcc.Input(id='n-input-c',
-                                                                 value=10,
-                                                                 type='number')]),
-                                            html.Span(" people for ", style={'color': '#000000'}),
-                                            html.Span(id='t-output-c', children="8 hours"),
-                                        ], className='model-output-text', style={'padding-bottom': '.2em'}),
-                                        html.H4([
-                                            html.Span(id='n-output-c', children="5 people"),
-                                            html.Span(" for ", style={'color': '#000000'}),
-                                            html.Span([dcc.Input(id='t-input-c',
-                                                                 value=4,
-                                                                 type='number')]),
-                                            html.Span(" hours", style={'color': '#000000'})
-                                        ], className='model-output-text'),
-                                        html.Br(),
-                                        html.H4([html.Span(desc.main_panel_six_ft_1, id='main-six-ft-1-c'),
-                                                 html.Span(id='six-ft-output-c',
-                                                           children=''' 2 people ''',
-                                                           style={'color': '#de1616'}),
-                                                 html.Span(desc.main_panel_six_ft_2, id='main-six-ft-2-c'),
-                                                 html.Span(id='six-ft-output-t-c', style={'color': '#de1616'})],
-                                                style={'color': '#000000'}),
-                                    ], className='panel-main-output'),
-                                    html.Br(),
-                                    html.Div(desc.main_airb_trans_only_desc_c, id='main-airb-trans-desc-c',
-                                             className='panel-airb-desc'),
-                                    html.Div(desc.incidence_rate_refs, id='incidence-rate-refs-c',
-                                             className='panel-airb-desc')
-                                ]),
-                            ),
-                        ],
-                            colors={
-                                "border": "#c9c9c9",
-                                "primary": "#de1616"
-                            })
-                    ], style=ess.tabs_card_style
+                                ])
+                ),
+                html.Div(
+                    className='card',
+                    children=[html.Div(className='output-content', children=[
+                        html.Div([
+                            html.H3([html.Span(desc.n_input_text_1, id='n-input-text-1'),
+                                     html.Span([dcc.Input(id='n-input',
+                                                          value=10,
+                                                          type='number')]),
+                                     html.Span(desc.n_input_text_2, id='n-input-text-2'),
+                                     html.Span(id='t-output',
+                                               children="8 hours",
+                                               style={'color': '#de1616'}),
+                                     html.Span(desc.n_input_text_3, id='n-input-text-3')]),
+                            html.Br(),
+                        ], className='panel-main-output'),
+                        html.Div([
+                            html.Span(desc.airb_trans_only_disc, id='airb-trans-only-disc-1')
+                        ], className='panel-airb-desc')
+                    ])]
+                ),
+                html.Div(
+                    className='card',
+                    children=[html.Div(className='output-content', children=[
+                        html.Div([
+                            html.H3([html.Span(desc.t_input_text_1, id='t-input-text-1'),
+                                     html.Span([dcc.Input(id='t-input',
+                                                          value=4,
+                                                          type='number')]),
+                                     html.Span(desc.t_input_text_2, id='t-input-text-2'),
+                                     html.Span(id='n-output',
+                                               children="5 occupants",
+                                               style={'color': '#de1616'}),
+                                     html.Span(desc.t_input_text_3, id='t-input-text-3')]),
+                            html.Br(),
+                        ], className='panel-main-output'),
+                        html.Div([
+                            html.Span(desc.airb_trans_only_disc, id='airb-trans-only-disc-2')
+                        ], className='panel-airb-desc'),
+                    ])]
                 )
             ]
         ),
@@ -558,22 +445,8 @@ def update_lang(search, window_width):
      Output('model-text-3', 'children'),
      Output('model-text-4', 'children'),
      Output('model-text-5', 'children'),
-     Output('model-text-1-b', 'children'),
-     Output('model-text-2-b', 'children'),
-     Output('model-text-3-b', 'children'),
-     Output('model-text-4-b', 'children'),
-     Output('model-text-5-b', 'children'),
-     Output('model-text-1-c', 'children'),
-     Output('model-text-2-c', 'children'),
-     Output('model-text-3-c', 'children'),
-     Output('model-text-4-c', 'children'),
-     Output('model-text-5-c', 'children'),
      Output('six-ft-output', 'children'),
      Output('six-ft-output-t', 'children'),
-     Output('six-ft-output-b', 'children'),
-     Output('six-ft-output-t-b', 'children'),
-     Output('six-ft-output-c', 'children'),
-     Output('six-ft-output-t-c', 'children'),
      Output('presets', 'value'),
      Output('presets-human', 'value'),
      Output('air-frac-output', 'children'),
@@ -592,10 +465,6 @@ def update_lang(search, window_width):
      Output('airb-trans-output', 'children'),
      Output('t-output', 'children'),
      Output('n-output', 'children'),
-     Output('t-output-b', 'children'),
-     Output('n-output-b', 'children'),
-     Output('t-output-c', 'children'),
-     Output('n-output-c', 'children'),
      Output('qb-output', 'children'),
      Output('cq-output', 'children'),
      Output('alert-no-update', 'children'),
@@ -613,32 +482,21 @@ def update_lang(search, window_width):
      Input('presets-risk', 'value'),
      Input('n-input', 'value'),
      Input('t-input', 'value'),
-     Input('n-input-b', 'value'),
-     Input('t-input-b', 'value'),
-     Input('n-input-c', 'value'),
-     Input('t-input-c', 'value'),
-     Input('prev-input-b', 'value'),
-     Input('prev-input-c', 'value'),
      Input('url', 'search')],
     [State('floor-area-text', 'children'),
      State('ceiling-height-text', 'children')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
                   breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, n_max_input, exp_time_input,
-                  n_max_input_b, exp_time_input_b, n_max_input_c, exp_time_input_c, prevalence_b, prevalence_c,
                   search, floor_area_text, ceiling_height_text):
     def_aerosol_radius = 2
     max_viral_deact_rate = 0.6
     language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
-                                max_viral_deact_rate, language, n_max_input, exp_time_input, n_max_input_b,
-                                exp_time_input_b, n_max_input_c, exp_time_input_c, prevalence_b, prevalence_c)
+                                max_viral_deact_rate, language, n_max_input, exp_time_input)
 
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -700,36 +558,13 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                                      language)
     n_max_text = ess.get_n_max_text(myInd.calc_n_max(exp_time_input, 'conditional'), myInd.get_n_max(), language)
 
-    # Prevalence Outputs (Given the prevalence of infection...)
-    myInd.prevalence = prevalence_b / 100000
-    model_output_text_b = ess.get_model_output_text(myInd, 'prevalence', -1, language)
-    six_ft_text_b = ess.get_six_ft_text(myInd, language)
-    six_ft_exp_time_b = ess.get_six_ft_exp_time(myInd, 'prevalence', -1, language)
-
-    exp_time_text_b = ess.time_to_text(myInd.calc_max_time(n_max_input_b, 'prevalence'), True, -1, language)
-    n_max_text_b = ess.get_n_max_text(myInd.calc_n_max(exp_time_input_b, 'prevalence'), myInd.get_n_max(), language)
-
-    # Personal Outputs (To limit my personal risk...)
-    myInd.prevalence = prevalence_c / 100000
-    model_output_text_c = ess.get_model_output_text(myInd, 'personal', -1, language)
-    six_ft_text_c = ess.get_six_ft_text(myInd, language)
-    six_ft_exp_time_c = ess.get_six_ft_exp_time(myInd, 'personal', -1, language)
-
-    exp_time_text_c = ess.time_to_text(myInd.calc_max_time(n_max_input_c, 'personal'), True, -1,
-                                       language)
-    n_max_text_c = ess.get_n_max_text(myInd.calc_n_max(exp_time_input_c, 'personal'), myInd.get_n_max(), language)
-
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
-           model_output_text[4], model_output_text_b[0], model_output_text_b[1], model_output_text_b[2], \
-           model_output_text_b[3], model_output_text_b[4], model_output_text_c[0], model_output_text_c[1], \
-           model_output_text_c[2], model_output_text_c[3], model_output_text_c[4], six_ft_text, six_ft_exp_time, \
-           six_ft_text_b, six_ft_exp_time_b, six_ft_text_c, six_ft_exp_time_c, preset_dd_value, human_preset_dd_value, \
+           model_output_text[4], six_ft_text, six_ft_exp_time, preset_dd_value, human_preset_dd_value, \
            interest_output[0], interest_output[1], interest_output[2], interest_output[3], interest_output[4], \
            interest_output[5], interest_output[6], interest_output[7], interest_output[8], interest_output[9], \
            interest_output[10], interest_output[11], interest_output[12], interest_output[13], \
-           exp_time_text, n_max_text, exp_time_text_b, n_max_text_b, exp_time_text_c, n_max_text_c, qb_text, cq_text, \
-           error_msg, False
+           exp_time_text, n_max_text, qb_text, cq_text, error_msg, False
 
 
 # Update options based on selected presets, also if units changed
