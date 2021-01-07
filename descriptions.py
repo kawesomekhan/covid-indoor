@@ -82,8 +82,8 @@ presets = [
     {'label': "Church", 'value': 'church'},
     {'label': "Restaurant", 'value': 'restaurant'},
     {'label': "Office/Workplace", 'value': 'office'},
-    {'label': "New York City Subway Car", 'value': 'subway'},
-    {'label': "Boeing 737", 'value': 'airplane'},
+    {'label': "Subway Car", 'value': 'subway'},
+    {'label': "Commercial Airliner", 'value': 'airplane'},
 ]
 
 curr_human_header = "Current Human Behavior: "
