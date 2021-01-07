@@ -86,8 +86,8 @@ presets = [
     {'label': "Restaurant", 'value': 'restaurant'},
     {'label': "Quiet Office", 'value': 'office'},
     {'label': "Classroom Lecture", 'value': 'classroom'},
-    {'label': "New York City Subway Car", 'value': 'subway'},
-    {'label': "Boeing 737", 'value': 'airplane'},
+    {'label': "Subway Car", 'value': 'subway'},
+    {'label': "Commercial Airliner", 'value': 'airplane'},
     {'label': "Church", 'value': 'church'},
 ]
 
