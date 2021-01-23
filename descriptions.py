@@ -200,8 +200,8 @@ ceiling_height_text_metric = "Average ceiling height (m): "
 
 ventilation_text = "Ventilation: "
 vent_type_output_base = "{:.1f} "
-vent_type_output_units = html.Span(["hr", html.Sup("-1"), " (ACH)"])
-ventilation_text_adv = html.Span(["Ventilation (hr", html.Sup("-1"), ", ACH): "])
+vent_type_output_units = html.Span(["hr", html.Sup("-1"), " (outdoor ACH)"])
+ventilation_text_adv = html.Span(["Ventilation (hr", html.Sup("-1"), ", outdoor ACH): "])
 ventilation_types = [
     {'label': "Closed windows", 'value': 0.3},
     {'label': "Open windows", 'value': 2},
