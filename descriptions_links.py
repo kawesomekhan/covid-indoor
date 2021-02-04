@@ -11,3 +11,5 @@ link_mooc = "https://www.edx.org/course/physics-of-covid-19-transmission?utm_cam
 
 link_jhu_dashboard = "https://coronavirus.jhu.edu/map.html"
 link_cdc_dashboard = "https://covid.cdc.gov/covid-data-tracker/#cases_casesper100klast7days"
+
+link_cdc_immunity = "https://covid19-projections.com/path-to-herd-immunity/"

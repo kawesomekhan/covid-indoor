@@ -8,7 +8,6 @@ descriptions: English
 
 """
 
-
 # Header
 header = html.Div([
     html.H1(children='COVID-19 Indoor Safety Guideline'),
@@ -74,11 +73,11 @@ error_list = {
 }
 
 # Main Panel Text
-curr_room_header = "Current Room Specifications: "
+curr_room_header = "Room Specifications: "
 presets = [
     {'label': "Custom", 'value': 'custom'},
     {'label': "Classroom Lecture", 'value': 'classroom'},
-    {'label': "Suburban House", 'value': 'house'},
+    {'label': "Living Room", 'value': 'living-room'},
     {'label': "Church", 'value': 'church'},
     {'label': "Restaurant", 'value': 'restaurant'},
     {'label': "Office/Workplace", 'value': 'office'},
@@ -86,7 +85,7 @@ presets = [
     {'label': "Commercial Airliner", 'value': 'airplane'},
 ]
 
-curr_human_header = "Current Human Behavior: "
+curr_human_header = "Human Behavior: "
 presets_human = [
     {'label': "Custom", 'value': 'custom'},
     {'label': "Masks, Resting", 'value': 'masks-1'},
@@ -98,25 +97,70 @@ presets_human = [
     {'label': "No Masks, Singing", 'value': 'singing-1'},
 ]
 
-curr_risk_header = "Current Risk Tolerance: "
+curr_risk_header = "Risk Tolerance: "
 presets_risk = [
-    {'label': "Very Low (more vulnerable populations)", 'value': 0.01},
-    {'label': "Low", 'value': 0.1},
-    {'label': "High (less vulnerable populations)", 'value': 1},
+    {'label': "Low", 'value': 0.01},
+    {'label': "Medium", 'value': 0.1},
+    {'label': "High", 'value': 1},
 ]
+risk_tol_marks = {
+    # 0.01: {'label': '0.01: Safer', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: Medium', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: High'}
+}
+
+risk_tolerance_text = "Risk Tolerance: "
+risk_tol_desc = html.Div('''More vulnerable populations such as the elderly or those with preexisting medical 
+conditions require a lower risk tolerance (~0.01). A higher risk tolerance will mean more expected 
+transmissions during the expected occupancy period (see FAQ for details).''', style={'font-size': '13px',
+                                                                                     'margin-left': '20px'})
+
+curr_age_header = "Age Group: "
+presets_age = [
+    {'label': "Children", 'value': 0.23},
+    {'label': "Adults", 'value': 0.68},
+    {'label': "Elderly", 'value': 1}
+]
+age_group_marks = {
+    0.23: {'label': '0.23: Children', 'style': {'max-width': '50px'}},
+    0.68: {'label': '0.68: Adults', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: Elderly'}
+}
+
+curr_strain_header = "Viral Strain: "
+presets_strain = [
+    # {'label': "SARS-CoV-1", 'value': 0.1},
+    {'label': "SARS-CoV-2 (Wuhan Strain)", 'value': 1},
+    {'label': "SARS-CoV-2 - B.1.1.7 (UK Strain)", 'value': 1.58}
+]
+viral_strain_marks = {
+    1: {'label': '1.0: SARS-CoV-2 (Wuhan Strain)', 'style': {'max-width': '100px'}},
+    1.58: {'label': '1.58: B.1.1.7 (UK Strain)'}
+}
+
+pim_header = "Percentage Immune: "
+pim_marks = {
+    0: {'label': '0% (basic mode)'},
+    0.33: {'label': '33% (default)'},
+    1: {'label': '100%'}
+}
+
+risk_conditional_desc = "If an infected person enters..."
+risk_prevalence_desc = "Given the prevalence of infection..."
+risk_personal_desc = "To limit my personal risk..."
 
 main_panel_s1 = '''To limit COVID-19 transmission* after an infected person enters this space, 
 there should be no more than: '''
 
 main_panel_s1_b = html.Span([
-    html.Span('''To limit COVID-19 transmission* in a population with a prevalence'''),
+    html.Span('''To limit COVID-19 transmission* in a population with an infection prevalence'''),
     html.Sup('''1'''),
     html.Span(''' of ''')
 ])
 main_panel_s2_b = ''' per 100,000, this space should have no more than: '''
 
 main_panel_s1_c = html.Span([
-    html.Span('''To limit my chance of being infected by COVID-19 in a population with a prevalence'''),
+    html.Span('''To limit my chance of being infected by COVID-19 in a population with an infection prevalence'''),
     html.Sup('''1'''),
     html.Span(''' of ''')
 ])
@@ -135,7 +179,7 @@ units_month_one = 'month'
 is_past_recovery_base_string = '{n_val} people for >{val:.0f} days,'
 model_output_base_string = '{n_val} people for '
 
-main_panel_six_ft_1 = "In contrast, the six-foot or two-meter distancing guideline would limit occupancy to "
+main_panel_six_ft_1 = "In contrast, the six-foot (or two-meter) distancing guideline would limit occupancy to "
 main_panel_six_ft_2 = " which becomes unsafe after "
 
 six_ft_base_string = ' {} people'
@@ -155,21 +199,22 @@ main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability 
                                       over the cumulative exposure time 
                                       listed.''')], className='airborne-text')
 
-other_risk_modes_desc = html.Div('''Other risk scenarios, in which the prevalence of infection in the population and 
-the risk to a specific individual are considered, are in Advanced Mode.''')
+other_risk_modes_desc = html.Div('''Other risk scenarios are considered in Advanced Mode. Specifically, one may 
+consider the prevalence of infection in the population, immunity acquired through vaccination or previous exposure, 
+and the risk to a specific individual.''')
 
 main_airb_trans_only_desc_b = html.Div(["*The guideline restricts the probability of one ",
-                                      html.Span(html.A(href=links.link_docs,
-                                                       children="airborne transmission",
-                                                       target='_blank'), ),
-                                      html.Span(''' per infected person to be less than the risk tolerance 
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="airborne transmission",
+                                                         target='_blank'), ),
+                                        html.Span(''' per infected person to be less than the risk tolerance 
                                       over the cumulative exposure time 
                                       listed.''')], className='airborne-text')
 main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probability of ",
-                                      html.Span(html.A(href=links.link_docs,
-                                                       children="airborne transmission",
-                                                       target='_blank'), ),
-                                      html.Span(''' to a particular individual to be less than the risk tolerance 
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="airborne transmission",
+                                                         target='_blank'), ),
+                                        html.Span(''' to a particular individual to be less than the risk tolerance 
                                       over the cumulative exposure time 
                                       listed.''')], className='airborne-text')
 
@@ -177,10 +222,10 @@ airb_trans_only_disc = html.Div('''based on consideration of airborne transmissi
 
 incidence_rate_refs = html.Div([html.Sup('''1'''),
                                 html.Span('''To estimate your local prevalence, here are some helpful resources: '''),
-                                      # html.Span(html.A(href=links.link_jhu_dashboard,
-                                      #                  children="JHU COVID-19 Dashboard",
-                                      #                  target='_blank')),
-                                      # html.Span(''', '''),
+                                # html.Span(html.A(href=links.link_jhu_dashboard,
+                                #                  children="JHU COVID-19 Dashboard",
+                                #                  target='_blank')),
+                                # html.Span(''', '''),
                                 html.Span(html.A(href=links.link_cdc_dashboard,
                                                  children="CDC COVID-19 Data Tracker",
                                                  target='_blank')),
@@ -232,7 +277,7 @@ about = html.Div([
 ])
 
 # Room Specifications
-room_header = "Room Specifications"
+room_header = "Room Specifications - Details"
 
 floor_area_text = "Total floor area (sq. ft.): "
 floor_area_text_metric = "Total floor area (m²): "
@@ -240,8 +285,8 @@ ceiling_height_text = "Average ceiling height (ft.): "
 ceiling_height_text_metric = "Average ceiling height (m): "
 
 ventilation_text = "Ventilation System: "
-vent_type_output_base = "{:.0f} ACH"
-ventilation_text_adv = "Ventilation System (ACH): "
+vent_type_output_base = "{:.0f} outdoor ACH"
+ventilation_text_adv = "Ventilation System (outdoor ACH): "
 ventilation_types = [
     {'label': "Closed windows", 'value': 0.3},
     {'label': "Open windows", 'value': 2},
@@ -290,7 +335,7 @@ humidity_marks = {
 need_more_ctrl_text = '''Need more control over your inputs? Switch to Advanced Mode using the dropdown at the top of 
                          the page.'''
 
-human_header = "Human Behavior"
+human_header = "Human Behavior - Details"
 # Human Behavior
 exertion_text = "Breathing Rate: "
 exertion_types = [
@@ -340,20 +385,9 @@ mask_fit_marks = {
     0.95: {'label': '95%: Good'}
 }
 
-risk_tolerance_text = "Risk Tolerance: "
-risk_tol_desc = html.Div('''More vulnerable populations such as the elderly or those with preexisting medical 
-conditions require a lower risk tolerance (~0.01). A higher risk tolerance will mean more expected 
-transmissions during the expected occupancy period (see FAQ for details).''', style={'font-size': '13px',
-                                                                                     'margin-left': '20px'})
-risk_tol_marks = {
-    # 0.01: {'label': '0.01: Safer', 'style': {'max-width': '50px'}},
-    0.1: {'label': '0.10: Low', 'style': {'max-width': '50px'}},
-    1: {'label': '1.00: High'}
-}
-
 # FAQ/Other Inputs & Outputs
 faq_header = "Frequently Asked Questions"
-other_io = "Other Inputs & Outputs"
+other_io = "Other Parameters"
 
 faq_top = html.Div([
     html.H6("Frequently Asked Questions"),
@@ -451,6 +485,31 @@ faq_other_params_text = html.Div([
 aerosol_radius_text = "Effective Aerosol Radius (at RH = 60%), r\u0305 (\u03bcm): "
 viral_deact_text = html.Span(["Maximum Viral Deactivation Rate (at RH = 100%), \u03BB", html.Sub('vmax'), " (/hr): "])
 
+pop_immunity_header = "Population Immunity: "
+perc_immune_label = html.Span(["Percentage immune p", html.Sub('im'), " = p", html.Sub('ex'), " + p", html.Sub('v'),
+                               " = "])
+perc_infectious_label = html.Span(["Percentage infectious p", html.Sub('i'), " = "])
+perc_vaccinated_label = html.Span(["Percentage vaccinated p", html.Sub('v'), " ="])
+perc_prev_infected_label = html.Span(["Percentage previously infected p", html.Sub('ex'), " = "])
+perc_susceptible_label = html.Span(["Percentage susceptible p", html.Sub('s'), " = 1 - (p", html.Sub('im'), " + p",
+                                    html.Sub('i'), ") = "])
+pop_immunity_desc = html.Div([html.Div(['''The infectious percentage p''', html.Sub('i'), ''' in the population is calculated 
+from the infectious 
+prevalence entered in the other risk scenario tabs (Given the prevalence of infection…, To limit my personal risk…).  
+The percentage immune p''', html.Sub('im'), ''' can be conservatively estimated from the vaccination percentage of the 
+population plus the total case rate in the population, by neglecting the contribution from undetected cases. These 
+two values are used to calculate the susceptible percentage p''', html.Sub('s'), '''. In Basic Mode and in the first 
+risk mode (If an 
+infected person enters…), this value is assumed to be 100%.''']),
+                              html.Br(),
+                              html.Div(['''Here are some helpful links to find p''', html.Sub('i'), ''' and p''',
+                                        html.Sub('im'), ''': ''',
+                                        html.A(children="US Immunity Estimates",
+                                               href=links.link_cdc_immunity,
+                                               target='_blank')
+                                        ])
+                              ])
+
 values_interest_header = "Calculated Values of Interest: "
 values_interest_desc = html.Div([
     html.H5("What exactly is this app calculating?"),
@@ -466,6 +525,7 @@ values_interest_desc = html.Div([
                   html.Span(''', that may be of interest:''')]),
     ], className='faq-answer'),
 ])
+relative_sus_label = html.Span(["Relative susceptibility s", html.Sub('r'), ": "])
 outdoor_air_frac_label = html.Span(["Outdoor air fraction Z", html.Sub('p'), ": "])
 aerosol_eff_label = html.Span(["Aerosol filtration efficiency p", html.Sub('f'), ": "])
 breathing_rate_label = html.Span(["Breathing flow rate Q", html.Sub('b'), ": "])

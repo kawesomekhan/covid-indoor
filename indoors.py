@@ -39,6 +39,9 @@ class Indoors:
     disease_params = []
     prec_params = []
     prevalence = 0.01
+    percentage_sus = 1
+    sr_age_factor = 1
+    sr_strain_factor = 1
 
     # Calculated Variables
     room_vol = 0  # ft3
@@ -50,6 +53,7 @@ class Indoors:
     airb_trans_rate = 0  # /hr
     viral_deact_rate = 0  # /hr
     eff_aerosol_radius = 0  # um
+    relative_sus = 1
 
     # Source: https://www.ashrae.org/technical-resources/filtration-disinfection
     # Table of MERV values corresponding to aerosol filtration efficiency, by different particle sizes (in microns)
@@ -95,7 +99,8 @@ class Indoors:
         max_aerosol_radius = self.physio_params[1]
 
         # Disease Parameters
-        exhaled_air_inf = self.disease_params[0]  # infection quanta/m3
+        self.relative_sus = self.sr_age_factor * self.sr_strain_factor
+        exhaled_air_inf = self.disease_params[0] * self.relative_sus  # infection quanta/m3
         max_viral_deact_rate = self.disease_params[1]  # /hr
 
         # Precautionary Parameters
@@ -128,9 +133,9 @@ class Indoors:
     def calc_n_max(self, exp_time, risk_type='conditional'):
         risk_tolerance = self.prec_params[1]  # no units
         if risk_type == 'conditional':
-            n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.airb_trans_rate * exp_time))
+            n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.percentage_sus * self.airb_trans_rate * exp_time))
         elif risk_type == 'prevalence':
-            n_max = ((risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time))) / (self.prevalence * (1 - self.prevalence) * self.airb_trans_rate * exp_time)) ** 0.5
+            n_max = ((risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time))) / (self.prevalence * self.percentage_sus * self.airb_trans_rate * exp_time)) ** 0.5
         elif risk_type == 'personal':
             risk_tolerance = risk_tolerance / self.prevalence
             n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.airb_trans_rate * exp_time))
@@ -147,9 +152,9 @@ class Indoors:
 
     # Calculate maximum exposure time allowed given a capacity (# people), transient
     def calc_max_time(self, n_max, risk_type='conditional'):
-        risk_tolerance = self.prec_params[1]  # no units
+        risk_tolerance = self.prec_params[1] / self.percentage_sus  # no units
         if risk_type == 'prevalence':
-            risk_tolerance = ((n_max - 1) * risk_tolerance) / (n_max * n_max * self.prevalence * (1 - self.prevalence))
+            risk_tolerance = ((n_max - 1) * risk_tolerance) / (n_max * n_max * self.prevalence * self.percentage_sus)
         elif risk_type == 'personal':
             risk_tolerance = risk_tolerance / self.prevalence
 

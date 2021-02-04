@@ -178,6 +178,10 @@ layout = html.Div(children=[
                                     html.Span(desc.values_interest_desc, id='values-interest-desc'),
                                     html.Br(),
                                     html.Div([
+                                        html.Div([html.Span(desc.relative_sus_label, id='sr-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='sr-output')]),
                                         html.Div([html.Span(desc.outdoor_air_frac_label, id='z_p-label'),
                                                   html.Span(
                                                       className='model-output-text-small',
@@ -286,6 +290,26 @@ layout = html.Div(children=[
                                     dcc.Dropdown(id='presets-risk',
                                                  options=desc.presets_risk,
                                                  value=0.1,
+                                                 searchable=False,
+                                                 clearable=False)
+                                ], className='card-presets'),
+                                html.Div([
+                                    html.H6([
+                                        html.Span(desc.curr_age_header, id='curr-age-group')
+                                    ]),
+                                    dcc.Dropdown(id='presets-age',
+                                                 options=desc.presets_age,
+                                                 value=0.68,
+                                                 searchable=False,
+                                                 clearable=False)
+                                ], className='card-presets'),
+                                html.Div([
+                                    html.H6([
+                                        html.Span(desc.curr_strain_header, id='curr-viral-strain'),
+                                    ]),
+                                    dcc.Dropdown(id='presets-strain',
+                                                 options=desc.presets_strain,
+                                                 value=1,
                                                  searchable=False,
                                                  clearable=False)
                                 ], className='card-presets')
@@ -451,6 +475,7 @@ def update_lang(search, window_width):
      Output('six-ft-output-t', 'children'),
      Output('presets', 'value'),
      Output('presets-human', 'value'),
+     Output('sr-output', 'children'),
      Output('air-frac-output', 'children'),
      Output('filtration-eff-output', 'children'),
      Output('breath-rate-output', 'children'),
@@ -482,6 +507,8 @@ def update_lang(search, window_width):
      Input('mask-type', 'value'),
      Input('mask-fit', 'value'),
      Input('presets-risk', 'value'),
+     Input('presets-age', 'value'),
+     Input('presets-strain', 'value'),
      Input('n-input', 'value'),
      Input('t-input', 'value'),
      Input('url', 'search')],
@@ -489,8 +516,8 @@ def update_lang(search, window_width):
      State('ceiling-height-text', 'children')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
-                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, n_max_input, exp_time_input,
-                  search, floor_area_text, ceiling_height_text):
+                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, sr_age_factor,
+                  sr_strain_factor, n_max_input, exp_time_input, search, floor_area_text, ceiling_height_text):
     def_aerosol_radius = 2
     max_viral_deact_rate = 0.6
     language = ess.get_lang(search)
@@ -501,7 +528,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
@@ -538,6 +565,9 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.physio_params = [breathing_flow_rate, def_aerosol_radius]
     myInd.disease_params = [infectiousness, max_viral_deact_rate]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
+    myInd.sr_age_factor = sr_age_factor
+    myInd.sr_strain_factor = sr_strain_factor
+    myInd.percentage_sus = 1
     myInd.calc_vars()
 
     # Get human behavior output text
@@ -565,7 +595,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            model_output_text[4], six_ft_text, six_ft_exp_time, preset_dd_value, human_preset_dd_value, \
            interest_output[0], interest_output[1], interest_output[2], interest_output[3], interest_output[4], \
            interest_output[5], interest_output[6], interest_output[7], interest_output[8], interest_output[9], \
-           interest_output[10], interest_output[11], interest_output[12], interest_output[13], \
+           interest_output[10], interest_output[11], interest_output[12], interest_output[13], interest_output[14], \
            exp_time_text, n_max_text, qb_text, cq_text, error_msg, False
 
 

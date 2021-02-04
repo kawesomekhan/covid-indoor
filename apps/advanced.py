@@ -155,6 +155,33 @@ layout = html.Div(children=[
                                 label=desc.other_io,
                                 className='custom-tab',
                                 children=[
+                                    html.H6(desc.pop_immunity_header, id='adv-pop-immunity-header'),
+                                    html.Div(desc.pop_immunity_desc, id='adv-pop-immunity-desc'),
+                                    html.Br(),
+                                    html.Div([
+                                        html.Div([html.Span(desc.perc_immune_label, id='adv-pim-label-other'),
+                                                  html.Span(className='model-output-text-small',
+                                                            id='adv-pim-output-other')]),
+                                        html.H5(desc.risk_conditional_desc, id='adv-risk-conditional-desc'),
+                                        html.Div([html.Span(desc.perc_susceptible_label, id='adv-ps-label-conditional'),
+                                                  html.Span(className='model-output-text-small',
+                                                            children="100%")]),
+                                        html.H5(desc.risk_prevalence_desc, id='adv-risk-prevalence-desc'),
+                                        html.Div([html.Span(desc.perc_infectious_label, id='adv-pi-label-prevalence'),
+                                                  html.Span(className='model-output-text-small',
+                                                            id='adv-pi-output-prevalence')]),
+                                        html.Div([html.Span(desc.perc_susceptible_label, id='adv-ps-label-prevalence'),
+                                                  html.Span(className='model-output-text-small',
+                                                            id='adv-ps-output-prevalence')]),
+                                        html.H5(desc.risk_personal_desc, id='adv-risk-personal-desc'),
+                                        html.Div([html.Span(desc.perc_infectious_label, id='adv-pi-label-personal'),
+                                                  html.Span(className='model-output-text-small',
+                                                            id='adv-pi-output-personal')]),
+                                        html.Div([html.Span(desc.perc_susceptible_label, id='adv-ps-label-personal'),
+                                                  html.Span(className='model-output-text-small',
+                                                            id='adv-ps-output-personal')]),
+                                    ], className='faq-answer'),
+                                    html.Br(),
                                     html.H6(html.Span(desc.other_io, id='adv-other-io')),
                                     html.Div([html.Span(desc.aerosol_radius_text, id='adv-aerosol-rad-text'),
                                               dcc.Input(id='adv-aerosol-radius', value=2,
@@ -163,10 +190,15 @@ layout = html.Div(children=[
                                     html.Div([html.Span(desc.viral_deact_text, id='adv-viral-deact-text'),
                                               dcc.Input(id='adv-viral-deact-rate',
                                                         value=0.6,
+                                                        step=0.1,
                                                         type='number')]),
                                     html.Br(),
                                     html.H6(html.Span(desc.values_interest_header, id='adv-val-interest-header')),
                                     html.Div([
+                                        html.Div([html.Span(desc.relative_sus_label, id='adv-sr-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='adv-sr-output')]),
                                         html.Div([html.Span(desc.outdoor_air_frac_label, id='adv-z_p-label'),
                                                   html.Span(
                                                       className='model-output-text-small',
@@ -274,6 +306,42 @@ layout = html.Div(children=[
                                                    value=0.1,
                                                    marks=desc.risk_tol_marks),
                                         html.Div([html.Br()], id='adv-mobile-risk-break')
+                                    ], className='card-presets'),
+                                    html.Div([
+                                        html.H6([
+                                            html.Span(desc.curr_age_header, id='adv-curr-age-group'),
+                                            html.Span(id='adv-age-group-output')
+                                        ]),
+                                        dcc.Slider(id='adv-age-group',
+                                                   min=0.01,
+                                                   max=1,
+                                                   step=0.01,
+                                                   value=0.68,
+                                                   marks=desc.age_group_marks),
+                                    ], className='card-presets'),
+                                    html.Div([
+                                        html.H6([
+                                            html.Span(desc.curr_strain_header, id='adv-curr-viral-strain'),
+                                            html.Span(id='adv-viral-strain-output')
+                                        ]),
+                                        dcc.Slider(id='adv-viral-strain',
+                                                   min=0.1,
+                                                   max=2,
+                                                   step=0.01,
+                                                   value=1,
+                                                   marks=desc.viral_strain_marks),
+                                    ], className='card-presets'),
+                                    html.Div([
+                                        html.H6([
+                                            html.Span(desc.pim_header, id='adv-pim-header'),
+                                            html.Span(id='adv-pim-output')
+                                        ]),
+                                        dcc.Slider(id='adv-pim-input',
+                                                   min=0,
+                                                   max=1,
+                                                   step=0.01,
+                                                   value=0.33,
+                                                   marks=desc.pim_marks),
                                     ], className='card-presets')
                                 ],
                             ),
@@ -285,7 +353,7 @@ layout = html.Div(children=[
                             dcc.Tabs([
                                 dcc.Tab(
                                     id='adv-output-panel-tab-a',
-                                    label="If an infected person enters...",
+                                    label=desc.risk_conditional_desc,
                                     className='custom-tab',
                                     children=html.Div(className='output-content', children=[
                                         html.Div([
@@ -340,7 +408,7 @@ layout = html.Div(children=[
                                 ),
                                 dcc.Tab(
                                     id='adv-output-panel-tab-b',
-                                    label="Given the prevalence of infection...",
+                                    label=desc.risk_prevalence_desc,
                                     className='custom-tab',
                                     children=html.Div(className='output-content', children=[
                                         html.Div([
@@ -402,7 +470,7 @@ layout = html.Div(children=[
                                 ),
                                 dcc.Tab(
                                     id='adv-output-panel-tab-c',
-                                    label="To limit my personal risk...",
+                                    label=desc.risk_personal_desc,
                                     className='custom-tab',
                                     children=html.Div(className='output-content', children=[
                                         html.Div([
@@ -560,6 +628,11 @@ def update_lang(search, window_width):
      Output('adv-six-ft-output-t-c', 'children'),
      Output('adv-presets', 'value'),
      Output('adv-presets-human', 'value'),
+     Output('adv-pi-output-prevalence', 'children'),
+     Output('adv-ps-output-prevalence', 'children'),
+     Output('adv-pi-output-personal', 'children'),
+     Output('adv-ps-output-personal', 'children'),
+     Output('adv-sr-output', 'children'),
      Output('adv-air-frac-output', 'children'),
      Output('adv-filtration-eff-output', 'children'),
      Output('adv-breath-rate-output', 'children'),
@@ -595,6 +668,9 @@ def update_lang(search, window_width):
      Input('adv-mask-type', 'value'),
      Input('adv-mask-fit', 'value'),
      Input('adv-risk-tolerance', 'value'),
+     Input('adv-age-group', 'value'),
+     Input('adv-viral-strain', 'value'),
+     Input('adv-pim-input', 'value'),
      Input('adv-aerosol-radius', 'value'),
      Input('adv-viral-deact-rate', 'value'),
      Input('adv-n-input', 'value'),
@@ -610,7 +686,8 @@ def update_lang(search, window_width):
      State('adv-ceiling-height-text', 'children')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
-                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, def_aerosol_radius,
+                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, sr_age_factor,
+                  sr_strain_factor, pim_input, def_aerosol_radius,
                   max_viral_deact_rate, n_max_input, exp_time_input, n_max_input_b, exp_time_input_b, n_max_input_c,
                   exp_time_input_c, prevalence_b, prevalence_c, search, floor_area_text, ceiling_height_text):
     language = ess.get_lang(search)
@@ -619,7 +696,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                                 exp_time_input_b, n_max_input_c, exp_time_input_c, prevalence_b, prevalence_c)
 
     if error_msg != "":
-        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -627,7 +705,6 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
@@ -664,6 +741,9 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.physio_params = [breathing_flow_rate, def_aerosol_radius]
     myInd.disease_params = [infectiousness, max_viral_deact_rate]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
+    myInd.sr_age_factor = sr_age_factor
+    myInd.sr_strain_factor = sr_strain_factor
+    myInd.percentage_sus = 1
     myInd.calc_vars()
 
     # Get human behavior output text
@@ -687,7 +767,12 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     n_max_text = ess.get_n_max_text(myInd.calc_n_max(exp_time_input, 'conditional'), myInd.get_n_max(), language)
 
     # Prevalence Outputs (Given the prevalence of infection...)
-    myInd.prevalence = prevalence_b / 100000
+    pi_prevalence = prevalence_b / 100000
+    ps_prevalence = 1 - (pi_prevalence + pim_input)
+    myInd.prevalence = pi_prevalence
+    myInd.percentage_sus = ps_prevalence
+    pi_prevalence_text = '{:.3f}%'.format(pi_prevalence * 100)
+    ps_prevalence_text = '{:.2f}%'.format(ps_prevalence * 100)
     model_output_text_b = ess.get_model_output_text(myInd, 'prevalence', -1, language)
     six_ft_text_b = ess.get_six_ft_text(myInd, language)
     six_ft_exp_time_b = ess.get_six_ft_exp_time(myInd, 'personal', -1, language)
@@ -697,7 +782,12 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     n_max_text_b = ess.get_n_max_text(myInd.calc_n_max(exp_time_input_b, 'prevalence'), myInd.get_n_max(), language)
 
     # Personal Outputs (To limit my personal risk...)
-    myInd.prevalence = prevalence_c / 100000
+    pi_personal = prevalence_c / 100000
+    ps_personal = 1 - (pi_personal + pim_input)
+    myInd.prevalence = pi_personal
+    myInd.percentage_sus = ps_personal
+    pi_personal_text = '{:.3f}%'.format(pi_personal * 100)
+    ps_personal_text = '{:.2f}%'.format(ps_personal * 100)
     model_output_text_c = ess.get_model_output_text(myInd, 'personal', -1, language)
     six_ft_text_c = ess.get_six_ft_text(myInd, language)
     six_ft_exp_time_c = ess.get_six_ft_exp_time(myInd, 'personal', -1, language)
@@ -712,9 +802,10 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            model_output_text_b[3], model_output_text_b[4], model_output_text_c[0], model_output_text_c[1], \
            model_output_text_c[2], model_output_text_c[3], model_output_text_c[4], six_ft_text, six_ft_exp_time, \
            six_ft_text_b, six_ft_exp_time_b, six_ft_text_c, six_ft_exp_time_c, preset_dd_value, human_preset_dd_value, \
+           pi_prevalence_text, ps_prevalence_text, pi_personal_text, ps_personal_text, \
            interest_output[0], interest_output[1], interest_output[2], interest_output[3], interest_output[4], \
            interest_output[5], interest_output[6], interest_output[7], interest_output[8], interest_output[9], \
-           interest_output[10], interest_output[11], interest_output[12], interest_output[13], \
+           interest_output[10], interest_output[11], interest_output[12], interest_output[13], interest_output[14], \
            exp_time_text, n_max_text, exp_time_text_b, n_max_text_b, exp_time_text_c, n_max_text_c, qb_text, cq_text, \
            error_msg, False
 
@@ -793,6 +884,25 @@ def update_human_presets(preset):
                curr_settings['mask-fit'],
 
 
+# Update max pim slider value
+@app.callback(
+    [Output('adv-pim-input', 'max'),
+     Output('adv-pim-input', 'value')],
+    [Input('adv-prev-input-b', 'value'),
+     Input('adv-prev-input-c', 'value')],
+    [State('adv-pim-input', 'value')]
+)
+def update_pim_slider_max(prev_b, prev_c, curr_pim):
+    prev_b = prev_b / 100000
+    prev_c = prev_c / 100000
+    pim_max = 1 - max(prev_b, prev_c) - 0.001
+    new_pim = curr_pim
+    if curr_pim >= pim_max:
+        new_pim = pim_max - 0.01
+
+    return [pim_max, new_pim]
+
+
 # Relative Humidity slider value display
 @app.callback(
     [Output('adv-humidity-output', 'children')],
@@ -809,6 +919,35 @@ def update_humid_disp(relative_humidity):
 )
 def update_risk_tol_disp(risk_tolerance):
     return ["{:.2f}".format(risk_tolerance)]
+
+
+# Age Group slider value display
+@app.callback(
+    [Output('adv-age-group-output', 'children')],
+    [Input('adv-age-group', 'value')]
+)
+def update_age_group_disp(age_factor):
+    return ["{:.2f}".format(age_factor)]
+
+
+# Viral Strain slider value display
+@app.callback(
+    [Output('adv-viral-strain-output', 'children')],
+    [Input('adv-viral-strain', 'value')]
+)
+def update_viral_strain_disp(strain_factor):
+    return ["{:.2f}".format(strain_factor)]
+
+
+# Percentage Immune slider value display
+@app.callback(
+    [Output('adv-pim-output', 'children'),
+     Output('adv-pim-output-other', 'children')],
+    [Input('adv-pim-input', 'value')]
+)
+def update_viral_strain_disp(pim):
+    pim_output = "{:.0f}%".format(pim * 100)
+    return [pim_output, pim_output]
 
 
 # Mask Filtration Efficiency slider value display

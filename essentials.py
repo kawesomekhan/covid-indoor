@@ -66,6 +66,16 @@ room_preset_settings = {
         'recirc-rate': 1,
         'rh': 0.6
     },
+    'living-room': {
+        'floor-area': 400,
+        'ceiling-height': 9,
+        'floor-area-metric': 400 / m_to_ft / m_to_ft,
+        'ceiling-height-metric': 9 / m_to_ft,
+        'ventilation': 3,
+        'filtration': 6,
+        'recirc-rate': 1,
+        'rh': 0.6
+    },
     'classroom': {
         'floor-area': 900,
         'ceiling-height': 12,
@@ -469,10 +479,11 @@ def get_interest_output_text(indoor_model, units):
     # Calculated Values of Interest Output
     if units == "british":
         interest_output = [
+            '{:,.2f}'.format(indoor_model.relative_sus),
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60),  # m3/hr to ft3/min
-            '{:,.2f} quanta/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
+            '{:,.2f} quanta/ft\u00B3'.format(infectiousness * indoor_model.relative_sus / 35.3147),  # 1/m3 to 1/ft3
             '{:,.2f}'.format(mask_pass_prob),
             '{:,.0f} ft\u00B3'.format(indoor_model.room_vol),
             '{:,.0f} ft\u00B3/min'.format(indoor_model.fresh_rate),
@@ -482,10 +493,11 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f} /hr'.format(indoor_model.viral_deact_rate),
             '{:,.2f} ft/min'.format(indoor_model.sett_speed * 3.281 / 60),  # m/hr to ft/min
             '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
-            '{:,.2f} /hr (÷10,000)'.format(indoor_model.airb_trans_rate * 10000),
+            '{:,.2f} /hr ÷10,000'.format(indoor_model.airb_trans_rate * 10000),
         ]
     elif units == "metric":
         interest_output = [
+            '{:,.2f}'.format(indoor_model.relative_sus),
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} m\u00B3/hr'.format(breathing_flow_rate),
@@ -499,7 +511,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f} /hr'.format(indoor_model.viral_deact_rate),
             '{:,.2f} m/hr'.format(indoor_model.sett_speed),
             '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
-            '{:,.2f} /hr (÷10,000)'.format(indoor_model.airb_trans_rate * 10000),
+            '{:,.2f} /hr ÷10,000'.format(indoor_model.airb_trans_rate * 10000),
         ]
 
     return interest_output
