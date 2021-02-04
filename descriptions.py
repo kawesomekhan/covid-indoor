@@ -76,11 +76,11 @@ error_list = {
 curr_room_header = "Room Specifications: "
 presets = [
     {'label': "Custom", 'value': 'custom'},
-    {'label': "Classroom Lecture", 'value': 'classroom'},
+    {'label': "Classroom", 'value': 'classroom'},
     {'label': "Living Room", 'value': 'living-room'},
     {'label': "Church", 'value': 'church'},
     {'label': "Restaurant", 'value': 'restaurant'},
-    {'label': "Office/Workplace", 'value': 'office'},
+    {'label': "Office", 'value': 'office'},
     {'label': "Subway Car", 'value': 'subway'},
     {'label': "Commercial Airliner", 'value': 'airplane'},
 ]
@@ -98,15 +98,15 @@ presets_human = [
 ]
 
 curr_risk_header = "Risk Tolerance: "
-presets_risk = [
-    {'label': "Low", 'value': 0.01},
-    {'label': "Medium", 'value': 0.1},
-    {'label': "High", 'value': 1},
-]
+# presets_risk = [
+#     {'label': "Low", 'value': 0.01},
+#     {'label': "Medium", 'value': 0.1},
+#     {'label': "High", 'value': 1},
+# ]
 risk_tol_marks = {
     # 0.01: {'label': '0.01: Safer', 'style': {'max-width': '50px'}},
-    0.1: {'label': '0.10: Medium', 'style': {'max-width': '50px'}},
-    1: {'label': '1.00: High'}
+    0.1: {'label': '0.10: Safer', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: Unsafe'}
 }
 
 risk_tolerance_text = "Risk Tolerance: "
@@ -134,16 +134,16 @@ presets_strain = [
     {'label': "SARS-CoV-2 - B.1.1.7 (UK Strain)", 'value': 1.58}
 ]
 viral_strain_marks = {
-    1: {'label': '1.0: SARS-CoV-2 (Wuhan Strain)', 'style': {'max-width': '100px'}},
-    1.58: {'label': '1.58: B.1.1.7 (UK Strain)'}
+    1: {'label': '1.0: Wuhan', 'style': {'max-width': '100px'}},
+    1.58: {'label': '1.58: B.1.1.7/UK'}
 }
 
 pim_header = "Percentage Immune: "
-pim_marks = {
-    0: {'label': '0% (basic mode)'},
-    0.33: {'label': '33% (default)'},
-    1: {'label': '100%'}
-}
+# pim_marks = {
+#     0: {'label': '0% (basic mode)'},
+#     0.33: {'label': '33% (default)'},
+#     1: {'label': '100%'}
+# }
 
 risk_conditional_desc = "If an infected person enters..."
 risk_prevalence_desc = "Given the prevalence of infection..."
@@ -179,8 +179,8 @@ units_month_one = 'month'
 is_past_recovery_base_string = '{n_val} people for >{val:.0f} days,'
 model_output_base_string = '{n_val} people for '
 
-main_panel_six_ft_1 = "In contrast, the six-foot (or two-meter) distancing guideline would limit occupancy to "
-main_panel_six_ft_2 = " which becomes unsafe after "
+main_panel_six_ft_1 = "In contrast, the six-foot (or two-meter) rule would limit occupancy to "
+main_panel_six_ft_2 = " which would violate the guideline* after "
 
 six_ft_base_string = ' {} people'
 six_ft_base_string_one = ' {} person'
@@ -196,6 +196,13 @@ main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability 
                                                        children="airborne transmissions",
                                                        target='_blank'), ),
                                       html.Span(''' per infected person to be less than the risk tolerance 
+                                      over the cumulative exposure time 
+                                      listed.''')], className='airborne-text')
+main_airb_trans_only_disc_basic = html.Div(["*The guideline restricts the probability of ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="airborne transmissions",
+                                                             target='_blank'), ),
+                                            html.Span(''' per infected person to be less than the risk tolerance (10%)
                                       over the cumulative exposure time 
                                       listed.''')], className='airborne-text')
 
@@ -218,7 +225,7 @@ main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probabilit
                                       over the cumulative exposure time 
                                       listed.''')], className='airborne-text')
 
-airb_trans_only_disc = html.Div('''based on consideration of airborne transmission only.''', className='airborne-text')
+airb_trans_only_disc = html.Div('''''', className='airborne-text')
 
 incidence_rate_refs = html.Div([html.Sup('''1'''),
                                 html.Span('''To estimate your local prevalence, here are some helpful resources: '''),
@@ -235,11 +242,11 @@ incidence_rate_refs = html.Div([html.Sup('''1'''),
 n_input_text_1 = "If this room has "
 n_max_base_string = ' {:.0f} people'
 n_max_overflow_base_string = ' >{:.0f} people'
-n_input_text_2 = " people, its occupants will become unsafe after "
+n_input_text_2 = " people, the guideline* would be violated after "
 n_input_text_3 = "."
 
 t_input_text_1 = "If people spend approximately "
-t_input_text_2 = " hours here, the occupancy should be limited to "
+t_input_text_2 = " hours here, the occupancy should be limited* to "
 t_input_text_3 = "."
 
 # About
@@ -325,8 +332,8 @@ recirc_types = [
 
 humidity_text = "Relative Humidity: "
 humidity_marks = {
-    0: {'label': '0%: Very Dry', 'style': {'max-width': '25px'}},
-    0.2: {'label': '20%: Airplane', 'style': {'max-width': '50px'}},
+    0.01: {'label': '1%: Very Dry', 'style': {'max-width': '25px'}},
+    # 0.2: {'label': '20%: Airplane', 'style': {'max-width': '50px'}},
     0.3: {'label': '30%: Dry'},
     0.6: {'label': '60%: Average'},
     0.99: {'label': '99%: Very Humid'},

@@ -108,7 +108,7 @@ layout = html.Div(children=[
                                               html.Span(className='model-output-text-small',
                                                         id='humidity-output'),
                                               dcc.Slider(id='relative-humidity',
-                                                         min=0,
+                                                         min=0.01,
                                                          max=0.99,
                                                          step=0.01,
                                                          value=0.6,
@@ -282,17 +282,17 @@ layout = html.Div(children=[
                                                  searchable=False,
                                                  clearable=False)
                                 ], className='card-presets'),
-                                html.Div([
-                                    html.H6([
-                                        html.Span(desc.curr_risk_header, id='curr-risk-tol'),
-                                        html.Span(id='risk-tolerance-output')
-                                    ]),
-                                    dcc.Dropdown(id='presets-risk',
-                                                 options=desc.presets_risk,
-                                                 value=0.1,
-                                                 searchable=False,
-                                                 clearable=False)
-                                ], className='card-presets'),
+                                # html.Div([
+                                #     html.H6([
+                                #         html.Span(desc.curr_risk_header, id='curr-risk-tol'),
+                                #         html.Span(id='risk-tolerance-output')
+                                #     ]),
+                                #     dcc.Dropdown(id='presets-risk',
+                                #                  options=desc.presets_risk,
+                                #                  value=0.1,
+                                #                  searchable=False,
+                                #                  clearable=False)
+                                # ], className='card-presets'),
                                 html.Div([
                                     html.H6([
                                         html.Span(desc.curr_age_header, id='curr-age-group')
@@ -349,7 +349,7 @@ layout = html.Div(children=[
                                                 style={'color': '#000000'}),
                                     ], className='panel-main-output'),
                                     html.Br(),
-                                    html.Div(desc.main_airb_trans_only_disc, id='main-airb-trans-disc',
+                                    html.Div(desc.main_airb_trans_only_disc_basic, id='main-airb-trans-disc',
                                              className='panel-airb-desc'),
                                     html.Div(desc.other_risk_modes_desc, id='other-risk-modes-desc',
                                              className='panel-airb-desc')
@@ -432,7 +432,6 @@ layout = html.Div(children=[
      Output('mask-type', 'options'),
      Output('mask-fit-text', 'children'),
      Output('mask-fit', 'marks'),
-     Output('presets-risk', 'options'),
      Output('need-more-ctrl-text-2', 'children'),
      Output('tab-d', 'label'),
      Output('faq-top', 'children'),
@@ -506,7 +505,6 @@ def update_lang(search, window_width):
      Input('exp-activity', 'value'),
      Input('mask-type', 'value'),
      Input('mask-fit', 'value'),
-     Input('presets-risk', 'value'),
      Input('presets-age', 'value'),
      Input('presets-strain', 'value'),
      Input('n-input', 'value'),
@@ -516,8 +514,9 @@ def update_lang(search, window_width):
      State('ceiling-height-text', 'children')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
-                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, sr_age_factor,
+                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, sr_age_factor,
                   sr_strain_factor, n_max_input, exp_time_input, search, floor_area_text, ceiling_height_text):
+    risk_tolerance = 0.1
     def_aerosol_radius = 2
     max_viral_deact_rate = 0.6
     language = ess.get_lang(search)
@@ -715,13 +714,13 @@ def update_humid_disp(relative_humidity):
     return ["{:.0f}%".format(relative_humidity * 100)]
 
 
-# Risk tolerance slider value display
-@app.callback(
-    [Output('risk-tolerance-output', 'children')],
-    [Input('presets-risk', 'value')]
-)
-def update_risk_tol_disp(risk_tolerance):
-    return ["{:.2f}".format(risk_tolerance)]
+# # Risk tolerance slider value display
+# @app.callback(
+#     [Output('risk-tolerance-output', 'children')],
+#     [Input('presets-risk', 'value')]
+# )
+# def update_risk_tol_disp(risk_tolerance):
+#     return ["{:.2f}".format(risk_tolerance)]
 
 
 # Mask Filtration Efficiency slider value display

@@ -152,11 +152,15 @@ class Indoors:
 
     # Calculate maximum exposure time allowed given a capacity (# people), transient
     def calc_max_time(self, n_max, risk_type='conditional'):
-        risk_tolerance = self.prec_params[1] / self.percentage_sus  # no units
-        if risk_type == 'prevalence':
+        risk_tolerance = self.prec_params[1]  # no units
+        if risk_type == 'conditional':
+            risk_tolerance = risk_tolerance / self.percentage_sus
+        elif risk_type == 'prevalence':
             risk_tolerance = ((n_max - 1) * risk_tolerance) / (n_max * n_max * self.prevalence * self.percentage_sus)
         elif risk_type == 'personal':
             risk_tolerance = risk_tolerance / self.prevalence
+
+        print("risk tolerance (" + risk_type + "), N=" + str(n_max) + ": " + str(risk_tolerance))
 
         exp_time_ss = risk_tolerance / ((n_max - 1) * self.airb_trans_rate)  # hrs, steady-state
         exp_time_trans = exp_time_ss * (1 + (1 + 4 / (self.conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient

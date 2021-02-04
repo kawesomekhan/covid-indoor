@@ -93,7 +93,7 @@ layout = html.Div(children=[
                                               html.Span(className='model-output-text-small',
                                                         id='adv-humidity-output'),
                                               dcc.Slider(id='adv-relative-humidity',
-                                                         min=0,
+                                                         min=0.01,
                                                          max=0.99,
                                                          step=0.01,
                                                          value=0.6,
@@ -163,9 +163,12 @@ layout = html.Div(children=[
                                                   html.Span(className='model-output-text-small',
                                                             id='adv-pim-output-other')]),
                                         html.H5(desc.risk_conditional_desc, id='adv-risk-conditional-desc'),
+                                        html.Div([html.Span(desc.perc_infectious_label, id='adv-pi-label-conditional'),
+                                                  html.Span(className='model-output-text-small',
+                                                            children="0%")]),
                                         html.Div([html.Span(desc.perc_susceptible_label, id='adv-ps-label-conditional'),
                                                   html.Span(className='model-output-text-small',
-                                                            children="100%")]),
+                                                            id='adv-ps-output-conditional')]),
                                         html.H5(desc.risk_prevalence_desc, id='adv-risk-prevalence-desc'),
                                         html.Div([html.Span(desc.perc_infectious_label, id='adv-pi-label-prevalence'),
                                                   html.Span(className='model-output-text-small',
@@ -340,8 +343,7 @@ layout = html.Div(children=[
                                                    min=0,
                                                    max=1,
                                                    step=0.01,
-                                                   value=0.33,
-                                                   marks=desc.pim_marks),
+                                                   value=0),
                                     ], className='card-presets')
                                 ],
                             ),
@@ -628,6 +630,7 @@ def update_lang(search, window_width):
      Output('adv-six-ft-output-t-c', 'children'),
      Output('adv-presets', 'value'),
      Output('adv-presets-human', 'value'),
+     Output('adv-ps-output-conditional', 'children'),
      Output('adv-pi-output-prevalence', 'children'),
      Output('adv-ps-output-prevalence', 'children'),
      Output('adv-pi-output-personal', 'children'),
@@ -698,7 +701,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -743,7 +746,9 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
     myInd.sr_age_factor = sr_age_factor
     myInd.sr_strain_factor = sr_strain_factor
-    myInd.percentage_sus = 1
+    ps_conditional = 1 - pim_input
+    ps_conditional_text = '{:.2f}%'.format(ps_conditional * 100)
+    myInd.percentage_sus = ps_conditional
     myInd.calc_vars()
 
     # Get human behavior output text
@@ -775,7 +780,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     ps_prevalence_text = '{:.2f}%'.format(ps_prevalence * 100)
     model_output_text_b = ess.get_model_output_text(myInd, 'prevalence', -1, language)
     six_ft_text_b = ess.get_six_ft_text(myInd, language)
-    six_ft_exp_time_b = ess.get_six_ft_exp_time(myInd, 'personal', -1, language)
+    six_ft_exp_time_b = ess.get_six_ft_exp_time(myInd, 'prevalence', -1, language)
 
     exp_time_text_b = ess.time_to_text(myInd.calc_max_time(n_max_input_b, 'prevalence'), True, -1,
                                        language)
@@ -791,6 +796,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     model_output_text_c = ess.get_model_output_text(myInd, 'personal', -1, language)
     six_ft_text_c = ess.get_six_ft_text(myInd, language)
     six_ft_exp_time_c = ess.get_six_ft_exp_time(myInd, 'personal', -1, language)
+    print(six_ft_exp_time_c)
 
     exp_time_text_c = ess.time_to_text(myInd.calc_max_time(n_max_input_c, 'personal'), True, -1,
                                        language)
@@ -802,7 +808,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            model_output_text_b[3], model_output_text_b[4], model_output_text_c[0], model_output_text_c[1], \
            model_output_text_c[2], model_output_text_c[3], model_output_text_c[4], six_ft_text, six_ft_exp_time, \
            six_ft_text_b, six_ft_exp_time_b, six_ft_text_c, six_ft_exp_time_c, preset_dd_value, human_preset_dd_value, \
-           pi_prevalence_text, ps_prevalence_text, pi_personal_text, ps_personal_text, \
+           ps_conditional_text, pi_prevalence_text, ps_prevalence_text, pi_personal_text, ps_personal_text, \
            interest_output[0], interest_output[1], interest_output[2], interest_output[3], interest_output[4], \
            interest_output[5], interest_output[6], interest_output[7], interest_output[8], interest_output[9], \
            interest_output[10], interest_output[11], interest_output[12], interest_output[13], interest_output[14], \
