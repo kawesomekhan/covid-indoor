@@ -160,8 +160,6 @@ class Indoors:
         elif risk_type == 'personal':
             risk_tolerance = risk_tolerance / self.prevalence
 
-        print("risk tolerance (" + risk_type + "), N=" + str(n_max) + ": " + str(risk_tolerance))
-
         exp_time_ss = risk_tolerance / ((n_max - 1) * self.airb_trans_rate)  # hrs, steady-state
         exp_time_trans = exp_time_ss * (1 + (1 + 4 / (self.conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient
         return exp_time_trans

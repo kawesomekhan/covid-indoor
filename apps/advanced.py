@@ -796,7 +796,6 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     model_output_text_c = ess.get_model_output_text(myInd, 'personal', -1, language)
     six_ft_text_c = ess.get_six_ft_text(myInd, language)
     six_ft_exp_time_c = ess.get_six_ft_exp_time(myInd, 'personal', -1, language)
-    print(six_ft_exp_time_c)
 
     exp_time_text_c = ess.time_to_text(myInd.calc_max_time(n_max_input_c, 'personal'), True, -1,
                                        language)

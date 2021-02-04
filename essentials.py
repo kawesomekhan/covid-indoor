@@ -564,7 +564,7 @@ def get_lang_text_basic(language, disp_width):
     if disp_width < 1200:
         # use our mobile marks
         humidity_marks = {
-            0: desc_file.humidity_marks[0],
+            0.01: desc_file.humidity_marks[0.01],
             0.6: desc_file.humidity_marks[0.6],
             0.99: desc_file.humidity_marks[0.99],
         }
@@ -635,7 +635,7 @@ def get_lang_text_adv(language, disp_width):
     if disp_width < 1200:
         # use our mobile marks
         humidity_marks = {
-            0: desc_file.humidity_marks[0],
+            0.01: desc_file.humidity_marks[0.01],
             0.6: desc_file.humidity_marks[0.6],
             0.99: desc_file.humidity_marks[0.99],
         }
