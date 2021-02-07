@@ -308,7 +308,7 @@ layout = html.Div(children=[
                                                    step=0.01,
                                                    value=0.1,
                                                    marks=desc.risk_tol_marks),
-                                        html.Div([html.Br()], id='adv-mobile-risk-break')
+                                        html.Div([html.Br()], className='mobile-break')
                                     ], className='card-presets'),
                                     html.Div([
                                         html.H6([
@@ -321,6 +321,7 @@ layout = html.Div(children=[
                                                    step=0.01,
                                                    value=0.68,
                                                    marks=desc.age_group_marks),
+                                        html.Div([html.Br()], className='mobile-break')
                                     ], className='card-presets'),
                                     html.Div([
                                         html.H6([
@@ -333,6 +334,7 @@ layout = html.Div(children=[
                                                    step=0.01,
                                                    value=1,
                                                    marks=desc.viral_strain_marks),
+                                        html.Div([html.Br()], className='mobile-break')
                                     ], className='card-presets'),
                                     html.Div([
                                         html.H6([

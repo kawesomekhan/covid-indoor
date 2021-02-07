@@ -44,7 +44,7 @@ body {
 .card-presets {
     padding: 8px;
 }
-#adv-mobile-risk-break {
+.mobile-break {
     display: none;
 }
 
@@ -145,7 +145,7 @@ body {
     .grid-presets {
         grid-template-columns: 1fr 1fr;
     }
-    #adv-mobile-risk-break {
+    .mobile-break {
         display: inline-block;
     }
 }
