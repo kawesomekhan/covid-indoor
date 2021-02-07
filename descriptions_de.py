@@ -262,7 +262,7 @@ mask_types = [
     {'label': "Keine, Gesichtsvisier", 'value': 0},
     {'label': "Grob gewebte Baumwolle", 'value': 0.1},
     {'label': "Seide, Flannel, Chiffon", 'value': 0.5},
-    {'label': "Chirurgisch, Baumwolle", 'value': 0.75},
+    {'label': "Chirurgisch, Baumwolle", 'value': 0.9},
     {'label': "N95-Maske", 'value': 0.95},
 ]
 

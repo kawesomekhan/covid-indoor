@@ -259,7 +259,7 @@ mask_types = [
     {'label': "Tidak ada, Pelindung Wajah", 'value': 0},
     {'label': "Kapas Kasar", 'value': 0.1},
     {'label': "Sutra, Flanel, Sifon", 'value': 0.5},
-    {'label': "Bedah, Kapas", 'value': 0.75},
+    {'label': "Bedah, Kapas", 'value': 0.9},
     {'label': "Respirator N95", 'value': 0.95},
 ]
 

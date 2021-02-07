@@ -57,7 +57,7 @@ mask_types = [
     {'label': "없음, 안면 보호막", 'value': 0},
     {'label': "거친 면", 'value': 0.1},
     {'label': "실크, 플란넬, 시폰", 'value': 0.5},
-    {'label': "수술용 면", 'value': 0.75},
+    {'label': "수술용 면", 'value': 0.9},
     {'label': "N95 마스크", 'value': 0.95},
 ]
 
