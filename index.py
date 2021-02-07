@@ -20,20 +20,20 @@ Advanced Mode), Unit Systems, Languages, and running the app.
 # Languages
 languages = [
     # {'label': "العربية", 'value': "ar"},
-    {'label': "Čeština", 'value': "cs"},
-    {'label': "Dansk", 'value': "da"},
-    {'label': "Deutsch", 'value': "de"},
+    {'label': "Čeština", 'value': "cs", 'disabled': True},
+    {'label': "Dansk", 'value': "da", 'disabled': True},
+    {'label': "Deutsch", 'value': "de", 'disabled': True},
     # {'label': "Ελληνικά", 'value': "el"},
     {'label': "English", 'value': "en"},
-    {'label': "Espa\u00f1ol", 'value': "es"},
-    {'label': "Fran\u00e7ais", 'value': "fr"},
-    {'label': "हिन्दी", 'value': "hi"},
-    {'label': "Bahasa Indonesia", 'value': "id"},
-    {'label': "Italiano", 'value': "it"},
-    {'label': "한국어", 'value': "ko"},
+    {'label': "Espa\u00f1ol", 'value': "es", 'disabled': True},
+    {'label': "Fran\u00e7ais", 'value': "fr", 'disabled': True},
+    {'label': "हिन्दी", 'value': "hi", 'disabled': True},
+    {'label': "Bahasa Indonesia", 'value': "id", 'disabled': True},
+    {'label': "Italiano", 'value': "it", 'disabled': True},
+    {'label': "한국어", 'value': "ko", 'disabled': True},
     # {'label': "Nederlands", 'value': "nl"},
-    {'label': "Svenska", 'value': "sv"},
-    {'label': "简体中文", 'value': "zh"},
+    {'label': "Svenska", 'value': "sv", 'disabled': True},
+    {'label': "简体中文", 'value': "zh", 'disabled': True},
 ]
 
 # Used for Heroku deployment

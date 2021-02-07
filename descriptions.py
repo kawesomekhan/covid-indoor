@@ -228,7 +228,8 @@ main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probabilit
 airb_trans_only_disc = html.Div('''''', className='airborne-text')
 
 incidence_rate_refs = html.Div([html.Sup('''1'''),
-                                html.Span('''To estimate your local prevalence, here are some helpful resources: '''),
+                                html.Span('''To estimate your local prevalence and immunity, 
+                                here are some helpful resources: '''),
                                 # html.Span(html.A(href=links.link_jhu_dashboard,
                                 #                  children="JHU COVID-19 Dashboard",
                                 #                  target='_blank')),
@@ -236,6 +237,18 @@ incidence_rate_refs = html.Div([html.Sup('''1'''),
                                 html.Span(html.A(href=links.link_cdc_dashboard,
                                                  children="CDC COVID-19 Data Tracker",
                                                  target='_blank')),
+                                html.Span(", "),
+                                html.Span(html.A(href=links.link_jhu_data,
+                                                 children="JHU Coronavirus Resource Center",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.A(children="US Immunity Estimates",
+                                       href=links.link_cdc_immunity,
+                                       target='_blank'),
+                                html.Span(", "),
+                                html.A(children="International Immunity Estimates",
+                                       href=links.link_jhu_vaccine,
+                                       target='_blank'),
                                 ], className='airborne-text')
 
 # Bottom panels text
