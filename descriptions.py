@@ -524,9 +524,21 @@ infected person enters…), this value is assumed to be 100%.''']),
                               html.Br(),
                               html.Div(['''Here are some helpful links to find p''', html.Sub('i'), ''' and p''',
                                         html.Sub('im'), ''': ''',
+                                        html.Span(html.A(href=links.link_cdc_dashboard,
+                                                         children="CDC COVID-19 Data Tracker",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.Span(html.A(href=links.link_jhu_data,
+                                                         children="JHU Coronavirus Resource Center",
+                                                         target='_blank')),
+                                        html.Span(", "),
                                         html.A(children="US Immunity Estimates",
                                                href=links.link_cdc_immunity,
-                                               target='_blank')
+                                               target='_blank'),
+                                        html.Span(", "),
+                                        html.A(children="International Immunity Estimates",
+                                               href=links.link_jhu_vaccine,
+                                               target='_blank'),
                                         ])
                               ])
 
