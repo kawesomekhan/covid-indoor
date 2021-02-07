@@ -53,7 +53,7 @@ layout = html.Div(children=[
             children=[
                 html.Div(
                     className='card',
-                    id='main-tabs',
+                    id='card-tab',
                     children=[
                         dcc.Tabs(value='tab-1', children=[
                             dcc.Tab(
@@ -108,7 +108,7 @@ layout = html.Div(children=[
                                               html.Span(className='model-output-text-small',
                                                         id='humidity-output'),
                                               dcc.Slider(id='relative-humidity',
-                                                         min=0,
+                                                         min=0.01,
                                                          max=0.99,
                                                          step=0.01,
                                                          value=0.6,
@@ -123,7 +123,9 @@ layout = html.Div(children=[
                                 label=desc.human_header,
                                 className='custom-tab',
                                 children=[
-                                    html.H6(html.Span(desc.human_header, id='human-header-body')),
+                                    html.H6([
+                                        html.Span(desc.human_header, id='human-header-body'),
+                                    ]),
                                     html.Div([html.Span(desc.exertion_text, id='exertion-text'),
                                               html.Span(className='model-output-text-small',
                                                         id='qb-output'),
@@ -163,19 +165,6 @@ layout = html.Div(children=[
                                               ]),
                                     html.Br(),
                                     html.Br(),
-                                    html.Div([html.Span(desc.risk_tolerance_text, id='risk-tol-text'),
-                                              html.Span(className='model-output-text-small',
-                                                        id='risk-tolerance-output'),
-                                              html.Span(desc.risk_tol_desc, id='risk-tol-desc'),
-                                              dcc.Slider(id='risk-tolerance',
-                                                         min=0.01,
-                                                         max=1,
-                                                         step=0.01,
-                                                         value=0.1,
-                                                         marks=desc.risk_tol_marks)
-                                              ]),
-                                    html.Br(),
-                                    html.Br(),
                                     html.Span(desc.need_more_ctrl_text, id='need-more-ctrl-text-2'),
                                 ]
                             ),
@@ -189,6 +178,10 @@ layout = html.Div(children=[
                                     html.Span(desc.values_interest_desc, id='values-interest-desc'),
                                     html.Br(),
                                     html.Div([
+                                        html.Div([html.Span(desc.relative_sus_label, id='sr-label'),
+                                                  html.Span(
+                                                      className='model-output-text-small',
+                                                      id='sr-output')]),
                                         html.Div([html.Span(desc.outdoor_air_frac_label, id='z_p-label'),
                                                   html.Span(
                                                       className='model-output-text-small',
@@ -266,78 +259,102 @@ layout = html.Div(children=[
                                      "primary": "#de1616"
                                  }),
                         html.Br()
-                    ], style={'margin': '1em', 'padding': '0', 'border': 'none'}),
+                    ], style=ess.tabs_card_style),
                 html.Div(
                     className='card',
-                    children=[html.Div(className='output-content', children=[
-                        html.Div([
-                            html.Div(
-                                className='grid-presets',
-                                children=[
+                    children=[
+                        html.Div(
+                            className='grid-presets',
+                            children=[
+                                html.Div([
+                                    html.H6(html.Span(desc.curr_room_header, id='curr-room-header')),
+                                    dcc.Dropdown(id='presets',
+                                                 options=desc.presets,
+                                                 value='classroom',
+                                                 searchable=False,
+                                                 clearable=False)
+                                ], className='card-presets'),
+                                html.Div([
+                                    html.H6(html.Span(desc.curr_human_header, id='curr-human-header')),
+                                    dcc.Dropdown(id='presets-human',
+                                                 options=desc.presets_human,
+                                                 value='masks-2',
+                                                 searchable=False,
+                                                 clearable=False)
+                                ], className='card-presets'),
+                                # html.Div([
+                                #     html.H6([
+                                #         html.Span(desc.curr_risk_header, id='curr-risk-tol'),
+                                #         html.Span(id='risk-tolerance-output')
+                                #     ]),
+                                #     dcc.Dropdown(id='presets-risk',
+                                #                  options=desc.presets_risk,
+                                #                  value=0.1,
+                                #                  searchable=False,
+                                #                  clearable=False)
+                                # ], className='card-presets'),
+                                html.Div([
+                                    html.H6([
+                                        html.Span(desc.curr_age_header, id='curr-age-group')
+                                    ]),
+                                    dcc.Dropdown(id='presets-age',
+                                                 options=desc.presets_age,
+                                                 value=0.68,
+                                                 searchable=False,
+                                                 clearable=False)
+                                ], className='card-presets'),
+                                html.Div([
+                                    html.H6([
+                                        html.Span(desc.curr_strain_header, id='curr-viral-strain'),
+                                    ]),
+                                    dcc.Dropdown(id='presets-strain',
+                                                 options=desc.presets_strain,
+                                                 value=1,
+                                                 searchable=False,
+                                                 clearable=False)
+                                ], className='card-presets')
+                            ],
+                        ),
+                    ]
+                ),
+                html.Div(
+                    className='card',
+                    children=html.Div(className='output-content', children=[
                                     html.Div([
-                                        html.H6(html.Span(desc.curr_room_header, id='curr-room-header')),
-                                        dcc.Dropdown(id='presets',
-                                                     options=desc.presets,
-                                                     value='classroom',
-                                                     searchable=False,
-                                                     clearable=False)
-                                    ], className='card-presets'),
-                                    html.Div([
-                                        html.H6(html.Span(desc.curr_human_header, id='curr-human-header')),
-                                        dcc.Dropdown(id='presets-human',
-                                                     options=desc.presets_human,
-                                                     value='masks-1',
-                                                     searchable=False,
-                                                     clearable=False)
-                                    ], className='card-presets'),
-                                    # html.Div([
-                                    #     html.H6(html.Span(desc.curr_risk_header, id='curr-risk-tol')),
-                                    #     dcc.Dropdown(id='presets-risk',
-                                    #                  options=desc.presets_risk,
-                                    #                  value=0.1,
-                                    #                  searchable=False,
-                                    #                  clearable=False)
-                                    # ], className='card-presets')
-                                ],
-                            ),
-                            html.H3(html.Span(desc.main_panel_s1, id='main-panel-s1')),
-                            dcc.Loading(
-                                id='loading',
-                                type='circle',
-                                children=[
-                                    html.H4(className='model-output-text', id='model-text-1',
-                                            children="2 people for 31 days"),
-                                    html.H4(className='model-output-text', id='model-text-2',
-                                            children="3 people for 15 days"),
-                                    html.H4(className='model-output-text', id='model-text-3',
-                                            children="4 people for 10 days"),
-                                    html.H4(className='model-output-text', id='model-text-4',
-                                            children="5 people for 8 days"),
-                                    html.H4(className='model-output-text', id='model-text-5',
-                                            children="10 people for 3 days"),
-                                    html.H4(className='model-output-text', id='model-text-6',
-                                            children="25 people for 31 hours"),
-                                    html.H4(className='model-output-text', id='model-text-7',
-                                            children="50 people for 15 hours"),
-                                    html.H4(className='model-output-text', id='model-text-8',
-                                            children="100 people for 8 hours"),
-                                ],
-                                color='#de1616',
-                            ),
-                            html.Br(),
-                            html.H3([html.Span(desc.main_panel_six_ft_1, id='main-six-ft-1'),
-                                     html.Span(id='six-ft-output',
-                                               children=''' 2 people ''',
-                                               style={'color': '#de1616'}),
-                                     html.Span(desc.main_panel_six_ft_2, id='main-six-ft-2'),
-                                     html.Span(id='six-ft-output-t', style={'color': '#de1616'})]),
-                            html.Br(),
-                        ], className='panel-main-output'),
-                        html.Div([
-                            html.Span(desc.main_airb_trans_only_disc, id='main-airb-trans-disc')
-                        ], className='panel-airb-desc')
-                    ]),
-                              ]),
+                                        html.H3(html.Span(desc.main_panel_s1, id='main-panel-s1')),
+                                        dcc.Loading(
+                                            id='loading',
+                                            type='circle',
+                                            children=[
+                                                html.H4(className='model-output-text', id='model-text-1',
+                                                        children="2 people for 31 days"),
+                                                html.H4(className='model-output-text', id='model-text-2',
+                                                        children="5 people for 8 days"),
+                                                html.H4(className='model-output-text', id='model-text-3',
+                                                        children="10 people for 3 days"),
+                                                html.H4(className='model-output-text', id='model-text-4',
+                                                        children="25 people for 31 hours"),
+                                                html.H4(className='model-output-text', id='model-text-5',
+                                                        children="100 people for 8 hours"),
+                                            ],
+                                            color='#de1616',
+                                        ),
+                                        html.Br(),
+                                        html.H4([html.Span(desc.main_panel_six_ft_1, id='main-six-ft-1'),
+                                                 html.Span(id='six-ft-output',
+                                                           children=''' 2 people ''',
+                                                           style={'color': '#de1616'}),
+                                                 html.Span(desc.main_panel_six_ft_2, id='main-six-ft-2'),
+                                                 html.Span(id='six-ft-output-t', style={'color': '#de1616'})],
+                                                style={'color': '#000000'}),
+                                    ], className='panel-main-output'),
+                                    html.Br(),
+                                    html.Div(desc.main_airb_trans_only_disc_basic, id='main-airb-trans-disc',
+                                             className='panel-airb-desc'),
+                                    html.Div(desc.other_risk_modes_desc, id='other-risk-modes-desc',
+                                             className='panel-airb-desc')
+                                ])
+                ),
                 html.Div(
                     className='card',
                     children=[html.Div(className='output-content', children=[
@@ -393,14 +410,6 @@ layout = html.Div(children=[
      Output('main-six-ft-1', 'children'),
      Output('main-six-ft-2', 'children'),
      Output('main-airb-trans-disc', 'children'),
-     Output('n-input-text-1', 'children'),
-     Output('n-input-text-2', 'children'),
-     Output('n-input-text-3', 'children'),
-     Output('airb-trans-only-disc-1', 'children'),
-     Output('t-input-text-1', 'children'),
-     Output('t-input-text-2', 'children'),
-     Output('t-input-text-3', 'children'),
-     Output('airb-trans-only-disc-2', 'children'),
      Output('about-text', 'children'),
      Output('tab-b', 'label'),
      Output('room-header-body', 'children'),
@@ -423,9 +432,6 @@ layout = html.Div(children=[
      Output('mask-type', 'options'),
      Output('mask-fit-text', 'children'),
      Output('mask-fit', 'marks'),
-     Output('risk-tol-text', 'children'),
-     Output('risk-tol-desc', 'children'),
-     Output('risk-tolerance', 'marks'),
      Output('need-more-ctrl-text-2', 'children'),
      Output('tab-d', 'label'),
      Output('faq-top', 'children'),
@@ -464,13 +470,11 @@ def update_lang(search, window_width):
      Output('model-text-3', 'children'),
      Output('model-text-4', 'children'),
      Output('model-text-5', 'children'),
-     Output('model-text-6', 'children'),
-     Output('model-text-7', 'children'),
-     Output('model-text-8', 'children'),
      Output('six-ft-output', 'children'),
      Output('six-ft-output-t', 'children'),
      Output('presets', 'value'),
      Output('presets-human', 'value'),
+     Output('sr-output', 'children'),
      Output('air-frac-output', 'children'),
      Output('filtration-eff-output', 'children'),
      Output('breath-rate-output', 'children'),
@@ -501,7 +505,8 @@ def update_lang(search, window_width):
      Input('exp-activity', 'value'),
      Input('mask-type', 'value'),
      Input('mask-fit', 'value'),
-     Input('risk-tolerance', 'value'),
+     Input('presets-age', 'value'),
+     Input('presets-strain', 'value'),
      Input('n-input', 'value'),
      Input('t-input', 'value'),
      Input('url', 'search')],
@@ -509,8 +514,9 @@ def update_lang(search, window_width):
      State('ceiling-height-text', 'children')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
-                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, n_max_input, exp_time_input,
-                  search, floor_area_text, ceiling_height_text):
+                  breathing_flow_rate, infectiousness, mask_eff, mask_fit, sr_age_factor,
+                  sr_strain_factor, n_max_input, exp_time_input, search, floor_area_text, ceiling_height_text):
+    risk_tolerance = 0.1
     def_aerosol_radius = 2
     max_viral_deact_rate = 0.6
     language = ess.get_lang(search)
@@ -518,11 +524,10 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                                 max_viral_deact_rate, language, n_max_input, exp_time_input)
 
     if error_msg != "":
-        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
@@ -559,6 +564,9 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.physio_params = [breathing_flow_rate, def_aerosol_radius]
     myInd.disease_params = [infectiousness, max_viral_deact_rate]
     myInd.prec_params = [mask_passage_prob, risk_tolerance]
+    myInd.sr_age_factor = sr_age_factor
+    myInd.sr_strain_factor = sr_strain_factor
+    myInd.percentage_sus = 1
     myInd.calc_vars()
 
     # Get human behavior output text
@@ -569,25 +577,25 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     new_fig = ess.get_model_figure(myInd, language)
 
     # Update the red text output with new model calculations
-    model_output_text = ess.get_model_output_text(myInd, language)
-    six_ft_text = ess.get_six_ft_text(myInd, language)
-    six_ft_exp_time = ess.get_six_ft_exp_time(myInd, language)
+    # Model values of interest
     interest_output = ess.get_interest_output_text(myInd, my_units)
 
-    exp_time_output = myInd.calc_max_time(n_max_input)
-    exp_time_text = ess.time_to_text(exp_time_output, language)
+    # Conditional Outputs (If an infected person enters...)
+    model_output_text = ess.get_model_output_text(myInd, 'conditional', ess.covid_recovery_time, language)
+    six_ft_text = ess.get_six_ft_text(myInd, language)
+    six_ft_exp_time = ess.get_six_ft_exp_time(myInd, 'conditional', ess.covid_recovery_time, language)
 
-    n_max_output = myInd.calc_n_max(exp_time_input)
-    n_max_text = ess.get_n_max_text(n_max_output, myInd.get_n_max(), language)
+    exp_time_text = ess.time_to_text(myInd.calc_max_time(n_max_input, 'conditional'), True, ess.covid_recovery_time,
+                                     language)
+    n_max_text = ess.get_n_max_text(myInd.calc_n_max(exp_time_input, 'conditional'), myInd.get_n_max(), language)
 
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
-           model_output_text[4], model_output_text[5], model_output_text[6], model_output_text[7], \
-           six_ft_text, six_ft_exp_time, preset_dd_value, human_preset_dd_value, interest_output[0], \
-           interest_output[1], interest_output[2], \
-           interest_output[3], interest_output[4], interest_output[5], interest_output[6], interest_output[7], \
-           interest_output[8], interest_output[9], interest_output[10], interest_output[11], interest_output[12], \
-           interest_output[13], exp_time_text, n_max_text, qb_text, cq_text, error_msg, False
+           model_output_text[4], six_ft_text, six_ft_exp_time, preset_dd_value, human_preset_dd_value, \
+           interest_output[0], interest_output[1], interest_output[2], interest_output[3], interest_output[4], \
+           interest_output[5], interest_output[6], interest_output[7], interest_output[8], interest_output[9], \
+           interest_output[10], interest_output[11], interest_output[12], interest_output[13], interest_output[14], \
+           exp_time_text, n_max_text, qb_text, cq_text, error_msg, False
 
 
 # Update options based on selected presets, also if units changed
@@ -712,13 +720,13 @@ def update_humid_disp(relative_humidity):
     return ["{:.0f}%".format(relative_humidity * 100)]
 
 
-# Risk tolerance slider value display
-@app.callback(
-    [Output('risk-tolerance-output', 'children')],
-    [Input('risk-tolerance', 'value')]
-)
-def update_risk_tol_disp(risk_tolerance):
-    return ["{:.2f}".format(risk_tolerance)]
+# # Risk tolerance slider value display
+# @app.callback(
+#     [Output('risk-tolerance-output', 'children')],
+#     [Input('presets-risk', 'value')]
+# )
+# def update_risk_tol_disp(risk_tolerance):
+#     return ["{:.2f}".format(risk_tolerance)]
 
 
 # Mask Filtration Efficiency slider value display

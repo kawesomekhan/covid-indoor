@@ -1,7 +1,8 @@
 /* CSS related to app layout */
 
 :root {
-    --big-number-input-width: 100px;
+    --big-number-input-width: 90px;
+    --prevalence-input-width: 120px;
 }
 
 /* For default, desktop layout */
@@ -36,11 +37,15 @@ body {
 /* Presets Grid */
 .grid-presets {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     padding: 0px;
+    align-items: end;
 }
 .card-presets {
     padding: 8px;
+}
+.mobile-break {
+    display: none;
 }
 
 /* Settings Grid */
@@ -68,16 +73,12 @@ body {
 .output-content {
     display: grid;
     grid-template-rows: 1fr auto;
-    padding-right: 1em;
-    height: 100%;
 }
 .panel-main-output {
-    overflow-y: scroll;
-    overflow-x: hidden;
+
 }
 /* Card Footer/Disclaimer Text */
 .airborne-text {
-    padding-top: 1em;
     bottom: 1em;
 }
 
@@ -86,7 +87,7 @@ body {
 .grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    grid-auto-rows: 1fr auto;
+    grid-template-rows: auto 1fr;
     padding: 0;
 }
 .card {
@@ -99,6 +100,10 @@ body {
     border: solid 1px #DDDDDD;
     box-shadow: 0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24)
 }
+#card-tab, #adv-card-tab {
+    grid-row-start: 1;
+    grid-row-end: 3;
+}
 
 /* Tabs */
 .tab-parent {
@@ -106,14 +111,16 @@ body {
 }
 .tab-content {
     padding: 1em;
+    padding-top: 0;
+    padding-bottom: 0;
     height: 100%;
-    max-height: 450px;
+    max-height: 600px;
     margin: 2em;
     margin-left: 1em;
     overflow-y: scroll;
     overflow-x: hidden;
 }
-#tab-a, #tab-b, #tab-c, #tab-d, #adv-tab-a, #adv-tab-b, #adv-tab-c, #adv-tab-d {
+#tab-a, #tab-b, #tab-c, #tab-d, #adv-tab-a, #adv-tab-b, #adv-tab-c, #adv-tab-d, #output-panel-tab-a, #output-panel-tab-b, #output-panel-tab-c  {
     padding-left: 1em;
     padding-right: 1em;
     border-left-color: #DDDDDD;
@@ -122,24 +129,24 @@ body {
     font-size: 13px;
 }
 
-/* Bottom Panels */
-#adv-n-input {
+#adv-n-input, #n-input, #n-input-b, #n-input-c, #adv-n-input-b, #adv-n-input-c, #adv-t-input, #t-input,
+#t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c {
     width: var(--big-number-input-width);
 }
-#n-input {
-    width: var(--big-number-input-width);
-}
-#adv-t-input {
-    width: var(--big-number-input-width);
-}
-#t-input {
-    width: var(--big-number-input-width);
+#prev-input-b, #prev-input-c, #adv-prev-input-b, #adv-prev-input-c {
+    width: var(--prevalence-input-width);
 }
 
 /* Intermediate Size */
 @media only screen and (max-width: 1400px) {
     .grid {
         grid-auto-rows: 1fr auto;
+    }
+    .grid-presets {
+        grid-template-columns: 1fr 1fr;
+    }
+    .mobile-break {
+        display: inline-block;
     }
 }
 
@@ -187,8 +194,9 @@ body {
         min-width: 0;
         padding: 1em;
     }
-    #main-tabs, #adv-main-tabs {
-        grid-row-start: 4;
+    #card-tab, #adv-card-tab {
+        grid-row-start: 5;
+        grid-row-end: 6;
     }
 
     /* Tabs */

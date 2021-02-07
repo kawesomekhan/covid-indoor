@@ -32,8 +32,14 @@ translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei,
                         Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 m_to_ft = 3.28084
+month_to_hour = 730.001
+month_to_day = 30.4167
 
 # CSS Styles for Tabs (currently known issue in Dash with overriding default css)
+tabs_card_style = {'margin': '1em', 'padding': '0', 'border': 'none'}
+
+main_panel_tab_style = {'margin-top': '0'}
+
 tab_style = {
     'padding-left': '1em',
     'padding-right': '1em',
@@ -192,16 +198,17 @@ filter_default = room_preset_settings['classroom']['filtration']
 recirc_default = room_preset_settings['classroom']['recirc-rate']
 
 # Nmax values for main red text output
-model_output_n_vals = [2, 3, 4, 5, 10, 25, 50, 100]
-model_output_n_vals_big = [50, 100, 200, 300, 400, 500, 750, 1000]
+model_output_n_vals = [2, 5, 10, 25, 100]
+model_output_n_vals_big = [25, 100, 250, 500, 1000]
 
 # Max time reported in the big red text output
-recovery_time = 14  # Days
+covid_recovery_time = 14  # Days
 
 
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
-                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1):
+                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, n_max_input_b=2, exp_time_input_b=1,
+                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1):
     error_msg = ""
 
     desc_file = get_desc_file(language)
@@ -216,14 +223,16 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["aerosol_radius"]
     elif max_viral_deact_rate is None:
         error_msg = desc_file.error_list["viral_deact_rate"]
-    elif n_max_input is None or n_max_input < 2:
+    elif n_max_input is None or n_max_input < 2 or n_max_input_b is None or n_max_input_b < 2 or n_max_input_c is None or n_max_input_c < 2:
         error_msg = desc_file.error_list["n_max_input"]
-    elif exp_time_input == 0 or exp_time_input is None:
+    elif exp_time_input == 0 or exp_time_input is None or exp_time_input_b == 0 or exp_time_input_b is None or exp_time_input_c == 0 or exp_time_input_c is None:
         error_msg = desc_file.error_list["exp_time_input"]
     elif air_exchange_rate == 0 or air_exchange_rate is None:
         error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
         error_msg = desc_file.error_list["merv"]
+    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 100000 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 100000:
+        error_msg = desc_file.error_list["prevalence"]
 
     return error_msg
 
@@ -316,14 +325,17 @@ def get_model_figure(indoor_model, language):
 
 
 # Returns the big red output text.
-def get_model_output_text(indoor_model, language):
+# recovery_time: Time to recovery in days
+# If recovery time is -1, will not limit the output.
+def get_model_output_text(indoor_model, risk_type, recovery_time, language):
     desc_file = get_desc_file(language)
     # Check if we should use the normal n vals, or the big n vals
     n_val_series = model_output_n_vals
-    if indoor_model.calc_max_time(model_output_n_vals[-1]) > 48 or indoor_model.get_six_ft_n() >= 100:
+    if indoor_model.calc_max_time(model_output_n_vals[-1], risk_type) > 48 or \
+            indoor_model.get_six_ft_n() >= model_output_n_vals[-1]:
         n_val_series = model_output_n_vals_big
 
-    model_output_text = ["", "", "", "", "", "", "", ""]
+    model_output_text = ["", "", "", "", ""]
     index = 0
     close_ind_rev = 0
     for n_val in n_val_series:
@@ -333,28 +345,21 @@ def get_model_output_text(indoor_model, language):
             close_ind_rev = index - len(n_val_series)
             break
         else:
-            max_time = indoor_model.calc_max_time(n_val)  # hours
-            time_text = time_to_text(max_time, language)
-
-            is_past_recovery = round(max_time) > (24 * recovery_time)
-            if is_past_recovery:
-                base_string = desc_file.is_past_recovery_base_string
-                max_time = recovery_time
-                model_output_text[index] = base_string.format(n_val=n_val, val=max_time)
+            max_time = indoor_model.calc_max_time(n_val, risk_type)  # hours
+            time_text = time_to_text(max_time, True, recovery_time, language)
+            if language in flipped_output_langs:
+                base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
             else:
-                if language in flipped_output_langs:
-                    base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
-                else:
-                    base_string = desc_file.model_output_base_string + time_text
-                model_output_text[index] = base_string.format(n_val=n_val)
+                base_string = desc_file.model_output_base_string + time_text
+            model_output_text[index] = base_string.format(n_val=n_val)
 
         index += 1
 
-    if language == "en":
-        if close_ind_rev >= -len(model_output_text) + 2:
-            model_output_text[close_ind_rev - 2] = model_output_text[close_ind_rev - 2] + ' or'
-        if close_ind_rev >= -len(model_output_text) + 1:
-            model_output_text[close_ind_rev - 1] = model_output_text[close_ind_rev - 1] + '.'
+    # if language == "en":
+    #     if close_ind_rev >= -len(model_output_text) + 2:
+    #         model_output_text[close_ind_rev - 2] = model_output_text[close_ind_rev - 2] + ' or'
+    #     if close_ind_rev >= -len(model_output_text) + 1:
+    #         model_output_text[close_ind_rev - 1] = model_output_text[close_ind_rev - 1] + '.'
 
     return model_output_text
 
@@ -372,43 +377,83 @@ def get_six_ft_text(indoor_model, language):
 
 
 # Returns the six feet distancing time.
-def get_six_ft_exp_time(indoor_model, language):
+# recovery_time: Time to recovery in days
+# If recovery time is -1, will not limit the output.
+def get_six_ft_exp_time(indoor_model, risk_type, recovery_time, language):
     if language == "en":
         six_ft_n = indoor_model.get_six_ft_n()
         if six_ft_n < 2:
-            six_ft_exp_time = "<" + time_to_text(indoor_model.calc_max_time(2), language) + "."
+            six_ft_exp_time = "<" + time_to_text(indoor_model.calc_max_time(2, risk_type), True, recovery_time,
+                                                 language) + "."
         else:
-            six_ft_exp_time = time_to_text(indoor_model.calc_max_time(six_ft_n), language) + "."
+            six_ft_exp_time = time_to_text(indoor_model.calc_max_time(six_ft_n, risk_type), True, recovery_time,
+                                           language) + "."
     else:
         six_ft_exp_time = ""
 
     return six_ft_exp_time
 
 
-# Converts a time (in hours) into a text with formatting based on minutes/hours/days
-def time_to_text(time, language):
+# Converts a time (in hours) into a text with formatting based on minutes/hours/days.
+# recovery_time: Time to recovery in days
+# If recovery time is -1, will not limit the output.
+def time_to_text(time, keep_hours, recovery_time, language):
     desc_file = get_desc_file(language)
+    pretty_time = time
+
+    if recovery_time != -1:
+        if round(time) > recovery_time * 24:
+            units = desc_file.units_days
+            base_string = '>{val:.0f} ' + units
+            return base_string.format(val=recovery_time)
 
     if round(time) < 2:
-        time = time * 60
-        if round(time) == 1:
+        pretty_time_range = "Minutes"
+        pretty_time = time * 60
+        if round(pretty_time) == 1:
             units = desc_file.units_min_one
         else:
             units = desc_file.units_min
+    elif round(time) > month_to_hour:
+        pretty_time_range = "Months"
+        pretty_time = time / month_to_hour
+        if round(pretty_time) == 1:
+            units = desc_file.units_month_one
+        else:
+            units = desc_file.units_months
     elif round(time) > 48:
-        time = time / 24
-        if round(time) == 1:
+        pretty_time_range = "Days"
+        pretty_time = time / 24
+        if round(pretty_time) == 1:
             units = desc_file.units_day_one
         else:
             units = desc_file.units_days
     else:
+        pretty_time_range = "Hours"
+        if round(pretty_time) == 1:
+            units = desc_file.units_hr_one
+        else:
+            units = desc_file.units_hr
+
+    if keep_hours:
+        long_units = units
         if round(time) == 1:
             units = desc_file.units_hr_one
         else:
             units = desc_file.units_hr
 
-    base_string = '{val:.0f} ' + units
-    return base_string.format(val=time)
+        if pretty_time_range == "Hours":
+            base_string = '{val:,.0f} ' + units
+            return base_string.format(val=time)
+        elif pretty_time_range == "Days" or pretty_time_range == "Months":
+            base_string = '{val:,.0f} ' + units + ' ({longval:,.0f} ' + long_units + ')'
+            return base_string.format(val=time, longval=pretty_time)
+        else:
+            base_string = '{val:,.0f} ' + long_units
+            return base_string.format(val=pretty_time)
+    else:
+        base_string = '{val:,.0f} ' + units
+        return base_string.format(val=pretty_time)
 
 
 # Gets n max text
@@ -417,7 +462,7 @@ def get_n_max_text(n, n_max, language):
     if n < 2:
         return "<" + desc_file.n_max_base_string.format(2)
     if n > n_max:
-        return ">" + desc_file.n_max_base_string.format(n_max)
+        return desc_file.n_max_overflow_base_string.format(n_max)
     else:
         return desc_file.n_max_base_string.format(n)
 
@@ -434,10 +479,11 @@ def get_interest_output_text(indoor_model, units):
     # Calculated Values of Interest Output
     if units == "british":
         interest_output = [
+            '{:,.2f}'.format(indoor_model.relative_sus),
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60),  # m3/hr to ft3/min
-            '{:,.2f} quanta/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
+            '{:,.2f} quanta/ft\u00B3'.format(infectiousness * indoor_model.relative_sus / 35.3147),  # 1/m3 to 1/ft3
             '{:,.2f}'.format(mask_pass_prob),
             '{:,.0f} ft\u00B3'.format(indoor_model.room_vol),
             '{:,.0f} ft\u00B3/min'.format(indoor_model.fresh_rate),
@@ -447,10 +493,11 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f} /hr'.format(indoor_model.viral_deact_rate),
             '{:,.2f} ft/min'.format(indoor_model.sett_speed * 3.281 / 60),  # m/hr to ft/min
             '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
-            '{:,.2f} /hr (÷10,000)'.format(indoor_model.airb_trans_rate * 10000),
+            '{:,.2f} /hr ÷10,000'.format(indoor_model.airb_trans_rate * 10000),
         ]
     elif units == "metric":
         interest_output = [
+            '{:,.2f}'.format(indoor_model.relative_sus),
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} m\u00B3/hr'.format(breathing_flow_rate),
@@ -464,7 +511,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f} /hr'.format(indoor_model.viral_deact_rate),
             '{:,.2f} m/hr'.format(indoor_model.sett_speed),
             '{:,.2f} /hr'.format(indoor_model.conc_relax_rate),
-            '{:,.2f} /hr (÷10,000)'.format(indoor_model.airb_trans_rate * 10000),
+            '{:,.2f} /hr ÷10,000'.format(indoor_model.airb_trans_rate * 10000),
         ]
 
     return interest_output
@@ -517,7 +564,7 @@ def get_lang_text_basic(language, disp_width):
     if disp_width < 1200:
         # use our mobile marks
         humidity_marks = {
-            0: desc_file.humidity_marks[0],
+            0.01: desc_file.humidity_marks[0.01],
             0.6: desc_file.humidity_marks[0.6],
             0.99: desc_file.humidity_marks[0.99],
         }
@@ -532,15 +579,7 @@ def get_lang_text_basic(language, disp_width):
             desc_file.main_panel_s1,
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
-            desc_file.main_airb_trans_only_disc,
-            desc_file.n_input_text_1,
-            desc_file.n_input_text_2,
-            desc_file.n_input_text_3,
-            desc_file.airb_trans_only_disc,
-            desc_file.t_input_text_1,
-            desc_file.t_input_text_2,
-            desc_file.t_input_text_3,
-            desc_file.airb_trans_only_disc,
+            desc_file.main_airb_trans_only_disc_basic,
             desc_file.about,
             desc_file.room_header,
             desc_file.room_header,
@@ -563,9 +602,6 @@ def get_lang_text_basic(language, disp_width):
             desc_file.mask_types,
             desc_file.mask_fit_text,
             desc_file.mask_fit_marks,
-            desc_file.risk_tolerance_text,
-            desc_file.risk_tol_desc,
-            risk_tol_marks,
             desc_file.need_more_ctrl_text,
             desc_file.faq_header,
             desc_file.faq_top,
@@ -599,7 +635,7 @@ def get_lang_text_adv(language, disp_width):
     if disp_width < 1200:
         # use our mobile marks
         humidity_marks = {
-            0: desc_file.humidity_marks[0],
+            0.01: desc_file.humidity_marks[0.01],
             0.6: desc_file.humidity_marks[0.6],
             0.99: desc_file.humidity_marks[0.99],
         }
@@ -620,13 +656,6 @@ def get_lang_text_adv(language, disp_width):
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
             desc_file.main_airb_trans_only_disc,
-            desc_file.n_input_text_1,
-            desc_file.n_input_text_2,
-            desc_file.n_input_text_3,            desc_file.airb_trans_only_disc,
-            desc_file.t_input_text_1,
-            desc_file.t_input_text_2,
-            desc_file.t_input_text_3,
-            desc_file.airb_trans_only_disc,
             desc_file.about,
             desc_file.room_header,
             desc_file.room_header,
@@ -647,8 +676,6 @@ def get_lang_text_adv(language, disp_width):
             mask_type_marks,
             desc_file.mask_fit_text,
             desc_file.mask_fit_marks,
-            desc_file.risk_tolerance_text,
-            desc_file.risk_tol_desc,
             risk_tol_marks,
             desc_file.other_io,
             desc_file.other_io,
