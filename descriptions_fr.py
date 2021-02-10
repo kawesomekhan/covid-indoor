@@ -38,7 +38,7 @@ expiratory_types = [
     {'label': "Respiration normale", 'value': 4.2},
     {'label': "Respiration forte", 'value': 8.8},
     {'label': "Respiration rapide et profonde", 'value': 8.5},
-    {'label': "Chuchotements", 'value': 29},
+    {'label': "Chuchotement", 'value': 29},
     {'label': "Compter à voix basse", 'value': 37},
     {'label': "Dialogue, Voix normale ", 'value': 72},
     {'label': "Compter à haute voix", 'value': 72},
@@ -60,7 +60,7 @@ mask_types = [
     {'label': "Coton épais", 'value': 0.1},
     {'label': "Soie, flanelle, mousseline", 'value': 0.5},
     {'label': "Masque chirurgical, coton fin", 'value': 0.9},
-    {'label': "Masque FFP2", 'value': 0.95},
+    {'label': "Masque FFP2/N95", 'value': 0.95},
 ]
 
 mask_fit_marks = {
@@ -77,7 +77,7 @@ ventilation_types = [
     {'label': "Ventilation mécanique supérieure", 'value': 8},
     {'label': "Laboratoire, Restaurant", 'value': 9},
     {'label': "Bar", 'value': 15},
-    {'label': "Hôpital, Rame de métro", 'value': 18},
+    {'label': "Hôpital, Wagon de métro", 'value': 18},
     {'label': "Laboratoire sécurisé, Avion", 'value': 24},
 ]
 
@@ -96,7 +96,7 @@ recirc_types = [
     {'label': "Modéré", 'value': 1},
     {'label': "Rapide", 'value': 10},
     {'label': "Avion", 'value': 24},
-    {'label': "Rame de métro", 'value': 54},
+    {'label': "Wagon de métro", 'value': 54},
 ]
 
 graph_title = "Taux d'occupation vs. taux d'exposition"
@@ -136,7 +136,7 @@ presets = [
     {'label': "Bureau", 'value': 'office'},
     {'label': "Salle de classe", 'value': 'classroom'},
     {'label': "Salle de séjour", 'value': 'living-room'},
-    {'label': "Rame de métro", 'value': 'subway'},
+    {'label': "Wagon de métro", 'value': 'subway'},
     {'label': "Avion de ligne", 'value': 'airplane'},
     {'label': "Eglise", 'value': 'church'},
 ]
@@ -185,7 +185,7 @@ viral_strain_marks = {
     1.58: {'label': '1.58: B.1.1.7/UK'}
 }
 
-pim_header = "Pourcentage d'immunité :"
+pim_header = "Proportion de personnes immunisées:"
 # pim_marks = {
 #     0: {'label': '0% (basic mode)'},
 #     0.33: {'label': '33% (default)'},
@@ -199,7 +199,7 @@ risk_personal_desc = "Pour limiter mon risque personnel..."
 error_list = {
     "floor_area": "Erreur : la surface au sol doit être renseignée.",
     "ceiling_height": "Erreur : la hauteur sous plafond doit être renseignée.",
-    "recirc_rate": "Erreur : le taux de recirculation d'air doit être renseigné.",
+    "recirc_rate": "Erreur : le taux de recirculation d'air (ACH) doit être renseigné.",
     "aerosol_radius": "Erreur : le rayon de l'aérosol doit être renseigné.",
     "viral_deact_rate": "Erreur : le taux d'inactivation virale doit être renseigné.",
     "n_max_input": "Erreur : le nombre de personnes ne peut pas être inférieur à 2.",
@@ -225,8 +225,8 @@ header = html.Div([
                                    children="Martin Z. Bazant",
                                    target='_blank')),
                   ""]),
-        html.Div([html.Span(["Au-delà des 2 mètres : recommandations pour limiter le risque de transmission aérosol "
-                             "de la COVID-19 en lieux clos ("]),
+        html.Div([html.Span(["Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19 " 
+			     ("]),
                   html.Span(html.A(href=link_paper,
                                    target='_blank',
                                    children='''Bazant & Bush, 2020''')),
@@ -274,8 +274,8 @@ other_io = "Autres entrées et résultats"
 # About
 about = html.Div([
     html.H6("A propos", style={'margin': '0'}),
-    html.Div('''Pour réduire la transmission de la COVID-19, les recommandations officielles de santé publique
-    limitent la distance entre 2 personnes (1 à 2 mètres), le temps d'occupation et le taux d'occupation d'un espace, et préconisent la ventilation.'''),
+    html.Div('''Pour réduire la transmission de la COVID-19, les consignes officielles de santé publique
+    limitent la distance entre 2 personnes (fixée à 1 ou 2 mètres), le temps et le taux d'occupation d'un espace, et préconisent la ventilation.'''),
     html.Br(),
     html.Div([html.Span('''Il y a de plus en plus de '''),
               html.A(children="preuves scientifiques",
@@ -284,7 +284,7 @@ about = html.Div([
               html.Span(''' de la transmission aérienne de la COVID-19. Elle a lieu lorsque des particules aérosol 
               infectieuses sont échangées, en respirant l'air partagé des espaces intérieurs clos. Les autorités de 
               santé publique commencent à reconnaître la transmission par aérosols de la COVID-19, mais elles n'ont 
-              pas encore fourni de recommandations de sécurité prenant en compte tous les paramètres utiles.''')]),
+              pas encore fourni de consignes de sécurité prenant en compte tous les paramètres utiles.''')]),
     html.Br(),
     html.Div([html.Span('''Cett app, développée par Kasim Khan en collaboration avec Martin Z. Bazant et John W. M. 
     Bush, utilise un '''),
@@ -466,7 +466,7 @@ perc_infectious_label = html.Span(["Pourcentage de personnes infectées p", html
 perc_susceptible_label = html.Span(["Pourcentage de personnes sensibles p", html.Sub('s'), " = 1 - (p", html.Sub('im'),
                                     " + p", html.Sub('i'), ") = "])
 pop_immunity_desc = html.Div([html.Div(['''Le pourcentage infectieux p''', html.Sub('i'), '''dans la population est 
-calculé à partir du taux d'incidence infectieuse saisi dans les onglets des autres scénarios de risque (Étant donné 
+calculé à partir du taux d'incidence saisi dans les onglets des autres scénarios de risque (Étant donné 
 la prévalence de l'infection..., Pour limiter mon risque personnel...).  Le pourcentage de p''', html.Sub('im'),
                                         ''' immunitaire peut être estimé de manière conservatrice à partir du 
                                         pourcentage de vaccination de la population plus le taux de cas total dans la 
@@ -544,7 +544,7 @@ curr_room_header = "Espace concerné :"
 main_panel_s1 = "En se basant sur ce modèle, cet espace devrait être sûr pour: "
 
 main_panel_s1_b = html.Span([
-    html.Span('''Pour limiter la transmission de COVID-19* dans une population où la prévalence de l'infection'''),
+    html.Span('''Pour limiter la transmission de COVID-19* dans une population où l'incidence '''),
     html.Sup('''1'''),
     html.Span(''' est de ''')
 ])
@@ -552,23 +552,23 @@ main_panel_s2_b = ''' pour 100 000, cet espace ne devrait pas accueillir plus de
 
 main_panel_s1_c = html.Span([
     html.Span(
-        '''Pour limiter mes risques d'être infecté par COVID-19 dans une population où la prévalence de l'infection'''),
+        '''Pour limiter mes risques d'être infecté par COVID-19 dans une population où l'incidence '''),
     html.Sup('''1'''),
     html.Span(''' de ''')
 ])
 main_panel_s2_c = ''' pour 100 000, cet espace ne devrait pas avoir plus de : '''
 
-main_panel_six_ft_1 = "En revanche, la consigne de distance d'un mètre (ou deux mètres) limiterait l'occupation à "
-main_panel_six_ft_2 = ", ce qui serait contraire à la consigne* après "
+main_panel_six_ft_1 = "En revanche, la consigne de distance d'un mètre (ou 2 mètres) limiterait l'occupation à "
+main_panel_six_ft_2 = ", ce qui serait contraire à la présente recommandation* après "
 
-main_airb_trans_only_disc = html.Div(["La recommandation limite la probabilité de ",
+main_airb_trans_only_disc = html.Div(["Cette recommandation limite la probabilité de ",
                                       html.Span(html.A(href=links.link_nature,
-                                                       children="transmission aérienne",
+                                                       children="transmission par voie aérienne",
                                                        target='_blank'), ),
                                       html.Span(''' par personne, à un niveau inférieur à la tolérance au risque 
-                                      précisée, pendant le temps d'exposition cumulé indiqué.''')],
+                                      précisée, pendant la durée d'exposition cumulée indiquée.''')],
                                      className='airborne-text')
-main_airb_trans_only_disc_basic = html.Div(["*La recommandation limite la probabilité de ",
+main_airb_trans_only_disc_basic = html.Div(["*Cette recommandation limite la probabilité de ",
                                             html.Span(html.A(href=links.link_docs,
                                                              children="transmission par voie aérienne",
                                                              target='_blank'), ),
@@ -577,7 +577,7 @@ main_airb_trans_only_disc_basic = html.Div(["*La recommandation limite la probab
                                             indiquée.''')], className='airborne-text')
 
 incidence_rate_refs = html.Div([html.Sup('''1'''),
-                                html.Span('''Pour estimer votre prévalence locale, 
+                                html.Span('''Pour estimer votre taux d'incidence local, 
                                 voici quelques ressources utiles : '''),
                                 html.Span(html.A(href=links.link_fr_covidtracker,
                                                  children="en France, covidtracker",
@@ -615,14 +615,14 @@ t_input_text_1 = "Si des personnes passent environ "
 t_input_text_2 = " heures dans cet espace, leur nombre devrait être limité à "
 t_input_text_3 = "."
 
-airb_trans_only_disc = html.Div('''Les recommandations sont basées sur la prise en compte de la transmission aérienne, 
+airb_trans_only_disc = html.Div('''Cette recommandation est basée sur la prise en compte de la transmission aérienne, 
                                     par une seule personne contaminée, pendant la durée d'exposition 
                                       cumulée indiquée.''', className='airborne-text')
 
 footer = html.Div([
     html.Div([html.Span('''Les présentes Recommandations de sécurité COVID-19 pour les espaces intérieurs sont un 
     outil en cours d'évolution, destiné à familiariser l'utilisateur intéressé avec les facteurs qui influencent le 
-    risque de transmission aérosol de la COVID-19 à l'intérieur, et d'aider à l'évaluation quantitative du risque 
+    risque de transmission aérienne de la COVID-19 dans les espaces intérieurs, et d'aider à l'évaluation quantitative du risque 
     dans divers environnements. Nous notons que la variabilité intrinsèque des paramètres du modèle, 
     et leur incertitude, peuvent conduire à des erreurs pouvant varier dans un intervalle d'un ordre de grandeur, 
     ce qui peut être compensé en choisissant un seuil de tolérance du risque suffisamment bas. Nos recommandations ne 
