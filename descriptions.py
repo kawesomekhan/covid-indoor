@@ -178,6 +178,8 @@ units_month_one = 'month'
 
 is_past_recovery_base_string = '{n_val} people for >{val:.0f} days,'
 model_output_base_string = '{n_val} people for '
+nt_bridge_string = " people for "
+tn_bridge_string = " for "
 
 main_panel_six_ft_1 = "In contrast, the six-foot (or two-meter) rule would limit occupancy to "
 main_panel_six_ft_2 = " which would violate the guideline* after "

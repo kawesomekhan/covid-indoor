@@ -15,3 +15,5 @@ link_jhu_vaccine = "https://coronavirus.jhu.edu/vaccines/international"
 link_cdc_dashboard = "https://covid.cdc.gov/covid-data-tracker/#cases_casesper100klast7days"
 
 link_cdc_immunity = "https://covid19-projections.com/path-to-herd-immunity/"
+
+link_fr_covidtracker = "https://covidtracker.fr/"

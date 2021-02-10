@@ -380,16 +380,13 @@ def get_six_ft_text(indoor_model, language):
 # recovery_time: Time to recovery in days
 # If recovery time is -1, will not limit the output.
 def get_six_ft_exp_time(indoor_model, risk_type, recovery_time, language):
-    if language == "en":
-        six_ft_n = indoor_model.get_six_ft_n()
-        if six_ft_n < 2:
-            six_ft_exp_time = "<" + time_to_text(indoor_model.calc_max_time(2, risk_type), True, recovery_time,
-                                                 language) + "."
-        else:
-            six_ft_exp_time = time_to_text(indoor_model.calc_max_time(six_ft_n, risk_type), True, recovery_time,
-                                           language) + "."
+    six_ft_n = indoor_model.get_six_ft_n()
+    if six_ft_n < 2:
+        six_ft_exp_time = "<" + time_to_text(indoor_model.calc_max_time(2, risk_type), True, recovery_time,
+                                             language) + "."
     else:
-        six_ft_exp_time = ""
+        six_ft_exp_time = time_to_text(indoor_model.calc_max_time(six_ft_n, risk_type), True, recovery_time,
+                                       language) + "."
 
     return six_ft_exp_time
 
@@ -576,6 +573,13 @@ def get_lang_text_basic(language, disp_width):
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
+            desc_file.curr_human_header,
+            desc_file.presets_human,
+            desc_file.curr_age_header,
+            desc_file.presets_age,
+            desc_file.curr_strain_header,
+            desc_file.presets_strain,
+            desc_file.other_risk_modes_desc,
             desc_file.main_panel_s1,
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
@@ -606,6 +610,7 @@ def get_lang_text_basic(language, disp_width):
             desc_file.faq_header,
             desc_file.faq_top,
             desc_file.values_interest_desc,
+            desc_file.relative_sus_label,
             desc_file.outdoor_air_frac_label,
             desc_file.aerosol_eff_label,
             desc_file.breathing_rate_label,
@@ -622,7 +627,13 @@ def get_lang_text_basic(language, disp_width):
             desc_file.airb_trans_label,
             desc_file.faq_graphs_text,
             desc_file.faq_infect_rate,
-            desc_file.assumptions_layout]
+            desc_file.assumptions_layout,
+            desc_file.n_input_text_1,
+            desc_file.n_input_text_2,
+            desc_file.n_input_text_3,
+            desc_file.t_input_text_1,
+            desc_file.t_input_text_2,
+            desc_file.t_input_text_3]
 
 
 # Returns text for updating language from the given descriptions file.
@@ -648,10 +659,18 @@ def get_lang_text_adv(language, disp_width):
             0.50: desc_file.mask_type_marks[0.50],
             0.90: desc_file.mask_type_marks[0.90]
         }
-
+    print(language)
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
+            desc_file.curr_risk_header,
+            desc_file.curr_human_header,
+            desc_file.presets_human,
+            desc_file.curr_age_header,
+            desc_file.age_group_marks,
+            desc_file.curr_strain_header,
+            desc_file.viral_strain_marks,
+            desc_file.pim_header,
             desc_file.main_panel_s1,
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
@@ -678,10 +697,23 @@ def get_lang_text_adv(language, disp_width):
             desc_file.mask_fit_marks,
             risk_tol_marks,
             desc_file.other_io,
+            desc_file.pop_immunity_header,
+            desc_file.pop_immunity_desc,
+            desc_file.perc_immune_label,
+            desc_file.risk_conditional_desc,
+            desc_file.perc_infectious_label,
+            desc_file.perc_susceptible_label,
+            desc_file.risk_prevalence_desc,
+            desc_file.perc_infectious_label,
+            desc_file.perc_susceptible_label,
+            desc_file.risk_personal_desc,
+            desc_file.perc_infectious_label,
+            desc_file.perc_susceptible_label,
             desc_file.other_io,
             desc_file.aerosol_radius_text,
             desc_file.viral_deact_text,
             desc_file.values_interest_header,
+            desc_file.relative_sus_label,
             desc_file.outdoor_air_frac_label,
             desc_file.aerosol_eff_label,
             desc_file.breathing_rate_label,
@@ -696,7 +728,31 @@ def get_lang_text_adv(language, disp_width):
             desc_file.sett_speed_label,
             desc_file.conc_relax_rate_label,
             desc_file.airb_trans_label,
-            desc_file.graph_output_header]
+            desc_file.graph_output_header,
+            desc_file.risk_conditional_desc,
+            desc_file.nt_bridge_string,
+            desc_file.tn_bridge_string,
+            " " + desc_file.units_hr,
+            desc_file.risk_prevalence_desc,
+            desc_file.nt_bridge_string,
+            desc_file.tn_bridge_string,
+            " " + desc_file.units_hr,
+            desc_file.main_panel_six_ft_1,
+            desc_file.main_panel_six_ft_2,
+            desc_file.main_panel_s1_b,
+            desc_file.main_panel_s2_b,
+            desc_file.main_airb_trans_only_disc,
+            desc_file.incidence_rate_refs,
+            desc_file.risk_personal_desc,
+            desc_file.nt_bridge_string,
+            desc_file.tn_bridge_string,
+            " " + desc_file.units_hr,
+            desc_file.main_panel_six_ft_1,
+            desc_file.main_panel_six_ft_2,
+            desc_file.main_panel_s1_c,
+            desc_file.main_panel_s2_c,
+            desc_file.main_airb_trans_only_disc,
+            desc_file.incidence_rate_refs]
 
 
 # Get header and footer based on language

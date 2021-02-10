@@ -26,7 +26,7 @@ languages = [
     # {'label': "Ελληνικά", 'value': "el"},
     {'label': "English", 'value': "en"},
     {'label': "Espa\u00f1ol", 'value': "es", 'disabled': True},
-    {'label': "Fran\u00e7ais", 'value': "fr", 'disabled': True},
+    {'label': "Fran\u00e7ais", 'value': "fr"},
     {'label': "हिन्दी", 'value': "hi", 'disabled': True},
     {'label': "Bahasa Indonesia", 'value': "id", 'disabled': True},
     {'label': "Italiano", 'value': "it", 'disabled': True},
