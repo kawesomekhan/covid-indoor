@@ -417,14 +417,13 @@ faq_top = html.Div([
     html.H6("Frequently Asked Questions"),
     html.H5("Why isn't 6 feet/2 meter spacing enough?"),
     html.Div([
-        html.Div([html.Span('''6 feet/2 meter spacing protects you from large drops ejected by an infected person coughing, 
-        as do face masks; however, it doesn’t protect against '''),
+        html.Div([html.Span('''6 feet (or 2 meter) spacing protects you from large drops ejected by an infected 
+        person coughing, as do face masks; however, it doesn’t protect against '''),
                   html.A(children="airborne transmission",
                          href=links.link_docs,
                          target='_blank'),
-                  html.Span(''' by infectious aerosols that are 
-        suspended in the air and can be mixed throughout a room. Indoors, people are no safer from airborne 
-        transmission at 60 feet than 6 feet. ''')]),
+                  html.Span(''' by infectious aerosols that are suspended in the air and mixed throughout a room. 
+                  Indoors, people are no safer from airborne transmission at 60 feet than 6 feet. ''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Are there other modes of transmission?"),
@@ -478,10 +477,9 @@ faq_top = html.Div([
     ''', className='faq-answer'),
     html.Br(),
     html.H5("Why do N95 Respirators have 99% efficiency?"),
-    html.Div('''
-    N95 respirators have at least 95% efficiency at particle sizes of 0.3 μm, 10 times smaller than the particles 
-    considered in COVID-19 transmission models. At larger particle sizes, N95 respirators become much more
-    efficient than 95%, approaching levels close to 100%. ''', className='faq-answer'),
+    html.Div('''N95 respirators have at least 95% filtration efficiency at particle sizes of 0.3 μm, 10 times smaller 
+    than the drop sizes in airborne COVID-19 transmission. For larger drops, N95 respirators are even more efficient, 
+    approaching levels close to 100%.''', className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([
@@ -550,11 +548,10 @@ values_interest_header = "Calculated Values of Interest: "
 values_interest_desc = html.Div([
     html.H5("What exactly is this app calculating?"),
     html.Div([
-        html.Div([html.Span('''The app calculates the maximum allowable cumulative exposure time, 
-        the product of room occupancy and time, in an indoor space. The spread of COVID-19 is limited by requiring that 
-        the expected number of transmissions per infected individual, the “indoor reproductive number", be less than
-        the chosen risk tolerance.
-        The app also calculates related quantities, defined in the '''),
+        html.Div([html.Span('''The app calculates the maximum allowable cumulative exposure time, the product of room 
+        occupancy and time, in an indoor space. The spread of COVID-19 is limited by requiring that the expected 
+        number of transmissions per infected individual, the “indoor reproductive number", be less than the chosen 
+        risk tolerance. The app also calculates related quantities, defined in the '''),
                   html.A(children="paper",
                          href=links.link_paper,
                          target='_blank'),
@@ -586,11 +583,10 @@ faq_graphs_text = html.Div([
 faq_infect_rate = html.Div([
     html.H5("Does this model account for the prevalence of infection in the local population?"),
     html.Div(['''No. To limit the spread of COVID-19, our guideline bounds the expected number of transmissions per 
-    infected person, or indoor reproductive number.  To account for the prevalence of infection in the population, 
+    infected person, the indoor reproductive number. To account for the prevalence of infection in the population, 
     the tolerance should be divided by the expected number of infected persons, specifically the product of the 
-    prevalence and the occupancy. When the expected number of infected persons in the room approaches zero, 
-    the cumulative-exposure-time limit increases proportionally. 
-    Consideration of the prevalence of infection may be treated in the Advanced Mode in the near future.'''],
+    prevalence and the occupancy. As the expected number of infected persons in the room approaches zero, 
+    the cumulative-exposure-time limit necessarily increases without bound.'''],
              className='faq-answer'),
 ])
 
