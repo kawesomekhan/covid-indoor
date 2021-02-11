@@ -445,7 +445,7 @@ faq_other_params_text = html.Div([
 aerosol_radius_text = "Rayon effectif des aérosols (à 60% d'humidité), r\u0305 (\u03bcm): "
 viral_deact_text = html.Span(["Taux d'inactivation virale maximum (à HR=100%), \u03BB", html.Sub('vmax'), " (/hr): "])
 
-values_interest_header = "Calculated Values of Interest: "
+values_interest_header = "Valeurs calculées d’intérêt : "
 values_interest_desc = html.Div([
     html.H5("Que calcule l'app, exactement?"),
     html.Div([
