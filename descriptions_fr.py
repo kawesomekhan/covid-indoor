@@ -225,8 +225,7 @@ header = html.Div([
                                    children="Martin Z. Bazant",
                                    target='_blank')),
                   ""]),
-        html.Div([html.Span(["Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19 " 
-			     ("]),
+        html.Div([html.Span(["Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19 ("]),
                   html.Span(html.A(href=link_paper,
                                    target='_blank',
                                    children='''Bazant & Bush, 2020''')),
