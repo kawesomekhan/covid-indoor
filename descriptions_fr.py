@@ -38,29 +38,29 @@ expiratory_types = [
     {'label': "Respiration normale", 'value': 4.2},
     {'label': "Respiration forte", 'value': 8.8},
     {'label': "Respiration rapide et profonde", 'value': 8.5},
-    {'label': "Chuchotement", 'value': 29},
+    {'label': "Chuchoter", 'value': 29},
     {'label': "Compter à voix basse", 'value': 37},
-    {'label': "Dialogue, Voix normale ", 'value': 72},
+    {'label': "Dialoguer, voix normale ", 'value': 72},
     {'label': "Compter à haute voix", 'value': 72},
-    {'label': "Dialogue crié", 'value': 142},
+    {'label': "Crier", 'value': 142},
     {'label': "Fredonnement (murmurer 'aah')", 'value': 103},
     {'label': "Chant", 'value': 970},
 ]
 
 mask_type_marks = {
-    0: {'label': "0% (pas de masque, visière)", 'style': {'max-width': '50px'}},
+    0: {'label': "0% (pas de masque)", 'style': {'max-width': '50px'}},
     0.1: {'label': "10% (coton épais)", 'style': {'max-width': '50px'}},
     0.5: {'label': "50% (soie, flanelle, mousseline)", 'style': {'max-width': '50px'}},
     0.75: {'label': "75% (masque chirurgical, ou coton fin)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (masque FFP2)", 'style': {'max-width': '50px'}},
+    0.95: {'label': "95% (masque FFP2 / N95)", 'style': {'max-width': '50px'}},
 }
 
 mask_types = [
-    {'label': "Pas de masque, visière", 'value': 0},
+    {'label': "Pas de masque", 'value': 0},
     {'label': "Coton épais", 'value': 0.1},
     {'label': "Soie, flanelle, mousseline", 'value': 0.5},
     {'label': "Masque chirurgical, coton fin", 'value': 0.9},
-    {'label': "Masque FFP2/N95", 'value': 0.95},
+    {'label': "Masque FFP2 / N95", 'value': 0.95},
 ]
 
 mask_fit_marks = {
@@ -144,13 +144,13 @@ presets = [
 curr_human_header = "Comportement des personnes : "
 presets_human = [
     {'label': "Customiser", 'value': 'custom'},
-    {'label': "Masques, Etre au repos", 'value': 'masks-1'},
-    {'label': "Masques, Parler", 'value': 'masks-2'},
-    {'label': "Masques, Faire de l'exercice", 'value': 'masks-3'},
-    {'label': "Pas de masques, Etre au repos", 'value': 'no-masks-1'},
-    {'label': "Pas de masques, Parler", 'value': 'no-masks-2'},
-    {'label': "Pas de masques, Faire de l'exercice", 'value': 'no-masks-3'},
-    {'label': "Pas de masques, Chanter", 'value': 'singing-1'},
+    {'label': "Masques, Repos", 'value': 'masks-1'},
+    {'label': "Masques, On parle", 'value': 'masks-2'},
+    {'label': "Masques, On fait de l'exercice", 'value': 'masks-3'},
+    {'label': "Pas de masques, Repos", 'value': 'no-masks-1'},
+    {'label': "Pas de masques, On parle", 'value': 'no-masks-2'},
+    {'label': "Pas de masques, On fait de l'exercice", 'value': 'no-masks-3'},
+    {'label': "Pas de masques, On chante", 'value': 'singing-1'},
 ]
 
 curr_risk_header = "Seuil de tolérance du risque: "
@@ -206,7 +206,7 @@ error_list = {
     "exp_time_input": "Erreur : le temps d'exposition doit être supérieur à zéro.",
     "air_exchange_rate": "Erreur : le taux de renouvellement de l'air (ACH) doit être supérieur à zéro.",
     "merv": "Erreur : le système de filtration (MERV) doit être renseigné.",
-    "prevalence": "Erreur : La prévalence doit être supérieure à 0 et inférieure à 100 000."
+    "prevalence": "Erreur : L'incidence doit être supérieure à 0 et inférieure à 100 000."
 }
 
 # Header
@@ -280,8 +280,8 @@ about = html.Div([
               html.A(children="preuves scientifiques",
                      href=link_docs,
                      target='_blank'),
-              html.Span(''' de la transmission aérienne de la COVID-19. Elle a lieu lorsque des particules aérosol 
-              infectieuses sont échangées, en respirant l'air partagé des espaces intérieurs clos. Les autorités de 
+              html.Span(''' de la transmission aérienne de la COVID-19. Elle a lieu lorsque des aérosols 
+              infectieux sont échangés, en respirant l'air partagé des espaces intérieurs clos. Les autorités de 
               santé publique commencent à reconnaître la transmission par aérosols de la COVID-19, mais elles n'ont 
               pas encore fourni de consignes de sécurité prenant en compte tous les paramètres utiles.''')]),
     html.Br(),
@@ -290,9 +290,9 @@ about = html.Div([
               html.A(children="modèle théorique",
                      href=link_paper,
                      target='_blank'),
-              html.Span(''' pour calculer la durée d'exposition et le taux d'occupation acceptables en termes de 
-              sécurité, pour des espaces intérieurs. En ajustant les caractéristiques du lieu, les taux de 
-              ventilation et de filtration de l'air, l'usage de masques, le type d'activité respiratoire ainsi que le 
+              html.Span(''' pour calculer la durée d'exposition et le taux d'occupation d'un espace qui seraient acceptables en termes de 
+              sécurité, pour des espaces intérieurs. En faisnat varier les caractéristiques du lieu, les taux de 
+              ventilation et de filtration de l'air, le port de masques, le type d'activité respiratoire ainsi que le 
               degré de risque toléré (dans les autres tabs), vous pourrez mieux comprendre comment limiter le risque 
               de transmission de la COVID-19 dans différents espaces intérieurs.''')]),
     html.Br(),
@@ -355,11 +355,11 @@ faq_top = html.Div([
                          href=link_docs,
                          target='_blank'),
                   html.Span(''', via des aérosols infectieux en suspension dans l'air, qui peuvent être répartis dans 
-                  toute la pièce. A l'intérieur, une personne n'est pas mieux protégée contre la contamination par 
+                  toute la pièce. A l'intérieur, une personne n'est pas mieux protégée contre la contamination par les  
                   aérosols à 20 mètres qu'à 2 mètres.''')]),
     ], className='faq-answer'),
     html.Br(),
-    html.H5("Y a-t-il d'autres modes de transmission?"),
+    html.H5("Y a-t-il d'autres modes de transmission ?"),
     html.Div([
         html.Div([html.A(children="La transmission aérosol",
                          href=link_docs,
@@ -375,7 +375,7 @@ faq_top = html.Div([
                   ''')]),
     ], className='faq-answer'),
     html.Br(),
-    html.H5("Pouvons-nous réellement faire l'hypothèse d'une pièce où l'air est bien brassé?"),
+    html.H5("Faut-il faire l'hypothèse d'une pièce où l'air est bien brassé ?"),
     html.Div([
         html.Div([html.Span('''Il y a de nombreux facteurs qui contribuent au brassage de l'air d'un espace 
         intérieur, parmi lesquels les flux de convection naturelle (venus des radiateurs, climatiseurs, fenêtres) ou 
@@ -388,7 +388,7 @@ faq_top = html.Div([
                   modélisation théorique de la transmission aérosol des maladies.''')]),
     ], className='faq-answer'),
     html.Br(),
-    html.H5("Ces recommandations restent-elles valables pour de très grands espaces?"),
+    html.H5("Ces recommandations restent-elles valables pour de très grands espaces ?"),
     html.Div([
         html.Div([html.Span('''Dans les salles de concert, stades, ou tout autre grand espace ventilé accueillant un 
         grand nombre de personnes, le risque de transmission aérosol est significatif, et il est pris en compte par 
@@ -421,7 +421,7 @@ faq_top = html.Div([
 ])
 
 faq_other_params_text = html.Div([
-    html.H5("Y a-t-il des paramètres cachés, en Mode basique?"),
+    html.H5("Y a-t-il des paramètres cachés, en Mode basique ?"),
     html.Div([html.Span('''Tous les paramètres physiques pertinents sont détaillés dans '''),
               html.A(children="l'article",
                      href=link_paper,
@@ -522,7 +522,7 @@ faq_graphs_text = html.Div([
 ])
 
 faq_infect_rate = html.Div([
-    html.H5("Ce modèle prend-il en compte le taux d’incidence dans la population locale?"),
+    html.H5("Ce modèle prend-il en compte le taux d’incidence dans la population locale ?"),
     html.Div(['''Non. Le modèle calcule le risque de transmission à partir d'une seule personne contaminée. Il part 
     donc du principe que le taux d'incidence dans la population est relativement bas. Dans cette limite, le risque de 
     transmission augmente avec le nombre de personnes contaminées dans la pièce. Spécifiquement, c'est le produit du 
