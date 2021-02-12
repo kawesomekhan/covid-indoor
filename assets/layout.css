@@ -140,7 +140,7 @@ body {
 /* Intermediate Size */
 @media only screen and (max-width: 1400px) {
     .grid {
-        grid-auto-rows: 1fr auto;
+        grid-auto-rows: auto 1fr;
     }
     .grid-presets {
         grid-template-columns: 1fr 1fr;

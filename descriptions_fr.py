@@ -18,7 +18,7 @@ recirc_type_output_base = "{:.1f} ACH"
 
 # Default dropdown options shared between basic mode and advanced mode
 humidity_marks = {
-    0: {'label': '0%: Très sec', 'style': {'max-width': '25px'}},
+    0.01: {'label': '1%: Très sec', 'style': {'max-width': '25px'}},
     0.2: {'label': '20%: Avion', 'style': {'max-width': '50px'}},
     0.3: {'label': '30%: Sec'},
     0.6: {'label': '60%: Moyen'},
@@ -51,7 +51,7 @@ mask_type_marks = {
     0: {'label': "0% (pas de masque)", 'style': {'max-width': '50px'}},
     0.1: {'label': "10% (coton épais)", 'style': {'max-width': '50px'}},
     0.5: {'label': "50% (soie, flanelle, mousseline)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (masque chirurgical, ou coton fin)", 'style': {'max-width': '50px'}},
+    0.90: {'label': "90% (masque chirurgical, ou coton fin)", 'style': {'max-width': '50px'}},
     0.95: {'label': "95% (masque FFP2 / N95)", 'style': {'max-width': '50px'}},
 }
 
