@@ -117,14 +117,14 @@ transmissions during the expected occupancy period (see FAQ for details).''', st
 
 curr_age_header = "Age Group: "
 presets_age = [
-    {'label': "Children", 'value': 0.23},
-    {'label': "Adults", 'value': 0.68},
-    {'label': "Elderly", 'value': 1}
+    {'label': "Children (<15 years)", 'value': 0.23},
+    {'label': "Adults (15-64 years)", 'value': 0.68},
+    {'label': "Elderly (>64 years)", 'value': 1}
 ]
 age_group_marks = {
-    0.23: {'label': '0.23: Children', 'style': {'max-width': '50px'}},
-    0.68: {'label': '0.68: Adults', 'style': {'max-width': '50px'}},
-    1: {'label': '1.00: Elderly'}
+    0.23: {'label': '0.23: Children (<15 years)', 'style': {'max-width': '75px'}},
+    0.68: {'label': '0.68: Adults (15-64 years)', 'style': {'max-width': '75px'}},
+    1: {'label': '1.00: Elderly (>64 years)', 'style': {'width': '75px'}}
 }
 
 curr_strain_header = "Viral Strain: "
@@ -582,11 +582,9 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("Does this model account for the prevalence of infection in the local population?"),
-    html.Div(['''No. To limit the spread of COVID-19, our guideline bounds the expected number of transmissions per 
-    infected person, the indoor reproductive number. To account for the prevalence of infection in the population, 
-    the tolerance should be divided by the expected number of infected persons, specifically the product of the 
-    prevalence and the occupancy. As the expected number of infected persons in the room approaches zero, 
-    the cumulative-exposure-time limit necessarily increases without bound.'''],
+    html.Div(['''The influence of the prevalence of infection in the local population may be considered in Advanced 
+    Mode. There, in the Other Parameters tab, one may also assess the influence of immunity in the population, as may arise 
+    through vaccination or previous infection.'''],
              className='faq-answer'),
 ])
 
