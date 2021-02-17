@@ -164,14 +164,14 @@ risk_tolerance_text = "Seuil de tolérance du risque: "
 
 curr_age_header = "Groupe d'âge : "
 presets_age = [
-    {'label': "Enfants", 'value': 0.23},
-    {'label': "Adultes", 'value': 0.68},
-    {'label': "Personnes âgées", 'value': 1}
+    {'label': "Enfants (<15 ans)", 'value': 0.23},
+    {'label': "Adultes (15-64 ans)", 'value': 0.68},
+    {'label': "Personnes âgées (>64 ans)", 'value': 1}
 ]
 age_group_marks = {
-    0.23: {'label': '0.23: Enfants', 'style': {'max-width': '50px'}},
-    0.68: {'label': '0.68: Adultes', 'style': {'max-width': '50px'}},
-    1: {'label': '1.00: Personnes âgées'}
+    0.23: {'label': '0.23: Enfants (<15 ans)', 'style': {'max-width': '75px'}},
+    0.68: {'label': '0.68: Adultes (15-64 ans)', 'style': {'max-width': '75px'}},
+    1: {'label': '1.00: Personnes âgées (>64 ans)', 'style': {'width': '100px'}}
 }
 
 curr_strain_header = "Souche virale : "
@@ -523,13 +523,9 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("Ce modèle prend-il en compte le taux d’incidence dans la population locale ?"),
-    html.Div(['''Non. Le modèle calcule le risque de transmission à partir d'une seule personne contaminée. Il part 
-    donc du principe que le taux d'incidence dans la population est relativement bas. Dans cette limite, le risque de 
-    transmission augmente avec le nombre de personnes contaminées dans la pièce. Spécifiquement, c'est le produit du 
-    taux d'occupation et de la prévalence dans la population. La tolérance devrait donc être baissée en fonction de 
-    ce nombre, s'il est supérieur à un. A l'inverse quand le nombre de personnes infectées estimées présentes 
-    s'approche de zéro, le seuil de tolérance pourrait être augmenté proportionnellement, jusqu'à ce que les 
-    restrictions recommandées soient jugées inutiles.'''],
+    html.Div(['''L'influence de la prévalence de l'infection dans la population locale peut être considérée en mode 
+    avancé. Là, dans l'onglet Autres paramètres, on peut également évaluer l'influence de l'immunité dans la 
+    population (résultant de la vaccination ou d'une infection antérieure).'''],
              className='faq-answer'),
 ])
 
