@@ -1,4 +1,5 @@
 import dash_html_components as html
+import descriptions_links as links
 
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
@@ -73,38 +74,115 @@ error_list = {
     "n_max_input": "त्रुटि: लोगों की संख्या 2 से कम नहीं हो सकती। ",
     "exp_time_input": "त्रुटि: एक्सपोज़र (उजागर) का समय 0 से अधिक होना चाहिए।",
     "air_exchange_rate": "त्रुटि: वेंटिलेशन दर (ACH) 0 से अधिक होनी चाहिए।",
-    "merv": "त्रुटि: निस्पंदन प्रणाली (MERV) रिक्त नहीं हो सकता ।"
+    "merv": "त्रुटि: निस्पंदन प्रणाली (MERV) रिक्त नहीं हो सकता ।",
+    "prevalence": "त्रुटि: व्यापकता 0 से अधिक और 100,000 से कम होनी चाहिए।"
 }
 
 # Main Panel Text
-curr_room_header = "चालू कक्ष: "
+curr_room_header = "कक्ष विशिष्टियां: "
 presets = [
     {'label': "अपने अनुसार", 'value': 'custom'},
     {'label': "उपनगरीय आवास", 'value': 'house'},
+    {'label': "बैठक कक्ष", 'value': 'living-room'},
     {'label': "जलपान गृह", 'value': 'restaurant'},
-    {'label': "एकांत कार्यालय", 'value': 'office'},
-    {'label': "व्याख्यान कक्ष", 'value': 'classroom'},
-    {'label': "न्यूयॉर्क सिटी सबवे कार", 'value': 'subway'},
-    {'label': "बोइंग 737", 'value': 'airplane'},
+    {'label': "कार्यालय", 'value': 'office'},
+    {'label': "कक्षा", 'value': 'classroom'},
+    {'label': "मेट्रो कार", 'value': 'subway'},
+    {'label': "वाणिज्यिक हवाई विमान", 'value': 'airplane'},
     {'label': "मंदिर (गिरिजाघर)", 'value': 'church'},
 ]
 
+curr_human_header = "मानवीय व्यवहार: "
+presets_human = [
+    {'label': "अपने अनुसार", 'value': 'custom'},
+    {'label': "मास्क, आराम करते समय", 'value': 'masks-1'},
+    {'label': "मास्क, बोलते समय", 'value': 'masks-2'},
+    {'label': "मास्क, व्यायाम करते समय", 'value': 'masks-3'},
+    {'label': "बिना मास्क, आराम करते समय", 'value': 'no-masks-1'},
+    {'label': "बिना मास्क, बोलते समय", 'value': 'no-masks-2'},
+    {'label': "बिना मास्क, व्यायाम करते समय", 'value': 'no-masks-3'},
+    {'label': "बिना मास्क, गायन करते समय", 'value': 'singing-1'},
+]
+
+curr_risk_header = "जोखिम सहिष्णुता: "
+# presets_risk = [
+#     {'label': "Low", 'value': 0.01},
+#     {'label': "Medium", 'value': 0.1},
+#     {'label': "High", 'value': 1},
+# ]
+risk_tol_marks = {
+    # 0.01: {'label': '0.01: Safer', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: सुरक्षित', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: असुरक्षित'}
+}
+
+curr_age_header = "आयु वर्ग: "
+presets_age = [
+    {'label': "बच्चे (<15 वर्ष)", 'value': 0.23},
+    {'label': "वयस्क (15-64 वर्ष)", 'value': 0.68},
+    {'label': "बुजुर्ग (> 64 वर्ष)", 'value': 1}
+]
+age_group_marks = {
+    0.23: {'label': '0.23: बच्चे (<15 वर्ष)', 'style': {'max-width': '75px'}},
+    0.68: {'label': '0.68: वयस्क (15-64 वर्ष)', 'style': {'max-width': '75px'}},
+    1: {'label': '1.00: बुजुर्ग (> 64 वर्ष)', 'style': {'width': '75px'}}
+}
+
+curr_strain_header = "वायरल रूप/स्ट्रेन: "
+presets_strain = [
+    # {'label': "SARS-CoV-1", 'value': 0.1},
+    {'label': "सार्स-कोवि-2 (वुहान स्ट्रेन)", 'value': 1},
+    {'label': "सार्स-कोवि-२-बी-१-१-७-(यूके स्ट्रेन)", 'value': 1.58}
+]
+viral_strain_marks = {
+    1: {'label': '1.0: वुहान', 'style': {'max-width': '100px'}},
+    1.58: {'label': '1.58: बी-१-१-७-/ यूके'}
+}
+
+pim_header = "प्रतिरक्षा प्रतिशत: "
+# pim_marks = {
+#     0: {'label': '0% (basic mode)'},
+#     0.33: {'label': '33% (default)'},
+#     1: {'label': '100%'}
+# }
+
+risk_conditional_desc = "यदि एक संक्रमित व्यक्ति…"
+risk_prevalence_desc = "संक्रमण की व्यापकता को देखते हुए…"
+risk_personal_desc = "मेरे व्यक्तिगत जोखिम को सीमित करने के लिए ..."
+
 main_panel_s1 = "इस मॉडल के आधार पर, यह कक्ष निम्न अवधि तथा लोगों की संख्या के लिए सुरक्षित होना चाहिए: "
+
+main_panel_s1_b = html.Span([
+    html.Span('''यह जनसंख्या जहाँ कि'''),
+    html.Sup('''1'''),
+    html.Span(''' ''')
+])
+main_panel_s2_b = ''' per 100,000, this space should have no more than: '''
+
+main_panel_s1_c = html.Span([
+    html.Span('''To limit my chance of being infected by COVID-19 in a population with an infection prevalence'''),
+    html.Sup('''1'''),
+    html.Span(''' of ''')
+])
+main_panel_s2_c = ''' per 100,000, this space should have no more than: '''
 
 units_hr = 'घंटों'
 units_min = 'मिनट'
 units_days = 'दिनों'
+units_months = 'महीने'
 
-units_hr_one = 'घंटों'
+units_hr_one = 'घंटे'
 units_min_one = 'मिनट'
-units_day_one = 'दिनों'
+units_day_one = 'दिन'
 model_output_suffix = ' के लिए '
+units_month_one = 'महीना'
 
 is_past_recovery_base_string = '>{val:.0f} दिनों के लिए {n_val} लोग'
 model_output_base_string = '{n_val} लोग'
 
-main_panel_six_ft_1 = "ध्यान दें कि छह-फुट या दो-मीटर की दूरी के दिशानिर्देशों का संकेत है कि "
-main_panel_six_ft_2 = " तक इस कमरे में  अनिश्चित काल के लिए सुरक्षित रहेंगे।"
+main_panel_six_ft_1 = "इसके विपरीत, छह-फुट (या दो-मीटर) दूर दिशा-निर्देश अध्यावास को "
+main_panel_six_ft_2 = " तक सीमित कर देगा, जोकि "
+# might need to add a main_panel_six_ft_3 depending on syntax
 
 six_ft_base_string = ' {} लोग'
 six_ft_base_string_one = ' {} लोग'
@@ -116,18 +194,71 @@ transient_text = "क्षणिक / अस्थायी"
 steady_state_text = "स्थिर अवस्था"
 
 main_airb_trans_only_disc = html.Div(["",
-                                      html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
-                                                       children="यह दिशानिर्देश एक संक्रमित व्यक्ति से हवा द्वारा प्रसारण के कुल एक्सपोज़र समय पर आधारित है।",
+                                      html.Span(html.A(href=links.link_docs,
+                                                       children='''यह दिशानिर्देश प्रति व्यक्ति हवाई संचरण की संभावना 
+                                                       को सीमित करता है जो सूचीबद्ध संचयी जोखिम समय में जोखिम 
+                                                       सहिष्णुता से कम है।''',
                                                        target='_blank'), ),
                                       html.Span('''''')], className='airborne-text')
+main_airb_trans_only_disc_basic = html.Div(["*The guideline restricts the probability of ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="airborne transmissions",
+                                                             target='_blank'), ),
+                                            html.Span('''दिशानिर्देश प्रति संक्रमित व्यक्ति हवाई प्रसारण की संभावना 
+                                            को सूचीबद्ध जोखिम सहिष्णुता (10%) से कम होने के लिए प्रतिबंधित करता 
+                                            है।''')], className='airborne-text')
 
-airb_trans_only_disc = html.Div('''यह दिशानिर्देश एक संक्रमित व्यक्ति से हवा द्वारा प्रसारण के कुल एक्सपोज़र समय पर आधारित है।''', className='airborne-text')
+other_risk_modes_desc = html.Div('''अन्य जोखिम परिदृश्यों को उन्नत मोड में माना जाता है। विशेष रूप से, किसी आबादी में 
+संक्रमण की व्यापकता, टीकाकरण या पूर्व अनावरण के माध्यम से प्राप्त प्रतिरक्षा, और एक विशिष्ट व्यक्ति के लिए जोखिम पर 
+विचार किया जा सकता है।''')
+
+main_airb_trans_only_desc_b = html.Div(["*The guideline restricts the probability of one ",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="airborne transmission",
+                                                         target='_blank'), ),
+                                        html.Span(''' per infected person to be less than the risk tolerance 
+                                      over the cumulative exposure time 
+                                      listed.''')], className='airborne-text')
+main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probability of ",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="airborne transmission",
+                                                         target='_blank'), ),
+                                        html.Span(''' to a particular individual to be less than the risk tolerance 
+                                      over the cumulative exposure time 
+                                      listed.''')], className='airborne-text')
+
+airb_trans_only_disc = html.Div('''यह दिशानिर्देश एक संक्रमित व्यक्ति से हवा द्वारा प्रसारण के कुल एक्सपोज़र समय पर 
+आधारित है।''', className='airborne-text')
+
+incidence_rate_refs = html.Div([html.Sup('''1'''),
+                                html.Span('''अपने स्थानीय प्रसार का अनुमान लगाने के लिए, यहाँ कुछ सहायक संसाधन हैं: '''),
+                                # html.Span(html.A(href=links.link_jhu_dashboard,
+                                #                  children="JHU COVID-19 Dashboard",
+                                #                  target='_blank')),
+                                # html.Span(''', '''),
+                                html.Span(html.A(href=links.link_cdc_dashboard,
+                                                 children="सी डी सी कोविड -19 डेटा ट्रैकर",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.Span(html.A(href=links.link_jhu_data,
+                                                 children="जे एच यू कोरोनावायरस रिसोर्स सेंटर",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.A(children="यूएस इम्युनिटी एस्टिमेट्स",
+                                       href=links.link_cdc_immunity,
+                                       target='_blank'),
+                                html.Span(", "),
+                                html.A(children="इंटरनेशनल इम्युनिटी एस्टिमेट्स",
+                                       href=links.link_jhu_vaccine,
+                                       target='_blank'),
+                                ], className='airborne-text')
 
 # Bottom panels text
 n_input_text_1 = "यदि इस कमरे में "
 n_max_base_string = ' {:.0f} लोग'
+n_max_overflow_base_string = ' >{:.0f} लोग'
 n_input_text_2 = " लोग हैं, तो इसके रहने वाले "
-n_input_text_3 = " तक सुरक्षित रहने चाहिए |"
+n_input_text_3 = " के बाद दिशानिर्देशों * का उल्लंघन हो  जाएगा।"
 
 t_input_text_1 = "यदि लोग यहां लगभग "
 t_input_text_2 = " घंटे बिताते हैं, तो अधिकतम "
@@ -159,10 +290,17 @@ about = html.Div([
               उपयोग करती है। कमरे के विनिर्देशों, वेंटिलेशन और निस्पंदन दरों, चेहरे के मुखोटे का उपयोग, 
               श्वसन गतिविधियों और जोखिम सहिष्णुता (अन्य टैब में) को समायोजित करके, आप देख सकते हैं कि विभिन्न आतंरिक 
               स्थानों में आतंरिक कॉवेड -19 ट्रांसमिशन को कैसे कम किया जाए।''')]),
+    html.Br(),
+    html.Div([html.Span('''एप्लिकेशन के पीछे के विज्ञान को भी मुफ्त में बड़े पैमाने पर ऑनलाइन पाठ्यक्रम (ऍमओओसी) 
+    एडेक्स पर: '''),
+              html.A(children="10.S95x कोविड -19 के संचरण का विज्ञान' के नाम से पढ़ाया जाता है।",
+                     href=links.link_mooc,
+                     target='_blank')])
+
 ])
 
 # Room Specifications
-room_header = "कक्ष विशिष्टियां"
+room_header = "कमरे के विनिर्देश - विवरण"
 
 floor_area_text = "कुल तल क्षेत्रफल  (वर्ग फुट): "
 floor_area_text_metric = "कुल तल क्षेत्रफल (m²): "
@@ -170,8 +308,9 @@ ceiling_height_text = "औसतन छत की ऊंचाई (फुट): "
 ceiling_height_text_metric = "औसतन छत की ऊंचाई (m): "
 
 ventilation_text = "वेंटिलेशन प्रणाली: "
-vent_type_output_base = "{:.0f} एसीएच"
-ventilation_text_adv = "वेंटिलेशन प्रणाल (एसीएच): "
+vent_type_output_base = "{:.1f} "
+vent_type_output_units = html.Span(["hr", html.Sup("-1"), " (बाहरी ACH)"])
+ventilation_text_adv = html.Span(["वेंटिलेशन प्रणाल (hr", html.Sup("-1"), ", बाहरी ACH): "])
 ventilation_types = [
     {'label': "बंद खिड़कियां", 'value': 0.3},
     {'label': "खुली खिड़कियां", 'value': 2},
@@ -220,12 +359,13 @@ humidity_marks = {
 need_more_ctrl_text = '''क्या आप अपने निवेश(इनपुट) पर अधिक नियंत्रण करना चाहते हैं? इस पेज के शीर्ष पर ड्रॉपडाउन मेनू 
 में एडवांस/अग्रिम मोड पर स्विच करें। '''
 
-human_header = "मानवीय व्यवहार"
+human_header = "मानव व्यवहार - विवरण"
 # Human Behavior
-exertion_text = "तनाव स्तर: "
+exertion_text = "स्वांस - दर: "
 exertion_types = [
     {'label': "विश्राम स्थिति ", 'value': 0.49},
     {'label': "खड़े रहने कि स्थिति ", 'value': 0.54},
+    {'label': "गायन", 'value': 1},
     {'label': "हल्का व्यायाम", 'value': 1.38},
     {'label': "मध्यम व्यायाम", 'value': 2.35},
     {'label': "भारी व्यायाम", 'value': 3.30},
@@ -248,18 +388,18 @@ expiratory_types = [
 
 mask_type_text = "मास्क निस्पंदन क्षमता (मास्क प्रकार): "
 mask_type_marks = {
-    0: {'label': "0% (कोई नहीं, फेस शील्ड)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (मोटा सूती कपडा)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (रेशमी, फलालैन,शिफॉन)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (शल्यक/सर्जिकल, सूती)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (N95 रेस्पिरेटर /श्वासयंत्र)", 'style': {'max-width': '50px'}},
+    0: {'label': "0% (कुछ नहीं, फेस शील्ड)", 'style': {'max-width': '50px'}},
+    0.5: {'label': "10% (सूती, फलालैन)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "50% (बहुपरत सूती, रेशम)", 'style': {'max-width': '50px'}},
+    0.90: {'label': "75% (डिस्पोजेबल सर्जिक/शल्यक)", 'style': {'max-width': '50px'}},
+    0.99: {'label': "95% (N95 रेस्पिरेटर/श्वासयंत)", 'style': {'max-width': '50px'}},
 }
 mask_types = [
-    {'label': "कोई नहीं, फेस शील्ड ", 'value': 0},
-    {'label': "मोटा सूती कपडा ", 'value': 0.1},
-    {'label': "रेशमी, फलालैन,शिफॉन ", 'value': 0.5},
-    {'label': "शल्यक/सर्जिकल, सूती ", 'value': 0.9},
-    {'label': "N95 रेस्पिरेटर/ श्वासयंत्र", 'value': 0.95},
+    {'label': "कुछ नहीं, फेस शील्ड", 'value': 0},
+    {'label': "सूती, फलालैन", 'value': 0.5},
+    {'label': "बहुपरत सूती, रेशम", 'value': 0.7},
+    {'label': "डिस्पोजेबल सर्जिक/शल्यक", 'value': 0.9},
+    {'label': "N95 रेस्पिरेटर/श्वासयंतर", 'value': 0.99},
 ]
 
 mask_fit_text = "मास्क फिट / अनुपालन: "
@@ -281,7 +421,7 @@ risk_tol_marks = {
 
 # FAQ/Other Inputs & Outputs
 faq_header = "प्रायः पूछे जाने वाले प्रश्न"
-other_io = "अन्य निवेश (इनपुट) और निर्गम (ऑउटपुट)"
+other_io = "अन्य मापदंड"
 
 faq_top = html.Div([
     html.H6("प्रायः पूछे जाने वाले प्रश्न"),
@@ -291,10 +431,10 @@ faq_top = html.Div([
                   # html.A(children="airborne transmission",
                   #        href=link_docs,
                   #        target='_blank'),
-                  html.Span('''6 फीट / 2 मीटर दूरी आपको एक संक्रमित व्यक्ति द्वारा खांसते हुए बड़ी बूंदों से बचाती 
-                  है, जैसा कि फेस मास्क करते हैं; हालाँकि, यह संक्रामक एरोसोल द्वारा हवा से फैलने वाले संक्रमण के 
-                  विरुद्ध रक्षा नहीं करता है और यह पूरे कमरे में फ़ैल सकता है । इस प्रकार घर के अंदर के लोग 60 फीट की 
-                  अपेक्षा 6 फीट की दूरी पर हवाई प्रसारण से सुरक्षित नहीं हैं।''')]),
+                  html.Span('''6 फीट (या 2 मीटर) की दूरी आपको, फेस मास्क (मुखौटे) की तरह ही संक्रमित व्यक्ति द्वारा 
+                  खांसने वाले बड़े बूंदों से बचाती है; हालाँकि, यह हवा में फैली और पूरे कमरे में मिश्रित संक्रामक हवा 
+                  के संचरण से रक्षा नहीं करती है। घर के अंदर, लोग 6 फीट की तुलना में 60 फीट की दूरी पर हवाई संचरण 
+                  द्वारा संक्रमड से ज्यादा सुरक्षित नहीं हैं।''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("क्या प्रसारण के अन्य तरीके हैं?"),
@@ -345,6 +485,11 @@ faq_top = html.Div([
     html.Div('''
         यदि आपको अपने निवेश (इनपुट) पर अधिक नियंत्रण की आवश्यकता है, तो वेबपेज के शीर्ष पर ड्रॉपडाउन का उपयोग करते हुए एडवांस मोड पर स्विच करें।
     ''', className='faq-answer'),
+    html.Br(),
+    html.H5("N95 श्वासयंत्र में 99% दक्षता क्यों है?"),
+    html.Div('''N95 श्वासयंत्र 0.3 माइक्रोन के कणों के लिए कम से कम 95% निस्पंदन दक्षता रखते हैं, जोकि कोविड -19 के 
+    हवाई संचरण की बूदों आकार से 10 गुना छोटा माप है। अत: बड़ी बूंदों के लिए, N95 श्वासयंत्र और भी अधिक कुशल हैं, 
+    लगभग 100% कुशलता स्तर तक पहुंचते हैं।''', className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([
@@ -374,19 +519,56 @@ faq_other_params_text = html.Div([
 aerosol_radius_text = "प्रभावी एरोसोल त्रिज्या (आरएच = 60% पर), r\u0305 (\u03bcm): "
 viral_deact_text = html.Span(["अधिकतम वायरल निष्क्रियता दर (आरएच = 100% पर), \u03BB", html.Sub('vmax'), " (/hr): "])
 
-values_interest_header = ""
+pop_immunity_header = "जनसंख्या प्रतिरक्षा: "
+perc_immune_label = html.Span(["प्रतिरक्षा प्रतिशत p", html.Sub('im'), " = p", html.Sub('ex'), " + p", html.Sub('v'),
+                               " = "])
+perc_infectious_label = html.Span(["संक्रामक प्रतिशत p", html.Sub('i'), " = "])
+perc_vaccinated_label = html.Span(["टीकाकरण प्रतिशत p", html.Sub('v'), " ="])
+perc_prev_infected_label = html.Span(["पूर्व में संक्रमित प्रतिशत p", html.Sub('ex'), " = "])
+perc_susceptible_label = html.Span(["अतिसंवेदनशील प्रतिशत p", html.Sub('s'), " = 1 - (p", html.Sub('im'), " + p",
+                                    html.Sub('i'), ") = "])
+pop_immunity_desc = html.Div([html.Div(['''जनसंख्या में संक्रामक प्रतिशत p''', html.Sub('i'), '''की गणना अन्य जोखिम 
+परिदृश्य टैब में दर्ज संक्रामक प्रसार से की जाती है (संक्रमण की व्यापकता को देखते हुए…… मेरे व्यक्तिगत जोखिम को सीमित 
+करने के लिए…… ) । प्रतिशत प्रतिरक्षा p''', html.Sub('im'), ''' का अनुमान जनसंख्या के टीकाकरण प्रतिशत और जनसंख्या में 
+कुल मामलों की दर, और पूर्व निर्धारित 'बिना पता चले मामलों' के योगदान की उपेक्षा करके से लगाया जा सकता है। इन दो 
+मूल्यों का उपयोग अतिसंवेदनशील प्रतिशत p''', html.Sub('s'), ''' की गणना के लिए किया जाता है। बेसिक और पहले रिस्क मोड 
+में (यदि कोई संक्रमित व्यक्ति प्रवेश करता है ...), यह मान 100% माना जाता है।''']),
+                              html.Br(),
+                              html.Div(['''यहाँ p''', html.Sub('i'), ''' और p''',
+                                        html.Sub('im'), '''का अनुमान लगाने के लिए कुछ उपयोगी लिंक दिए गए हैं: ''',
+                                        html.Span(html.A(href=links.link_cdc_dashboard,
+                                                         children="सी डी सी कोविड -19 डेटा ट्रैकर",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.Span(html.A(href=links.link_jhu_data,
+                                                         children="जे एच यू कोरोनावायरस रिसोर्स सेंटर",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.A(children="यूएस इम्युनिटी एस्टिमेट्स",
+                                               href=links.link_cdc_immunity,
+                                               target='_blank'),
+                                        html.Span(", "),
+                                        html.A(children="इंटरनेशनल इम्युनिटी एस्टिमेट्स",
+                                               href=links.link_jhu_vaccine,
+                                               target='_blank'),
+                                        ])
+                              ])
+
+values_interest_header = "आंकलित रोचक मापदंड"
 values_interest_desc = html.Div([
     html.H5("वास्तव में ऐप की गणना क्या है?"),
     html.Div([
-        html.Div([html.Span('''हवाई प्रसारण के लिए एक जोखिम सहिष्णुता को देखते हुए, ऐप अधिकतम स्वीकार्य कुल उजागर 
-        समय, कमरे में ठहराव के उत्पाद और संक्रमित व्यक्ति की उपस्थिति के समय की गणना करता है। एप और भी कई संबंधित 
-        मात्राओं की गणना करता है, जोकि पेपर में परिभाषित है, और कुछ लोगों के लिए दिलचस्प हो सकता है।  '''),
+        html.Div([html.Span('''एप्लिकेशन एक आतंरिक स्थान में अधिकतम स्वीकार्य संचयी जोखिम समय, जोकि कमरे के अधिभोग और 
+        समय का गुडन है, की गणना करता है। प्रति संक्रमित व्यक्ति संचरण की अपेक्षित संख्या ("इनडोर प्रजनन संख्या") को 
+        चुने हुए जोखिम सहिष्णुता से कम करके कोविड -19 के प्रसार को सीमित किया जाता है। ऐप पेपर में लिखित अन्य संबंधित 
+        मापदंडों की भी गणना करती है, जोकि कुछ पाठकों के लिए रोचक हो सकते हैं।'''),
                   # html.A(children="paper",
                   #        href=link_paper,
                   #        target='_blank'),
                   html.Span('''''')]),
     ], className='faq-answer'),
 ])
+relative_sus_label = html.Span(["सापेक्ष संवेदनशीलता s", html.Sub('r'), ": "])
 outdoor_air_frac_label = html.Span(["बाहरी वायु अंश Z", html.Sub('p'), ": "])
 aerosol_eff_label = html.Span(["एरोसोल निस्पंदन दक्षता p", html.Sub('f'), ": "])
 breathing_rate_label = html.Span(["श्वास प्रवाह दर Q", html.Sub('b'), ": "])
@@ -410,12 +592,9 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("क्या यह मॉडल स्थानीय आबादी में संक्रमण की व्यापकता पर विचार करता है? "),
-    html.Div(['''नहीं। यह मॉडल एक संक्रमित व्यक्ति से संचरण के जोखिम की गणना करता है। इस प्रकार यह जनसंख्या में 
-    संक्रमण की व्यापकता को कम मानता है। इस सीमा में, कमरे में संक्रमित व्यक्तियों की अनुमानित संख्या के साथ संचरण का 
-    खतरा बढ़ जाता है, विशेष रूप से ठहराव और आबादी में प्रसार के उत्पाद को । यदि यह मात्रा एक से अधिक हो तो सहिष्णुता 
-    को इस संख्या के अनुपात में कम किया जाना चाहिए। इसके विपरीत, जब कमरे में संक्रमित व्यक्तियों की अपेक्षित संख्या 
-    शून्य तक पहुंच जाये तो अनुशंसित प्रतिबंधों को अनावश्यक नहीं माने जाने तक सहिष्णुता आनुपातिक रूप से बढ़ायी जा सकती 
-    है।'''],
+    html.Div(['''स्थानीय आबादी में संक्रमण के प्रसार के प्रभाव को उन्नत मोड में देखा जा सकता है। वहां, 
+    अन्य पैरामीटर्स टैब में, कोई भी आबादी में प्रतिरक्षा के प्रभाव का भी आकलन कर सकता है, जोकि टीकाकरण या पिछले 
+    संक्रमण से उत्पन्न हो सकती है।'''],
              className='faq-answer'),
 ])
 
