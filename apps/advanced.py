@@ -37,6 +37,7 @@ def update_mask_fit_disp: Updates mask fit/compliance filtration display based o
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd, "en")
 
+
 # Main App
 layout = html.Div(children=[
     dbc.Alert(
@@ -380,31 +381,30 @@ layout = html.Div(children=[
                                                 color='#de1616',
                                             ),
                                             html.Br(),
-                                            html.H4([
-                                                html.Span([dcc.Input(id='adv-n-input',
-                                                                     value=10,
-                                                                     type='number')]),
-                                                html.Span(desc.nt_bridge_string, style={'color': '#000000'},
-                                                          id='adv-nt-bridge-string-a'),
-                                                html.Span(id='adv-t-output', children="8 hours"),
-                                            ], className='model-output-text', style={'padding-bottom': '.2em'}),
-                                            html.H4([
-                                                html.Span(id='adv-n-output', children="5 people"),
-                                                html.Span(desc.tn_bridge_string, style={'color': '#000000'},
-                                                          id='adv-tn-bridge-string-a'),
-                                                html.Span([dcc.Input(id='adv-t-input',
-                                                                     value=4,
-                                                                     type='number')]),
-                                                html.Span(" " + desc.units_hr, style={'color': '#000000'},
-                                                          id='adv-tn-tail-string-a')
-                                            ], className='model-output-text'),
+                                            html.Div([
+                                                html.H4([
+                                                    html.Span("", id='adv-n-input-pretext'),
+                                                    html.Span([dcc.Input(id='adv-n-input',
+                                                                         value=10,
+                                                                         type='number')]),
+                                                    html.Span("", id='adv-n-input-posttext'),
+                                                ], className='model-output-text', style={'padding-bottom': '.2em'}),
+                                                html.H4([
+                                                    html.Span("", id='adv-t-input-pretext'),
+                                                    html.Span([dcc.Input(id='adv-t-input',
+                                                                         value=4,
+                                                                         type='number')]),
+                                                    html.Span(" " + desc.units_hr, id='adv-tn-tail-string-a'),
+                                                    html.Span("", id='adv-t-input-posttext'),
+                                                ], className='model-output-text')]),
                                             html.Br(),
                                             html.H4([html.Span(desc.main_panel_six_ft_1, id='adv-main-six-ft-1'),
                                                      html.Span(id='adv-six-ft-output',
                                                                children=''' 2 people ''',
                                                                style={'color': '#de1616'}),
                                                      html.Span(desc.main_panel_six_ft_2, id='adv-main-six-ft-2'),
-                                                     html.Span(id='adv-six-ft-output-t', style={'color': '#de1616'})],
+                                                     html.Span(id='adv-six-ft-output-t', style={'color': '#de1616'}),
+                                                     html.Span("", id='adv-main-six-ft-3')],
                                                     style={'color': '#000000'}),
                                         ], className='panel-main-output'),
                                         html.Br(),
@@ -444,24 +444,22 @@ layout = html.Div(children=[
                                                 color='#de1616',
                                             ),
                                             html.Br(),
-                                            html.H4([
-                                                html.Span([dcc.Input(id='adv-n-input-b',
-                                                                     value=10,
-                                                                     type='number')]),
-                                                html.Span(desc.nt_bridge_string, style={'color': '#000000'},
-                                                          id='adv-nt-bridge-string-b'),
-                                                html.Span(id='adv-t-output-b', children="8 hours"),
-                                            ], className='model-output-text', style={'padding-bottom': '.2em'}),
-                                            html.H4([
-                                                html.Span(id='adv-n-output-b', children="5 people"),
-                                                html.Span(desc.tn_bridge_string, style={'color': '#000000'},
-                                                          id='adv-tn-bridge-string-b'),
-                                                html.Span([dcc.Input(id='adv-t-input-b',
-                                                                     value=4,
-                                                                     type='number')]),
-                                                html.Span(" " + desc.units_hr, style={'color': '#000000'},
-                                                          id='adv-tn-tail-string-b')
-                                            ], className='model-output-text'),
+                                            html.Div([
+                                                html.H4([
+                                                    html.Span("", id='adv-n-input-pretext-b'),
+                                                    html.Span([dcc.Input(id='adv-n-input-b',
+                                                                         value=10,
+                                                                         type='number')]),
+                                                    html.Span("", id='adv-n-input-posttext-b'),
+                                                ], className='model-output-text', style={'padding-bottom': '.2em'}),
+                                                html.H4([
+                                                    html.Span("", id='adv-t-input-pretext-b'),
+                                                    html.Span([dcc.Input(id='adv-t-input-b',
+                                                                         value=4,
+                                                                         type='number')]),
+                                                    html.Span(" " + desc.units_hr, id='adv-tn-tail-string-b'),
+                                                    html.Span("", id='adv-t-input-posttext-b'),
+                                                ], className='model-output-text')]),
                                             html.Br(),
                                             html.H4([html.Span(desc.main_panel_six_ft_1, id='adv-main-six-ft-1-b'),
                                                      html.Span(id='adv-six-ft-output-b',
@@ -509,24 +507,22 @@ layout = html.Div(children=[
                                                 color='#de1616',
                                             ),
                                             html.Br(),
-                                            html.H4([
-                                                html.Span([dcc.Input(id='adv-n-input-c',
-                                                                     value=10,
-                                                                     type='number')]),
-                                                html.Span(desc.nt_bridge_string, style={'color': '#000000'},
-                                                          id='adv-nt-bridge-string-c'),
-                                                html.Span(id='adv-t-output-c', children="8 hours"),
-                                            ], className='model-output-text', style={'padding-bottom': '.2em'}),
-                                            html.H4([
-                                                html.Span(id='adv-n-output-c', children="5 people"),
-                                                html.Span(desc.tn_bridge_string, style={'color': '#000000'},
-                                                          id='adv-tn-bridge-string-c'),
-                                                html.Span([dcc.Input(id='adv-t-input-c',
-                                                                     value=4,
-                                                                     type='number')]),
-                                                html.Span(" " + desc.units_hr, style={'color': '#000000'},
-                                                          id='adv-tn-tail-string-c')
-                                            ], className='model-output-text'),
+                                            html.Div([
+                                                html.H4([
+                                                    html.Span("", id='adv-n-input-pretext-c'),
+                                                    html.Span([dcc.Input(id='adv-n-input-c',
+                                                                         value=10,
+                                                                         type='number')]),
+                                                    html.Span("", id='adv-n-input-posttext-c'),
+                                                ], className='model-output-text', style={'padding-bottom': '.2em'}),
+                                                html.H4([
+                                                    html.Span("", id='adv-t-input-pretext-c'),
+                                                    html.Span([dcc.Input(id='adv-t-input-c',
+                                                                         value=4,
+                                                                         type='number')]),
+                                                    html.Span(" " + desc.units_hr, id='adv-tn-tail-string-c'),
+                                                    html.Span("", id='adv-t-input-posttext-c'),
+                                                ], className='model-output-text')]),
                                             html.Br(),
                                             html.H4([html.Span(desc.main_panel_six_ft_1, id='adv-main-six-ft-1-c'),
                                                      html.Span(id='adv-six-ft-output-c',
@@ -573,6 +569,7 @@ layout = html.Div(children=[
      Output('adv-main-panel-s1', 'children'),
      Output('adv-main-six-ft-1', 'children'),
      Output('adv-main-six-ft-2', 'children'),
+     Output('adv-main-six-ft-3', 'children'),
      Output('adv-main-airb-trans-disc', 'children'),
      Output('adv-about-text', 'children'),
      Output('adv-tab-b', 'label'),
@@ -629,12 +626,8 @@ layout = html.Div(children=[
      Output('adv-airb-trans-label', 'children'),
      Output('adv-graph-output-header', 'children'),
      Output('adv-output-panel-tab-a', 'label'),
-     Output('adv-nt-bridge-string-a', 'children'),
-     Output('adv-tn-bridge-string-a', 'children'),
      Output('adv-tn-tail-string-a', 'children'),
      Output('adv-output-panel-tab-b', 'label'),
-     Output('adv-nt-bridge-string-b', 'children'),
-     Output('adv-tn-bridge-string-b', 'children'),
      Output('adv-tn-tail-string-b', 'children'),
      Output('adv-main-six-ft-1-b', 'children'),
      Output('adv-main-six-ft-2-b', 'children'),
@@ -643,8 +636,6 @@ layout = html.Div(children=[
      Output('adv-main-airb-trans-desc-b', 'children'),
      Output('adv-incidence-rate-refs-b', 'children'),
      Output('adv-output-panel-tab-c', 'label'),
-     Output('adv-nt-bridge-string-c', 'children'),
-     Output('adv-tn-bridge-string-c', 'children'),
      Output('adv-tn-tail-string-c', 'children'),
      Output('adv-main-six-ft-1-c', 'children'),
      Output('adv-main-six-ft-2-c', 'children'),
@@ -656,7 +647,8 @@ layout = html.Div(children=[
      Input('window-width', 'children')]
 )
 def update_lang_adv(search, window_width):
-    return ess.get_lang_text_adv(ess.get_lang(search), int(window_width))
+    language = ess.get_lang(search)
+    return ess.get_lang_text_adv(language, int(window_width))
 
 
 # Model Update & Calculation
@@ -706,12 +698,18 @@ def update_lang_adv(search, window_width):
      Output('adv-sett-speed-output', 'children'),
      Output('adv-conc-relax-output', 'children'),
      Output('adv-airb-trans-output', 'children'),
-     Output('adv-t-output', 'children'),
-     Output('adv-n-output', 'children'),
-     Output('adv-t-output-b', 'children'),
-     Output('adv-n-output-b', 'children'),
-     Output('adv-t-output-c', 'children'),
-     Output('adv-n-output-c', 'children'),
+     Output('adv-n-input-pretext', 'children'),
+     Output('adv-n-input-posttext', 'children'),
+     Output('adv-t-input-pretext', 'children'),
+     Output('adv-t-input-posttext', 'children'),
+     Output('adv-n-input-pretext-b', 'children'),
+     Output('adv-n-input-posttext-b', 'children'),
+     Output('adv-t-input-pretext-b', 'children'),
+     Output('adv-t-input-posttext-b', 'children'),
+     Output('adv-n-input-pretext-c', 'children'),
+     Output('adv-n-input-posttext-c', 'children'),
+     Output('adv-t-input-pretext-c', 'children'),
+     Output('adv-t-input-posttext-c', 'children'),
      Output('adv-qb-output', 'children'),
      Output('adv-cq-output', 'children'),
      Output('adv-alert-no-update', 'children'),
@@ -758,12 +756,12 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
@@ -827,6 +825,20 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                                      language)
     n_max_text = ess.get_n_max_text(myInd.calc_n_max(exp_time_input, 'conditional'), myInd.get_n_max(), language)
 
+    # Get n pretext and posttext
+    desc_file = ess.get_desc_file(language)
+    n_input_pretext = ""
+    n_input_posttext = desc_file.nt_bridge_string + exp_time_text
+    if language in ess.sov_languages:
+        n_input_pretext = exp_time_text + desc_file.nt_bridge_string
+        n_input_posttext = desc_file.people_string
+
+    t_input_pretext = n_max_text + desc_file.tn_bridge_string
+    t_input_posttext = ""
+    if language in ess.sov_languages:
+        t_input_pretext = ""
+        t_input_posttext = desc_file.tn_bridge_string + n_max_text
+
     # Prevalence Outputs (Given the prevalence of infection...)
     pi_prevalence = prevalence_b / 100000
     ps_prevalence = 1 - (pi_prevalence + pim_input)
@@ -841,6 +853,19 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     exp_time_text_b = ess.time_to_text(myInd.calc_max_time(n_max_input_b, 'prevalence'), True, -1,
                                        language)
     n_max_text_b = ess.get_n_max_text(myInd.calc_n_max(exp_time_input_b, 'prevalence'), myInd.get_n_max(), language)
+
+    # Get n pretext and posttext
+    n_input_pretext_b = ""
+    n_input_posttext_b = desc_file.nt_bridge_string + exp_time_text_b
+    if language in ess.sov_languages:
+        n_input_pretext_b = exp_time_text_b + desc_file.nt_bridge_string
+        n_input_posttext_b = desc_file.people_string
+
+    t_input_pretext_b = n_max_text_b + desc_file.tn_bridge_string
+    t_input_posttext_b = ""
+    if language in ess.sov_languages:
+        t_input_pretext_b = ""
+        t_input_posttext_b = desc_file.tn_bridge_string + n_max_text_b
 
     # Personal Outputs (To limit my personal risk...)
     pi_personal = prevalence_c / 100000
@@ -857,6 +882,19 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                                        language)
     n_max_text_c = ess.get_n_max_text(myInd.calc_n_max(exp_time_input_c, 'personal'), myInd.get_n_max(), language)
 
+    # Get n pretext and posttext
+    n_input_pretext_c = ""
+    n_input_posttext_c = desc_file.nt_bridge_string + exp_time_text_c
+    if language in ess.sov_languages:
+        n_input_pretext_c = exp_time_text_c + desc_file.nt_bridge_string
+        n_input_posttext_c = desc_file.people_string
+
+    t_input_pretext_c = n_max_text_c + desc_file.tn_bridge_string
+    t_input_posttext_c = ""
+    if language in ess.sov_languages:
+        t_input_pretext_c = ""
+        t_input_posttext_c = desc_file.tn_bridge_string + n_max_text_c
+
     # Update all relevant display items (figure, red output text)
     return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], model_output_text_b[0], model_output_text_b[1], model_output_text_b[2], \
@@ -867,7 +905,10 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            interest_output[0], interest_output[1], interest_output[2], interest_output[3], interest_output[4], \
            interest_output[5], interest_output[6], interest_output[7], interest_output[8], interest_output[9], \
            interest_output[10], interest_output[11], interest_output[12], interest_output[13], interest_output[14], \
-           exp_time_text, n_max_text, exp_time_text_b, n_max_text_b, exp_time_text_c, n_max_text_c, qb_text, cq_text, \
+           n_input_pretext, n_input_posttext, t_input_pretext, t_input_posttext,\
+           n_input_pretext_b, n_input_posttext_b, t_input_pretext_b, t_input_posttext_b, \
+           n_input_pretext_c, n_input_posttext_c, t_input_pretext_c, t_input_posttext_c, \
+           qb_text, cq_text, \
            error_msg, False
 
 

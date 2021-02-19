@@ -20,8 +20,8 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 
 """
 
-# Languages where the time comes before the occupancy in the big red output
-flipped_output_langs = ["hi"]
+# Languages where the time comes before the occupancy in the big red output (SOV order)
+sov_languages = ["hi"]
 
 normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
@@ -347,7 +347,7 @@ def get_model_output_text(indoor_model, risk_type, recovery_time, language):
         else:
             max_time = indoor_model.calc_max_time(n_val, risk_type)  # hours
             time_text = time_to_text(max_time, True, recovery_time, language)
-            if language in flipped_output_langs:
+            if language in sov_languages:
                 base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
             else:
                 base_string = desc_file.model_output_base_string + time_text
@@ -570,6 +570,10 @@ def get_lang_text_basic(language, disp_width):
             1: desc_file.risk_tol_marks[1]
         }
 
+    main_panel_six_ft_3 = ""
+    if hasattr(desc_file, 'main_panel_six_ft_3'):
+        main_panel_six_ft_3 = desc_file.main_panel_six_ft_3
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -583,6 +587,7 @@ def get_lang_text_basic(language, disp_width):
             desc_file.main_panel_s1,
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
+            main_panel_six_ft_3,
             desc_file.main_airb_trans_only_disc_basic,
             desc_file.about,
             desc_file.room_header,
@@ -660,6 +665,10 @@ def get_lang_text_adv(language, disp_width):
             0.90: desc_file.mask_type_marks[0.90]
         }
 
+    main_panel_six_ft_3 = ""
+    if hasattr(desc_file, 'main_panel_six_ft_3'):
+        main_panel_six_ft_3 = desc_file.main_panel_six_ft_3
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -674,6 +683,7 @@ def get_lang_text_adv(language, disp_width):
             desc_file.main_panel_s1,
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
+            main_panel_six_ft_3,
             desc_file.main_airb_trans_only_disc,
             desc_file.about,
             desc_file.room_header,
@@ -730,12 +740,8 @@ def get_lang_text_adv(language, disp_width):
             desc_file.airb_trans_label,
             desc_file.graph_output_header,
             desc_file.risk_conditional_desc,
-            desc_file.nt_bridge_string,
-            desc_file.tn_bridge_string,
             " " + desc_file.units_hr,
             desc_file.risk_prevalence_desc,
-            desc_file.nt_bridge_string,
-            desc_file.tn_bridge_string,
             " " + desc_file.units_hr,
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
@@ -744,8 +750,6 @@ def get_lang_text_adv(language, disp_width):
             desc_file.main_airb_trans_only_disc,
             desc_file.incidence_rate_refs,
             desc_file.risk_personal_desc,
-            desc_file.nt_bridge_string,
-            desc_file.tn_bridge_string,
             " " + desc_file.units_hr,
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
