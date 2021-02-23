@@ -32,7 +32,7 @@ languages = [
     {'label': "Italiano", 'value': "it", 'disabled': True},
     {'label': "한국어", 'value': "ko", 'disabled': True},
     # {'label': "Nederlands", 'value': "nl"},
-    {'label': "Svenska", 'value': "sv", 'disabled': True},
+    {'label': "Svenska", 'value': "sv"},
     {'label': "简体中文", 'value': "zh", 'disabled': True},
 ]
 

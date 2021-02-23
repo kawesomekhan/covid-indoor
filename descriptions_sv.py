@@ -1,4 +1,5 @@
 import dash_html_components as html
+import descriptions_links as links
 
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
@@ -73,7 +74,8 @@ error_list = {
     "n_max_input": "Fel: Antal personer kan inte vara mindre än 2.",
     "exp_time_input": "Fel: Exponeringstid måste vara längre än 0.",
     "air_exchange_rate": "Fel: Ventilationshastighet (ACH) måste vara större än 0.",
-    "merv": "Fel: Filtreringssystem (MERV) kan inte vara tomt."
+    "merv": "Fel: Filtreringssystem (MERV) kan inte vara tomt.",
+    "prevalence": "Fel: Prevalens måste vara större än 0 och mindre än 100.000."
 }
 
 # Main Panel Text
@@ -81,29 +83,108 @@ curr_room_header = "Typ av utrymme: "
 presets = [
     {'label': "Konfigurera fritt", 'value': 'custom'},
     {'label': "Villa", 'value': 'house'},
+    {'label': "Vardagsrum", 'value': 'living-room'},
     {'label': "Restaurang", 'value': 'restaurant'},
     {'label': "Kontor", 'value': 'office'},
-    {'label': "Föreläsningsal/klassrum", 'value': 'classroom'},
-    {'label': "Tunnelbanevagn", 'value': 'subway'},
-    {'label': "Boeing 737", 'value': 'airplane'},
+    {'label': "Klassrum", 'value': 'classroom'},
+    {'label': "Tunnelbana/Spårvagn", 'value': 'subway'},
+    {'label': "Trafikflyg", 'value': 'airplane'},
     {'label': "Kyrka", 'value': 'church'},
 ]
 
+curr_human_header = "Mänskligt beteende: "
+presets_human = [
+    {'label': "Konfigurera fritt", 'value': 'custom'},
+    {'label': "Med mask, Vila", 'value': 'masks-1'},
+    {'label': "Med mask, Samtal", 'value': 'masks-2'},
+    {'label': "Med mask, Tträning/motion", 'value': 'masks-3'},
+    {'label': "Utan mask, Vila", 'value': 'no-masks-1'},
+    {'label': "Utan mask, Samtal", 'value': 'no-masks-2'},
+    {'label': "Utan mask, Träning/motion", 'value': 'no-masks-3'},
+    {'label': "Utan mask, Sång", 'value': 'singing-1'},
+]
+
+curr_risk_header = "Nivå Risktolerans: "
+
+risk_tolerance_text = "Nivå Risktolerans: "
+risk_tol_desc = html.Div('''Mer utsatta grupper som äldre eller personer med redan existerande medicinska tillstånd 
+kräver lägre risktolerans. En högre risktolerans innebär fler förväntade överföringar under den förväntade 
+beläggningsperioden (se Vanliga Frågor för mer information).''', style={'font-size': '13px',
+                                                                        'margin-left': '20px'})
+risk_tol_marks = {
+    # 0.01: {'label': '0.01: Säkrare', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: Säkrare', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: Osäker'}
+}
+
+curr_age_header = "Åldersgrupp: "
+presets_age = [
+    {'label': "Barn (<15 år)", 'value': 0.23},
+    {'label': "Vuxna (15-64 år)", 'value': 0.68},
+    {'label': "Seniorer (>64 år)", 'value': 1}
+]
+age_group_marks = {
+    0.23: {'label': '0.23: Barn (<15 år)', 'style': {'max-width': '75px'}},
+    0.68: {'label': '0.68: Vuxna (15-64 år)', 'style': {'max-width': '75px'}},
+    1: {'label': '1.00: Seniorer (>64 år)', 'style': {'width': '75px'}}
+}
+
+curr_strain_header = "Virusvariant: "
+presets_strain = [
+    # {'label': "SARS-CoV-1", 'value': 0.1},
+    {'label': "SARS-CoV-2 (Wuhan-varianten)", 'value': 1},
+    {'label': "SARS-CoV-2 - B.1.1.7 (Brittiska virusvarianten)", 'value': 1.58}
+]
+viral_strain_marks = {
+    1: {'label': '1.0: Wuhan', 'style': {'max-width': '100px'}},
+    1.58: {'label': '1.58: B.1.1.7/UK'}
+}
+
+pim_header = "Procent immune: "
+# pim_marks = {
+#     0: {'label': '0% (basic mode)'},
+#     0.33: {'label': '33% (default)'},
+#     1: {'label': '100%'}
+# }
+
+risk_conditional_desc = "Om en smittad person går in…"
+risk_prevalence_desc = "Med en infektionsprevalens på…"
+risk_personal_desc = "För att begränsa min personliga risk…"
+
 main_panel_s1 = "Baserat på denna modell borde det vara säkert för detta utrymme att ha: "
+
+main_panel_s1_b = html.Span([
+    html.Span('''För att begränsa COVID-19 smitta* i en population med en infektionsprevalens'''),
+    html.Sup('''1'''),
+    html.Span(''' på ''')
+])
+main_panel_s2_b = ''' per 100.000, bör detta utrymme inte ha fler än: '''
+
+main_panel_s1_c = html.Span([
+    html.Span('''To limit my chance of being infected by COVID-19 in a population with an infection prevalence'''),
+    html.Sup('''1'''),
+    html.Span(''' of ''')
+])
+main_panel_s2_c = ''' per 100,000, this space should have no more than: '''
 
 units_hr = 'timmar'
 units_min = 'minuter'
 units_days = 'dagar'
+units_months = 'månader'
 
-units_hr_one = 'timmar'
-units_min_one = 'minuter'
-units_day_one = 'dagar'
+units_hr_one = 'timme'
+units_min_one = 'minut'
+units_day_one = 'dag'
+units_month_one = 'månad'
 
 is_past_recovery_base_string = '{n_val} personer i >{val:.0f} dagar,'
 model_output_base_string = '{n_val} personer i '
+nt_bridge_string = " personer i "
+tn_bridge_string = " i "
 
-main_panel_six_ft_1 = "Obs: riktlinjer för distansering på två meter (6 fot) indikerar att upp till "
-main_panel_six_ft_2 = " bör vara säkra i detta utrymme under obestämd tid."
+main_panel_six_ft_1 = '''Däremot skulle rekommendationen om 2-meters (sex fots) avståndshållande begränsa antalet 
+personer till '''
+main_panel_six_ft_2 = " vilket skulle bryta mot rekommendationen* efter "
 
 six_ft_base_string = ' {} personer'
 six_ft_base_string_one = ' {} personer'
@@ -114,20 +195,69 @@ graph_ytitle = "Maximal beläggning N"
 transient_text = "Övergående"
 steady_state_text = "Stabilt tillstånd"
 
-main_airb_trans_only_disc = html.Div(["Rekommendationerna är baserad på övervägande av ",
-                                      html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
-                                                       children="luftburen överföring",
+main_airb_trans_only_disc = html.Div(["*Rekommendationen begränsar sannolikheten för ",
+                                      html.Span(html.A(href=links.link_docs,
+                                                       children="luftburen smitta",
                                                        target='_blank'), ),
-                                      html.Span(''' från en enda smittad person under den angivna kumulativa 
-                                      exponeringstiden.''')], className='airborne-text')
+                                      html.Span(''' per person till att vara mindre än risktoleransen under den 
+                                      kumulativa exponeringstiden som anges.''')], className='airborne-text')
+main_airb_trans_only_disc_basic = html.Div(["*Rekommendationen begränsar sannolikheten för ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="luftburen smitta",
+                                                             target='_blank'), ),
+                                            html.Span(''' till att vara mindre än risktoleransen (10%) under den 
+                                            kumulativa exponeringstiden som anges.''')], className='airborne-text')
 
-airb_trans_only_disc = html.Div('''Rekommendationerna är baserad på övervägande av luftburen överföring från en enda 
-smittad person under den angivna kumulativa exponeringstiden.''', className='airborne-text')
+other_risk_modes_desc = html.Div('''Andra riskscenarier beaktas i Avancerat Läge. Särskilt kan man överväga 
+förekomsten av infektion i befolkningen, immunitet förvärvad genom vaccination eller tidigare exponering och risken 
+för en specifik individ.''')
+
+main_airb_trans_only_desc_b = html.Div(["*Riktlinjen begränsar sannolikheten för att en ",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="luftburen",
+                                                         target='_blank'), ),
+                                        html.Span(''' överföring per smittad person till att vara mindre än 
+                                        risktoleransen under den kumulativa exponeringstiden som anges.''')],
+                                       className='airborne-text')
+main_airb_trans_only_desc_c = html.Div(["*Riktlinjen begränsar sannolikheten för ",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="luftburen",
+                                                         target='_blank'), ),
+                                        html.Span(''' överföring till en specifik individ att vara mindre än 
+                                        risktoleransen under den kumulativa exponeringstiden som anges.''')],
+                                       className='airborne-text')
+
+airb_trans_only_disc = html.Div('''''', className='airborne-text')
+
+incidence_rate_refs = html.Div([html.Sup('''1'''),
+                                html.Span('''Referera till förljande resurser för att uppskatta din lokala prevalens: 
+                                '''),
+                                # html.Span(html.A(href=links.link_jhu_dashboard,
+                                #                  children="JHU COVID-19 Dashboard",
+                                #                  target='_blank')),
+                                # html.Span(''', '''),
+                                html.Span(html.A(href=links.link_cdc_dashboard,
+                                                 children="CDC COVID-19 Data Tracker",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.Span(html.A(href=links.link_jhu_data,
+                                                 children="JHU Coronavirus Resource Center",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.A(children="US Immunity Estimates",
+                                       href=links.link_cdc_immunity,
+                                       target='_blank'),
+                                html.Span(", "),
+                                html.A(children="International Immunity Estimates",
+                                       href=links.link_jhu_vaccine,
+                                       target='_blank'),
+                                ], className='airborne-text')
 
 # Bottom panels text
-n_input_text_1 = "Om det här utrymmet har "
+n_input_text_1 = "Om det i utrymmet finns "
 n_max_base_string = ' {:.0f} personer'
-n_input_text_2 = " personer, bör dessa personer vara säkra i "
+n_max_overflow_base_string = ' >{:.0f} personer'
+n_input_text_2 = " personer skulle riktlinjen att överskridas efter "
 n_input_text_3 = "."
 
 t_input_text_1 = "Om folk tillbringar ungefär "
@@ -160,10 +290,16 @@ about = html.Div([
               att justera utrymmessspecifikationer, ventilations- och filtreringshastigheter, användning av 
               ansiktsmasker, andningsaktiviteter och risktolerans (i de andra flikarna) kan man se hur man kan minska 
               överföringen av  COVID-19 i inomhusmiljöer av olika slag.''')]),
+    html.Br(),
+    html.Div([html.Span('''Metodiken bakom appen undervisas i en gratis, storskalig, självgående, öppen nätkurs (
+    MOOC) via edX.org: '''),
+              html.A(children="10.S95x Physics of COVID-19 Transmission",
+                     href=links.link_mooc,
+                     target='_blank')])
 ])
 
 # Room Specifications
-room_header = "Konfiguration av utrymme"
+room_header = "Utrymmesspecifikation – Detaljer"
 
 floor_area_text = "Total golvyta (sq. ft.): "
 floor_area_text_metric = "Total golvyta (m²): "
@@ -171,8 +307,9 @@ ceiling_height_text = "Genomsnittlig takhöjd (ft.): "
 ceiling_height_text_metric = "Genomsnittlig takhöjd (m): "
 
 ventilation_text = "Ventilationssystem: "
-vent_type_output_base = "{:.0f} ACH"
-ventilation_text_adv = "Ventilationssystem (ACH): "
+vent_type_output_base = "{:.1f} "
+vent_type_output_units = html.Span(["hr", html.Sup("-1"), " (utomhus ACH)"])
+ventilation_text_adv = html.Span(["Ventilationssystem (hr", html.Sup("-1"), ", utomhus ACH): "])
 ventilation_types = [
     {'label': "Stängda fönster", 'value': 0.3},
     {'label': "Öppna fönster", 'value': 2},
@@ -221,12 +358,13 @@ humidity_marks = {
 need_more_ctrl_text = '''Behöver du mer kontroll över dina ingångsvärden? Byt till avancerat läge med 
 rullgardinsmenyn högst upp på sidan. '''
 
-human_header = "Mänskligt beteende"
+human_header = "Mänskligt beteende – Detaljer"
 # Human Behavior
-exertion_text = "Ansträngningsnivå: "
+exertion_text = "Andningsfrekvens: "
 exertion_types = [
     {'label': "Vilande", 'value': 0.49},
     {'label': "Stående", 'value': 0.54},
+    {'label': "Sång", 'value': 1},
     {'label': "Lätt träning", 'value': 1.38},
     {'label': "Måttlig träning", 'value': 2.35},
     {'label': "Hård träning", 'value': 3.30},
@@ -249,18 +387,18 @@ expiratory_types = [
 
 mask_type_text = "Maskfiltreringseffektivitet (masktyp): "
 mask_type_marks = {
-    0: {'label': "0% (ingen, ansiktsskydd/visir)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (grov bomull)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (silke, flanell, chiffong)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (kirurgisk, bomull)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (N95 andningsskydd)", 'style': {'max-width': '50px'}},
+    0: {'label': "0% (ingen, ansiktsvisir)", 'style': {'max-width': '50px'}},
+    0.5: {'label': "50% (bomull, flanell)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "70% (multi-skikt bomull, silke)", 'style': {'max-width': '50px'}},
+    0.90: {'label': "90% (kirurgisk engångsmask)", 'style': {'max-width': '50px'}},
+    0.99: {'label': "99% (N95 ansiktsmask)", 'style': {'max-width': '50px'}},
 }
 mask_types = [
-    {'label': "Ingen, Ansiktsskydd/visir", 'value': 0},
-    {'label': "Grov bomull", 'value': 0.1},
-    {'label': "Silke, Flanell, Chiffong", 'value': 0.5},
-    {'label': "Kirurgisk, Bomull", 'value': 0.9},
-    {'label': "N95-andningsskydd", 'value': 0.95},
+    {'label': "Ingen, ansiktsvisir", 'value': 0},
+    {'label': "Bomull, Flanell", 'value': 0.5},
+    {'label': "Multi-skikt Bomull, Silke", 'value': 0.7},
+    {'label': "Kirurgisk engångsmask", 'value': 0.9},
+    {'label': "N95 ansiktsmask", 'value': 0.99},
 ]
 
 mask_fit_text = "Masktillpassning enligt krav: "
@@ -270,33 +408,21 @@ mask_fit_marks = {
     0.95: {'label': '95%: Bra'}
 }
 
-risk_tolerance_text = "Risktolerans: "
-risk_tol_desc = html.Div('''Mer utsatta grupper som äldre eller personer med redan existerande medicinska tillstånd 
-kräver lägre risktolerans. En högre risktolerans innebär fler förväntade överföringar under den förväntade 
-beläggningsperioden (se Vanliga Frågor för mer information).''', style={'font-size': '13px',
-                                                                                     'margin-left': '20px'})
-risk_tol_marks = {
-    0.01: {'label': '0.01: Säkrare', 'style': {'max-width': '50px'}},
-    0.1: {'label': '0.10: Säker', 'style': {'max-width': '50px'}},
-    1: {'label': '1.00: Osäker'}
-}
-
 # FAQ/Other Inputs & Outputs
 faq_header = "Vanliga frågor"
-other_io = "Andra indata och outputs"
+other_io = "Andra parametrar"
 
 faq_top = html.Div([
     html.H6("Vanliga frågor"),
     html.H5("Varför är 2 meters (6 fots) avstånd inte tillräckligt?"),
     html.Div([
-        html.Div([html.Span('''Ett avstånd på 2 meter (6 fot) skyddar dig mot stora droppar som slungas ut av en 
-        smittad person som hostar, liksom ansiktsmasker gör. 2 meters avstånd skyddar emellertid inte mot '''),
+        html.Div([html.Span('''Ett avstånd på 2 meter (eller 6 fot) skyddar dig mot stora droppar som sprids av en 
+        smittad person som hostar, liksom ansiktsmasker gör. Emellertid skyddar den inte mot '''),
                   html.A(children="luftburen överföring",
                          href=link_docs,
                          target='_blank'),
-                  html.Span(''' av smittsamma aerosoler som hänger kvar i luften och kan föras runt i ett utrymme. I 
-                  inomhusmiljö är människor inte säkrare från luftburen smitta på 20 meters avstånd än på 2 
-                  meter.''')]),
+                  html.Span(''' av infektiösa aerosoler som hänger i luften och blandas i ett utrymme. Inomhus är 
+                  människor inte säkrare från luftburen transmission på 20 meters avstånd än på 2 meter.''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Finns det andra överföringssätt?"),
@@ -348,6 +474,11 @@ faq_top = html.Div([
         Om du behöver mer kontroll över dina ingångsvärden, byt till Avancerat Läge med rullgardinsmenyn högst upp på 
         webbsidan.
     ''', className='faq-answer'),
+    html.Br(),
+    html.H5("Varför har N95 andningsskydd 99% effektivitet?"),
+    html.Div('''N95-andningsskydd har minst 95% filtreringseffektivitet för en partikelstorlek på 0.3 μm, vilket är 
+    10 gånger mindre än droppstorlekarna vid luftburen COVID-19-transmission. För större droppar är N95-andningsskydd 
+    ännu effektivare och når nivåer nära 100%.''', className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([
@@ -373,21 +504,60 @@ faq_other_params_text = html.Div([
 ])
 
 aerosol_radius_text = "Effektiv aerosolradie (vid RH = 60%), r\u0305 (\u03bcm): "
-viral_deact_text = html.Span(["Maximal viraldeaktiveringshastighet (vid RH = 100%), \u03BB", html.Sub('vmax'), " (/hr): "])
+viral_deact_text = html.Span(
+    ["Maximal viraldeaktiveringshastighet (vid RH = 100%), \u03BB", html.Sub('vmax'), " (/hr): "])
 
-values_interest_header = ""
+pop_immunity_header = "Befolkningsimmunitet: "
+perc_immune_label = html.Span(["Procent immune p", html.Sub('im'), " = p", html.Sub('ex'), " + p", html.Sub('v'),
+                               " = "])
+perc_infectious_label = html.Span(["Procent smittsamma p", html.Sub('i'), " = "])
+perc_vaccinated_label = html.Span(["Procent vaccinerade p", html.Sub('v'), " ="])
+perc_prev_infected_label = html.Span(["Procent tidigare infekterade p", html.Sub('ex'), " = "])
+perc_susceptible_label = html.Span(["Procent mottagliga p", html.Sub('s'), " = 1 - (p", html.Sub('im'), " + p",
+                                    html.Sub('i'), ") = "])
+pop_immunity_desc = html.Div([html.Div(['''Den infektiösa procentandelen p''', html.Sub('i'), ''' i populationen 
+beräknas från den infektiösa prevalens som anges i flikarna för andra riskscenarier (med tanke på förekomsten av 
+infektion…, För att begränsa min personliga risk ...). Procentandelen immuna p''', html.Sub('im'), ''' kan uppskattas 
+konservativt från vaccinationsprocenten av befolkningen plus det totala antalet sjukdomsfall i befolkningen genom att 
+försumma bidraget från oupptäckta fall. Dessa två värden används för att beräkna procentandelen mottagliga  p''',
+                                        html.Sub('s'), '''. I grundläget och i det första riskläget (om en infekterad 
+                                        person går in i…) antas detta värde vara 100%.''']),
+                              html.Br(),
+                              html.Div(['''Några informativa länkar för att bedöma p''', html.Sub('i'), ''' and p''',
+                                        html.Sub('im'), ''': ''',
+                                        html.Span(html.A(href=links.link_cdc_dashboard,
+                                                         children="CDC COVID-19 Data Tracker",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.Span(html.A(href=links.link_jhu_data,
+                                                         children="JHU Coronavirus Resource Center",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.A(children="US Immunity Estimates",
+                                               href=links.link_cdc_immunity,
+                                               target='_blank'),
+                                        html.Span(", "),
+                                        html.A(children="International Immunity Estimates",
+                                               href=links.link_jhu_vaccine,
+                                               target='_blank'),
+                                        ])
+                              ])
+
+values_interest_header = "Beräknade värden av intresse"
 values_interest_desc = html.Div([
     html.H5("Vad exakt beräknar appen?"),
     html.Div([
-        html.Div([html.Span('''Givet en risktolerans för luftburen smitta beräknar appen maximal tillåten kumulativ 
-        exponeringstid, produkten av utrymmessbeläggning och tid i närvaro av en smittad person. Appen beräknar också 
-        relaterade kvantiteter, definierade i '''),
-                  html.A(children="artikeln",
+        html.Div([html.Span('''Appen beräknar den maximala tillåtna kumulativa exponeringstiden, produkten av antalet 
+        personer och tid, i ett inomhusutrymme. Spridningen av COVID-19 begränsas genom att det förväntade antalet 
+        överföringar per infekterad individ, "inomhusreproduktivt nummer", är mindre än den valda risktoleransen. 
+        Appen beräknar också relaterade kvantiteter, definierade i '''),
+                  html.A(children="papperet",
                          href=link_paper,
                          target='_blank'),
                   html.Span(''', som kan vara av intresse:''')]),
     ], className='faq-answer'),
 ])
+relative_sus_label = html.Span(["Relativ mottaglighet s", html.Sub('r'), ": "])
 outdoor_air_frac_label = html.Span(["Luftfraktion utomhus Z", html.Sub('p'), ": "])
 aerosol_eff_label = html.Span(["Aerosolfiltreringseffektivitet p", html.Sub('f'), ": "])
 breathing_rate_label = html.Span(["Andningsflöde Q", html.Sub('b'), ": "])
@@ -411,12 +581,9 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("Tar denna modell hänsyn till infektionsprevalens i lokalbefolkningen?"),
-    html.Div(['''Nej. Modellen beräknar risken för överföring från en enda smittad person. Den antar således implicit 
-    att prevalensen av infektion i befolkningen är relativt låg. Alltså ökar risken för överföring med det förväntade 
-    antalet infekterade personer i utrymmet, specifikt produkten av beläggningen och prevalens i befolkningen. 
-    Toleransen bör sänkas i proportion till detta nummer om det överstiger ett. Omvänt, när det förväntade antalet 
-    infekterade personer i utrymmet närmar sig noll, kan toleransen ökas proportionellt tills de rekommenderade 
-    begränsningarna bedöms som onödvändiga.'''],
+    html.Div(['''Påverkan av förekomsten av infektion i den lokala befolkningen kan övervägas i avancerat läge. På 
+    fliken “Övriga parametrar” kan man också bedöma påverkan av immunitet i befolkningen, vilket kan uppstå genom 
+    vaccinering eller tidigare infektion.'''],
              className='faq-answer'),
 ])
 

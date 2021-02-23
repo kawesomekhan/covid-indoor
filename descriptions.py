@@ -583,8 +583,8 @@ faq_graphs_text = html.Div([
 faq_infect_rate = html.Div([
     html.H5("Does this model account for the prevalence of infection in the local population?"),
     html.Div(['''The influence of the prevalence of infection in the local population may be considered in Advanced 
-    Mode. There, in the Other Parameters tab, one may also assess the influence of immunity in the population, as may arise 
-    through vaccination or previous infection.'''],
+    Mode. There, in the Other Parameters tab, one may also assess the influence of immunity in the population, 
+    as may arise through vaccination or previous infection.'''],
              className='faq-answer'),
 ])
 
