@@ -291,9 +291,9 @@ about = html.Div([
                      href=link_paper,
                      target='_blank'),
               html.Span(''' pour calculer la durée d'exposition et le taux d'occupation d'un espace qui seraient acceptables en termes de 
-              sécurité, pour des espaces intérieurs. En faisnat varier les caractéristiques du lieu, les taux de 
+              sécurité, pour des espaces intérieurs. En faisant varier les caractéristiques du lieu, les taux de 
               ventilation et de filtration de l'air, le port de masques, le type d'activité respiratoire ainsi que le 
-              degré de risque toléré (dans les autres tabs), vous pourrez mieux comprendre comment limiter le risque 
+              degré de risque toléré (dans les autres onglets), vous pourrez mieux comprendre comment limiter le risque 
               de transmission de la COVID-19 dans différents espaces intérieurs.''')]),
     html.Br(),
     html.Div([html.Span('''La science au cœur de cette app est aussi enseignée dans un cours en ligne (MOOC) gratuit, en anglais, 
