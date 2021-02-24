@@ -161,11 +161,11 @@ main_panel_s1_b = html.Span([
 main_panel_s2_b = ''' per 100.000, bör detta utrymme inte ha fler än: '''
 
 main_panel_s1_c = html.Span([
-    html.Span('''To limit my chance of being infected by COVID-19 in a population with an infection prevalence'''),
+    html.Span('''För att begränsa min chans att bli smittad av COVID-19 i en befolkning med en infektionsprevalens'''),
     html.Sup('''1'''),
-    html.Span(''' of ''')
+    html.Span(''' på ''')
 ])
-main_panel_s2_c = ''' per 100,000, this space should have no more than: '''
+main_panel_s2_c = ''' per 100.000, bör detta utrymme inte ha fler än: '''
 
 units_hr = 'timmar'
 units_min = 'minuter'
@@ -348,7 +348,7 @@ recirc_types = [
 
 humidity_text = "Relativ luftfuktighet: "
 humidity_marks = {
-    0: {'label': '0%: mycket låg', 'style': {'max-width': '25px'}},
+    0.01: {'label': '1%: mycket låg', 'style': {'max-width': '25px'}},
     0.2: {'label': '20%: flygplan', 'style': {'max-width': '50px'}},
     0.3: {'label': '30%: låg'},
     0.6: {'label': '60%: medel'},

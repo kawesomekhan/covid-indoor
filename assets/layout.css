@@ -172,11 +172,12 @@ body {
     /* Header Grid */
     .grid-header {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: 100%;
         padding: 0;
     }
     .card-header {
         margin: 1em;
+        overflow-wrap: break-word;
     }
     #header-left {
         padding: 0;
