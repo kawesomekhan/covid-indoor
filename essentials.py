@@ -789,6 +789,8 @@ def get_desc_file(language):
     elif language == "zh":
         desc_file = desc_zh
     elif language == "hi":
+        desc_file = desc_hu
+    elif language == "hu":
         desc_file = desc_hi
     elif language == "id":
         desc_file = desc_id
