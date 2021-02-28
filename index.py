@@ -31,7 +31,7 @@ languages = [
     {'label': "Bahasa Indonesia", 'value': "id", 'disabled': True},
     {'label': "Italiano", 'value': "it", 'disabled': True},
     {'label': "한국어", 'value': "ko", 'disabled': True},
-    {'label': "magyar", 'value': "hu"},
+    {'label': "Magyar", 'value': "hu"},
     # {'label': "Nederlands", 'value': "nl"},
     {'label': "Svenska", 'value': "sv"},
     {'label': "简体中文", 'value': "zh", 'disabled': True},

@@ -322,6 +322,7 @@ layout = html.Div(children=[
                                                    step=0.01,
                                                    value=0.68,
                                                    marks=desc.age_group_marks),
+                                        html.Div([], id='adv-lang-break-age'),
                                         html.Div([html.Br()], className='mobile-break')
                                     ], className='card-presets'),
                                     html.Div([
@@ -642,7 +643,8 @@ layout = html.Div(children=[
      Output('adv-main-panel-s1-c', 'children'),
      Output('adv-main-panel-s2-c', 'children'),
      Output('adv-main-airb-trans-desc-c', 'children'),
-     Output('adv-incidence-rate-refs-c', 'children')],
+     Output('adv-incidence-rate-refs-c', 'children'),
+     Output('adv-lang-break-age', 'children')],
     [Input('url', 'search'),
      Input('window-width', 'children')]
 )

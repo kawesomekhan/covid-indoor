@@ -388,11 +388,11 @@ expiratory_types = [
 
 mask_type_text = "Mask Type/Efficiency: "
 mask_type_marks = {
-    0: {'label': "0% (none, face shield)", 'style': {'max-width': '50px'}},
+    0: {'label': "0% (none, face shield)", 'style': {'max-width': '75px'}},
     0.5: {'label': "50% (cotton, flannel)", 'style': {'max-width': '50px'}},
-    0.7: {'label': "70% (multilayer cotton, silk)", 'style': {'max-width': '50px'}},
-    0.90: {'label': "90% (dispos-able surgical)", 'style': {'max-width': '50px'}},
-    0.99: {'label': "99% (N95 resp-irator)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "70% (multilayer cotton, silk)", 'style': {'max-width': '75px'}},
+    0.90: {'label': "90% (disposable surgical)", 'style': {'max-width': '75px'}},
+    # 0.99: {'label': "99% (N95 resp-irator)", 'style': {'max-width': '50px'}},
 }
 mask_types = [
     {'label': "None, Face Shield", 'value': 0},

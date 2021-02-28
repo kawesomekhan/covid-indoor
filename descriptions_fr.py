@@ -48,19 +48,18 @@ expiratory_types = [
 ]
 
 mask_type_marks = {
-    0: {'label': "0% (pas de masque)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (coton épais)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (soie, flanelle, mousseline)", 'style': {'max-width': '50px'}},
-    0.90: {'label': "90% (masque chirurgical, ou coton fin)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (masque FFP2 / N95)", 'style': {'max-width': '50px'}},
+    0: {'label': "0% (pas de masque)", 'style': {'max-width': '75px'}},
+    0.5: {'label': "50% (coton, flanelle)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "70% (coton multicouches, soie)", 'style': {'max-width': '75px'}},
+    0.90: {'label': "90% (chirurgical à usage unique)", 'style': {'max-width': '75px'}},
+    # 0.99: {'label': "99% (FFP2 / N95)", 'style': {'max-width': '50px'}},
 }
-
 mask_types = [
     {'label': "Pas de masque", 'value': 0},
-    {'label': "Coton épais", 'value': 0.1},
-    {'label': "Soie, flanelle, mousseline", 'value': 0.5},
-    {'label': "Masque chirurgical, coton fin", 'value': 0.9},
-    {'label': "Masque FFP2 / N95", 'value': 0.95},
+    {'label': "Coton, flanelle", 'value': 0.5},
+    {'label': "Coton multicouches, soie", 'value': 0.7},
+    {'label': "Chirurgical à usage unique", 'value': 0.9},
+    {'label': "FFP2 / N95", 'value': 0.99},
 ]
 
 mask_fit_marks = {
