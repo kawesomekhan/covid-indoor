@@ -104,13 +104,13 @@ graph_ytitle = "Maximális létszám N"
 transient_text = "Átmeneti/ideiglenes"
 steady_state_text = "Folyamatos"
 
-six_ft_base_string = ' {} fők'
+six_ft_base_string = ' {} fő'
 six_ft_base_string_one = ' {} fő'
 
-units_hr = 'órákat'
-units_min = 'perceket'
-units_days = 'napokat'
-units_months = 'hónapokat'
+units_hr = 'órát'
+units_min = 'percet'
+units_days = 'napot'
+units_months = 'hónapot'
 
 units_hr_one = 'órát'
 units_min_one = 'percet'
