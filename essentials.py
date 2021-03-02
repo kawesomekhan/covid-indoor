@@ -29,7 +29,7 @@ normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan
 translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, Henrik Bruus, John Bush, 
                         Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, 
                         Anders Flodmarke, Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
-                        Michal Pavelka, Juan Puyo, Myungjin Seo, Huanhuan Tian, Ettore Virga, Chenyu Wen, 
+                        Michal Pavelka, Juan Puyo, László Sándor, Myungjin Seo, Huanhuan Tian, Ettore Virga, Chenyu Wen, 
                         Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 m_to_ft = 3.28084
