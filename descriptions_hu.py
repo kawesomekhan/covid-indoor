@@ -104,13 +104,13 @@ graph_ytitle = "Maximális létszám N"
 transient_text = "Átmeneti/ideiglenes"
 steady_state_text = "Folyamatos"
 
-six_ft_base_string = ' {} fők'
+six_ft_base_string = ' {} fő'
 six_ft_base_string_one = ' {} fő'
 
-units_hr = 'órákat'
-units_min = 'perceket'
-units_days = 'napokat'
-units_months = 'hónapokat'
+units_hr = 'órát'
+units_min = 'percet'
+units_days = 'napot'
+units_months = 'hónapot'
 
 units_hr_one = 'órát'
 units_min_one = 'percet'
@@ -123,7 +123,7 @@ nt_bridge_string = " fő "
 tn_bridge_string = " fő "
 
 main_panel_six_ft_1 = "Ezzel szemben a kétméteres távolságtartással lehetséges kihasználtság "
-main_panel_six_ft_2 = " akiknek az útmutató szerint benntölthető idő mindössze "
+main_panel_six_ft_2 = ", akik az útmutató szerint bent tölthetnének "
 
 # main_panel_six_ft_1 = "Ezzel szemben kétméteres távolságtartással megengedhető lenne "
 # main_panel_six_ft_2 = ", akik ennyi idő után szegnék meg az itt számolt útmutatásunkat*: "
@@ -152,7 +152,7 @@ presets_human = [
     {'label': "Maszk nélküli éneklés", 'value': 'singing-1'},
 ]
 
-curr_risk_header = "Kockázattűrés: "
+curr_risk_header = "Kockázat: "
 risk_tol_marks = {
     # 0.01: {'label': '0.01: Biztonságosabb', 'style': {'max-width': '30px'}},
     0.1: {'label': '0.10: Biztonságos', 'style': {'max-width': '50px'}},
@@ -265,8 +265,8 @@ app_modes = [
 
 # Tabs
 about_header = "Háttér"
-room_header = "A szoba jellemzői – Részletek"
-human_header = "Emberi viselkedés - Részletek"
+room_header = "A szoba jellemzői"
+human_header = "Emberi viselkedés"
 faq_header = "Gyakran Ismételt Kérdések"
 other_io = "Egyéb beállítások és eredmények"
 
@@ -358,10 +358,9 @@ faq_top = html.Div([
                   html.A(children="levegőben szálló",
                          href=link_docs,
                          target='_blank'),
-                  html.Span(
-                      '''és az egész helyiségben keveredő fertőzött aeroszolok általi terjedés ellen. Beltérben az 
-                      emberek nincsenek nagyobb biztonságban a levegőben terjedő fertőzéstől 20 méteres távolságban, 
-                      mint 2 méterre.''')]),
+                  html.Span(''' és az egész helyiségben keveredő fertőzött aeroszolok általi terjedés ellen. 
+                  Beltérben az emberek nincsenek nagyobb biztonságban a levegőben terjedő fertőzéstől 
+                  20 méteres távolságban, mint 2 méterre.''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Vannak más terjedési módok?"),
@@ -401,7 +400,7 @@ faq_top = html.Div([
                   html.A(children="tanulmány",
                          href=link_paper,
                          target='_blank'),
-                  html.Span(''' becslései szerint a kilégzés rövidtávú felhői is további kockázatot jelentenek..''')]),
+                  html.Span(''' becslései szerint a kilégzés rövidtávú felhői is további kockázatot jelentenek.''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Miért számít a mennyezet magassága?"),
@@ -451,10 +450,10 @@ values_interest_header = "Fontos számított értékek: "
 values_interest_desc = html.Div([
     html.H5("Pontosan mit számol az alkalmazás?"),
     html.Div([
-        html.Div([html.Span('''Az app kiszámítja a maximálisan megengedett kumulatív kitettséget, a szoba 
-        kihasználtságának és az időnek a szorzatát beltérben. A COVID-19 terjedésének korlátja, hogy a fertőző 
-        egyénre jutó átadások várható száma, a „beltéri reprodukciós szám” kisebb legyen, mint a választott kockázati 
-        küszöb. Az alkalmazás kiszámítja a '''),
+        html.Div([html.Span('''Az app kiszámítja a maximálisan megengedett halmozott kitettséget, 
+        a szoba kihasználtságának és az időnek a szorzatát beltérben. A COVID-19 terjedésének korlátja, 
+        hogy a fertőző egyénre jutó átadások várható száma, a „beltéri reprodukciós szám” kisebb legyen, 
+        mint a választott kockázati küszöb. Az alkalmazás kiszámítja a '''),
                   html.A(children="tanulmányban",
                          href=link_paper,
                          target='_blank'),
@@ -467,14 +466,16 @@ perc_immune_label = html.Span(["Az immunisak aránya p", html.Sub('im'), " = p",
 perc_infectious_label = html.Span(["Fertőzöttek aránya p", html.Sub('i'), " = "])
 perc_susceptible_label = html.Span(["Fogékonyak aránya p", html.Sub('s'), " = 1 - (p", html.Sub('im'),
                                     " + p", html.Sub('i'), ") = "])
-pop_immunity_desc = html.Div([html.Div(['''A populációban a fertőzők p''', html.Sub('i'), '''százalékos arányát a 
+pop_immunity_desc = html.Div([html.Div(['''A populációban a fertőzők p''', html.Sub('i'), ''' százalékos arányát a 
 Többi kockázati forgatókönyv fülre beírt fertőző prevalencia alapján számolják (Tekintettel a fertőzés 
 prevalenciájára…, A személyes kockázat korlátozásához...). Az immunisak p''', html.Sub('im'),
-                                        '''százalékos arányára konzervatív becslés lehet a védőoltást kapottak és a 
-                                        gyógyultak összesített aránya a lakosság körében, amivel eltekintünk a 
-                                        felderítetlenül maradt esetektől. Ezt a két értéket használjuk a fogékonyak 
+                                        ''' százalékos arányára konzervatív becslés lehet a védőoltást kapottak 
+                                        és a gyógyultak összesített aránya a lakosság körében, amivel eltekintünk 
+                                        a felderítetlenül maradt esetektől. Ezt a két értéket használjuk a fogékonyak 
                                         p''', html.Sub('s'),
-                                        ''') feltételezzük, hogy ez az érték 100%.''']),
+                                        ''' százalékának kiszámításához. Egyszerű módban és az első kockázati 
+                                        módban (Ha egy fertőzött személy belép…) feltételezzük, hogy ez az érték 
+                                        100%.''']),
                               html.Br(),
                               html.Div(
                                   ['''Ezek a linkek segíthetnek kideríteni, mekkora p''', html.Sub('i'), ''' és p''',
@@ -555,22 +556,23 @@ main_panel_s1_c = html.Span([
 ])
 main_panel_s2_c = ''' 100 000, ebben a térben lehet legfeljebb: '''
 
-main_airb_trans_only_disc = html.Div(["Ez az ajánlás a megengedett kockázat (10%) alatt tartja ",
+main_panel_six_ft_1 = "Ezzel szemben kétméteres távolságtartással megengedhető lenne "
+main_panel_six_ft_2 = ", akik ennyi idő után szegnék meg az itt számolt útmutatásunkat*: "
+
+main_airb_trans_only_disc = html.Div(["Ez az ajánlás a megengedett határ alatt tartja a ",
                                       html.Span(html.A(href=links.link_nature,
-                                                       children="a légúti fertőzés",
+                                                       children="légúti fertőzés",
                                                        target='_blank'), ),
                                       html.Span(
                                           '''egy főre eső valószínűségét az itt látható halmozott kitettség 
                                           időtartama alatt.''')],
                                      className='airborne-text')
-main_airb_trans_only_disc_basic = html.Div(["*Ez az ajánlás a megengedett kockázat alatt tartja ",
+main_airb_trans_only_disc_basic = html.Div(["*Ez az ajánlás a megengedett határ (10%) alatt tartja a ",
                                             html.Span(html.A(href=links.link_docs,
-                                                             children="a légúti fertőzés",
+                                                             children="légúti fertőzés",
                                                              target='_blank'), ),
-                                            html.Span(
-                                                '''egy fertőzöttre eső valószínűségét az itt látható halmozott 
-                                                kitettség időtartama alatt.''')],
-                                           className='airborne-text')
+                                            html.Span(''' egy fertőzöttre eső valószínűségét az itt 
+                                            látható halmozott kitettség alatt.''')], className='airborne-text')
 
 incidence_rate_refs = html.Div([html.Sup('''1'''),
                                 html.Span('''A helyi gyakoriság becsléséhez hasznosak lehetnek ezek a források: '''),
@@ -604,7 +606,7 @@ other_risk_modes_desc = html.Div(
 n_input_text_1 = "Ha ebben a térben tartózkodik "
 n_max_base_string = ' {:.0f}'
 n_max_overflow_base_string = ' >{:.0f}'
-n_input_text_2 = " fő, ők ennyi ideig lesznek biztonságban: "
+n_input_text_2 = " fő, ők biztonságban itt tölthetnek "
 n_input_text_3 = "."
 
 t_input_text_1 = "Ha itt töltenek "
