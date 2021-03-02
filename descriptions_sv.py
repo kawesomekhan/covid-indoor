@@ -391,7 +391,7 @@ mask_type_marks = {
     0.5: {'label': "50% (bomull, flanell)", 'style': {'max-width': '50px'}},
     0.7: {'label': "70% (multi-skikt bomull, silke)", 'style': {'max-width': '50px'}},
     0.90: {'label': "90% (kirurgisk engångsmask)", 'style': {'max-width': '50px'}},
-    0.99: {'label': "99% (N95 ansiktsmask)", 'style': {'max-width': '50px'}},
+    # 0.99: {'label': "99% (N95 ansiktsmask)", 'style': {'max-width': '50px'}},
 }
 mask_types = [
     {'label': "Ingen, ansiktsvisir", 'value': 0},

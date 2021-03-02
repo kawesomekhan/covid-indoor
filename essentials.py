@@ -9,6 +9,7 @@ import descriptions_es as desc_es
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
 import descriptions_hi as desc_hi
+import descriptions_hu as desc_hu
 import descriptions_id as desc_id
 import descriptions_it as desc_it
 import descriptions_ko as desc_ko
@@ -669,6 +670,10 @@ def get_lang_text_adv(language, disp_width):
     if hasattr(desc_file, 'main_panel_six_ft_3'):
         main_panel_six_ft_3 = desc_file.main_panel_six_ft_3
 
+    lang_break_age = ""
+    if hasattr(desc_file, 'lang_break_age'):
+        lang_break_age = desc_file.lang_break_age
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -756,7 +761,8 @@ def get_lang_text_adv(language, disp_width):
             desc_file.main_panel_s1_c,
             desc_file.main_panel_s2_c,
             desc_file.main_airb_trans_only_disc,
-            desc_file.incidence_rate_refs]
+            desc_file.incidence_rate_refs,
+            lang_break_age]
 
 
 # Get header and footer based on language
@@ -789,9 +795,9 @@ def get_desc_file(language):
     elif language == "zh":
         desc_file = desc_zh
     elif language == "hi":
-        desc_file = desc_hu
-    elif language == "hu":
         desc_file = desc_hi
+    elif language == "hu":
+        desc_file = desc_hu
     elif language == "id":
         desc_file = desc_id
     elif language == "it":

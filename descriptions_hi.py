@@ -389,10 +389,10 @@ expiratory_types = [
 mask_type_text = "मास्क निस्पंदन क्षमता (मास्क प्रकार): "
 mask_type_marks = {
     0: {'label': "0% (कुछ नहीं, फेस शील्ड)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "10% (सूती, फलालैन)", 'style': {'max-width': '50px'}},
-    0.7: {'label': "50% (बहुपरत सूती, रेशम)", 'style': {'max-width': '50px'}},
-    0.90: {'label': "75% (डिस्पोजेबल सर्जिक/शल्यक)", 'style': {'max-width': '50px'}},
-    0.99: {'label': "95% (N95 रेस्पिरेटर/श्वासयंत)", 'style': {'max-width': '50px'}},
+    0.5: {'label': "50% (सूती, फलालैन)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "70% (बहुपरत सूती, रेशम)", 'style': {'max-width': '75px'}},
+    0.90: {'label': "90% (डिस्पोजेबल सर्जिक/शल्यक)", 'style': {'max-width': '50px'}},
+    # 0.99: {'label': "99% (N95 रेस्पिरेटर/श्वासयंत)", 'style': {'max-width': '50px'}},
 }
 mask_types = [
     {'label': "कुछ नहीं, फेस शील्ड", 'value': 0},

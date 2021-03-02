@@ -49,18 +49,17 @@ expiratory_types = [
 
 mask_type_marks = {
     0: {'label': "0% (maszk nélkül)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (durva pamut)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (többrétegű pamut, selyem)", 'style': {'max-width': '50px'}},
-    0.90: {'label': "90% (eldobható orvosi maszk, finom pamut)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (légzőmaszk FFP2 / N95)", 'style': {'max-width': '50px'}},
+    0.5: {'label': "50% (pamut, flanel)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "70% (többrétegű pamut, selyem)", 'style': {'max-width': '50px'}},
+    0.90: {'label': "90% (eldobható orvosi)", 'style': {'max-width': '50px'}},
+    # 0.99: {'label': "99% (légzőmaszk FFP2 / N95)", 'style': {'max-width': '50px'}},
 }
-
 mask_types = [
     {'label': "Nincs vagy csak arcpajzs", 'value': 0},
-    {'label': "Durva pamut", 'value': 0.1},
-    {'label': "Többrétegű pamut,  selyem", 'value': 0.5},
-    {'label': "Eldobható orvosi maszk, finom pamut", 'value': 0.9},
-    {'label': "FFP2 / N95 légzőmaszk", 'value': 0.95},
+    {'label': "Pamut, flanel", 'value': 0.5},
+    {'label': "Többrétegű pamut, selyem", 'value': 0.7},
+    {'label': "Eldobható orvosi", 'value': 0.9},
+    {'label': "FFP2 / N95 légzőmaszk", 'value': 0.99},
 ]
 
 mask_fit_marks = {
@@ -126,8 +125,8 @@ tn_bridge_string = " fő "
 main_panel_six_ft_1 = "Ezzel szemben a kétméteres távolságtartással lehetséges kihasználtság "
 main_panel_six_ft_2 = ", akik az útmutató szerint bent tölthetnének "
 
-six_ft_base_string = ' {} fő'
-six_ft_base_string_one = ' {} fő'
+# main_panel_six_ft_1 = "Ezzel szemben kétméteres távolságtartással megengedhető lenne "
+# main_panel_six_ft_2 = ", akik ennyi idő után szegnék meg az itt számolt útmutatásunkat*: "
 
 presets = [
     {'label': "Egyedi", 'value': 'custom'},
@@ -155,7 +154,7 @@ presets_human = [
 
 curr_risk_header = "Kockázat: "
 risk_tol_marks = {
-    0.01: {'label': '0.01: Biztonságosabb', 'style': {'max-width': '30px'}},
+    # 0.01: {'label': '0.01: Biztonságosabb', 'style': {'max-width': '30px'}},
     0.1: {'label': '0.10: Biztonságos', 'style': {'max-width': '50px'}},
     1: {'label': '1.00: Kockázatos'}
 }
@@ -173,6 +172,7 @@ age_group_marks = {
     0.68: {'label': '0.68: Felnőttek (15-64 évesek)', 'style': {'max-width': '75px'}},
     1: {'label': '1.00: Idősek (>64 évesek)', 'style': {'width': '100px'}}
 }
+lang_break_age = html.Br()
 
 curr_strain_header = "Vírusváltozat: "
 presets_strain = [
@@ -273,21 +273,36 @@ other_io = "Egyéb beállítások és eredmények"
 # About
 about = html.Div([
     html.H6("Háttér", style={'margin': '0'}),
-    html.Div('''A COVID-19 terjedésének mérséklése érdekében a hivatalos közegészségügyi irányelvek korlátozásokat javasolnak az emberektől való távolság (6 láb / 2 méter), a benntartózkodás (15 perc), a maximális kihasználtság (25 fő) vagy a minimális szellőzés (óránként 6 légcsere) vonatkozásában.'''),
+    html.Div(
+        '''A COVID-19 terjedésének mérséklése érdekében a hivatalos közegészségügyi irányelvek korlátozásokat 
+        javasolnak az emberektől való távolság (6 láb / 2 méter), a benntartózkodás (15 perc), a maximális 
+        kihasználtság (25 fő) vagy a minimális szellőzés (óránként 6 légcsere) vonatkozásában.'''),
     html.Br(),
     html.Div([html.Span('''Egyre több a '''),
               html.A(children="tudományos bizonyíték",
                      href=link_docs,
                      target='_blank'),
-              html.Span(''', hogy a COVID-19 levegőn keresztül terjed, amikor fertőző aeroszol cseppeket cserélnek egy beltéri levegőt lélegző személyek. Bár a közegészségügyi hatóságok kezdik elismerni a levegőn keresztüli fertőzést, még nem tettek közzé olyan iránymutatást, ami az összes idevágó tényezőt figyelembe venné.''')]),
+              html.Span(
+                  ''', hogy a COVID-19 levegőn keresztül terjed, amikor fertőző aeroszol cseppeket cserélnek egy 
+                  beltéri levegőt lélegző személyek. Bár a közegészségügyi hatóságok kezdik elismerni a levegőn 
+                  keresztüli fertőzést, még nem tettek közzé olyan iránymutatást, ami az összes idevágó tényezőt 
+                  figyelembe venné.''')]),
     html.Br(),
-    html.Div([html.Span('''Ez az alkalmazás, amit Martin Z. Bazant és John W. M. Bush közreműködésével fejlesztett ki Kasim Khan, egy '''),
+    html.Div([html.Span(
+        '''Ez az alkalmazás, amit Martin Z. Bazant és John W. M. Bush közreműködésével fejlesztett ki Kasim Khan, 
+        egy '''),
               html.A(children="elméleti modell",
                      href=link_paper,
                      target='_blank'),
-              html.Span(''' segítségével számolja ki a beltérben biztonságosan eltölthető időt és kihasználtságot. A szoba jellemzőit, a szellőzést és a légszűrést, a maszkhasználatot, a lélegző tevékenységet vagy a kockázattűrést (más füleken) átállítva követhető, hogyan korlátozható a COVID-19 továbbadása különböző beltéri terekben.''')]),
+              html.Span(
+                  '''segítségével számolja ki a beltérben biztonságosan eltölthető időt és kihasználtságot. A szoba 
+                  jellemzőit, a szellőzést és a légszűrést, a maszkhasználatot, a lélegző tevékenységet vagy a 
+                  kockázattűrést (más füleken) átállítva követhető, hogyan korlátozható a COVID-19 továbbadása 
+                  különböző beltéri terekben.''')]),
     html.Br(),
-    html.Div([html.Span('''Az alkalmazás mögött álló tudományos alapok egy ingyenes, saját ütemben elvégezhető, nyilvános online tanfolyamon (MOOC) is elsajátíthatók az edX platformon: '''),
+    html.Div([html.Span(
+        '''Az alkalmazás mögött álló tudományos alapok egy ingyenes, saját ütemben elvégezhető, nyilvános online 
+        tanfolyamon (MOOC) is elsajátíthatók az edX platformon: '''),
               html.A(children="10.S95x A COVID-19 fertőzés fizikája",
                      href=link_mooc,
                      target='_blank')])
@@ -311,7 +326,8 @@ recirc_text_adv = "Légcsere sebessége (ACH): "
 
 humidity_text = "Relatív páratartalom: "
 
-need_more_ctrl_text = '''Több mindent szeretne beállítani? Váltson Haladó módra az oldal tetején található legördülő menü használatával.'''
+need_more_ctrl_text = '''Több mindent szeretne beállítani? Váltson Haladó módra az oldal tetején található legördülő 
+menü használatával. '''
 
 # Human Behavior
 exertion_text = "Aktivitás: "
@@ -336,11 +352,15 @@ faq_top = html.Div([
     html.H6("Gyakran Ismételt Kérdések"),
     html.H5("Miért nem elegendő a 2 méter távolság?"),
     html.Div([
-        html.Div([html.Span('''A kétméteres távolság megvéd a fertőzött személy által kiköhögött nagy cseppektől, ahogy az arcmaszkok is; ugyanakkor nem véd  '''),
+        html.Div([html.Span(
+            '''A kétméteres távolság megvéd a fertőzött személy által kiköhögött nagy cseppektől, ahogy az arcmaszkok 
+            is; ugyanakkor nem véd  '''),
                   html.A(children="levegőben szálló",
                          href=link_docs,
                          target='_blank'),
-                  html.Span(''' és az egész helyiségben keveredő fertőzött aeroszolok általi terjedés ellen. Beltérben az emberek nincsenek nagyobb biztonságban a levegőben terjedő fertőzéstől 20 méteres távolságban, mint 2 méterre.''')]),
+                  html.Span(''' és az egész helyiségben keveredő fertőzött aeroszolok általi terjedés ellen. 
+                  Beltérben az emberek nincsenek nagyobb biztonságban a levegőben terjedő fertőzéstől 
+                  20 méteres távolságban, mint 2 méterre.''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Vannak más terjedési módok?"),
@@ -348,21 +368,35 @@ faq_top = html.Div([
         html.Div([html.A(children="Az aeroszolos átadást",
                          href=link_docs,
                          target='_blank'),
-                  html.Span(''' gondolják sokan meghatározónak a COVID-19 esetében, de más módok is lehetségesek, mint például a „fomit” átvitel a felületeken található fertőző maradványokkal való közvetlen érintkezés útján, a „nagy cseppek” átvitele köhögés vagy tüsszögés útján, valamint a „rövidtávú aeroszol” átvitel a fertőzött személy kilégzési légáramában töltött hosszabb idő alatt. Bár az utóbbi két út akár jelentős is lehet, arcmaszkok vagy pajzsok viseletével nagyrészt kiküszöbölhetők; azonban továbbra is fennáll a levegőben terjedés kockázata.''')]),
+                  html.Span(
+                      '''gondolják sokan meghatározónak a COVID-19 esetében, de más módok is lehetségesek, 
+                      mint például a „fomit” átvitel a felületeken található fertőző maradványokkal való közvetlen 
+                      érintkezés útján, a „nagy cseppek” átvitele köhögés vagy tüsszögés útján, valamint a „rövidtávú 
+                      aeroszol” átvitel a fertőzött személy kilégzési légáramában töltött hosszabb idő alatt. Bár az 
+                      utóbbi két út akár jelentős is lehet, arcmaszkok vagy pajzsok viseletével nagyrészt 
+                      kiküszöbölhetők; azonban továbbra is fennáll a levegőben terjedés kockázata.''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Hihetünk a jól kevert szoba feltevésében?"),
     html.Div([
-        html.Div([html.Span('''Sok minden hozzájárul a beltéri levegő keveredéséhez, beleértve a felhajtóerő által vezérelt áramlást (fűtőberendezésekből, légkondicionálókból vagy ablakokból), a szellőzőnyílások és ventilátorok erőltetett konvekcióját, valamint az emberi mozgást és légzést. Bár vannak kivételek, ahogy azt a '''),
+        html.Div([html.Span(
+            '''Sok minden hozzájárul a beltéri levegő keveredéséhez, beleértve a felhajtóerő által vezérelt áramlást 
+            (fűtőberendezésekből, légkondicionálókból vagy ablakokból), a szellőzőnyílások és ventilátorok erőltetett 
+            konvekcióját, valamint az emberi mozgást és légzést. Bár vannak kivételek, ahogy azt a '''),
                   html.A(children="tanulmány",
                          href=link_paper,
                          target='_blank'),
-                  html.Span(''' tárgyalja is, a jól-kevert feltevést széles körben használják a levegőben terjedő betegségek elméleti modellezésében.''')]),
+                  html.Span(
+                      '''tárgyalja is, a jól-kevert feltevést széles körben használják a levegőben terjedő betegségek 
+                      elméleti modellezésében.''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Érvényes az iránymutatás nagyon nagy terekre is?"),
     html.Div([
-        html.Div([html.Span('''Koncerttermekben, stadionokban vagy más nagy, szellőztetett helyiségekben, ahol nagy az emberek száma, a levegőben történő továbbadás veszélye jelentős, és ezt az útmutató megfelelően kezeli. Maszkok vagy arcvédő pajzsok viselete nélkül azonban a '''),
+        html.Div([html.Span(
+            '''Koncerttermekben, stadionokban vagy más nagy, szellőztetett helyiségekben, ahol nagy az emberek száma, 
+            a levegőben történő továbbadás veszélye jelentős, és ezt az útmutató megfelelően kezeli. Maszkok vagy 
+            arcvédő pajzsok viselete nélkül azonban a '''),
                   html.A(children="tanulmány",
                          href=link_paper,
                          target='_blank'),
@@ -371,14 +405,20 @@ faq_top = html.Div([
     html.Br(),
     html.H5("Miért számít a mennyezet magassága?"),
     html.Div([
-        '''A mennyezet magassága befolyásolja a szoba teljes térfogatát, amelyre szükség van a fertőző aeroszolok koncentrációjának becsléséhez (aeroszolok száma térfogategységenként). Erre a koncentrációra van szükség a helyiség COVID-19 átadási kockázatának becsléséhez.'''
+        '''A mennyezet magassága befolyásolja a szoba teljes térfogatát, amelyre szükség van a fertőző aeroszolok 
+        koncentrációjának becsléséhez (aeroszolok száma térfogategységenként). Erre a koncentrációra van szükség a 
+        helyiség COVID-19 átadási kockázatának becsléséhez. '''
     ], className='faq-answer'),
     html.Br(),
     html.H5("Tudom az ACH / MERV számaimat. Hol adhatom meg őket?"),
-    html.Div('''Ha több beállítási lehetőségre van szüksége, váltson Haladó módra a weboldal tetején található legördülő menü használatával.''', className='faq-answer'),
+    html.Div('''Ha több beállítási lehetőségre van szüksége, váltson Haladó módra a weboldal tetején található 
+    legördülő menü használatával.''', className='faq-answer'),
     html.Br(),
     html.H5("Miért van az N95 légzőkészülékeknek 99%-os hatékonysága?"),
-    html.Div('''Az N95 légzőkészülékek legalább 95%-os szűrési hatékonysággal rendelkeznek 0,3 μm-es részecskeméreteknél, ami tízszer kisebb, mint a jellemző cseppméretek a COVID-19 levegőben történő átvitelekor. Nagyobb cseppek esetén az N95 légzőkészülékek még hatékonyabbak, megközelítik a 100% -ot.''', className='faq-answer'),
+    html.Div('''Az N95 légzőkészülékek legalább 95%-os szűrési hatékonysággal rendelkeznek 0,3 μm-es 
+    részecskeméreteknél, ami tízszer kisebb, mint a jellemző cseppméretek a COVID-19 levegőben történő átvitelekor. 
+    Nagyobb cseppek esetén az N95 légzőkészülékek még hatékonyabbak, megközelítik a 100% -ot.''',
+             className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([
@@ -387,24 +427,33 @@ faq_other_params_text = html.Div([
               html.A(children="tanulmány",
                      href=link_paper,
                      target='_blank'),
-              html.Span('''. Egyszerű módban, az app alapértelmezett effektív aeroszol sugara 2 um (60% páratartalomnál) , és a maximális virális deaktiválás sebessége 0,6 / óra (~100% páratartalom mellett), mindkettő növekszik a relatív páratartalommal (RH). A vírus deaktiválódásának becslése konzervatív, lassabb dezaktiválást megengedve. A vírus dezaktiválási sebességét ultraibolya sugárzás (UV-C) vagy kémiai fertőtlenítőszerek (pl. hidrogén-peroxid, ózon) növelhetik.
-Az alkalmazás megbecsüli a betegség legfontosabb paraméterét, a kilélegzett levegő fertőzőképességét, a C'''),
+              html.Span('''. Egyszerű módban, az app alapértelmezett effektív aeroszol sugara 2 um (60% 
+              páratartalomnál) , és a maximális virális deaktiválás sebessége 0,6 / óra (~100% páratartalom mellett), 
+              mindkettő növekszik a relatív páratartalommal (RH). A vírus deaktiválódásának becslése konzervatív, 
+              lassabb dezaktiválást megengedve. A vírus dezaktiválási sebességét ultraibolya sugárzás (UV-C) vagy 
+              kémiai fertőtlenítőszerek (pl. hidrogén-peroxid, ózon) növelhetik. Az alkalmazás megbecsüli a betegség 
+              legfontosabb paraméterét, a kilélegzett levegő fertőzőképességét, a C'''),
               html.Sub('q'),
               html.Span('''-t (egységnyi térfogatra jutó fertőzési kvantum) a megadott légzési aktivitásból, a '''),
               html.A(children="tanulmány",
                      href=link_paper,
                      target='_blank'),
-              html.Span('''2. ábráján látható táblázatos értékek felhasználásával. Ezeket a paramétereket Haladó módban Ön adja meg.''')],
+              html.Span('''2. ábráján látható táblázatos értékek felhasználásával. Ezeket a paramétereket Haladó 
+              módban Ön adja meg.''')],
              className='faq-answer'),
 ])
 aerosol_radius_text = "Effektív aeroszol sugár  (60% páratartalomnál), r\u0305 (\u03bcm): "
-viral_deact_text = html.Span(["Maximális vírus-deaktiválási ráta (100% páratartalomnál), \u03BB", html.Sub('vmax'), " (/hr): "])
+viral_deact_text = html.Span(
+    ["Maximális vírus-deaktiválási ráta (100% páratartalomnál), \u03BB", html.Sub('vmax'), " (/hr): "])
 
 values_interest_header = "Fontos számított értékek: "
 values_interest_desc = html.Div([
     html.H5("Pontosan mit számol az alkalmazás?"),
     html.Div([
-        html.Div([html.Span('''Az app kiszámítja a maximálisan megengedett halmozott kitettséget, a szoba kihasználtságának és az időnek a szorzatát beltérben. A COVID-19 terjedésének korlátja, hogy a fertőző egyénre jutó átadások várható száma, a „beltéri reprodukciós szám” kisebb legyen, mint a választott kockázati küszöb. Az alkalmazás kiszámítja a '''),
+        html.Div([html.Span('''Az app kiszámítja a maximálisan megengedett halmozott kitettséget, 
+        a szoba kihasználtságának és az időnek a szorzatát beltérben. A COVID-19 terjedésének korlátja, 
+        hogy a fertőző egyénre jutó átadások várható száma, a „beltéri reprodukciós szám” kisebb legyen, 
+        mint a választott kockázati küszöb. Az alkalmazás kiszámítja a '''),
                   html.A(children="tanulmányban",
                          href=link_paper,
                          target='_blank'),
@@ -417,32 +466,40 @@ perc_immune_label = html.Span(["Az immunisak aránya p", html.Sub('im'), " = p",
 perc_infectious_label = html.Span(["Fertőzöttek aránya p", html.Sub('i'), " = "])
 perc_susceptible_label = html.Span(["Fogékonyak aránya p", html.Sub('s'), " = 1 - (p", html.Sub('im'),
                                     " + p", html.Sub('i'), ") = "])
-pop_immunity_desc = html.Div([html.Div(['''A populációban a fertőzők p''', html.Sub('i'), ''' százalékos arányát a Többi kockázati forgatókönyv fülre beírt fertőző prevalencia alapján számolják (Tekintettel a fertőzés prevalenciájára…, A személyes kockázat korlátozásához...). Az immunisak p''', html.Sub('im'),
-                                        ''' százalékos arányára konzervatív becslés lehet a védőoltást kapottak és a gyógyultak összesített aránya a lakosság körében, amivel eltekintünk a felderítetlenül maradt esetektől. Ezt a két értéket használjuk a fogékonyak p''', html.Sub('s'),
-                                        ''' százalékának kiszámításához. Egyszerű módban és az első kockázati módban (Ha egy fertőzött személy belép…) feltételezzük, hogy ez az érték 100%.''']),
+pop_immunity_desc = html.Div([html.Div(['''A populációban a fertőzők p''', html.Sub('i'), ''' százalékos arányát a 
+Többi kockázati forgatókönyv fülre beírt fertőző prevalencia alapján számolják (Tekintettel a fertőzés 
+prevalenciájára…, A személyes kockázat korlátozásához...). Az immunisak p''', html.Sub('im'),
+                                        ''' százalékos arányára konzervatív becslés lehet a védőoltást kapottak 
+                                        és a gyógyultak összesített aránya a lakosság körében, amivel eltekintünk 
+                                        a felderítetlenül maradt esetektől. Ezt a két értéket használjuk a fogékonyak 
+                                        p''', html.Sub('s'),
+                                        ''' százalékának kiszámításához. Egyszerű módban és az első kockázati 
+                                        módban (Ha egy fertőzött személy belép…) feltételezzük, hogy ez az érték 
+                                        100%.''']),
                               html.Br(),
-                              html.Div(['''Ezek a linkek segíthetnek kideríteni, mekkora p''', html.Sub('i'), ''' és p''',
-                                        html.Sub('im'), ''': ''',
-                                        html.Span(html.A(href=links.link_fr_covidtracker,
-                                                         children="Francia koronamonitor",
-                                                         target='_blank')),
-                                        html.Span(", "),
-                                        html.Span(html.A(href=links.link_cdc_dashboard,
-                                                         children="CDC COVID-19 Monitor",
-                                                         target='_blank')),
-                                        html.Span(", "),
-                                        html.Span(html.A(href=links.link_jhu_data,
-                                                         children="Johns Hopkins Egyetem, Koronavírus Központ",
-                                                         target='_blank')),
-                                        html.Span(", "),
-                                        html.A(children="Amerikai immunitás-becslések",
-                                               href=links.link_cdc_immunity,
-                                               target='_blank'),
-                                        html.Span(", "),
-                                        html.A(children="Nemzetközi immunitás-becslések",
-                                               href=links.link_jhu_vaccine,
-                                               target='_blank'),
-                                        ])
+                              html.Div(
+                                  ['''Ezek a linkek segíthetnek kideríteni, mekkora p''', html.Sub('i'), ''' és p''',
+                                   html.Sub('im'), ''': ''',
+                                   html.Span(html.A(href=links.link_hu_koronamonitor,
+                                                    children="Koronamonitor",
+                                                    target='_blank')),
+                                   html.Span(", "),
+                                   html.Span(html.A(href=links.link_cdc_dashboard,
+                                                    children="CDC COVID-19 Monitor",
+                                                    target='_blank')),
+                                   html.Span(", "),
+                                   html.Span(html.A(href=links.link_jhu_data,
+                                                    children="Johns Hopkins Egyetem, Koronavírus Központ",
+                                                    target='_blank')),
+                                   html.Span(", "),
+                                   html.A(children="Amerikai immunitás-becslések",
+                                          href=links.link_cdc_immunity,
+                                          target='_blank'),
+                                   html.Span(", "),
+                                   html.A(children="Nemzetközi immunitás-becslések",
+                                          href=links.link_jhu_vaccine,
+                                          target='_blank'),
+                                   ])
                               ])
 relative_sus_label = html.Span(["Relatív fogékonyság s", html.Sub('r'), ": "])
 outdoor_air_frac_label = html.Span(["Kültéri levegő aránya Z", html.Sub('p'), ": "])
@@ -470,7 +527,10 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("Vajon ez a modell figyelembe veszi a fertőzés gyakoriságát a helyi lakosságban?"),
-    html.Div(['''A helyi populációban a fertőzés prevalenciájának hatása Haladó módban mérlegelhető. Ott, az Egyéb paraméterek fülön meg lehet adni az immunitás mértékét is a populációban, ami oltás vagy korábbi fertőzés következtében felmerülhet.'''],
+    html.Div([
+                 '''A helyi populációban a fertőzés prevalenciájának hatása Haladó módban mérlegelhető. Ott, 
+                 az Egyéb paraméterek fülön meg lehet adni az immunitás mértékét is a populációban, ami oltás vagy 
+                 korábbi fertőzés következtében felmerülhet.'''],
              className='faq-answer'),
 ])
 
@@ -484,14 +544,15 @@ main_panel_s1 = "A modell alapján biztonságosnak kell lennie, ha a helyiségbe
 
 main_panel_s1_b = html.Span([
     html.Span('''A COVID-19 továbbadásának* korlátozásához egy olyan populációban, amelynek fertőzöttsége'''),
-    html.Sup('''1''')
+    html.Sup('''1 ''')
 ])
 main_panel_s2_b = ''' / 100 000 fő, ebben a térben lehet legfeljebb: '''
 
 main_panel_s1_c = html.Span([
     html.Span(
-        '''Annak érdekében, hogy korlátozzam a saját megfertőződésem esélyét egy olyan populációban, amelynek fertőzési gyakorisága'''),
-    html.Sup('''1''')
+        '''Annak érdekében, hogy korlátozzam a saját megfertőződésem esélyét egy olyan populációban, 
+        amelynek fertőzési gyakorisága'''),
+    html.Sup('''1 ''')
 ])
 main_panel_s2_c = ''' 100 000, ebben a térben lehet legfeljebb: '''
 
@@ -502,18 +563,21 @@ main_airb_trans_only_disc = html.Div(["Ez az ajánlás a megengedett határ alat
                                       html.Span(html.A(href=links.link_nature,
                                                        children="légúti fertőzés",
                                                        target='_blank'), ),
-                                      html.Span(''' egy főre eső valószínűségét az itt látható halmozott kitettség időtartama alatt.''')],
+                                      html.Span(
+                                          '''egy főre eső valószínűségét az itt látható halmozott kitettség 
+                                          időtartama alatt.''')],
                                      className='airborne-text')
 main_airb_trans_only_disc_basic = html.Div(["*Ez az ajánlás a megengedett határ (10%) alatt tartja a ",
                                             html.Span(html.A(href=links.link_docs,
                                                              children="légúti fertőzés",
                                                              target='_blank'), ),
-                                            html.Span(''' egy fertőzöttre eső valószínűségét az itt látható halmozott kitettség alatt.''')], className='airborne-text')
+                                            html.Span(''' egy fertőzöttre eső valószínűségét az itt 
+                                            látható halmozott kitettség alatt.''')], className='airborne-text')
 
 incidence_rate_refs = html.Div([html.Sup('''1'''),
                                 html.Span('''A helyi gyakoriság becsléséhez hasznosak lehetnek ezek a források: '''),
-                                html.Span(html.A(href=links.link_fr_covidtracker,
-                                                 children="en France, covidtracker",
+                                html.Span(html.A(href=links.link_hu_koronamonitor,
+                                                 children="Koronamonitor",
                                                  target='_blank')),
                                 html.Span(''', '''),
                                 html.Span(html.A(href=links.link_cdc_dashboard,
@@ -533,7 +597,10 @@ incidence_rate_refs = html.Div([html.Sup('''1'''),
                                        target='_blank'),
                                 ], className='airborne-text')
 
-other_risk_modes_desc = html.Div('''További kockázati forgatókönyvekkel számolhat a Haladó mód. Konkrétabban figyelembe vehetjük a helyi fertőzöttséget, a korábbi betegséggel vagy oltással szerzett immunitást vagy az egy konkrét személyre jelentett veszélyt.''')
+other_risk_modes_desc = html.Div(
+    '''További kockázati forgatókönyvekkel számolhat a Haladó mód. Konkrétabban figyelembe vehetjük a helyi 
+    fertőzöttséget, a korábbi betegséggel vagy oltással szerzett immunitást vagy az egy konkrét személyre jelentett 
+    veszélyt.''')
 
 # Bottom panels text
 n_input_text_1 = "Ha ebben a térben tartózkodik "
@@ -546,14 +613,26 @@ t_input_text_1 = "Ha itt töltenek "
 t_input_text_2 = " órát, nem lehetnek többen, mint "
 t_input_text_3 = "."
 
-airb_trans_only_disc = html.Div('''Ez az ajánlás egyetlen fertőző légúti továbbfertőzésével számol, a mutatott halmozott kitettségi idő alatt.''', className='airborne-text')
+airb_trans_only_disc = html.Div(
+    '''Ez az ajánlás egyetlen fertőző légúti továbbfertőzésével számol, a mutatott halmozott kitettségi idő alatt.''',
+    className='airborne-text')
 
 footer = html.Div([
-    html.Div([html.Span('''A COVID-19 Beltéri Biztonsági Útmutató egy fejlesztés alatt álló eszköz, amelynek célja, hogy megismertesse az érdeklődő felhasználót a COVID-19 beltéri levegőben történő átvitelének kockázatát befolyásoló tényezőkkel, és segítséget nyújtson a kockázat kvantitatív értékelésében különböző körülmények között. Megjegyezzük, hogy a modellparaméterek bizonytalansága és belső változékonysága akár nagyságrendbeli hibákhoz is vezethet, amelyeket azonban kompenzálni lehet egy kellően kicsi kockázattűrés kiválasztásával. Irányelvünk nem veszi figyelembe a rövidtávú légáramokat, amik jelentősen megnövelhetik a kockázatot arcmaszkok viselete nélkül, a kísérő kéziratban tárgyalt módon ('''),
+    html.Div([html.Span(
+        '''A COVID-19 Beltéri Biztonsági Útmutató egy fejlesztés alatt álló eszköz, amelynek célja, 
+        hogy megismertesse az érdeklődő felhasználót a COVID-19 beltéri levegőben történő átvitelének kockázatát 
+        befolyásoló tényezőkkel, és segítséget nyújtson a kockázat kvantitatív értékelésében különböző körülmények 
+        között. Megjegyezzük, hogy a modellparaméterek bizonytalansága és belső változékonysága akár nagyságrendbeli 
+        hibákhoz is vezethet, amelyeket azonban kompenzálni lehet egy kellően kicsi kockázattűrés kiválasztásával. 
+        Irányelvünk nem veszi figyelembe a rövidtávú légáramokat, amik jelentősen megnövelhetik a kockázatot 
+        arcmaszkok viselete nélkül, a kísérő kéziratban tárgyalt módon ('''),
               html.A(children="Bazant & Bush, 2020",
                      href=link_paper,
                      target='_blank'),
-              html.Span('''). A COVID-19 Beltéri Biztonsági Útmutató használata a felhasználó kizárólagos felelőssége. Mindennemű biztosíték vagy garancia nélkül elérhető. A szerzők semmilyen felelősséget nem vállalnak a használatából eredő következményekért.''')]),
+              html.Span(
+                  '''). A COVID-19 Beltéri Biztonsági Útmutató használata a felhasználó kizárólagos felelőssége. 
+                  Mindennemű biztosíték vagy garancia nélkül elérhető. A szerzők semmilyen felelősséget nem vállalnak 
+                  a használatából eredő következményekért.''')]),
     html.Br(),
     html.Div("Külön köszönet: ")
 ], className='footer-small-text')

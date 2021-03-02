@@ -17,3 +17,5 @@ link_cdc_dashboard = "https://covid.cdc.gov/covid-data-tracker/#cases_casesper10
 link_cdc_immunity = "https://covid19-projections.com/path-to-herd-immunity/"
 
 link_fr_covidtracker = "https://covidtracker.fr/"
+
+link_hu_koronamonitor = "https://atlo.team/koronamonitor/"
