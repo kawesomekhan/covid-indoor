@@ -556,8 +556,8 @@ main_panel_s1_c = html.Span([
 ])
 main_panel_s2_c = ''' 100 000, ebben a térben lehet legfeljebb: '''
 
-main_panel_six_ft_1 = "Ezzel szemben kétméteres távolságtartással megengedhető lenne "
-main_panel_six_ft_2 = ", akik ennyi idő után szegnék meg az itt számolt útmutatásunkat*: "
+# main_panel_six_ft_1 = "Ezzel szemben kétméteres távolságtartással megengedhető lenne "
+# main_panel_six_ft_2 = ", akik ennyi idő után szegnék meg az itt számolt útmutatásunkat*: "
 
 main_airb_trans_only_disc = html.Div(["Ez az ajánlás a megengedett határ alatt tartja a ",
                                       html.Span(html.A(href=links.link_nature,
