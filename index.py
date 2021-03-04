@@ -22,7 +22,7 @@ languages = [
     # {'label': "العربية", 'value': "ar"},
     {'label': "Čeština", 'value': "cs", 'disabled': True},
     {'label': "Dansk", 'value': "da", 'disabled': True},
-    {'label': "Deutsch", 'value': "de", 'disabled': True},
+    {'label': "Deutsch", 'value': "de"},
     # {'label': "Ελληνικά", 'value': "el"},
     {'label': "English", 'value': "en"},
     {'label': "Espa\u00f1ol", 'value': "es", 'disabled': True},
