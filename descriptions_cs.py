@@ -73,7 +73,8 @@ error_list = {
     "n_max_input": "Chyba: Počet osob nemůže být menší než 2.",
     "exp_time_input": "Chyba: Doba vystavení musí být větší než 0.",
     "air_exchange_rate": "Chyba: Rychlost ventilace (ACH) musí být vyšší než 0.",
-    "merv": "Chyba: Prázdné pole pro třídu filtračního systému (MERV)."
+    "merv": "Chyba: Prázdné pole pro třídu filtračního systému (MERV).",
+    "prevalence": "Chyba: Prevalence (počet nakažených na 100 000 lidí) musí být větší než 0 a menší než 100 000."
 }
 
 # Main Panel Text
