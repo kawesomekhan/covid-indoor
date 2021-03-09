@@ -26,6 +26,7 @@ languages = [
     # {'label': "Ελληνικά", 'value': "el"},
     {'label': "English", 'value': "en"},
     {'label': "Espa\u00f1ol", 'value': "es", 'disabled': True},
+    {'label': "فارسی", 'value': "fa"},
     {'label': "Fran\u00e7ais", 'value': "fr"},
     {'label': "हिन्दी", 'value': "hi"},
     {'label': "Bahasa Indonesia", 'value': "id", 'disabled': True},
@@ -117,7 +118,7 @@ app.layout = html.Div([
 
     html.Div(id='window-width'),
     html.Div(id='window-height'),
-])
+], id='app-layout', dir='ltr')
 
 
 # Updates window width div on page update
