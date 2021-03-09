@@ -1,4 +1,5 @@
 import dash_html_components as html
+import descriptions_links as links
 
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
@@ -81,31 +82,104 @@ error_list = {
 curr_room_header = "Volba místnosti: "
 presets = [
     {'label': "Vlastní", 'value': 'custom'},
-    {'label': "Rodinný dům", 'value': 'house'},
-    {'label': "Restaurace", 'value': 'restaurant'},
-    {'label': "Tichá kancelář", 'value': 'office'},
-    {'label': "Školní třída", 'value': 'classroom'},
-    {'label': "Vůz metra v New Yorku", 'value': 'subway'},
-    {'label': "Boeing 737", 'value': 'airplane'},
+    {'label': "Učebna", 'value': 'classroom'},
+    {'label': "Obývací pokoj", 'value': 'living-room'},
     {'label': "Kostel", 'value': 'church'},
+    {'label': "Restaurace", 'value': 'restaurant'},
+    {'label': "Kancelář", 'value': 'office'},
+    {'label': "Vůz metra", 'value': 'subway'},
+    {'label': "Dopravní letadlo", 'value': 'airplane'},
 ]
 
+curr_human_header = "Chování lidí: "
+presets_human = [
+    {'label': "Vlastní", 'value': 'custom'},
+    {'label': "Roušky, klid", 'value': 'masks-1'},
+    {'label': "Roušky, hovor", 'value': 'masks-2'},
+    {'label': "Roušky, fyzická námaha", 'value': 'masks-3'},
+    {'label': "Bez roušky, klid", 'value': 'no-masks-1'},
+    {'label': "Bez roušky, hovor", 'value': 'no-masks-2'},
+    {'label': "Bez roušky, fyzická námaha", 'value': 'no-masks-3'},
+    {'label': "Bez roušky, zpěv", 'value': 'singing-1'},
+]
+
+curr_risk_header = "Tolerance rizika: "
+risk_tol_marks = {
+    0.01: {'label': '0.01: Bezpeč-nější', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: Bezpečnější', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: Nebezpečné'}
+}
+
+risk_tolerance_text = "Tolerance rizika: "
+risk_tol_desc = html.Div('''Ohroženější osoby, například lidé starší nebo s dalšími zdravotními komplikacemi, 
+potřebují nižší toleranci rizika. Naopak vyšší tolerance vede k vyšší možnosti přenosu nemoci během dané doby 
+vystavení (více detailů ve FAQ). ''', style={'font-size': '13px', 'margin-left': '20px'})
+
+curr_age_header = "Věková skupina: "
+presets_age = [
+    {'label': "Děti (<15 let)", 'value': 0.23},
+    {'label': "Dospělí (15-64 let)", 'value': 0.68},
+    {'label': "Senioři (>64 let)", 'value': 1}
+]
+age_group_marks = {
+    0.23: {'label': '0.23: Děti (<15 let)', 'style': {'max-width': '75px'}},
+    0.68: {'label': '0.68: Dospělí (15-64 let)', 'style': {'max-width': '75px'}},
+    1: {'label': '1.00: Senioři (>64 let)', 'style': {'width': '75px'}}
+}
+
+curr_strain_header = "Varianta viru: "
+presets_strain = [
+    # {'label': "SARS-CoV-1", 'value': 0.1},
+    {'label': "SARS-CoV-2 (Wuhan varianta)", 'value': 1},
+    {'label': "SARS-CoV-2 - B.1.1.7 (Britská varianta)", 'value': 1.58}
+]
+viral_strain_marks = {
+    1: {'label': '1.0: Wuhan', 'style': {'max-width': '100px'}},
+    1.58: {'label': '1.58: B.1.1.7/UK'}
+}
+
+pim_header = "Procento imunizovaných: "
+# pim_marks = {
+#     0: {'label': '0% (základní mód)'},
+#     0.33: {'label': '33% (výchozí)'},
+#     1: {'label': '100%'}
+# }
+
+risk_conditional_desc = "Pokud nakažená osoba vstoupí..."
+risk_prevalence_desc = "Za předpokladu, že prevalence infekce je..."
+risk_personal_desc = "Abych omezil riziko, že se nakazím, ..."
+
 main_panel_s1 = "Na základě modelu by mělo být pro tuto místnost bezpečné*: "
+
+main_panel_s1_b = html.Span([
+    html.Span('''K zamezení šíření COVID-19 v populaci s prevalencí'''),
+    html.Sup('''1'''),
+    html.Span(''' of ''')
+])
+main_panel_s2_b = ''' na 100 000 by tento prostor nemělo užívat více než: '''
+
+main_panel_s1_c = html.Span([
+    html.Span('''Abych omezil riziko, že se nakazím, COVIDem-19 v populaci  s prevalencí'''),
+    html.Sup('''1'''),
+    html.Span(''' of ''')
+])
+main_panel_s2_c = ''' na 100 000, tak by tento prostor nemělo užívat více než: '''
 
 units_hr = 'hodin'
 units_min = 'minut'
 units_days = 'dní'
+units_months = 'měsíce'
 
-units_hr_one = 'hodin'
-units_min_one = 'minut'
-units_day_one = 'dní'
+units_hr_one = 'hodina'
+units_min_one = 'minuta'
+units_day_one = 'Den'
+units_month_one = 'měsíc'
 
 is_past_recovery_base_string = '{n_val} lidé po dobu >{val:.0f} dní,'
 model_output_base_string = '{n_val} lidí po dobu '
 
-main_panel_six_ft_1 = "Poznámka: Samotné doporučení dodržovat dvoumetrové rozestupy by říkalo, že by v této místnosti " \
-                      "bylo v bezpečí až "
-main_panel_six_ft_2 = " po neomezenou dobu."
+main_panel_six_ft_1 = "Naopak pravidlo dvoumetrových (6 stop) rozestupů by omezilo kapacitu místnosti na "
+main_panel_six_ft_2 = " což by porušilo tato doporučení* po "
 
 six_ft_base_string = ' {} osob'
 six_ft_base_string_one = ' {} osob'
@@ -124,8 +198,33 @@ main_airb_trans_only_disc = html.Div(["*",
                                                        target='_blank'), ),
                                       html.Span('''''')], className='airborne-text')
 
+other_risk_modes_desc = html.Div('''Další scénáře rizik jsou uvažovány v Rozšířeném módu. Lze upřesňovat výskyt (prevalenci) infekce v populaci, nabytou imunitu získanou očkováním, předchozí čas vystavení nákaze či nastavení rizika pro dotyčnou osobu.''')
+
 airb_trans_only_disc = html.Div('''Doporučení jsou založena na předpokladu, že se infekce šíří vzduchem od jedné 
 nakažené osoby kumulativně po specifikovanou dobu vystavení.''', className='airborne-text')
+
+incidence_rate_refs = html.Div([html.Sup('''1'''),
+                                html.Span('''K odhadnutí Vaší místní prevalence (výskytu nákazy) uvažte následující zdroje: '''),
+                                # html.Span(html.A(href=links.link_jhu_dashboard,
+                                #                  children="JHU COVID-19 Dashboard",
+                                #                  target='_blank')),
+                                # html.Span(''', '''),
+                                html.Span(html.A(href=links.link_cdc_dashboard,
+                                                 children="CDC COVID-19 Data Tracker",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.Span(html.A(href=links.link_jhu_data,
+                                                 children="JHU Coronavirus Resource Center",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.A(children="US Immunity Estimates",
+                                       href=links.link_cdc_immunity,
+                                       target='_blank'),
+                                html.Span(", "),
+                                html.A(children="International Immunity Estimates",
+                                       href=links.link_jhu_vaccine,
+                                       target='_blank'),
+                                ], className='airborne-text')
 
 # Bottom panels text
 n_input_text_1 = "Pokud je v této místnosti "
@@ -163,10 +262,15 @@ about = html.Div([
               #        href=link_paper,
               #        target='_blank'),
               html.Span('''''')]),
+    html.Br(),
+    html.Div([html.Span('''Výzkum za touto aplikací je též k dispozici skrze online kurz, který běží zdarma a dle vlastní rychlosti na edX: '''),
+              html.A(children="10.S95x Physics of COVID-19 Transmission",
+                     href=links.link_mooc,
+                     target='_blank')])
 ])
 
 # Room Specifications
-room_header = "Specifikace místnosti"
+room_header = "Specifikace místností – detaily"
 
 floor_area_text = "Celková plocha (sq. ft.): "
 floor_area_text_metric = "Celková plocha (m²): "
@@ -175,7 +279,8 @@ ceiling_height_text_metric = "Průměrná výška stropu (m): "
 
 ventilation_text = "Systém ventilace: "
 vent_type_output_base = "{:.0f} ACH (obměny vzduchu za hodinu)"
-ventilation_text_adv = "Ventilation System (ACH, obměny vzduchu za hodinu): "
+vent_type_output_units = html.Span(["hr", html.Sup("-1"), " (Venkovní ACH)"])
+ventilation_text_adv = html.Span(["Ventilation (hr", html.Sup("-1"), ", Venkovní ACH): "])
 ventilation_types = [
     {'label': "Zavřená okna", 'value': 0.3},
     {'label': "Otevřená okna", 'value': 2},
@@ -224,12 +329,13 @@ humidity_marks = {
 need_more_ctrl_text = '''Potřebujete ještě detailnější nastavení? Přepněte do Rozšířeného režimu pomocí rozbalovacího 
 menu v horní části stránky. '''
 
-human_header = "Chování lidí v místnosti"
+human_header = "Chování lidí - detaily"
 # Human Behavior
-exertion_text = "Úroveň zátěže: "
+exertion_text = "Rychlost dýchání: "
 exertion_types = [
     {'label': "Klid", 'value': 0.49},
     {'label': "Stání", 'value': 0.54},
+    {'label': "Zpěv", 'value': 1},
     {'label': "Lehké cvičení", 'value': 1.38},
     {'label': "Středně náročné cvičení", 'value': 2.35},
     {'label': "Náročné cvičení", 'value': 3.30},
@@ -252,18 +358,18 @@ expiratory_types = [
 
 mask_type_text = "Účinnost roušky (typ ochrany): "
 mask_type_marks = {
-    0: {'label': "0% (žádné, obličejový štít)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (rouška s hrubé bavlny)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (hedvábí, flanel, šifon)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (chirurgická rouška, jemná bavlna)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (respirátor KN95)", 'style': {'max-width': '50px'}},
+    0: {'label': "0% (žádná, obličejový štít)", 'style': {'max-width': '75px'}},
+    0.5: {'label': "50% (bavlna, flanel)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "70% (mnohovrstevná vlna, hedvábí)", 'style': {'max-width': '75px'}},
+    0.90: {'label': "90% (jednorázová chirurgická)", 'style': {'max-width': '75px'}},
+    # 0.99: {'label': "99% (N95 respirátor)", 'style': {'max-width': '50px'}},
 }
 mask_types = [
-    {'label': "Žádné, obličejový štít", 'value': 0},
-    {'label': "Rouška z hrubé bavlny", 'value': 0.1},
-    {'label': "Rouška z hedvábí, flanelu nebo šifonu", 'value': 0.5},
-    {'label': "Chirurgická rouška nebo rouška z jemné bavlny", 'value': 0.9},
-    {'label': "Respirátor KN95", 'value': 0.95},
+    {'label': "Žádná, obličejový štít", 'value': 0},
+    {'label': "Bavlna, flanel", 'value': 0.5},
+    {'label': "Mnohovrstevná vlna, hedvábí", 'value': 0.7},
+    {'label': "Jednorázová chirurgická", 'value': 0.9},
+    {'label': "N95 respirátor", 'value': 0.99},
 ]
 
 mask_fit_text = "Přiléhavost roušek/Podíl osob s rouškou: "
@@ -273,19 +379,9 @@ mask_fit_marks = {
     0.95: {'label': '95%: Dobrá'}
 }
 
-risk_tolerance_text = "Tolerance rizika: "
-risk_tol_desc = html.Div('''Ohroženější osoby, například lidé starší nebo s dalšími zdravotními komplikacemi, 
-potřebují nižší toleranci rizika. Naopak vyšší tolerance vede k vyšší možnosti přenosu nemoci během dané doby 
-vystavení (více detailů ve FAQ). ''', style={'font-size': '13px', 'margin-left': '20px'})
-risk_tol_marks = {
-    0.01: {'label': '0.01: Bezpeč-nější', 'style': {'max-width': '50px'}},
-    0.1: {'label': '0.10: Bezpečné', 'style': {'max-width': '50px'}},
-    1: {'label': '1.00: Nebezpečné'}
-}
-
 # FAQ/Other Inputs & Outputs
 faq_header = "Často kladené dotazy (FAQ)"
-other_io = "Ostatní vstupy a výstupy"
+other_io = "Další parametry"
 
 faq_top = html.Div([
     html.H6("Často kladené dotazy (FAQ)"),
@@ -349,6 +445,9 @@ faq_top = html.Div([
     html.Div('''Potřebujete-li více kontroly nad vstupními parametry, například nad počtem obměn vzduchu za hodinu (
     ACH) nebo třídou filtrace (MERV), přepněte aplikaci do Rozšířeného režimu pomocí rozbalovacího menu v horní části 
     stránky.''', className='faq-answer'),
+    html.Br(),
+    html.H5("Proč mají respirátory N95 99% účinnost?"),
+    html.Div('''N95 respirators have at least 95% filtration efficiency at particle sizes of 0.3 μm, 10 times smaller than the drop sizes in airborne COVID-19 transmission. For larger drops, N95 respirators are even more efficient, approaching levels close to 100%.''', className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([
@@ -377,7 +476,42 @@ faq_other_params_text = html.Div([
 aerosol_radius_text = "Efektivní poloměr částice aerosolu (při vlhkosti 60%), r\u0305 (\u03bcm): "
 viral_deact_text = html.Span(["Maximální rychlost deaktivace viru (při vlhkosti 100%), \u03BB", html.Sub('vmax'), " (/hr): "])
 
-values_interest_header = ""
+pop_immunity_header = "Imunita v populaci: "
+perc_immune_label = html.Span(["Procento imunizovaných p", html.Sub('im'), " = p", html.Sub('ex'), " + p", html.Sub('v'),
+                               " = "])
+perc_infectious_label = html.Span(["Procento nakažených p", html.Sub('i'), " = "])
+perc_vaccinated_label = html.Span(["Procento očkovaných p", html.Sub('v'), " ="])
+perc_prev_infected_label = html.Span(["Procento již dříve nakažených p", html.Sub('ex'), " = "])
+perc_susceptible_label = html.Span(["Procento náchylných k nákaze p", html.Sub('s'), " = 1 - (p", html.Sub('im'), " + p",
+                                    html.Sub('i'), ") = "])
+pop_immunity_desc = html.Div([html.Div(['''Procento nakažených p''', html.Sub('i'), ''' v populaci je vypočítáváno z 
+prevalence (výskytu) nákazy zadané v záložce Další scénáře rizik (Za předpokladu, že výskyt infekce je…; Abych omezil riziko, že se nakazím, …).  
+Procento imunizovaných p''', html.Sub('im'), ''' může být odhadnuto z procenta očkovaných v populaci v kombinaci s celkovou 
+rychlostí šíření v populaci, kdy zanedbáváme příspěvek od nedetekovaných případů. Tyto dvě 
+hodnoty jsou užity k výpočtu procenta náchylných k nákaze p''', html.Sub('s'), '''. V základním módu a v případně prvního 
+módu rizika (Pokud nakažená osoba vstoupí…) je tato hodnota předpokládána rovna 100%.''']),
+                              html.Br(),
+                              html.Div(['''Zde je několik učitečných odkazů k určení p''', html.Sub('i'), ''' a p''',
+                                        html.Sub('im'), ''': ''',
+                                        html.Span(html.A(href=links.link_cdc_dashboard,
+                                                         children="CDC COVID-19 Data Tracker",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.Span(html.A(href=links.link_jhu_data,
+                                                         children="JHU Coronavirus Resource Center",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.A(children="US Immunity Estimates",
+                                               href=links.link_cdc_immunity,
+                                               target='_blank'),
+                                        html.Span(", "),
+                                        html.A(children="International Immunity Estimates",
+                                               href=links.link_jhu_vaccine,
+                                               target='_blank'),
+                                        ])
+                              ])
+
+values_interest_header = "Vypočtené užitečné hodnoty"
 values_interest_desc = html.Div([
     html.H5("Co přesně aplikace počítá?"),
     html.Div([
@@ -390,6 +524,7 @@ values_interest_desc = html.Div([
                   html.Span(''', které mohou být zajímavé.''')]),
     ], className='faq-answer'),
 ])
+relative_sus_label = html.Span(["Relativní náchylnost k nákaze s", html.Sub('r'), ": "])
 outdoor_air_frac_label = html.Span(["Podíl venkovního vzduchu Z", html.Sub('p'), ": "])
 aerosol_eff_label = html.Span(["Účinnost filtrace aerosolu p", html.Sub('f'), ": "])
 breathing_rate_label = html.Span(["Průtok vzduchu při dýchání Q", html.Sub('b'), ": "])
@@ -413,12 +548,7 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("Zohledňuje model množství nakažených v místní populaci (prevalenci)?"),
-    html.Div(['''Ne. Tento model počítá nebezpečí přenosu od jedné infikované osoby a předpokládá tedy, že množství 
-    nakažených osob v populaci je relativně malé. Riziko přenosu infekce za tohoto předpokladu roste se zvyšujícím se 
-    počtem nakažených osob v místnosti, konkrétně se součinem počtu osob v místnosti a prevalence v populaci. 
-    Tolerance rizika by měla být snížena úměrně tomu, jak počet nakažených osob v místnosti převyšuje číslo jedna. Na 
-    druhou stranu může být tolerance  zvýšena úměrně tomu, jak v místnosti klesá počet nakažených osob k nule, 
-    až do bodu, kdy doporučená omezení přestávají být relevantními.'''],
+    html.Div(['''Vliv prevalence (výskytu) v místní populace lze zohlednit v Rozšířeném módu. V tomto režimu, v zálože Další parametry, lze též určovat vliv imunity v populaci, která může být nabytá skrze očkování či předchozí nákazu.'''],
              className='faq-answer'),
 ])
 
