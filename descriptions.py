@@ -59,6 +59,12 @@ app_modes = [
     {'label': "Advanced", 'value': "advanced"},
 ]
 
+output_mode_dd = "Output Mode: "
+output_modes = [
+    {'label': "Safe Occupancy", 'value': "occupancy"},
+    {'label': "Safe CO\u2082 Level", 'value': "co2"},
+]
+
 error_list = {
     "floor_area": "Error: Floor area cannot be empty.",
     "ceiling_height": "Error: Ceiling height cannot be empty.",
@@ -178,6 +184,7 @@ units_month_one = 'month'
 
 is_past_recovery_base_string = '{n_val} people for >{val:.0f} days,'
 model_output_base_string = '{n_val} people for '
+model_output_base_string_co2 = '{co2:.2f} ppm for '
 nt_bridge_string = " people for "
 tn_bridge_string = " for "
 

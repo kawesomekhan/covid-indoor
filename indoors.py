@@ -150,6 +150,12 @@ class Indoors:
         n_max = 1 + risk_tolerance / (self.airb_trans_rate * exp_time)
         return n_max
 
+    # Calculates the safe, steady-state CO2 level in the room given N
+    # Output is in parts per million (ppm) of CO2
+    def calc_co2(self, n_max):
+        breathing_flow_rate = self.physio_params[0]  # m3 / hr
+        return 38000 * breathing_flow_rate * n_max / (self.conc_relax_rate * self.room_vol)  # ppm
+
     # Calculate maximum exposure time allowed given a capacity (# people), transient
     def calc_max_time(self, n_max, risk_type='conditional'):
         risk_tolerance = self.prec_params[1]  # no units

@@ -326,9 +326,11 @@ def get_model_figure(indoor_model, language):
 
 
 # Returns the big red output text.
+# risk_type: conditional, prevalence, or personal
+# output_type: Return occupancy vs. time or CO2 level vs. time
 # recovery_time: Time to recovery in days
 # If recovery time is -1, will not limit the output.
-def get_model_output_text(indoor_model, risk_type, recovery_time, language):
+def get_model_output_text(indoor_model, risk_type, output_type, recovery_time, language):
     desc_file = get_desc_file(language)
     # Check if we should use the normal n vals, or the big n vals
     n_val_series = model_output_n_vals
@@ -348,11 +350,22 @@ def get_model_output_text(indoor_model, risk_type, recovery_time, language):
         else:
             max_time = indoor_model.calc_max_time(n_val, risk_type)  # hours
             time_text = time_to_text(max_time, True, recovery_time, language)
-            if language in sov_languages:
-                base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
+            safe_co2 = indoor_model.calc_co2(n_val)
+
+            if output_type == 'occupancy':
+                if language in sov_languages:
+                    base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
+                else:
+                    base_string = desc_file.model_output_base_string + time_text
+
+                model_output_text[index] = base_string.format(n_val=n_val)
             else:
-                base_string = desc_file.model_output_base_string + time_text
-            model_output_text[index] = base_string.format(n_val=n_val)
+                if language in sov_languages:
+                    base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string_co2
+                else:
+                    base_string = desc_file.model_output_base_string_co2 + time_text
+
+                model_output_text[index] = base_string.format(co2=safe_co2)
 
         index += 1
 
@@ -545,7 +558,6 @@ def search_to_params(search):
     search = search[1:]
 
     params_raw = search.split("&")
-
     for param in params_raw:
         param_split = param.split("=")
         output_dict[param_split[0]] = param_split[1]

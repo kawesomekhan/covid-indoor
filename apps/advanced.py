@@ -740,6 +740,7 @@ def update_lang_adv(search, window_width):
      Input('adv-t-input-c', 'value'),
      Input('adv-prev-input-b', 'value'),
      Input('adv-prev-input-c', 'value'),
+     Input('output-mode', 'value'),
      Input('url', 'search')],
     [State('adv-floor-area-text', 'children'),
      State('adv-ceiling-height-text', 'children')]
@@ -748,7 +749,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                   breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, sr_age_factor,
                   sr_strain_factor, pim_input, def_aerosol_radius,
                   max_viral_deact_rate, n_max_input, exp_time_input, n_max_input_b, exp_time_input_b, n_max_input_c,
-                  exp_time_input_c, prevalence_b, prevalence_c, search, floor_area_text, ceiling_height_text):
+                  exp_time_input_c, prevalence_b, prevalence_c, output_mode,
+                  search, floor_area_text, ceiling_height_text):
     language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
                                 max_viral_deact_rate, language, n_max_input, exp_time_input, n_max_input_b,
@@ -819,7 +821,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     interest_output = ess.get_interest_output_text(myInd, my_units)
 
     # Conditional Outputs (If an infected person enters...)
-    model_output_text = ess.get_model_output_text(myInd, 'conditional', ess.covid_recovery_time, language)
+    model_output_text = ess.get_model_output_text(myInd, 'conditional', output_mode, ess.covid_recovery_time, language)
     six_ft_text = ess.get_six_ft_text(myInd, language)
     six_ft_exp_time = ess.get_six_ft_exp_time(myInd, 'conditional', ess.covid_recovery_time, language)
 
@@ -848,7 +850,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.percentage_sus = ps_prevalence
     pi_prevalence_text = '{:.3f}%'.format(pi_prevalence * 100)
     ps_prevalence_text = '{:.2f}%'.format(ps_prevalence * 100)
-    model_output_text_b = ess.get_model_output_text(myInd, 'prevalence', -1, language)
+    model_output_text_b = ess.get_model_output_text(myInd, 'prevalence', output_mode, -1, language)
     six_ft_text_b = ess.get_six_ft_text(myInd, language)
     six_ft_exp_time_b = ess.get_six_ft_exp_time(myInd, 'prevalence', -1, language)
 
@@ -876,7 +878,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.percentage_sus = ps_personal
     pi_personal_text = '{:.3f}%'.format(pi_personal * 100)
     ps_personal_text = '{:.2f}%'.format(ps_personal * 100)
-    model_output_text_c = ess.get_model_output_text(myInd, 'personal', -1, language)
+    model_output_text_c = ess.get_model_output_text(myInd, 'personal', output_mode, -1, language)
     six_ft_text_c = ess.get_six_ft_text(myInd, language)
     six_ft_exp_time_c = ess.get_six_ft_exp_time(myInd, 'personal', -1, language)
 
