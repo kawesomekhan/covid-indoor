@@ -26,6 +26,7 @@ humidity_marks = {
 exertion_types = [
     {'label': "휴식", 'value': 0.49},
     {'label': "기립", 'value': 0.54},
+    {'label': "노래부르기", 'value': 1},
     {'label': "가벼운 활동", 'value': 1.38},
     {'label': "일반적 활동", 'value': 2.35},
     {'label': "격한 활동", 'value': 3.30},
@@ -48,15 +49,17 @@ expiratory_types = [
 mask_type_marks = {
     0: {'label': "0% (없음, 안면 보호막)", 'style': {'max-width': '50px'}},
     0.1: {'label': "10% (거친 면)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (실크, 플란넬, 시폰)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (수술용 면)", 'style': {'max-width': '50px'}},
+    0.5: {'label': "50% (면, 플란넬)", 'style': {'max-width': '50px'}},
+    0.75: {'label': "70% (다층 면, 실크)", 'style': {'max-width': '50px'}},
+    0.90: {'label': "90% (일회용 수술용 마스크)", 'style': {'max-width': '50px'}},
     0.95: {'label': "95% (N95 마스크)", 'style': {'max-width': '50px'}},
 }
 
 mask_types = [
     {'label': "없음, 안면 보호막", 'value': 0},
     {'label': "거친 면", 'value': 0.1},
-    {'label': "실크, 플란넬, 시폰", 'value': 0.5},
+    {'label': "면, 플란넬", 'value': 0.5},
+    {'label': "다층 면, 실크", 'value': 0.7},
     {'label': "수술용 면", 'value': 0.9},
     {'label': "N95 마스크", 'value': 0.95},
 ]
@@ -68,8 +71,8 @@ mask_fit_marks = {
 }
 
 risk_tol_marks = {
-    0.01: {'label': '0.01: 매우 안전', 'style': {'max-width': '50px'}},
-    0.1: {'label': '0.10: 안전', 'style': {'max-width': '50px'}},
+    #0.01: {'label': '0.01: 매우 안전', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: 비교적 안전', 'style': {'max-width': '50px'}},
     1: {'label': '1.00: 불안전'}
 }
 
@@ -104,6 +107,7 @@ recirc_types = [
 ]
 
 n_max_base_string = ' {:.0f} 명'
+n_max_overflow_base_string = '{:.0f} 인 미만'
 
 graph_title = "수용 인원 vs. 노출 시간"
 graph_xtitle = "최대 노출 시간 \u03C4 (시간)"
@@ -117,24 +121,77 @@ six_ft_base_string_one = ' {} 명'
 units_hr = '시간 동안 생활'
 units_min = '분 동안 생활'
 units_days = '일 동안 생활'
+units_months = '개월'
 
-units_hr_one = '시간 동안 생활'
-units_min_one = '분 동안 생활'
-units_day_one = '일 동안 생활'
+units_hr_one = '시간'
+units_min_one = '분'
+units_day_one = '일'
+units_months_one = '개월'
 
 is_past_recovery_base_string = '{n_val} 명의 인원이 >{val:.0f} 일 동안 생활,'
 model_output_base_string = '{n_val} 명의 인원이 '
 
+curr_room_header = "실내 공간 종류:"
 presets = [
     {'label': "직접 입력", 'value': 'custom'},
     {'label': "교외 주택", 'value': 'house'},
     {'label': "식당", 'value': 'restaurant'},
-    {'label': "한산한 사무실", 'value': 'office'},
-    {'label': "강의실", 'value': 'classroom'},
-    {'label': "뉴욕 시 지하철 열차 칸", 'value': 'subway'},
-    {'label': "보잉 737", 'value': 'airplane'},
-    {'label': "교회", 'value': 'church'},
+    {'label': "사무실", 'value': 'office'},
+    {'label': "교실", 'value': 'classroom'},
+    {'label': "지하철 칸", 'value': 'subway'},
+    {'label': "상용 여객기", 'value': 'airplane'},
+    {'label': "교회", 'value': 'church'}, 
+    {'label':'거실', 'value': 'living-room'}, 
+    
 ]
+
+curr_human_header = "활동:"
+presets_human = [
+    {'label': "직접 입력", 'value': 'custom'},
+    {'label': '마스크 착용, 휴식', 'value': 'masks-1'},
+    {'label': '마스크 착용, 대화', 'value': 'masks-2'},
+    {'label': '마스크 착용, 운동', 'value': 'masks-3'},
+    {'label': '마스크 미착용, 휴식', 'value': 'no-masks-1'},
+    {'label': '마스크 미착용, 대화', 'value': 'no-masks-2'},
+    {'label': '마스크 미착용, 운동', 'value': 'no-masks-3'},
+    {'label': '마스크 미착용, 노래부르기', 'value': 'singing-1'},
+]
+
+curr_risk_header = "위험 허용치:"
+
+curr_age_header = "연령대:"
+presets_age = [
+    {'label': "아동(<15 세)", 'value': 0.23},
+    {'label': "성인(15-64 세)", 'value': 0.68},
+    {'label': "노인(>64 세)", 'value': 1}
+]
+age_group_marks = {
+    0.23: {'label': '0.23: 아동(<15 세)', 'style': {'max-width': '75px'}},
+    0.68: {'label': '0.68: 성인(15-64 세)', 'style': {'max-width': '75px'}},
+    1: {'label': '1.00: 노인(>64 세)', 'style': {'width': '75px'}}
+}
+
+curr_strain_header = "바이러스 계통: "
+presets_strain = [
+    # {'label': "SARS-CoV-1", 'value': 0.1},
+    {'label': "SARS-CoV-2 (우한 계통)", 'value': 1},
+    {'label': "SARS-CoV-2 - B.1.1.7 (영국 Strain)", 'value': 1.58}
+]
+viral_strain_marks = {
+    1: {'label': '1.0: 우한', 'style': {'max-width': '100px'}},
+    1.58: {'label': '1.58: B.1.1.7/영국'}
+}
+
+pim_header = "면역률: "
+# pim_marks = {
+#     0: {'label': '0% (기본 모드)'},
+#     0.33: {'label': '33% (초기값)'},
+#     1: {'label': '100%'}
+# }
+
+risk_conditional_desc = "감염자가 입장하면..."
+risk_prevalence_desc = "감염 유병률을 감안할 때..."
+risk_personal_desc = "자신의 개인적인 위험성을 제한하기 위해..."
 
 error_list = {
     "floor_area": "오류: 바닥 면적 란을 비워둘 수 없습니다.",
@@ -145,7 +202,8 @@ error_list = {
     "n_max_input": "오류:인원 수는 2 미만일 수 없습니다.",
     "exp_time_input": "오류: 노출 시간은 0 을 초과해야합니다.",
     "air_exchange_rate": "오류: 환기율(시간 당 공기 순환율)은 0을 초과해야 합니다.",
-    "merv": "오류: 필터 시스템 (MERV) 란은 비워둘 수 없습니다."
+    "merv": "오류: 필터 시스템 (MERV) 란은 비워둘 수 없습니다.", 
+    "prevalence":"오류: 감염자 수는 0 이상 100,000 미만이어야 합니다."
 }
 
 # Header
@@ -204,10 +262,10 @@ app_modes = [
 
 # Tabs
 about_header = "소개"
-room_header = "공간 규격"
-human_header = "활동"
+room_header = "실내 공간 종류 – 세부 사항"
+human_header = "활동 – 세부 사항"
 faq_header = "FAQ (자주 묻는 질문)"
-other_io = "기타 입력 & 결과"
+other_io = "기타 변수"
 
 # About
 about = html.Div([
@@ -221,7 +279,12 @@ about = html.Div([
     html.Br(),
     html.Div([html.Span('''Kasim Khan이 Martin Z. Bazant및 John W. M. Bush와 함께 협업하여 개발한 이 앱은 실내 공간의 최대 수용 
     기간과 수용 인원을 계산하는 이론적 모델을 기반으로 만들어졌습니다. 본 앱을 통해, 여러 종류의 실내 공간에서 공간의 규격, 환기율과 여과율, 
-    마스크 사용 여부, 호흡기 활동, 위험 감수율(다른 탭에 있습니다.)에 따른 코로나19의 전파를 막을 수 있는 방법을 확인할 수 있습니다.''')])
+    마스크 사용 여부, 호흡기 활동, 위험 감수율(다른 탭에 있습니다.)에 따른 코로나19의 전파를 막을 수 있는 방법을 확인할 수 있습니다.''')]),
+    html.Br(),
+    html.Div([html.Span('''앱의 원리가 되는 과학은 무료 자율 주도형 대규모 개방형 온라인 코스 (MOOC)인 edX : '''),
+            html.A(children="10. S95x COVID-19 전파의 물리학에서 진행됩니다.",
+                     href=links.link_mooc,
+                     target='_blank')])
 ])
 
 # Room Specifications
@@ -245,7 +308,7 @@ humidity_text = "상대 습도: "
 need_more_ctrl_text = '''더 다양하게 입력하고 싶나요? 페이지 상단의 메뉴를 통해 고급 모드로 전환하세요.'''
 
 # Human Behavior
-exertion_text = "활동 수준: "
+exertion_text = "호흡률: "
 
 breathing_text = "호흡기 활동: "
 
@@ -345,7 +408,43 @@ faq_other_params_text = html.Div([
 aerosol_radius_text = "유효 에어로졸 반지름 (상대습도=60%), r\u0305 (\u03bcm): "
 viral_deact_text = html.Span(["최대 바이러스 비활성화율 (상대습도=100%), \u03BB", html.Sub('vmax'), " (/hr): "])
 
-values_interest_header = "이 앱이 정확히 무엇을 계산하는 건가요?"
+pop_immunity_header = "면역 인구:: "
+perc_immune_label = html.Span(["면역률 p: ", html.Sub('im'), " = p", html.Sub('ex'), " + p", html.Sub('v'),
+                               " = "])
+perc_infectious_label = html.Span(["감염률: p", html.Sub('i'), " = "])
+perc_vaccinated_label = html.Span(["예방 접종률: p", html.Sub('v'), " ="])
+perc_prev_infected_label = html.Span(["사전 감염률: p", html.Sub('ex'), " = "])
+perc_susceptible_label = html.Span(["민감성 비율: p", html.Sub('s'), " = 1 - (p", html.Sub('im'), " + p",
+                                    html.Sub('i'), ") = "])
+
+
+pop_immunity_desc = html.Div([html.Div(['''감염률 p''', html.Sub('i'), ''' 는 다른 위험 시나리오 탭에 입력된 감염성 유병률로부터 
+계산됩니다(감염 유병률을 감안할 때…, 자신의 개인적인 위험성을 제한하기 위해…). 면역률 p''', html.Sub('im'), ''' 은 발견되지 않은 
+사례의 기여도를 무시함으로써 예방 접종 비율과 인구 내 총 사례 비율을 통해 보수적으로 추정 할 수 있습니다. 이 두 값은 민감성 비율 p''',
+html.Sub('s'), '''. 를 계산하는 데 사용됩니다. 기본 모드와 첫 번째 위험 모드 (감염자가 입장하면…)에서 이 값은 100%로 가정합니다.''']),
+                              html.Br(),
+                              html.Div(['''다음 링크들은 p''', html.Sub('i'), ''' 및 p''',
+                                        html.Sub('im'), '''을 찾는 데 유용한 링크들입니다. ''',
+                                        html.Span(html.A(href=links.link_cdc_dashboard,
+                                                         children="CDC COVID-19 Data Tracker",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.Span(html.A(href=links.link_jhu_data,
+                                                         children="JHU Coronavirus Resource Center",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.A(children="US Immunity Estimates",
+                                               href=links.link_cdc_immunity,
+                                               target='_blank'),
+                                        html.Span(", "),
+                                        html.A(children="International Immunity Estimates",
+                                               href=links.link_jhu_vaccine,
+                                               target='_blank'),
+                                        ])
+                              ])
+
+
+values_interest_header = "계산된 관심 대상 값"
 values_interest_desc = html.Div([
     html.H5("이 앱이 정확히 무엇을 계산하는 건가요?"),
     html.Div([
@@ -357,6 +456,8 @@ values_interest_desc = html.Div([
                   html.Span('''에 정의된 관련 수치를 계산합니다:''')]),
     ], className='faq-answer'),
 ])
+
+relative_sus_label = html.Span(["상대 민감성 s", html.Sub('r'), ": "])
 outdoor_air_frac_label = html.Span(["실외 공기 비율 Z", html.Sub('p'), ": "])
 aerosol_eff_label = html.Span(["에어로졸 여과 효율 p", html.Sub('f'), ": "])
 breathing_rate_label = html.Span(["호흡 공기량 Q", html.Sub('b'), ": "])
@@ -394,26 +495,97 @@ risk_tol_desc = html.Div('''고령자 혹은 기저 질환이 있는 사람 등�
 # Main Panel Text
 curr_room_header = "현재 공간: "
 main_panel_s1 = "이 모델에 근거하면, 이 공간은 다음과 같은 조건에서 안전*합니다. "
-main_panel_six_ft_1 = "6 피트 혹은 2 미터 거리두기 가이드라인에 따르면 이 공간은 "
-main_panel_six_ft_2 = "의 인원이 무기한 생활하여도 안전합니다."
+main_panel_s1_b = html.Span([
+    #TODO: figure out where the superscript 1 goes and put back in
+    # and where to split the sentence between variables
+    html.Span('''100,000 명당 ___명의 감염 유병률의 COVID-19 전파*를 제한하기 위해 이 공간은 '''),
+])
+main_panel_s2_b = ''' 다음 수용 인원을 초과하지 않아야 합니다: '''
 
-main_airb_trans_only_disc = html.Div(["",
+main_panel_s1_c = html.Span([
+    html.Span('''100,000 명당 ___명의 감염 유병률의 COVID-19에 내가 감염 될 가능성을 제한하기 위해 이 '''),
+])
+main_panel_s2_c = ''' 공간은 다음 수용 인원을 초과하지 않아야 합니다: '''
+
+
+main_panel_six_ft_1 = "반면에, 6 피트 (또는 2 미터) 거리 두기 가이드라인에 따르면 수용 인원은  "
+
+#TODO: I think the sentence structure needs to be altered here
+# to allow the ____ to be in the middle of the sentence
+main_panel_six_ft_2 = "로 제한되며 ___ 이후에는 가이드라인*에 위반됩니다."
+
+
+#TODO: check text division
+main_airb_trans_only_disc = html.Div(["가이드 라인은 1 인당 공중 전파의 가능성을 나열된 누적 노출 시간에 따른 위험 허용치 미만으로 제한합니다.",
                                       html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
                                                        children="이 가이드라인은 나열된 누적 시간 동안 한 명의 감염자로부터의 공기 중 전파를 고려한 "
                                                                 "것입니다.",
                                                        target='_blank'), ),
                                       html.Span('''''')], className='airborne-text')
 
+#TODO: check text division
+main_airb_trans_only_disc_basic = html.Div(["*이 가이드 라인은 나열된 누적 노출 시간에 따른 감염자 1 인당 공중 전파 가능성이 위험 허용치 (10 %) 미만이 되도록 제한합니다.  ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="airborne transmissions",
+                                                             target='_blank'), ),
+                                            html.Span('''''')], className='airborne-text')
+
+
+other_risk_modes_desc = html.Div('''다른 위험 시나리오는 고급 모드에서 고려됩니다. 구체적으로, 감염 유병률, 예방 접종 또는 사전 노출을 통해 얻은 면역력, 특정 개인에 대한 위험을 고려할 수 있습니다.''')
+
+#TODO: check text division
+main_airb_trans_only_desc_b = html.Div(["*가이드 라인은 감염된 사람당 한 번의 공중 전파 가능성을 나열된 누적 노출 시간에 따른 위험 허용치 미만으로 제한합니다. ",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="airborne transmission",
+                                                         target='_blank'), ),
+                                        html.Span('''''')], className='airborne-text')
+
+#TODO: check text division
+main_airb_trans_only_desc_c = html.Div(["*가이드 라인은 특정 개인에 대한 공중 전파의 가능성을 나열된 누적 노출 시간에 따른 위험 허용치 미만으로 제한합니다. ",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="airborne transmission",
+                                                         target='_blank'), ),
+                                        html.Span('''''')], className='airborne-text')
+
+
+
+
 # Bottom panels text
+#TODO: double check that the sentence is put together correctly
 n_input_text_1 = "이 공간에 "
-n_input_text_2 = " 명이 있으면, "
-n_input_text_3 = " 동안 안전할 것입니다."
+n_input_text_2 = " 명이 있을 경우, "
+n_input_text_3 = " 시간 뒤 이 가이드라인에 위배됩니다."
 
 t_input_text_1 = "사람들이 이 곳에 약 "
 t_input_text_2 = " 시간 동안 있는다면, 수용 인원은 "
 t_input_text_3 = "으로 제한되어야 합니다."
 
 airb_trans_only_disc = html.Div('''이 가이드라인은 나열된 누적 시간 동안 한 명의 감염자로부터의 공기 중 전파를 고려한 것입니다.''', className='airborne-text')
+
+incidence_rate_refs = html.Div([html.Sup('''1'''),
+                                html.Span('''당신의 지역 유병률을 추정하려면 다음과 같은 몇 가지 유용한 자료를 참조하십시오.'''),
+                                # html.Span(html.A(href=links.link_jhu_dashboard,
+                                #                  children="JHU COVID-19 Dashboard",
+                                #                  target='_blank')),
+                                # html.Span(''', '''),
+                                html.Span(html.A(href=links.link_cdc_dashboard,
+                                                 children="CDC COVID-19 데이터 추적기",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.Span(html.A(href=links.link_jhu_data,
+                                                 children="JHU 코로나 바이러스 리소스 센터",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.A(children="미국 면역 추정치",
+                                       href=links.link_cdc_immunity,
+                                       target='_blank'),
+                                html.Span(", "),
+                                html.A(children="국제 면역 추정치",
+                                       href=links.link_jhu_vaccine,
+                                       target='_blank'),
+                                ], className='airborne-text')
+
+
 
 footer = html.Div([
     html.Div([html.Span('''코로나19 실내 안전 가이드라인은 코로나19의 실내 공기 중 전파의 위험성에 영향을 주는 요인들에 사람들이 친숙해질 
