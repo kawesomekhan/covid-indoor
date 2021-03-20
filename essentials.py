@@ -209,7 +209,7 @@ covid_recovery_time = 14  # Days
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
                 max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, n_max_input_b=2, exp_time_input_b=1,
-                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1):
+                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1, exp_time_input_co2=1, prevalence_co2=1):
     error_msg = ""
 
     desc_file = get_desc_file(language)
@@ -226,13 +226,13 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["viral_deact_rate"]
     elif n_max_input is None or n_max_input < 2 or n_max_input_b is None or n_max_input_b < 2 or n_max_input_c is None or n_max_input_c < 2:
         error_msg = desc_file.error_list["n_max_input"]
-    elif exp_time_input == 0 or exp_time_input is None or exp_time_input_b == 0 or exp_time_input_b is None or exp_time_input_c == 0 or exp_time_input_c is None:
+    elif exp_time_input == 0 or exp_time_input is None or exp_time_input_b == 0 or exp_time_input_b is None or exp_time_input_c == 0 or exp_time_input_c is None or exp_time_input_co2 == 0 or exp_time_input_co2 is None:
         error_msg = desc_file.error_list["exp_time_input"]
     elif air_exchange_rate == 0 or air_exchange_rate is None:
         error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
         error_msg = desc_file.error_list["merv"]
-    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 100000 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 100000:
+    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 100000 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 100000 or prevalence_co2 is None or prevalence_co2 <= 0 or prevalence_co2 >= 100000:
         error_msg = desc_file.error_list["prevalence"]
 
     return error_msg
@@ -325,12 +325,36 @@ def get_model_figure(indoor_model, language):
     return new_fig
 
 
+# Returns the plotly figure based on the supplied indoor model.
+# This specifically outputs safe steady-state CO2 concentration (ppm) vs. exposure time.
+# risk_mode: conditional, prevalence, or personal
+def get_model_figure_co2(indoor_model, risk_mode, language):
+    desc_file = get_desc_file(language)
+    new_df = indoor_model.calc_co2_series(2, 100, 1.0, risk_mode)
+
+    new_fig = go.Figure()
+    new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
+                                 mode='lines',
+                                 name=desc_file.transient_text,
+                                 line=go.scatter.Line(color="#8ad4ed")))
+    new_fig.update_layout(transition_duration=500,
+                          title=desc_file.graph_title_co2, height=500,
+                          xaxis_title=desc_file.graph_xtitle,
+                          yaxis_title=desc_file.graph_ytitle_co2,
+                          font_family="Barlow",
+                          template="simple_white",
+                          hoverlabel=dict(
+                              font_family="Barlow"
+                          ))
+    return new_fig
+
+
 # Returns the big red output text.
 # risk_type: conditional, prevalence, or personal
-# output_type: Return occupancy vs. time or CO2 level vs. time
 # recovery_time: Time to recovery in days
 # If recovery time is -1, will not limit the output.
-def get_model_output_text(indoor_model, risk_type, output_type, recovery_time, language):
+def get_model_output_text(indoor_model, risk_type, recovery_time, language):
+    output_type = 'occupancy'
     desc_file = get_desc_file(language)
     # Check if we should use the normal n vals, or the big n vals
     n_val_series = model_output_n_vals

@@ -81,6 +81,10 @@ six-ft-output {
     color: var(--accent-color);
 }
 
+#adv-co2-output {
+    color: var(--accent-color);
+}
+
 /* Small-width/mobile layout */
 @media only screen and (max-width: 800px) {
     body {

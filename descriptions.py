@@ -154,6 +154,11 @@ pim_header = "Percentage Immune: "
 risk_conditional_desc = "If an infected person enters..."
 risk_prevalence_desc = "Given the prevalence of infection..."
 risk_personal_desc = "To limit my personal risk..."
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 main_panel_s1 = '''To limit COVID-19 transmission* after an infected person enters this space, 
 there should be no more than: '''
@@ -199,6 +204,16 @@ graph_xtitle = "Maximum Exposure Time \u03C4 (hours)"
 graph_ytitle = "Maximum Occupancy N"
 transient_text = "Transient"
 steady_state_text = "Steady-State"
+
+graph_title_co2 = "Safe CO\u2082 Concentration (ppm) vs. Exposure Time"
+graph_ytitle_co2 = "CO\u2082 Concentration (ppm)"
+
+co2_title = "Calculate Safe CO\u2082 Concentration"
+co2_prev_input_1 = "Prevalence: "
+co2_prev_input_2 = " per 100,000"
+co2_calc_1 = "For an exposure time of "
+co2_calc_2 = " hours, the calculated safe steady-state CO\u2082 concentration in this space is "
+co2_calc_3 = "."
 
 main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
                                       html.Span(html.A(href=links.link_docs,

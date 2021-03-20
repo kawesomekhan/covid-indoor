@@ -105,14 +105,6 @@ app.layout = html.Div([
                                      searchable=False,
                                      clearable=False)
                     ]),
-                    html.Div(className='card-settings', children=[
-                        html.Div(html.Span(desc.output_mode_dd, id='output-mode-dd'), className='settings-header'),
-                        dcc.Dropdown(id='output-mode',
-                                     options=desc.output_modes,
-                                     value="occupancy",
-                                     searchable=False,
-                                     clearable=False)
-                    ], id='output-mode-dd-div', style={'display': 'none'}),
                 ]),
 
             ])
@@ -175,15 +167,14 @@ def update_header_and_footer(search):
 # Updates page content and app dropdown based on URL
 @app.callback(
     [Output('page-content', 'children'),
-     Output('app-mode', 'value'),
-     Output('output-mode-dd-div', 'style')],
+     Output('app-mode', 'value')],
     [Input('url', 'pathname')]
 )
 def display_page(pathname):
     if pathname == '/apps/advanced' or pathname == '/apps/advanced/':
-        return [advanced.layout, 'advanced', {'display': 'inline'}]
+        return [advanced.layout, 'advanced']
     else:
-        return [default.layout, 'basic', {'display': 'none'}]
+        return [default.layout, 'basic']
 
 
 # Updates URL based on menu dropdowns (language, units, mode)

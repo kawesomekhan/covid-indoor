@@ -182,6 +182,16 @@ class Indoors:
 
         return df
 
+    # Calculate safe steady-state CO2 concentration (ppm) across a range of exposure times, returning both transient
+    # and steady-state outputs
+    def calc_co2_series(self, t_min, t_max, t_step, risk_mode):
+        df = pd.DataFrame(columns=['exposure_time', 'co2_trans'])
+        for exp_time in numpy.arange(t_min, t_max, t_step):
+            co2_trans = self.calc_co2(self.calc_n_max(exp_time, risk_mode))
+            df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans]}))
+
+        return df
+
     # Get the maximum number of people allowed in the room, based on the six-foot rule.
     def get_six_ft_n(self):
         floor_area = self.physical_params[0]  # ft2
