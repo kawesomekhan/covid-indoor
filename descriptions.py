@@ -75,7 +75,8 @@ error_list = {
     "exp_time_input": "Error: Exposure time must be greater than 0.",
     "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
     "merv": "Error: Filtration System (MERV) cannot be empty.",
-    "prevalence": "Error: Incidence rate must be greater than 0 and less than 100,000."
+    "prevalence": "Error: Incidence rate must be greater than 0 and less than 100,000.",
+    "atm_co2": "Error: Atmospheric CO\u2082 level is required."
 }
 
 # Main Panel Text
@@ -211,9 +212,12 @@ graph_ytitle_co2 = "CO\u2082 Concentration (ppm)"
 co2_title = "Calculate Safe CO\u2082 Concentration"
 co2_prev_input_1 = "Prevalence: "
 co2_prev_input_2 = " per 100,000"
+co2_atm_input_1 = "Atmospheric CO\u2082: "
+co2_atm_input_2 = " ppm"
 co2_calc_1 = "For an exposure time of "
 co2_calc_2 = " hours, the calculated safe steady-state CO\u2082 concentration in this space is "
 co2_calc_3 = "."
+co2_base_string = '{:,.2f} ppm'
 
 main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
                                       html.Span(html.A(href=links.link_docs,

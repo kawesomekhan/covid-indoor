@@ -42,6 +42,7 @@ class Indoors:
     percentage_sus = 1
     sr_age_factor = 1
     sr_strain_factor = 1
+    atm_co2 = 410  # ppm
 
     # Calculated Variables
     room_vol = 0  # ft3
@@ -154,7 +155,7 @@ class Indoors:
     # Output is in parts per million (ppm) of CO2
     def calc_co2(self, n_max):
         breathing_flow_rate = self.physio_params[0]  # m3 / hr
-        return 38000 * breathing_flow_rate * n_max / (self.conc_relax_rate * self.room_vol)  # ppm
+        return (38000 * breathing_flow_rate * n_max / (self.conc_relax_rate * self.room_vol)) + self.atm_co2  # ppm
 
     # Calculate maximum exposure time allowed given a capacity (# people), transient
     def calc_max_time(self, n_max, risk_type='conditional'):
@@ -184,9 +185,10 @@ class Indoors:
 
     # Calculate safe steady-state CO2 concentration (ppm) across a range of exposure times, returning both transient
     # and steady-state outputs
-    def calc_co2_series(self, t_min, t_max, t_step, risk_mode):
+    def calc_co2_series(self, t_min, t_max, t_num, risk_mode):
         df = pd.DataFrame(columns=['exposure_time', 'co2_trans'])
-        for exp_time in numpy.arange(t_min, t_max, t_step):
+        for exp_time in numpy.logspace(math.log(t_min, 10), math.log(t_max, 10), t_num):
+            print("Exp time: " + str(exp_time))
             co2_trans = self.calc_co2(self.calc_n_max(exp_time, risk_mode))
             df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans]}))
 

@@ -205,11 +205,15 @@ model_output_n_vals_big = [25, 100, 250, 500, 1000]
 # Max time reported in the big red text output
 covid_recovery_time = 14  # Days
 
+# Max CO2 concentration reported in CO2 panel (ppm)
+max_co2_conc = 5000  # ppm
+
 
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
                 max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, n_max_input_b=2, exp_time_input_b=1,
-                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1, exp_time_input_co2=1, prevalence_co2=1):
+                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1, exp_time_input_co2=1,
+                prevalence_co2=1, atm_co2=410):
     error_msg = ""
 
     desc_file = get_desc_file(language)
@@ -234,6 +238,8 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["merv"]
     elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 100000 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 100000 or prevalence_co2 is None or prevalence_co2 <= 0 or prevalence_co2 >= 100000:
         error_msg = desc_file.error_list["prevalence"]
+    elif atm_co2 is None:
+        error_msg = desc_file.error_list["atm_co2"]
 
     return error_msg
 
@@ -330,7 +336,7 @@ def get_model_figure(indoor_model, language):
 # risk_mode: conditional, prevalence, or personal
 def get_model_figure_co2(indoor_model, risk_mode, language):
     desc_file = get_desc_file(language)
-    new_df = indoor_model.calc_co2_series(2, 100, 1.0, risk_mode)
+    new_df = indoor_model.calc_co2_series(1, 100, 100, risk_mode)
 
     new_fig = go.Figure()
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
@@ -345,7 +351,11 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
                           template="simple_white",
                           hoverlabel=dict(
                               font_family="Barlow"
-                          ))
+                          ),
+                          hovermode='x')
+    new_fig.update_xaxes(type="log", showspikes=True)
+    new_fig.update_yaxes(type="log", showspikes=True)
+
     return new_fig
 
 
@@ -874,7 +884,7 @@ def did_switch_units(search, floor_area_text, ceiling_height_text):
     if floor_area_text == desc_file.floor_area_text and ceiling_height_text == desc_file.ceiling_height_text:
         curr_units = "british"
     elif floor_area_text == desc_file.floor_area_text_metric and \
-         ceiling_height_text == desc_file.ceiling_height_text_metric:
+            ceiling_height_text == desc_file.ceiling_height_text_metric:
         curr_units = "metric"
     else:
         # Changed languages
@@ -884,8 +894,3 @@ def did_switch_units(search, floor_area_text, ceiling_height_text):
         return curr_units
     else:
         return ""
-
-
-
-
-

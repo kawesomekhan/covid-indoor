@@ -139,7 +139,8 @@ body {
 }
 
 #adv-n-input, #n-input, #n-input-b, #n-input-c, #adv-n-input-b, #adv-n-input-c, #adv-t-input, #t-input,
-#t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c, #adv-prev-input-co2, #adv-exp-time-input-co2 {
+#t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c, #adv-prev-input-co2, #adv-exp-time-input-co2,
+#adv-atm-input-co2 {
     width: var(--big-number-input-width);
 }
 #prev-input-b, #prev-input-c, #adv-prev-input-b, #adv-prev-input-c {
