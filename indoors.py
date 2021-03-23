@@ -188,7 +188,6 @@ class Indoors:
     def calc_co2_series(self, t_min, t_max, t_num, risk_mode):
         df = pd.DataFrame(columns=['exposure_time', 'co2_trans'])
         for exp_time in numpy.logspace(math.log(t_min, 10), math.log(t_max, 10), t_num):
-            print("Exp time: " + str(exp_time))
             co2_trans = self.calc_co2(self.calc_n_max(exp_time, risk_mode))
             df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans]}))
 
