@@ -589,7 +589,12 @@ layout = html.Div(children=[
                                 ),
                                 html.Span(desc.co2_calc_2),
                                 html.Span(id='adv-co2-output'),
-                                html.Span(desc.co2_calc_3)
+                                html.Span(desc.co2_calc_3),
+                                html.Span([
+                                    html.Span(desc.co2_safe_sent_1),
+                                    html.Span(id='adv-co2-output-healthy'),
+                                    html.Span(desc.co2_safe_sent_2)
+                                ], id='adv-safe-sent')
                             ])
                         ]
                     )
@@ -705,6 +710,8 @@ def update_lang_adv(search, window_width):
     [Output('adv-safety-graph', 'figure'),
      Output('adv-co2-output-graph', 'figure'),
      Output('adv-co2-output', 'children'),
+     Output('adv-co2-output-healthy', 'children'),
+     Output('adv-safe-sent', 'style'),
      Output('adv-model-text-1', 'children'),
      Output('adv-model-text-2', 'children'),
      Output('adv-model-text-3', 'children'),
@@ -819,7 +826,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               error_msg, True
+               dash.no_update, dash.no_update, error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
     my_units = ess.get_units(search)
@@ -961,13 +968,22 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     if hasattr(desc_file, 'safe_co2_conc'):
         co2_base_string = desc_file.co2_base_string
 
-    if safe_co2_conc > ess.max_co2_conc:
-        safe_co2_conc_text = ">" + co2_base_string.format(ess.max_co2_conc)
-    else:
-        safe_co2_conc_text = co2_base_string.format(safe_co2_conc)
+    safe_co2_conc_text = co2_base_string.format(safe_co2_conc)
+
+    max_co2_conc = ess.get_safe_resp_co2_limit(exp_time_co2)
+    safe_sentence_viz = False
+    healthy_co2_conc_text = ""
+    if safe_co2_conc > max_co2_conc:
+        safe_sentence_viz = True
+        healthy_co2_conc_text = co2_base_string.format(max_co2_conc)
+
+    safe_sent_style = {'display': 'none'}
+    if safe_sentence_viz:
+        safe_sent_style = {'display': 'inline'}
 
     # Update all relevant display items (figure, red output text)
-    return new_fig, new_fig_co2, safe_co2_conc_text, model_output_text[0], model_output_text[1], model_output_text[2], \
+    return new_fig, new_fig_co2, safe_co2_conc_text, healthy_co2_conc_text, safe_sent_style, \
+           model_output_text[0], model_output_text[1], model_output_text[2], \
            model_output_text[3], \
            model_output_text[4], model_output_text_b[0], model_output_text_b[1], model_output_text_b[2], \
            model_output_text_b[3], model_output_text_b[4], model_output_text_c[0], model_output_text_c[1], \

@@ -16,6 +16,8 @@ import descriptions_ko as desc_ko
 import descriptions_nl as desc_nl
 import descriptions_sv as desc_sv
 
+import numpy
+
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
 
@@ -205,9 +207,10 @@ model_output_n_vals_big = [25, 100, 250, 500, 1000]
 # Max time reported in the big red text output
 covid_recovery_time = 14  # Days
 
-# Max CO2 concentration reported in CO2 panel (ppm)
-max_co2_conc = 5000  # ppm
-
+# Max CO2 concentration that is safe for 8 hours
+max_co2_conc_8hr = 5000  # ppm
+# Max CO2 concentration that is safe for 10 minutes
+max_co2_conc_10min = 30000  # ppm
 
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
@@ -357,6 +360,11 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
     new_fig.update_yaxes(type="log", showspikes=True)
 
     return new_fig
+
+
+# Returns the upper limit on CO2 (ppm) given the exposure time (hr).
+def get_safe_resp_co2_limit(exp_time):
+    return numpy.interp(exp_time, [10 / 60, 8], [max_co2_conc_10min, max_co2_conc_8hr])
 
 
 # Returns the big red output text.

@@ -216,8 +216,11 @@ co2_atm_input_1 = "Atmospheric CO\u2082: "
 co2_atm_input_2 = " ppm"
 co2_calc_1 = "For an exposure time of "
 co2_calc_2 = " hours, the calculated safe steady-state CO\u2082 concentration in this space is "
-co2_calc_3 = "."
+co2_calc_3 = " (based on the guideline)."
 co2_base_string = '{:,.2f} ppm'
+
+co2_safe_sent_1 = "This limit exceeds that for healthy respiratory activity, which is "
+co2_safe_sent_2 = "."
 
 main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
                                       html.Span(html.A(href=links.link_docs,
@@ -321,7 +324,12 @@ about = html.Div([
     course (MOOC) on edX: '''),
               html.A(children="10.S95x Physics of COVID-19 Transmission",
                      href=links.link_mooc,
-                     target='_blank')])
+                     target='_blank')]),
+    html.Br(),
+    html.Div(['''In Basic mode, you can calculate the limits on safe occupancy following the entrance of a single 
+    infected person into an indoor space. In Advanced Mode, you can take into account additional factors, 
+    including infection prevalence and population immunity. Advanced Mode also allows you to assess safe occupancy 
+    based on average CO2 concentration, which is related to the concentration of infectious aerosols.'''])
 ])
 
 # Room Specifications
