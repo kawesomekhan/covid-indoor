@@ -595,7 +595,10 @@ layout = html.Div(children=[
                                     html.Span(id='adv-co2-output-healthy'),
                                     html.Span(desc.co2_safe_sent_2)
                                 ], id='adv-safe-sent')
-                            ])
+                            ]),
+                            html.Div([
+                                desc.co2_safe_footer
+                            ], className='panel-airb-desc')
                         ]
                     )
                 ]

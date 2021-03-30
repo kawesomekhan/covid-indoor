@@ -16,7 +16,9 @@ import descriptions_ko as desc_ko
 import descriptions_nl as desc_nl
 import descriptions_sv as desc_sv
 
+import pandas as pd
 import numpy
+import math
 
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
@@ -207,11 +209,6 @@ model_output_n_vals_big = [25, 100, 250, 500, 1000]
 # Max time reported in the big red text output
 covid_recovery_time = 14  # Days
 
-# Max CO2 concentration that is safe for 8 hours
-max_co2_conc_8hr = 5000  # ppm
-# Max CO2 concentration that is safe for 10 minutes
-max_co2_conc_10min = 30000  # ppm
-
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
                 max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, n_max_input_b=2, exp_time_input_b=1,
@@ -339,13 +336,21 @@ def get_model_figure(indoor_model, language):
 # risk_mode: conditional, prevalence, or personal
 def get_model_figure_co2(indoor_model, risk_mode, language):
     desc_file = get_desc_file(language)
-    new_df = indoor_model.calc_co2_series(1, 100, 100, risk_mode)
+    new_df = indoor_model.calc_co2_series(0.1, 1000, 100, risk_mode)
+    safe_df = pd.DataFrame(columns=['exposure_time', 'co2_safe'])
+    for exp_time in numpy.logspace(math.log(0.1, 10), math.log(1000, 10), 100):
+        safe_co2_limit = get_safe_resp_co2_limit(exp_time)
+        safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
 
     new_fig = go.Figure()
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
                                  mode='lines',
-                                 name=desc_file.transient_text,
+                                 name=desc_file.guideline_trace_text,
                                  line=go.scatter.Line(color="#8ad4ed")))
+    new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
+                                 mode='lines',
+                                 name=desc_file.co2_safe_trace_text,
+                                 line=go.scatter.Line(color="#de1616")))
     new_fig.update_layout(transition_duration=500,
                           title=desc_file.graph_title_co2, height=500,
                           xaxis_title=desc_file.graph_xtitle,
@@ -364,7 +369,12 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
 
 # Returns the upper limit on CO2 (ppm) given the exposure time (hr).
 def get_safe_resp_co2_limit(exp_time):
-    return numpy.interp(exp_time, [10 / 60, 8], [max_co2_conc_10min, max_co2_conc_8hr])
+    # Safety threshold curve, interpolated from USDA threshold values
+    # f(x) = 2000 + a/(t + b)
+    const = 2000  # ppm
+    a = 25636.363641827  # ppm-hr
+    b = 0.545454545606364  # hr
+    return const + a / (exp_time + b)
 
 
 # Returns the big red output text.
