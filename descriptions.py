@@ -76,7 +76,7 @@ error_list = {
     "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
     "merv": "Error: Filtration System (MERV) cannot be empty.",
     "prevalence": "Error: Incidence rate must be greater than 0 and less than 100,000.",
-    "atm_co2": "Error: Atmospheric CO\u2082 level is required."
+    "atm_co2": "Error: Background CO\u2082 level is required."
 }
 
 # Main Panel Text
@@ -214,7 +214,7 @@ graph_ytitle_co2 = "CO\u2082 Concentration (ppm)"
 co2_title = "Calculate Safe CO\u2082 Concentration"
 co2_prev_input_1 = "Prevalence: "
 co2_prev_input_2 = " per 100,000"
-co2_atm_input_1 = "Atmospheric CO\u2082: "
+co2_atm_input_1 = "Background CO\u2082: "
 co2_atm_input_2 = " ppm"
 co2_calc_1 = "For an exposure time of "
 co2_calc_2 = " hours, the calculated safe steady-state CO\u2082 concentration in this space is "
@@ -328,16 +328,16 @@ about = html.Div([
     and risk tolerance (in the other tabs), you can see how to mitigate indoor COVID-19 transmission in different 
     indoor spaces.''')]),
     html.Br(),
-    html.Div([html.Span('''The science behind the app is also taught in a free, self-paced massive, open online 
-    course (MOOC) on edX: '''),
-              html.A(children="10.S95x Physics of COVID-19 Transmission",
-                     href=links.link_mooc,
-                     target='_blank')]),
-    html.Br(),
     html.Div(['''In Basic mode, you can calculate the limits on safe occupancy following the entrance of a single 
     infected person into an indoor space. In Advanced Mode, you can take into account additional factors, 
     including infection prevalence and population immunity. Advanced Mode also allows you to assess safe occupancy 
-    based on average CO2 concentration, which is related to the concentration of infectious aerosols.'''])
+    based on average CO2 concentration, which is related to the concentration of infectious aerosols.''']),
+    html.Br(),
+    html.Div([html.Span('''The science behind the app is also taught in a free, self-paced massive, open online 
+course (MOOC) on edX: '''),
+              html.A(children="10.S95x Physics of COVID-19 Transmission",
+                     href=links.link_mooc,
+                     target='_blank')]),
 ])
 
 # Room Specifications
