@@ -224,8 +224,11 @@ co2_base_string = '{:,.2f} ppm'
 co2_safe_sent_1 = "This limit exceeds that for healthy respiratory activity, which is "
 co2_safe_sent_2 = "."
 
-co2_safe_footer = '''The respiratory safety threshold is interpolated based on recommended limits from the American 
-Conference of Governmental Industrial Hygienists.'''
+co2_safe_footer = html.Span(['''The respiratory safety threshold is interpolated based on ''',
+                             html.A(href=links.link_usda_co2,
+                                    children='''recommended limits from the USDA''',
+                                    target='_blank'),
+                             '''.'''])
 
 main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
                                       html.Span(html.A(href=links.link_docs,
