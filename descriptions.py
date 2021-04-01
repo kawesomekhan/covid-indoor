@@ -59,6 +59,12 @@ app_modes = [
     {'label': "Advanced", 'value': "advanced"},
 ]
 
+output_mode_dd = "Output Mode: "
+output_modes = [
+    {'label': "Safe Occupancy", 'value': "occupancy"},
+    {'label': "Safe CO\u2082 Level", 'value': "co2"},
+]
+
 error_list = {
     "floor_area": "Error: Floor area cannot be empty.",
     "ceiling_height": "Error: Ceiling height cannot be empty.",
@@ -69,7 +75,8 @@ error_list = {
     "exp_time_input": "Error: Exposure time must be greater than 0.",
     "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
     "merv": "Error: Filtration System (MERV) cannot be empty.",
-    "prevalence": "Error: Incidence rate must be greater than 0 and less than 100,000."
+    "prevalence": "Error: Incidence rate must be greater than 0 and less than 100,000.",
+    "atm_co2": "Error: Background CO\u2082 level is required."
 }
 
 # Main Panel Text
@@ -148,6 +155,11 @@ pim_header = "Percentage Immune: "
 risk_conditional_desc = "If an infected person enters..."
 risk_prevalence_desc = "Given the prevalence of infection..."
 risk_personal_desc = "To limit my personal risk..."
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 main_panel_s1 = '''To limit COVID-19 transmission* after an infected person enters this space, 
 there should be no more than: '''
@@ -178,6 +190,7 @@ units_month_one = 'month'
 
 is_past_recovery_base_string = '{n_val} people for >{val:.0f} days,'
 model_output_base_string = '{n_val} people for '
+model_output_base_string_co2 = '{co2:.2f} ppm for '
 nt_bridge_string = " people for "
 tn_bridge_string = " for "
 
@@ -192,6 +205,30 @@ graph_xtitle = "Maximum Exposure Time \u03C4 (hours)"
 graph_ytitle = "Maximum Occupancy N"
 transient_text = "Transient"
 steady_state_text = "Steady-State"
+co2_safe_trace_text = "Respiratory Safety Threshold"
+guideline_trace_text = "Guideline"
+
+graph_title_co2 = "Safe CO\u2082 Concentration (ppm) vs. Exposure Time"
+graph_ytitle_co2 = "CO\u2082 Concentration (ppm)"
+
+co2_title = "Calculate Safe CO\u2082 Concentration"
+co2_prev_input_1 = "Prevalence: "
+co2_prev_input_2 = " per 100,000"
+co2_atm_input_1 = "Background CO\u2082: "
+co2_atm_input_2 = " ppm"
+co2_calc_1 = "For an exposure time of "
+co2_calc_2 = " hours, the calculated safe steady-state CO\u2082 concentration in this space is "
+co2_calc_3 = " (based on the guideline)."
+co2_base_string = '{:,.2f} ppm'
+
+co2_safe_sent_1 = "This limit exceeds that for healthy respiratory activity, which is "
+co2_safe_sent_2 = "."
+
+co2_safe_footer = html.Span(['''The respiratory safety threshold is interpolated based on ''',
+                             html.A(href=links.link_usda_co2,
+                                    children='''recommended limits from the USDA''',
+                                    target='_blank'),
+                             '''.'''])
 
 main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
                                       html.Span(html.A(href=links.link_docs,
@@ -291,11 +328,16 @@ about = html.Div([
     and risk tolerance (in the other tabs), you can see how to mitigate indoor COVID-19 transmission in different 
     indoor spaces.''')]),
     html.Br(),
+    html.Div(['''In Basic mode, you can calculate the limits on safe occupancy following the entrance of a single 
+    infected person into an indoor space. In Advanced Mode, you can take into account additional factors, 
+    including infection prevalence and population immunity. Advanced Mode also allows you to assess safe occupancy 
+    based on average CO2 concentration, which is related to the concentration of infectious aerosols.''']),
+    html.Br(),
     html.Div([html.Span('''The science behind the app is also taught in a free, self-paced massive, open online 
-    course (MOOC) on edX: '''),
+course (MOOC) on edX: '''),
               html.A(children="10.S95x Physics of COVID-19 Transmission",
                      href=links.link_mooc,
-                     target='_blank')])
+                     target='_blank')]),
 ])
 
 # Room Specifications

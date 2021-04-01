@@ -36,7 +36,7 @@ def update_mask_fit_disp: Updates mask fit/compliance filtration display based o
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd, "en")
-
+fig_co2 = ess.get_model_figure(myInd, "en")
 
 # Main App
 layout = html.Div(children=[
@@ -546,6 +546,60 @@ layout = html.Div(children=[
                                     "primary": "#de1616"
                                 })
                         ], style=ess.tabs_card_style
+                    ),
+                    html.Div(
+                        className='card',
+                        id='adv-card-co2',
+                        children=[
+                            html.H4(desc.co2_title),
+                            html.Br(),
+                            html.H5([
+                                html.Span(dcc.Dropdown(id='adv-risk-mode-co2',
+                                                       options=desc.risk_options,
+                                                       value='conditional',
+                                                       searchable=False,
+                                                       clearable=False)),
+                            ], style={'color': '#000000'}),
+                            html.H5([
+                                html.Span(desc.co2_atm_input_1),
+                                html.Span(dcc.Input(id='adv-atm-input-co2',
+                                                    value=410,
+                                                    type='number')),
+                                html.Span(desc.co2_atm_input_2),
+                            ]),
+                            html.H5([
+                                html.Span(desc.co2_prev_input_1),
+                                html.Span(dcc.Input(id='adv-prev-input-co2',
+                                                    value=100,
+                                                    type='number')),
+                                html.Span(desc.co2_prev_input_2),
+                            ], id='adv-co2-prev-div'),
+                            html.Div([
+                                dcc.Graph(
+                                    id='adv-co2-output-graph',
+                                    figure=fig_co2
+                                ),
+                            ]),
+                            html.H3([
+                                html.Span(desc.co2_calc_1),
+                                html.Span(
+                                    dcc.Input(id='adv-exp-time-input-co2',
+                                              value=8,
+                                              type='number')
+                                ),
+                                html.Span(desc.co2_calc_2),
+                                html.Span(id='adv-co2-output'),
+                                html.Span(desc.co2_calc_3),
+                                html.Span([
+                                    html.Span(desc.co2_safe_sent_1),
+                                    html.Span(id='adv-co2-output-healthy'),
+                                    html.Span(desc.co2_safe_sent_2)
+                                ], id='adv-safe-sent')
+                            ]),
+                            html.Div([
+                                desc.co2_safe_footer
+                            ], className='panel-airb-desc')
+                        ]
                     )
                 ]
             ),
@@ -657,6 +711,10 @@ def update_lang_adv(search, window_width):
 # See indoors.py def set_default_params(self) for parameter descriptions.
 @app.callback(
     [Output('adv-safety-graph', 'figure'),
+     Output('adv-co2-output-graph', 'figure'),
+     Output('adv-co2-output', 'children'),
+     Output('adv-co2-output-healthy', 'children'),
+     Output('adv-safe-sent', 'style'),
      Output('adv-model-text-1', 'children'),
      Output('adv-model-text-2', 'children'),
      Output('adv-model-text-3', 'children'),
@@ -740,6 +798,10 @@ def update_lang_adv(search, window_width):
      Input('adv-t-input-c', 'value'),
      Input('adv-prev-input-b', 'value'),
      Input('adv-prev-input-c', 'value'),
+     Input('adv-risk-mode-co2', 'value'),
+     Input('adv-prev-input-co2', 'value'),
+     Input('adv-atm-input-co2', 'value'),
+     Input('adv-exp-time-input-co2', 'value'),
      Input('url', 'search')],
     [State('adv-floor-area-text', 'children'),
      State('adv-ceiling-height-text', 'children')]
@@ -748,11 +810,13 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                   breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, sr_age_factor,
                   sr_strain_factor, pim_input, def_aerosol_radius,
                   max_viral_deact_rate, n_max_input, exp_time_input, n_max_input_b, exp_time_input_b, n_max_input_c,
-                  exp_time_input_c, prevalence_b, prevalence_c, search, floor_area_text, ceiling_height_text):
+                  exp_time_input_c, prevalence_b, prevalence_c, risk_mode_co2, prevalence_co2, atm_co2, exp_time_co2,
+                  search, floor_area_text, ceiling_height_text):
     language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
                                 max_viral_deact_rate, language, n_max_input, exp_time_input, n_max_input_b,
-                                exp_time_input_b, n_max_input_c, exp_time_input_c, prevalence_b, prevalence_c)
+                                exp_time_input_b, n_max_input_c, exp_time_input_c, prevalence_b, prevalence_c,
+                                exp_time_co2, prevalence_co2, atm_co2)
 
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
@@ -764,7 +828,8 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
     my_units = ess.get_units(search)
@@ -897,8 +962,32 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
         t_input_pretext_c = ""
         t_input_posttext_c = desc_file.tn_bridge_string + n_max_text_c
 
+    # Now take care of the CO2 panel
+    myInd.atm_co2 = atm_co2
+    myInd.prevalence = prevalence_co2 / 100000
+    new_fig_co2 = ess.get_model_figure_co2(myInd, risk_mode_co2, language)
+    safe_co2_conc = myInd.calc_co2(myInd.calc_n_max(exp_time_co2, risk_mode_co2))
+    co2_base_string = '{:,.2f} ppm'
+    if hasattr(desc_file, 'safe_co2_conc'):
+        co2_base_string = desc_file.co2_base_string
+
+    safe_co2_conc_text = co2_base_string.format(safe_co2_conc)
+
+    max_co2_conc = ess.get_safe_resp_co2_limit(exp_time_co2)
+    safe_sentence_viz = False
+    healthy_co2_conc_text = ""
+    if safe_co2_conc > max_co2_conc:
+        safe_sentence_viz = True
+        healthy_co2_conc_text = co2_base_string.format(max_co2_conc)
+
+    safe_sent_style = {'display': 'none'}
+    if safe_sentence_viz:
+        safe_sent_style = {'display': 'inline'}
+
     # Update all relevant display items (figure, red output text)
-    return new_fig, model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
+    return new_fig, new_fig_co2, safe_co2_conc_text, healthy_co2_conc_text, safe_sent_style, \
+           model_output_text[0], model_output_text[1], model_output_text[2], \
+           model_output_text[3], \
            model_output_text[4], model_output_text_b[0], model_output_text_b[1], model_output_text_b[2], \
            model_output_text_b[3], model_output_text_b[4], model_output_text_c[0], model_output_text_c[1], \
            model_output_text_c[2], model_output_text_c[3], model_output_text_c[4], six_ft_text, six_ft_exp_time, \
@@ -907,11 +996,24 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            interest_output[0], interest_output[1], interest_output[2], interest_output[3], interest_output[4], \
            interest_output[5], interest_output[6], interest_output[7], interest_output[8], interest_output[9], \
            interest_output[10], interest_output[11], interest_output[12], interest_output[13], interest_output[14], \
-           n_input_pretext, n_input_posttext, t_input_pretext, t_input_posttext,\
+           n_input_pretext, n_input_posttext, t_input_pretext, t_input_posttext, \
            n_input_pretext_b, n_input_posttext_b, t_input_pretext_b, t_input_posttext_b, \
            n_input_pretext_c, n_input_posttext_c, t_input_pretext_c, t_input_posttext_c, \
            qb_text, cq_text, \
            error_msg, False
+
+
+# Update prevalence CO2 input visibility depending on selected risk mode
+@app.callback(
+    [Output('adv-co2-prev-div', 'style')],
+    [Input('adv-risk-mode-co2', 'value')]
+)
+def update_prev_co2_vis(risk_mode_co2):
+    vis_style = {'display': 'inline'}
+    if risk_mode_co2 == 'conditional':
+        vis_style = {'display': 'none'}
+
+    return [vis_style]
 
 
 # Update options based on selected presets, also if units changed

@@ -16,6 +16,10 @@ import descriptions_ko as desc_ko
 import descriptions_nl as desc_nl
 import descriptions_sv as desc_sv
 
+import pandas as pd
+import numpy
+import math
+
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
 
@@ -205,11 +209,11 @@ model_output_n_vals_big = [25, 100, 250, 500, 1000]
 # Max time reported in the big red text output
 covid_recovery_time = 14  # Days
 
-
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
                 max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, n_max_input_b=2, exp_time_input_b=1,
-                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1):
+                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1, exp_time_input_co2=1,
+                prevalence_co2=1, atm_co2=410):
     error_msg = ""
 
     desc_file = get_desc_file(language)
@@ -226,14 +230,16 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["viral_deact_rate"]
     elif n_max_input is None or n_max_input < 2 or n_max_input_b is None or n_max_input_b < 2 or n_max_input_c is None or n_max_input_c < 2:
         error_msg = desc_file.error_list["n_max_input"]
-    elif exp_time_input == 0 or exp_time_input is None or exp_time_input_b == 0 or exp_time_input_b is None or exp_time_input_c == 0 or exp_time_input_c is None:
+    elif exp_time_input == 0 or exp_time_input is None or exp_time_input_b == 0 or exp_time_input_b is None or exp_time_input_c == 0 or exp_time_input_c is None or exp_time_input_co2 == 0 or exp_time_input_co2 is None:
         error_msg = desc_file.error_list["exp_time_input"]
     elif air_exchange_rate == 0 or air_exchange_rate is None:
         error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
         error_msg = desc_file.error_list["merv"]
-    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 100000 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 100000:
+    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 100000 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 100000 or prevalence_co2 is None or prevalence_co2 <= 0 or prevalence_co2 >= 100000:
         error_msg = desc_file.error_list["prevalence"]
+    elif atm_co2 is None:
+        error_msg = desc_file.error_list["atm_co2"]
 
     return error_msg
 
@@ -325,10 +331,74 @@ def get_model_figure(indoor_model, language):
     return new_fig
 
 
+# Returns the plotly figure based on the supplied indoor model.
+# This specifically outputs safe steady-state CO2 concentration (ppm) vs. exposure time.
+# risk_mode: conditional, prevalence, or personal
+def get_model_figure_co2(indoor_model, risk_mode, language):
+    desc_file = get_desc_file(language)
+    new_df = indoor_model.calc_co2_series(0.1, 1000, 100, risk_mode)
+    safe_df = pd.DataFrame(columns=['exposure_time', 'co2_safe'])
+    for exp_time in numpy.logspace(math.log(0.1, 10), math.log(1000, 10), 100):
+        safe_co2_limit = get_safe_resp_co2_limit(exp_time)
+        safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
+
+    new_fig = go.Figure()
+    guideline_trace_text = desc.guideline_trace_text
+    co2_safe_trace_text = desc.co2_safe_trace_text
+    graph_title_co2 = desc.graph_title_co2
+    graph_ytitle_co2 = desc.graph_ytitle_co2
+    if hasattr(desc_file, "guideline_trace_text"):
+        guideline_trace_text = desc_file.guideline_trace_text
+
+    if hasattr(desc_file, "co2_safe_trace_text"):
+        co2_safe_trace_text = desc_file.co2_safe_trace_text
+
+    if hasattr(desc_file, "graph_title_co2"):
+        graph_title_co2 = desc_file.graph_title_co2
+
+    if hasattr(desc_file, "graph_ytitle_co2"):
+        graph_ytitle_co2 = desc_file.graph_ytitle_co2
+
+    new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
+                                 mode='lines',
+                                 name=guideline_trace_text,
+                                 line=go.scatter.Line(color="#8ad4ed")))
+    new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
+                                 mode='lines',
+                                 name=co2_safe_trace_text,
+                                 line=go.scatter.Line(color="#de1616")))
+    new_fig.update_layout(transition_duration=500,
+                          title=graph_title_co2, height=500,
+                          xaxis_title=desc_file.graph_xtitle,
+                          yaxis_title=graph_ytitle_co2,
+                          font_family="Barlow",
+                          template="simple_white",
+                          hoverlabel=dict(
+                              font_family="Barlow"
+                          ),
+                          hovermode='x')
+    new_fig.update_xaxes(type="log", showspikes=True)
+    new_fig.update_yaxes(type="log", showspikes=True)
+
+    return new_fig
+
+
+# Returns the upper limit on CO2 (ppm) given the exposure time (hr).
+def get_safe_resp_co2_limit(exp_time):
+    # Safety threshold curve, interpolated from USDA threshold values
+    # f(x) = 2000 + a/(t + b)
+    const = 2000  # ppm
+    a = 25636.363641827  # ppm-hr
+    b = 0.545454545606364  # hr
+    return const + a / (exp_time + b)
+
+
 # Returns the big red output text.
+# risk_type: conditional, prevalence, or personal
 # recovery_time: Time to recovery in days
 # If recovery time is -1, will not limit the output.
 def get_model_output_text(indoor_model, risk_type, recovery_time, language):
+    output_type = 'occupancy'
     desc_file = get_desc_file(language)
     # Check if we should use the normal n vals, or the big n vals
     n_val_series = model_output_n_vals
@@ -348,11 +418,22 @@ def get_model_output_text(indoor_model, risk_type, recovery_time, language):
         else:
             max_time = indoor_model.calc_max_time(n_val, risk_type)  # hours
             time_text = time_to_text(max_time, True, recovery_time, language)
-            if language in sov_languages:
-                base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
+            safe_co2 = indoor_model.calc_co2(n_val)
+
+            if output_type == 'occupancy':
+                if language in sov_languages:
+                    base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
+                else:
+                    base_string = desc_file.model_output_base_string + time_text
+
+                model_output_text[index] = base_string.format(n_val=n_val)
             else:
-                base_string = desc_file.model_output_base_string + time_text
-            model_output_text[index] = base_string.format(n_val=n_val)
+                if language in sov_languages:
+                    base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string_co2
+                else:
+                    base_string = desc_file.model_output_base_string_co2 + time_text
+
+                model_output_text[index] = base_string.format(co2=safe_co2)
 
         index += 1
 
@@ -545,7 +626,6 @@ def search_to_params(search):
     search = search[1:]
 
     params_raw = search.split("&")
-
     for param in params_raw:
         param_split = param.split("=")
         output_dict[param_split[0]] = param_split[1]
@@ -838,7 +918,7 @@ def did_switch_units(search, floor_area_text, ceiling_height_text):
     if floor_area_text == desc_file.floor_area_text and ceiling_height_text == desc_file.ceiling_height_text:
         curr_units = "british"
     elif floor_area_text == desc_file.floor_area_text_metric and \
-         ceiling_height_text == desc_file.ceiling_height_text_metric:
+            ceiling_height_text == desc_file.ceiling_height_text_metric:
         curr_units = "metric"
     else:
         # Changed languages
@@ -848,8 +928,3 @@ def did_switch_units(search, floor_area_text, ceiling_height_text):
         return curr_units
     else:
         return ""
-
-
-
-
-

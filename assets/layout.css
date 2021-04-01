@@ -74,14 +74,16 @@ body {
     display: grid;
     grid-template-rows: 1fr auto;
 }
-.panel-main-output {
-
-}
 /* Card Footer/Disclaimer Text */
 .airborne-text {
     bottom: 1em;
 }
 
+/* CO2 Panel Grid */
+.grid-co2-panel {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
 
 /* Main Grid */
 .grid {
@@ -103,6 +105,13 @@ body {
 #card-tab, #adv-card-tab {
     grid-row-start: 1;
     grid-row-end: 3;
+}
+
+#adv-risk-mode-co2 {
+    max-width: 500px;
+}
+#adv-co2-prev-div {
+    padding-top: 1em;
 }
 
 /* Tabs */
@@ -130,7 +139,8 @@ body {
 }
 
 #adv-n-input, #n-input, #n-input-b, #n-input-c, #adv-n-input-b, #adv-n-input-c, #adv-t-input, #t-input,
-#t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c {
+#t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c, #adv-prev-input-co2, #adv-exp-time-input-co2,
+#adv-atm-input-co2 {
     width: var(--big-number-input-width);
 }
 #prev-input-b, #prev-input-c, #adv-prev-input-b, #adv-prev-input-c {
