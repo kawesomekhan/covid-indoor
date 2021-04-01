@@ -105,7 +105,7 @@ presets_human = [
 
 curr_risk_header = "Tolerance rizika: "
 risk_tol_marks = {
-    0.01: {'label': '0.01: Bezpeč-nější', 'style': {'max-width': '50px'}},
+    # 0.01: {'label': '0.01: Bezpeč-nější', 'style': {'max-width': '50px'}},
     0.1: {'label': '0.10: Bezpečnější', 'style': {'max-width': '50px'}},
     1: {'label': '1.00: Nebezpečné'}
 }
@@ -177,6 +177,8 @@ units_month_one = 'měsíc'
 
 is_past_recovery_base_string = '{n_val} lidé po dobu >{val:.0f} dní,'
 model_output_base_string = '{n_val} lidí po dobu '
+nt_bridge_string = " lidí po dobu "
+tn_bridge_string = " po dobu "
 
 main_panel_six_ft_1 = "Naopak pravidlo dvoumetrových (6 stop) rozestupů by omezilo kapacitu místnosti na "
 main_panel_six_ft_2 = " což by porušilo tato doporučení* po "
@@ -191,14 +193,42 @@ transient_text = "Přechodný stav"
 steady_state_text = "Ustálený stav"
 
 main_airb_trans_only_disc = html.Div(["*",
-                                      html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
-                                                       children="Doporučení jsou založena na předpokladu, že se "
-                                                                "infekce šíří vzduchem od jedné nakažené osoby "
-                                                                "kumulativně po specifikovanou dobu vystavení.",
+                                      html.Span(html.A(href=links.link_docs,
+                                                       children='''Tato doporučení omezují pravděpodobnost nákazy na 
+                                                       jednu osobu při přenosu vzduchem na menší míru, 
+                                                       než je tolerance rizika, a to kumulativně za celou dobu 
+                                                       vystavení nákaze.''',
                                                        target='_blank'), ),
                                       html.Span('''''')], className='airborne-text')
+main_airb_trans_only_disc_basic = html.Div(["",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children='''*Tato doporučení omezují pravděpodobnost 
+                                                             nákazy od nakažené osoby při přenosu vzduchem na méně 
+                                                             než 10% (tolerance rizika), a to kumulativně za celou 
+                                                             dobu vystavení nákaze.''',
+                                                             target='_blank'), ),
+                                            html.Span('''''')], className='airborne-text')
 
-other_risk_modes_desc = html.Div('''Další scénáře rizik jsou uvažovány v Rozšířeném módu. Lze upřesňovat výskyt (prevalenci) infekce v populaci, nabytou imunitu získanou očkováním, předchozí čas vystavení nákaze či nastavení rizika pro dotyčnou osobu.''')
+other_risk_modes_desc = html.Div('''Další scénáře rizik jsou uvažovány v Rozšířeném módu. Lze upřesňovat výskyt (
+prevalenci) infekce v populaci, nabytou imunitu získanou očkováním, předchozí čas vystavení nákaze či nastavení 
+rizika pro dotyčnou osobu.''')
+
+main_airb_trans_only_desc_b = html.Div(["",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children='''Tato doporučení omezují pravděpodobnost nákazy 
+                                                         od nakažené osoby při přenosu vzduchem na míru menší, 
+                                                         než je tolerance rizika, a to kumulativně za celou dobu 
+                                                         vystavení nákaze.''',
+                                                         target='_blank'), ),
+                                        html.Span('''''')], className='airborne-text')
+main_airb_trans_only_desc_c = html.Div(["",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children='''Tato doporučení omezují pravděpodobnost nákazy 
+                                                         jedné osoby při přenosu vzduchem na na míru menší, 
+                                                         než je tolerance rizika, a to kumulativně za celou dobu 
+                                                         vystavení nákaze.''',
+                                                         target='_blank'), ),
+                                        html.Span('''''')], className='airborne-text')
 
 airb_trans_only_disc = html.Div('''Doporučení jsou založena na předpokladu, že se infekce šíří vzduchem od jedné 
 nakažené osoby kumulativně po specifikovanou dobu vystavení.''', className='airborne-text')
@@ -229,7 +259,8 @@ incidence_rate_refs = html.Div([html.Sup('''1'''),
 # Bottom panels text
 n_input_text_1 = "Pokud je v této místnosti "
 n_max_base_string = ' {:.0f} osob'
-n_input_text_2 = " osob, měly by být v bezpečí po dobu "
+n_max_overflow_base_string = ' >{:.0f} osob'
+n_input_text_2 = " osob, tato doporučení* by byla porušena po "
 n_input_text_3 = "."
 
 t_input_text_1 = "Pokud zde lidé stráví přibližně "
@@ -515,13 +546,14 @@ values_interest_header = "Vypočtené užitečné hodnoty"
 values_interest_desc = html.Div([
     html.H5("Co přesně aplikace počítá?"),
     html.Div([
-        html.Div([html.Span('''Pro zadanou toleranci rizika přenosu infekce vzduchem počítá aplikace maximální 
-        kumulativní dobu vystavení, tedy součin počtu osob v místnosti a doby, po kterou jsou v přítomnosti 
-        infikované osoby. Kromě toho aplikace také vypočítá další příbuzné veličiny definované v '''),
+        html.Div([html.Span('''Aplikace počítá nejvyšší přípustný kumulativní čas vystavení nákaze, který je získáván 
+        součinem počtu osob v místnosti a stráveného času ve vnitřním prostoru. Šíření COVIDu-19 je omezeno 
+        požadavkem, že odhadovaný počet přenosu na jednu nakaženou osobu, tzv. reprodukční číslo pro vnitřní 
+        prostory, je nižší než zvolená tolerance rizika. Aplikace též vypočítává další veličiny (definované v '''),
                   html.A(children="článku",
                          href=link_paper,
                          target='_blank'),
-                  html.Span(''', které mohou být zajímavé.''')]),
+                  html.Span('''), které mohou být užitečné:''')]),
     ], className='faq-answer'),
 ])
 relative_sus_label = html.Span(["Relativní náchylnost k nákaze s", html.Sub('r'), ": "])
