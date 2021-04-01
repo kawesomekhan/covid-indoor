@@ -351,7 +351,7 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
         guideline_trace_text = desc_file.guideline_trace_text
 
     if hasattr(desc_file, "co2_safe_trace_text"):
-        guideline_trace_text = desc_file.co2_safe_trace_text
+        co2_safe_trace_text = desc_file.co2_safe_trace_text
 
     if hasattr(desc_file, "graph_title_co2"):
         graph_title_co2 = desc_file.graph_title_co2
