@@ -343,18 +343,34 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
         safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
 
     new_fig = go.Figure()
+    guideline_trace_text = desc.guideline_trace_text
+    co2_safe_trace_text = desc.co2_safe_trace_text
+    graph_title_co2 = desc.graph_title_co2
+    graph_ytitle_co2 = desc.graph_ytitle_co2
+    if hasattr(desc_file, "guideline_trace_text"):
+        guideline_trace_text = desc_file.guideline_trace_text
+
+    if hasattr(desc_file, "co2_safe_trace_text"):
+        guideline_trace_text = desc_file.co2_safe_trace_text
+
+    if hasattr(desc_file, "graph_title_co2"):
+        graph_title_co2 = desc_file.graph_title_co2
+
+    if hasattr(desc_file, "graph_ytitle_co2"):
+        graph_ytitle_co2 = desc_file.graph_ytitle_co2
+
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
                                  mode='lines',
-                                 name=desc_file.guideline_trace_text,
+                                 name=guideline_trace_text,
                                  line=go.scatter.Line(color="#8ad4ed")))
     new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
                                  mode='lines',
-                                 name=desc_file.co2_safe_trace_text,
+                                 name=co2_safe_trace_text,
                                  line=go.scatter.Line(color="#de1616")))
     new_fig.update_layout(transition_duration=500,
-                          title=desc_file.graph_title_co2, height=500,
+                          title=graph_title_co2, height=500,
                           xaxis_title=desc_file.graph_xtitle,
-                          yaxis_title=desc_file.graph_ytitle_co2,
+                          yaxis_title=graph_ytitle_co2,
                           font_family="Barlow",
                           template="simple_white",
                           hoverlabel=dict(
