@@ -28,7 +28,8 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 # Languages where the time comes before the occupancy in the big red output (SOV order)
 sov_languages = ["hi"]
 
-normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
+normal_credits = '''William H. Green, Matthew Haefner, 
+                 David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
 translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, Henrik Bruus, John Bush, 
                         Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, 
