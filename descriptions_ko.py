@@ -1,4 +1,5 @@
 import dash_html_components as html
+import descriptions_links as links
 
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
@@ -126,10 +127,12 @@ units_months = '개월'
 units_hr_one = '시간'
 units_min_one = '분'
 units_day_one = '일'
-units_months_one = '개월'
+units_month_one = '개월'
 
 is_past_recovery_base_string = '{n_val} 명의 인원이 >{val:.0f} 일 동안 생활,'
 model_output_base_string = '{n_val} 명의 인원이 '
+nt_bridge_string = " 명의 인원이 "
+tn_bridge_string = " "
 
 curr_room_header = "실내 공간 종류:"
 presets = [
