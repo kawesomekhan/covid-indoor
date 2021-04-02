@@ -34,7 +34,7 @@ languages = [
     {'label': "Magyar", 'value': "hu"},
     # {'label': "Nederlands", 'value': "nl"},
     {'label': "Svenska", 'value': "sv"},
-    {'label': "简体中文", 'value': "zh", 'disabled': True},
+    {'label': "简体中文", 'value': "zh"},
 ]
 
 # Used for Heroku deployment
