@@ -17,7 +17,7 @@ recirc_type_output_base = "시간 당 {:.1f} 회 공기 재순환"
 
 # Default dropdown options shared between basic mode and advanced mode
 humidity_marks = {
-    0: {'label': '0%: 매우 건조함', 'style': {'max-width': '50px'}},
+    0.01: {'label': '1%: 매우 건조함', 'style': {'max-width': '50px'}},
     0.2: {'label': '20%: 기내', 'style': {'max-width': '25px'}},
     0.3: {'label': '30%: 건조함', 'style': {'max-width': '25px'}},
     0.6: {'label': '60%: 평균'},
