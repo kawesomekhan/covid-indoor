@@ -1,4 +1,5 @@
 import dash_html_components as html
+import descriptions_links as links
 
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
@@ -7,13 +8,12 @@ descriptions_zh: Simplified Chinese
 
 """
 
-vent_type_output_base = "{:.0f} ACH"
 filt_type_output_base = "MERV {:.0f}"
 recirc_type_output_base = "{:.1f} 再循环换气率"
 
 # Default dropdown options shared between basic mode and advanced mode
 humidity_marks = {
-    0: {'label': '0%: 非常干', 'style': {'max-width': '25px'}},
+    0.01: {'label': '1%: 非常干', 'style': {'max-width': '25px'}},
     0.2: {'label': '20%: 飞机', 'style': {'max-width': '50px'}},
     0.3: {'label': '30%: 干'},
     0.6: {'label': '60%: 一般'},
@@ -23,6 +23,7 @@ humidity_marks = {
 exertion_types = [
     {'label': "休息", 'value': 0.49},
     {'label': "站立", 'value': 0.54},
+    {'label': "唱歌", 'value': 1},
     {'label': "低强度运动", 'value': 1.38},
     {'label': "中等强度运动", 'value': 2.35},
     {'label': "高强度运动", 'value': 3.30},
@@ -43,19 +44,18 @@ expiratory_types = [
 ]
 
 mask_type_marks = {
-    0: {'label': "0% (无，或者面罩)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (粗棉)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (真丝，法兰绒，雪纺)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (医用口罩，棉口罩)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (N95 呼吸器)", 'style': {'max-width': '50px'}},
+    0: {'label': "0% (无，面罩)", 'style': {'max-width': '75px'}},
+    0.5: {'label': "50% (棉布，毛绒)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "70% (多层棉质，丝质)", 'style': {'max-width': '75px'}},
+    0.90: {'label': "90% (一次性手术口罩)", 'style': {'max-width': '75px'}},
+    # 0.99: {'label': "99% (N95 resp-irator)", 'style': {'max-width': '50px'}},
 }
-
 mask_types = [
-    {'label': "无，或者面罩", 'value': 0},
-    {'label': "粗棉", 'value': 0.1},
-    {'label': "真丝，法兰绒，雪纺", 'value': 0.5},
-    {'label': "医用口罩，棉口罩", 'value': 0.9},
-    {'label': "N95 呼吸器", 'value': 0.95},
+    {'label': "无，面罩", 'value': 0},
+    {'label': "棉布，毛绒", 'value': 0.5},
+    {'label': "多层棉质，丝质", 'value': 0.7},
+    {'label': "一次性手术口罩", 'value': 0.9},
+    {'label': "N95呼吸器", 'value': 0.99},
 ]
 
 mask_fit_marks = {
@@ -71,6 +71,7 @@ risk_tol_marks = {
 }
 
 n_max_base_string = ' {:.0f} 人'
+n_max_overflow_base_string = ' >{:.0f} 人'
 
 ventilation_types = [
     {'label': "关闭窗户", 'value': 0.3},
@@ -117,23 +118,97 @@ six_ft_base_string_one = ' {} 个人'
 units_hr = '小时'
 units_min = '分钟'
 units_days = '天'
+units_months = '月'
 
 units_hr_one = '小时'
 units_min_one = '分钟'
 units_day_one = '天'
+units_month_one = '月'
 
 is_past_recovery_base_string = '{n_val} 人，>{val:.0f} 天'
 model_output_base_string = '{n_val} 人，'
+nt_bridge_string = " 人， "
+tn_bridge_string = " "
 
 presets = [
     {'label': "自定义", 'value': 'custom'},
     {'label': "郊区的房子", 'value': 'house'},
     {'label': "餐馆", 'value': 'restaurant'},
-    {'label': "安静的办公室", 'value': 'office'},
+    {'label': "办公室", 'value': 'office'},
     {'label': "课堂", 'value': 'classroom'},
-    {'label': "纽约市地铁", 'value': 'subway'},
-    {'label': "波音737", 'value': 'airplane'},
+    {'label': "客厅", 'value': 'living-room'},
+    {'label': "地铁", 'value': 'subway'},
+    {'label': "飞机", 'value': 'airplane'},
     {'label': "教堂", 'value': 'church'},
+]
+
+curr_human_header = "人的行为: "
+presets_human = [
+    {'label': "自定义", 'value': 'custom'},
+    {'label': "戴口罩休息", 'value': 'masks-1'},
+    {'label': "戴口罩讲话", 'value': 'masks-2'},
+    {'label': "戴口罩运动", 'value': 'masks-3'},
+    {'label': "不戴口罩休息", 'value': 'no-masks-1'},
+    {'label': "不戴口罩讲话", 'value': 'no-masks-2'},
+    {'label': "不戴口罩运动", 'value': 'no-masks-3'},
+    {'label': "不戴口罩唱歌", 'value': 'singing-1'},
+]
+
+curr_risk_header = "风险承受能力: "
+# presets_risk = [
+#     {'label': "Low", 'value': 0.01},
+#     {'label': "Medium", 'value': 0.1},
+#     {'label': "High", 'value': 1},
+# ]
+risk_tol_marks = {
+    # 0.01: {'label': '0.01: Safer', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: 更安全', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: 不安全'}
+}
+
+# risk_tolerance_text = "Risk Tolerance: "
+# risk_tol_desc = html.Div('''More vulnerable populations such as the elderly or those with preexisting medical
+# conditions require a lower risk tolerance (~0.01). A higher risk tolerance will mean more expected
+# transmissions during the expected occupancy period (see FAQ for details).''', style={'font-size': '13px',
+#                                                                                      'margin-left': '20px'})
+
+curr_age_header = "年龄阶层: "
+presets_age = [
+    {'label': "儿童（<15岁）", 'value': 0.23},
+    {'label': "成人（15-64岁）", 'value': 0.68},
+    {'label': "老年人（> 64岁）", 'value': 1}
+]
+age_group_marks = {
+    0.23: {'label': '0.23: 儿童（<15岁）', 'style': {'max-width': '75px'}},
+    0.68: {'label': '0.68: 成人（15-64岁）', 'style': {'max-width': '75px'}},
+    1: {'label': '1.00: 老年人（> 64岁）', 'style': {'width': '75px'}}
+}
+
+curr_strain_header = "病毒株: "
+presets_strain = [
+    # {'label': "SARS-CoV-1", 'value': 0.1},
+    {'label': "SARS-CoV-2（武汉毒株）", 'value': 1},
+    {'label': "SARS-CoV-2 - B.1.1.7（英国毒株）", 'value': 1.58}
+]
+viral_strain_marks = {
+    1: {'label': '1.0: 武汉', 'style': {'max-width': '100px'}},
+    1.58: {'label': '1.58: B.1.1.7 /英国'}
+}
+
+pim_header = "免疫率: "
+# pim_marks = {
+#     0: {'label': '0% (basic mode)'},
+#     0.33: {'label': '33% (default)'},
+#     1: {'label': '100%'}
+# }
+
+risk_conditional_desc = "如果感染者进入…"
+risk_prevalence_desc = "在给定的感染率下..."
+risk_personal_desc = "为了减少我的风险…"
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
 ]
 
 error_list = {
@@ -145,7 +220,8 @@ error_list = {
     "n_max_input": "错误：人数不能少于2。",
     "exp_time_input": "错误：暴露时间必须大于0。",
     "air_exchange_rate": "错误：通风率（ACH）必须大于0。",
-    "merv": "错误：过滤系统（MERV）不能为空。"
+    "merv": "错误：过滤系统（MERV）不能为空。",
+    "prevalence": "错误：感染率（每十万人的感染人数）必须大于0且小于100,000。",
 }
 
 # Header
@@ -204,10 +280,10 @@ app_modes = [
 
 # Tabs
 about_header = "关于"
-room_header = "房间规格"
-human_header = "人的行为"
+room_header = "房间规格-详细信息:"
+human_header = "人的行为-详细信息："
 faq_header = "常见问题"
-other_io = "其他输入/输出"
+other_io = "其他参数"
 
 # About
 about = html.Div([
@@ -228,6 +304,11 @@ about = html.Div([
                      target='_blank'),
               html.Span('''来计算室内空间的安全暴露时间和可容纳人数。通过调整房间规格，通风率和过滤率，使用口罩情况，呼吸活动和风险承受能力
                            （在其他选项卡中），您可以了解如何减轻室内新冠肺炎传播。''')]),
+    html.Br(),
+    html.Div([html.Span('''该应用程序背后的科学基础已上线edX上的慕课（MOOC, 免费且自定进度的大规模开放在线课堂）：'''),
+              html.A(children="10.S95x 新冠肺炎传播的物理原理。",
+                     href=links.link_mooc,
+                     target='_blank')]),
 ])
 
 # Room Specifications
@@ -238,7 +319,9 @@ ceiling_height_text = "平均天花板高度（英尺）："
 ceiling_height_text_metric = "平均天花板高度 (m): "
 
 ventilation_text = "通风系统: "
-ventilation_text_adv = "通风系统 (ACH): "
+ventilation_text_adv = html.Span(["通风系统 (hr", html.Sup("-1"), ", 户外 ACH): "])
+vent_type_output_base = "{:.1f} ACH"
+vent_type_output_units = html.Span(["hr", html.Sup("-1"), " (户外 ACH)"])
 
 filtration_text = "过滤系统: "
 filtration_text_adv = "过滤系统 (MERV): "
@@ -251,7 +334,7 @@ humidity_text = "相对湿度: "
 need_more_ctrl_text = '''需要控制更多参数吗？使用页面顶部的下拉菜单切换到高级模式。'''
 
 # Human Behavior
-exertion_text = "运动强度: "
+exertion_text = "呼吸率: "
 
 breathing_text = "呼吸活动: "
 
@@ -322,6 +405,9 @@ faq_top = html.Div([
     html.Div('''
         如果您需要输入更多选项，请使用网页顶部的下拉菜单切换到高级模式。
     ''', className='faq-answer'),
+    html.Br(),
+    html.H5("为什么N95呼吸器具有99％的效率？"),
+    html.Div('''N95呼吸器对于0.3μm粒径的液滴具有至少95%的过滤效率。而新冠病毒空气传播中液滴大小大概是3μm。对于较大的液滴，N95呼吸器的过滤效率更高，接近100％的水平。''', className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([
@@ -345,18 +431,49 @@ faq_other_params_text = html.Div([
 aerosol_radius_text = "有效气溶胶液滴半径（在RH = 60％时）， r\u0305 (\u03bcm): "
 viral_deact_text = html.Span(["最大病毒失活速率（在RH = 100％时）， \u03BB", html.Sub('vmax'), " (/小时): "])
 
-values_interest_header = "该应用程序究竟在计算什么？"
+pop_immunity_header = "人群免疫力: "
+perc_immune_label = html.Span(["免疫率 p", html.Sub('im'), " = p", html.Sub('ex'), " + p", html.Sub('v'),
+                               " = "])
+perc_infectious_label = html.Span(["感染率 p", html.Sub('i'), " = "])
+perc_vaccinated_label = html.Span(["疫苗接种率 p", html.Sub('v'), " ="])
+perc_prev_infected_label = html.Span(["已感染率 p", html.Sub('ex'), " = "])
+perc_susceptible_label = html.Span(["易感率 p", html.Sub('s'), " = 1 - (p", html.Sub('im'), " + p",
+                                    html.Sub('i'), ") = "])
+pop_immunity_desc = html.Div([html.Div(['''人群的感染性 p''', html.Sub('i'), ''' 是根据在”其他风险情景”选项卡中输入的感染率计算得出的（在......感染率下， 
+为了限制我被感染的风险，应当…...）。通过计算人群的疫苗接种率加上人群中总发病率（忽略未发现的病例），可以对免疫率 p''', html.Sub('im'), ''' 做保守估计。用这两个值可以计算易感率 p''', html.Sub('s'), ''' 在”基本模式”和“首位风险”模式下（如果一个感染者进入…...），该值假定为100％。''']),
+                              html.Br(),
+                              html.Div(['''以下是一些关于 p''', html.Sub('i'), ''' 和 p''',
+                                        html.Sub('im'), ''' 的链接：''',
+                                        html.Span(html.A(href=links.link_cdc_dashboard,
+                                                         children="CDC COVID-19 Data Tracker",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.Span(html.A(href=links.link_jhu_data,
+                                                         children="JHU Coronavirus Resource Center",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.A(children="US Immunity Estimates",
+                                               href=links.link_cdc_immunity,
+                                               target='_blank'),
+                                        html.Span(", "),
+                                        html.A(children="International Immunity Estimates",
+                                               href=links.link_jhu_vaccine,
+                                               target='_blank'),
+                                        ])
+                              ])
+
+values_interest_header = "相关量的计算值"
 values_interest_desc = html.Div([
     html.H5("该应用程序究竟在计算什么？"),
     html.Div([
-        html.Div([html.Span('''给定空气传播的风险承受度，该应用程序将计算最大允许累积暴露时间（房间容纳人数和占用时间的乘积，
-                                假设房间内有一个感染者）。该应用程序还会计算相关的物理量（参考'''),
-                  html.A(children="文章",
+        html.Div([html.Span('''本应用程序会计算室内的最大允许累积暴露时间，即房间人数和时间的乘积。 这个限制是这样得到的：要求每个感染个体的预期传染人数（“室内再生数”）小于所选的风险承受能力。如果感兴趣，您可以参考本应用程序计算的相关量 '''),
+                  html.A(children="（定义见文章）",
                          href=link_paper,
                          target='_blank'),
-                  html.Span('''中的定义）。''')]),
+                  html.Span(''': ''')]),
     ], className='faq-answer'),
 ])
+relative_sus_label = html.Span(["相对易感性 s", html.Sub('r'), ": "])
 outdoor_air_frac_label = html.Span(["室外空气分数 Z", html.Sub('p'), ": "])
 aerosol_eff_label = html.Span(["Aerosol filtration efficiency p", html.Sub('f'), ": "])
 breathing_rate_label = html.Span(["Breathing flow rate Q", html.Sub('b'), ": "])
@@ -380,9 +497,7 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("该模型是否考虑了当地人口的感染率?"),
-    html.Div(['''未考虑。该模型只计算从单个感染者传播的风险。因此，它隐含地假设了人口中的感染率相对较低。在此限制范围内，
-    传播的风险会随着房间中预期感染人数（房间容纳人数和人口患病率的乘积）的增加而增加。当房间中预期感染人数超过1时，
-    应按比例降低设置的风险承受度。相反，当房间中的预期感染人数接近零时，可以按比例增加风险承受度，直到建议的限制可以被认为不必要为止。'''],
+    html.Div(['''可以在“高级模式”中考虑当地感染率的影响。在“高级模式”的“其他参数”选项卡中，您还可以评估人群免疫率的影响。人群免疫率可能会由于疫苗接种或先前感染而升高。'''],
              className='faq-answer'),
 ])
 
@@ -393,26 +508,77 @@ risk_tol_desc = html.Div('''对于老年人等较脆弱的人群或已有疾病�
 # Main Panel Text
 curr_room_header = "当前房间: "
 main_panel_s1 = "根据本模型，当这个房间容纳不同的人数时，安全暴露时间为："
-main_panel_six_ft_1 = "相比之下，六英尺或两米的距离建议意味着在这个房间中不得超过"
-main_panel_six_ft_2 = "，但是没有时间限制。"
+main_panel_six_ft_1 = "作为对比，六英尺（或两米）距离的指导方针会将使用人数限制在 "
+main_panel_six_ft_2 = " 这会在 "
+main_panel_six_ft_3 = " 之后违反本指南*"
 
-main_airb_trans_only_disc = html.Div(["该模型计算的是在给定累积暴露时间内被单个感染者通过",
-                                      html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
-                                                       children="空气传播",
+main_panel_s1_b = html.Span([
+    html.Span('''为了控制COVID-19在感染率1为每100,000中'''),
+    html.Sup('''1'''),
+    html.Span(''' ''')
+])
+main_panel_s2_b = ''' 人的人群中的传播*，该空间不得有超过：'''
+
+main_panel_s1_c = html.Span([
+    html.Span('''为了降低我在感染率为每100,000中'''),
+    html.Sup('''1'''),
+    html.Span(''' ''')
+])
+main_panel_s2_c = ''' 人的人群中感染COVID-19的可能性，此空间不得有超过：'''
+
+main_airb_trans_only_disc = html.Div(["本指南将累计暴露时间内每个感染者通过空气传播感染他人的可能性限制在风险承受能力之下。",
+                                      html.Span(html.A(href=links.link_docs,
+                                                       children="",
                                                        target='_blank'), ),
-                                      html.Span("感染新冠肺炎的几率。")], className='airborne-text')
+                                      html.Span("")], className='airborne-text')
+main_airb_trans_only_disc_basic = html.Div(["*本指南将累计暴露时间内每个感染者 ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="通过空气传染他人",
+                                                             target='_blank'), ),
+                                            html.Span(''' 的可能性限制在风险承受能力（10%）之下。''')], className='airborne-text')
+
+other_risk_modes_desc = html.Div('''“高级模式”考虑了其他风险情景。具体来说，可以考虑人群中的感染率，通过疫苗接种或先前接触获得的免疫率，以及对特定个体的风险。''')
+
+main_airb_trans_only_desc_b = html.Div(["本指南将将累计暴露时间内每个感染者通过空气传染他人的可能性限制在风险承受能力之下。",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="",
+                                                         target='_blank'), ),
+                                        html.Span('''''')], className='airborne-text')
+main_airb_trans_only_desc_c = html.Div(["本指南将累积暴露时间内特定个体通过空中传播被感染的可能性限制在风险承受能力以下。",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="",
+                                                         target='_blank'), ),
+                                        html.Span('''''')], className='airborne-text')
 
 # Bottom panels text
-n_input_text_1 = "如果这个房间有 "
-n_input_text_2 = " 人，这些人在"
-n_input_text_3 = "小时以内是安全的。"
+n_input_text_1 = "如果该房间有 "
+n_input_text_2 = " 人，根据本指南则不可逗留超过 "
+n_input_text_3 = "小时。"
 
 t_input_text_1 = "如果人们在这里停留约 "
 t_input_text_2 = " 个小时，则人数应限制为"
 t_input_text_3 = "。"
 
-airb_trans_only_disc = html.Div('''该模型计算的是在给定累积暴露时间内被单个感染者通过空气传播感染新冠肺炎的几率。''',
-                                className='airborne-text')
+airb_trans_only_disc = html.Div('''''', className='airborne-text')
+
+incidence_rate_refs = html.Div([html.Sup('''1'''),
+                                html.Span('''为了估算您的本地感染率，这里有一些有用的资源：'''),
+                                html.Span(html.A(href=links.link_cdc_dashboard,
+                                                 children="美国疾控中心公布的新冠肺炎数据跟踪系统",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.Span(html.A(href=links.link_jhu_data,
+                                                 children="约翰霍普金斯大学的冠状病毒资源中心",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.A(children="美国免疫预测分析",
+                                       href=links.link_cdc_immunity,
+                                       target='_blank'),
+                                html.Span(", "),
+                                html.A(children="国际免疫预测分析",
+                                       href=links.link_jhu_vaccine,
+                                       target='_blank'),
+                                ], className='airborne-text')
 
 footer = html.Div([
     html.Div([html.Span('''《MIT新冠肺炎室内安全指南》是一个正在被不断改进的工具，
