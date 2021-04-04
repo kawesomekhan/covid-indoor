@@ -552,6 +552,7 @@ layout = html.Div(children=[
                         id='adv-card-co2',
                         children=[
                             html.H4(desc.co2_title),
+                            html.Div(desc.co2_param_desc),
                             html.Br(),
                             html.H5([
                                 html.Span(dcc.Dropdown(id='adv-risk-mode-co2',

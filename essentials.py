@@ -363,11 +363,11 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
                                  mode='lines',
                                  name=guideline_trace_text,
-                                 line=go.scatter.Line(color="#8ad4ed")))
+                                 line=go.scatter.Line(color="#de1616")))
     new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
                                  mode='lines',
                                  name=co2_safe_trace_text,
-                                 line=go.scatter.Line(color="#de1616")))
+                                 line=go.scatter.Line(color="#8ad4ed")))
     new_fig.update_layout(transition_duration=500,
                           title=graph_title_co2, height=500,
                           xaxis_title=desc_file.graph_xtitle,

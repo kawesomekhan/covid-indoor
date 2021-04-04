@@ -212,6 +212,8 @@ graph_title_co2 = "Safe CO\u2082 Concentration (ppm) vs. Exposure Time"
 graph_ytitle_co2 = "CO\u2082 Concentration (ppm)"
 
 co2_title = "Calculate Safe CO\u2082 Concentration"
+co2_param_desc = '''The guideline for the parameters chosen above is expressed here in terms of a CO\u2082 
+concentration threshold.'''
 co2_prev_input_1 = "Prevalence: "
 co2_prev_input_2 = " per 100,000"
 co2_atm_input_1 = "Background CO\u2082: "
