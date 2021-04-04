@@ -225,7 +225,8 @@ error_list = {
     "exp_time_input": "Erreur : le temps d'exposition doit être supérieur à zéro.",
     "air_exchange_rate": "Erreur : le taux de renouvellement de l'air (ACH) doit être supérieur à zéro.",
     "merv": "Erreur : le système de filtration (MERV) doit être renseigné.",
-    "prevalence": "Erreur : L'incidence doit être supérieure à 0 et inférieure à 100 000."
+    "prevalence": "Erreur : L'incidence doit être supérieure à 0 et inférieure à 100 000.",
+    "atm_co2": "Error: Background CO\u2082 level is required."
 }
 
 # Header
@@ -314,6 +315,11 @@ about = html.Div([
               ventilation et de filtration de l'air, le port de masques, le type d'activité respiratoire ainsi que le 
               degré de risque toléré (dans les autres onglets), vous pourrez mieux comprendre comment limiter le risque 
               de transmission de la COVID-19 dans différents espaces intérieurs.''')]),
+    html.Br(),
+    html.Div(['''In Basic mode, you can calculate the limits on safe occupancy following the entrance of a single 
+infected person into an indoor space. In Advanced Mode, you can take into account additional factors, 
+including infection prevalence and population immunity. Advanced Mode also allows you to assess safe occupancy 
+based on average CO2 concentration, which is related to the concentration of infectious aerosols.''']),
     html.Br(),
     html.Div([html.Span('''La science au cœur de cette app est aussi enseignée dans un cours en ligne (MOOC) gratuit, en anglais, 
     sur edX: '''),
