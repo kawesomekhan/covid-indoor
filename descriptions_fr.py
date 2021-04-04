@@ -103,9 +103,32 @@ graph_xtitle = "Temps d'exposition maximum \u03C4 (heures)"
 graph_ytitle = "Occupation maximale N"
 transient_text = "Transitoire/temporaire"
 steady_state_text = "Continu"
+co2_safe_trace_text = "Respiratory Safety Threshold"
+guideline_trace_text = "Guideline"
 
-six_ft_base_string = ' {} personnes'
-six_ft_base_string_one = ' {} personnes'
+graph_title_co2 = "Safe CO\u2082 Concentration (ppm) vs. Exposure Time"
+graph_ytitle_co2 = "CO\u2082 Concentration (ppm)"
+
+co2_title = "Calculate Safe CO\u2082 Concentration"
+co2_param_desc = '''The guideline for the parameters chosen above is expressed here in terms of a CO\u2082 
+concentration threshold.'''
+co2_prev_input_1 = "Prevalence: "
+co2_prev_input_2 = " per 100,000"
+co2_atm_input_1 = "Background CO\u2082: "
+co2_atm_input_2 = " ppm"
+co2_calc_1 = "For an exposure time of "
+co2_calc_2 = " hours, the calculated safe steady-state CO\u2082 concentration in this space is "
+co2_calc_3 = " (based on the guideline)."
+co2_base_string = '{:,.2f} ppm'
+
+co2_safe_sent_1 = "This limit exceeds that for healthy respiratory activity, which is "
+co2_safe_sent_2 = "."
+
+co2_safe_footer = html.Span(['''The respiratory safety threshold is interpolated based on ''',
+                             html.A(href=links.link_usda_co2,
+                                    children='''recommended limits from the USDA''',
+                                    target='_blank'),
+                             '''.'''])
 
 units_hr = 'heures'
 units_min = 'minutes'
@@ -121,9 +144,6 @@ is_past_recovery_base_string = '{n_val} personnes pendant >{val:.0f} jours,'
 model_output_base_string = '{n_val} personnes pendant '
 nt_bridge_string = " personnes pendant "
 tn_bridge_string = " personnes pendant "
-
-main_panel_six_ft_1 = "Par contraste, la règle de distanciation de 2 mètres limiterait à "
-main_panel_six_ft_2 = " ce qui devient risqué à partir de "
 
 six_ft_base_string = ' {} personnes'
 six_ft_base_string_one = ' {} personnes'
