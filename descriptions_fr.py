@@ -103,30 +103,29 @@ graph_xtitle = "Temps d'exposition maximum \u03C4 (heures)"
 graph_ytitle = "Occupation maximale N"
 transient_text = "Transitoire/temporaire"
 steady_state_text = "Continu"
-co2_safe_trace_text = "Respiratory Safety Threshold"
-guideline_trace_text = "Guideline"
+co2_safe_trace_text = "Seuil respiratoire limite"
+guideline_trace_text = "Recommandation"
 
-graph_title_co2 = "Safe CO\u2082 Concentration (ppm) vs. Exposure Time"
-graph_ytitle_co2 = "CO\u2082 Concentration (ppm)"
+graph_title_co2 = "Concentration de CO\u2082 (ppm) limite vs. temps d'exposition"
+graph_ytitle_co2 = "Concentration de CO\u2082 (ppm)"
 
-co2_title = "Calculate Safe CO\u2082 Concentration"
-co2_param_desc = '''The guideline for the parameters chosen above is expressed here in terms of a CO\u2082 
-concentration threshold.'''
-co2_prev_input_1 = "Prevalence: "
-co2_prev_input_2 = " per 100,000"
-co2_atm_input_1 = "Background CO\u2082: "
+co2_title = "Voir le seuil de Concentration de CO\u2082 recommandé"
+co2_param_desc = '''La recommandation pour les paramètres définis ci-dessus est ici exprimée sous forme d'un seuil de concentration de CO\u2082 à ne pas dépasser.''' 
+co2_prev_input_1 = "Incidence : "
+co2_prev_input_2 = " pour 100 000"
+co2_atm_input_1 = "CO\u2082 ambiant : "
 co2_atm_input_2 = " ppm"
-co2_calc_1 = "For an exposure time of "
-co2_calc_2 = " hours, the calculated safe steady-state CO\u2082 concentration in this space is "
-co2_calc_3 = " (based on the guideline)."
+co2_calc_1 = "Pour une durée d'exposition de "
+co2_calc_2 = " heures, la concentration  en CO\u2082 à l'état d'équilibre, dans cet espace, est de "
+co2_calc_3 = " (selon notre recommandation)."
 co2_base_string = '{:,.2f} ppm'
 
-co2_safe_sent_1 = "This limit exceeds that for healthy respiratory activity, which is "
+co2_safe_sent_1 = "Cette limite excède le seuil conseillé pour la respiration, qui est de "
 co2_safe_sent_2 = "."
 
-co2_safe_footer = html.Span(['''The respiratory safety threshold is interpolated based on ''',
+co2_safe_footer = html.Span(['''Le seuil conseillé pour la respiration est interpolé selon ''',
                              html.A(href=links.link_usda_co2,
-                                    children='''recommended limits from the USDA''',
+                                    children='''les limites fixées par l'USDA''',
                                     target='_blank'),
                              '''.'''])
 
@@ -197,7 +196,7 @@ curr_strain_header = "Souche virale : "
 presets_strain = [
     # {'label': "SARS-CoV-1", 'value': 0.1},
     {'label': "SARS-CoV-2 (souche Wuhan)", 'value': 1},
-    {'label': "SARS-CoV-2 - B.1.1.7 (souche britannique)", 'value': 1.58}
+    {'label': "SARS-CoV-2 - B.1.1.7 (souche UK)", 'value': 1.58}
 ]
 viral_strain_marks = {
     1: {'label': '1.0: Wuhan', 'style': {'max-width': '100px'}},
@@ -225,13 +224,13 @@ error_list = {
     "exp_time_input": "Erreur : le temps d'exposition doit être supérieur à zéro.",
     "air_exchange_rate": "Erreur : le taux de renouvellement de l'air (ACH) doit être supérieur à zéro.",
     "merv": "Erreur : le système de filtration (MERV) doit être renseigné.",
-    "prevalence": "Erreur : L'incidence doit être supérieure à 0 et inférieure à 100 000.",
-    "atm_co2": "Error: Background CO\u2082 level is required."
+    "prevalence": "Erreur : l'incidence doit être supérieure à 0 et inférieure à 100 000.",
+    "atm_co2": "Erreur : la concentration de CO2 ambiant est requise."
 }
 
 # Header
 header = html.Div([
-    html.H1(children='Recommandations COVID-19 pour limiter la transmission en lieux clos'),
+    html.H1(children='A Guideline to Limit Indoor Airborne Transmission of COVID-19'),
     html.Div([
         html.Div([html.Span(html.A(href="https://www.linkedin.com/in/kasim-k-a92620b1/",
                                    children="Kasim Khan",
@@ -245,7 +244,7 @@ header = html.Div([
                                    children="Martin Z. Bazant",
                                    target='_blank')),
                   ""]),
-        html.Div([html.Span(["Beyond Six Feet: A Guideline to Limit Indoor Airborne Transmission of COVID-19 ("]),
+        html.Div([html.Span(["A Guideline to Limit Indoor Airborne Transmission of COVID-19 ("]),
                   html.Span(html.A(href=link_paper,
                                    target='_blank',
                                    children='''Bazant & Bush, 2020''')),
@@ -267,9 +266,9 @@ header = html.Div([
 ])
 
 # Menu dropdowns
-language_dd = "Langue: "
-units_dd = "Unités: "
-mode_dd = "Mode: "
+language_dd = "Langue : "
+units_dd = "Unités : "
+mode_dd = "Mode : "
 
 # Unit systems
 unit_settings = [
@@ -350,19 +349,19 @@ need_more_ctrl_text = '''Si vous souhaitez plus de contrôle sur vos paramètres
                       menu en haut de la page.'''
 
 # Human Behavior
-exertion_text = "Niveau d'activité: "
+exertion_text = "Niveau d'activité : "
 
-breathing_text = "Activité respiratoire: "
+breathing_text = "Activité respiratoire : "
 
-mask_type_text = "Efficacité de filtration des masques (type de masque): "
+mask_type_text = "Efficacité de filtration des masques (type de masque) : "
 
-mask_fit_text = "Ajustement des masques / respect du port du masque: "
+mask_fit_text = "Ajustement des masques / respect du port du masque : "
 
 # FAQ/Other Inputs and Outputs
 assumptions_layout = html.Div([
     html.H5("Encore des questions ? "),
-    html.Div([html.Span('''Pour des explications plus détaillées et des références, voir "Au-delà des 2 mètres : recommandations pour limiter le risque de transmission aérosol "
-                             "de la COVID-19 en lieux clos" ('''),
+    html.Div([html.Span('''Pour des explications plus détaillées et des références, voir "A Guideline to Limit Indoor Airborne Transmission of COVID-19"
+                             ('''),
               html.A(children="Bazant & Bush, 2020",
                      href=link_paper,
                      target='_blank'),
