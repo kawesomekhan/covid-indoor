@@ -589,11 +589,21 @@ layout = html.Div(children=[
                                               type='number')
                                 ),
                                 html.Span(desc.co2_calc_2),
-                                html.Span(id='adv-co2-output'),
+                                dcc.Loading(
+                                    html.Span(id='adv-co2-output'),
+                                    parent_style={'display': 'inline-block'},
+                                    type='circle',
+                                    color='#de1616',
+                                ),
                                 html.Span(desc.co2_calc_3),
                                 html.Span([
                                     html.Span(desc.co2_safe_sent_1),
-                                    html.Span(id='adv-co2-output-healthy'),
+                                    dcc.Loading(
+                                        html.Span(id='adv-co2-output-healthy'),
+                                        parent_style={'display': 'inline-block'},
+                                        type='circle',
+                                        color='#de1616',
+                                    ),
                                     html.Span(desc.co2_safe_sent_2)
                                 ], id='adv-safe-sent')
                             ]),
@@ -968,7 +978,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     myInd.prevalence = prevalence_co2 / 100000
     new_fig_co2 = ess.get_model_figure_co2(myInd, risk_mode_co2, language)
     safe_co2_conc = myInd.calc_co2(myInd.calc_n_max(exp_time_co2, risk_mode_co2))
-    co2_base_string = '{:,.2f} ppm'
+    co2_base_string = '{:,.0f} ppm'
     if hasattr(desc_file, 'safe_co2_conc'):
         co2_base_string = desc_file.co2_base_string
 
