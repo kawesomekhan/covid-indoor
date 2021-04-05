@@ -36,7 +36,7 @@ def update_mask_fit_disp: Updates mask fit/compliance filtration display based o
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd, "en")
-fig_co2 = ess.get_model_figure(myInd, "en")
+fig_co2 = ess.get_model_figure_co2(myInd, 'conditional', "en")
 
 # Main App
 layout = html.Div(children=[
@@ -51,8 +51,101 @@ layout = html.Div(children=[
         className='main-content',
         children=[
             html.Div(
-                className='grid',
+                className='adv-grid',
                 children=[
+                    html.Div(
+                        className='card',
+                        id='adv-card-risk-mode',
+                        children=[
+                            # TODO: Update this
+                            html.Div([
+                                html.H6(html.Span("Risk Mode", id='adv-risk-mode-header')),
+                                dcc.Dropdown(id='adv-risk-modes',
+                                             options=desc.risk_options,
+                                             value='conditional',
+                                             searchable=False,
+                                             clearable=False)
+                            ]),
+                        ]
+                    ),
+                    html.Div(
+                        className='card',
+                        id='adv-card-presets',
+                        children=[
+                            html.Div(
+                                className='adv-grid-presets',
+                                children=[
+                                    html.Div([
+                                        html.H6(html.Span(desc.curr_room_header, id='adv-curr-room-header')),
+                                        dcc.Dropdown(id='adv-presets',
+                                                     options=desc.presets,
+                                                     value='classroom',
+                                                     searchable=False,
+                                                     clearable=False)
+                                    ], className='card-presets'),
+                                    html.Div([
+                                        html.H6(html.Span(desc.curr_human_header, id='adv-curr-human-header')),
+                                        dcc.Dropdown(id='adv-presets-human',
+                                                     options=desc.presets_human,
+                                                     value='masks-2',
+                                                     searchable=False,
+                                                     clearable=False)
+                                    ], className='card-presets'),
+                                    html.Div([
+                                        html.H6([
+                                            html.Span(desc.curr_risk_header, id='adv-curr-risk-tol'),
+                                            html.Span(id='adv-risk-tolerance-output')
+                                        ]),
+                                        dcc.Slider(id='adv-risk-tolerance',
+                                                   min=0.01,
+                                                   max=1,
+                                                   step=0.01,
+                                                   value=0.1,
+                                                   marks=desc.risk_tol_marks),
+                                        html.Div([html.Br()], className='mobile-break')
+                                    ], className='card-presets'),
+                                    html.Div([
+                                        html.H6([
+                                            html.Span(desc.curr_age_header, id='adv-curr-age-group'),
+                                            html.Span(id='adv-age-group-output')
+                                        ]),
+                                        dcc.Slider(id='adv-age-group',
+                                                   min=0.01,
+                                                   max=1,
+                                                   step=0.01,
+                                                   value=0.68,
+                                                   marks=desc.age_group_marks),
+                                        html.Div([], id='adv-lang-break-age'),
+                                        html.Div([html.Br()], className='mobile-break')
+                                    ], className='card-presets'),
+                                    html.Div([
+                                        html.H6([
+                                            html.Span(desc.curr_strain_header, id='adv-curr-viral-strain'),
+                                            html.Span(id='adv-viral-strain-output')
+                                        ]),
+                                        dcc.Slider(id='adv-viral-strain',
+                                                   min=0.1,
+                                                   max=2,
+                                                   step=0.01,
+                                                   value=1,
+                                                   marks=desc.viral_strain_marks),
+                                        html.Div([html.Br()], className='mobile-break')
+                                    ], className='card-presets'),
+                                    html.Div([
+                                        html.H6([
+                                            html.Span(desc.pim_header, id='adv-pim-header'),
+                                            html.Span(id='adv-pim-output')
+                                        ]),
+                                        dcc.Slider(id='adv-pim-input',
+                                                   min=0,
+                                                   max=1,
+                                                   step=0.01,
+                                                   value=0),
+                                    ], className='card-presets')
+                                ],
+                            ),
+                        ]
+                    ),
                     html.Div(
                         className='card',
                         id='adv-card-tab',
@@ -278,91 +371,10 @@ layout = html.Div(children=[
                                            })], style={'margin': '1em', 'padding': '0', 'border': 'none'}),
                     html.Div(
                         className='card',
-                        children=[
-                            html.Div(
-                                className='grid-presets',
-                                children=[
-                                    html.Div([
-                                        html.H6(html.Span(desc.curr_room_header, id='adv-curr-room-header')),
-                                        dcc.Dropdown(id='adv-presets',
-                                                     options=desc.presets,
-                                                     value='classroom',
-                                                     searchable=False,
-                                                     clearable=False)
-                                    ], className='card-presets'),
-                                    html.Div([
-                                        html.H6(html.Span(desc.curr_human_header, id='adv-curr-human-header')),
-                                        dcc.Dropdown(id='adv-presets-human',
-                                                     options=desc.presets_human,
-                                                     value='masks-2',
-                                                     searchable=False,
-                                                     clearable=False)
-                                    ], className='card-presets'),
-                                    html.Div([
-                                        html.H6([
-                                            html.Span(desc.curr_risk_header, id='adv-curr-risk-tol'),
-                                            html.Span(id='adv-risk-tolerance-output')
-                                        ]),
-                                        dcc.Slider(id='adv-risk-tolerance',
-                                                   min=0.01,
-                                                   max=1,
-                                                   step=0.01,
-                                                   value=0.1,
-                                                   marks=desc.risk_tol_marks),
-                                        html.Div([html.Br()], className='mobile-break')
-                                    ], className='card-presets'),
-                                    html.Div([
-                                        html.H6([
-                                            html.Span(desc.curr_age_header, id='adv-curr-age-group'),
-                                            html.Span(id='adv-age-group-output')
-                                        ]),
-                                        dcc.Slider(id='adv-age-group',
-                                                   min=0.01,
-                                                   max=1,
-                                                   step=0.01,
-                                                   value=0.68,
-                                                   marks=desc.age_group_marks),
-                                        html.Div([], id='adv-lang-break-age'),
-                                        html.Div([html.Br()], className='mobile-break')
-                                    ], className='card-presets'),
-                                    html.Div([
-                                        html.H6([
-                                            html.Span(desc.curr_strain_header, id='adv-curr-viral-strain'),
-                                            html.Span(id='adv-viral-strain-output')
-                                        ]),
-                                        dcc.Slider(id='adv-viral-strain',
-                                                   min=0.1,
-                                                   max=2,
-                                                   step=0.01,
-                                                   value=1,
-                                                   marks=desc.viral_strain_marks),
-                                        html.Div([html.Br()], className='mobile-break')
-                                    ], className='card-presets'),
-                                    html.Div([
-                                        html.H6([
-                                            html.Span(desc.pim_header, id='adv-pim-header'),
-                                            html.Span(id='adv-pim-output')
-                                        ]),
-                                        dcc.Slider(id='adv-pim-input',
-                                                   min=0,
-                                                   max=1,
-                                                   step=0.01,
-                                                   value=0),
-                                    ], className='card-presets')
-                                ],
-                            ),
-                        ]
-                    ),
-                    html.Div(
-                        className='card',
-                        children=[
-                            dcc.Tabs([
-                                dcc.Tab(
-                                    id='adv-output-panel-tab-a',
-                                    label=desc.risk_conditional_desc,
-                                    className='custom-tab',
-                                    children=html.Div(className='output-content', children=[
+                        children=[html.Div(className='output-content', children=[
                                         html.Div([
+                                            # TODO: Update this header
+                                            html.H4("Calculate Safe Occupancy"),
                                             html.H3(html.Span(desc.main_panel_s1, id='adv-main-panel-s1')),
                                             dcc.Loading(
                                                 id='adv-loading',
@@ -411,142 +423,7 @@ layout = html.Div(children=[
                                         html.Br(),
                                         html.Div([
                                             html.Span(desc.main_airb_trans_only_disc, id='adv-main-airb-trans-disc')
-                                        ], className='panel-airb-desc')
-                                    ]),
-                                ),
-                                dcc.Tab(
-                                    id='adv-output-panel-tab-b',
-                                    label=desc.risk_prevalence_desc,
-                                    className='custom-tab',
-                                    children=html.Div(className='output-content', children=[
-                                        html.Div([
-                                            html.H3([
-                                                html.Span(desc.main_panel_s1_b, id='adv-main-panel-s1-b'),
-                                                html.Span(dcc.Input(id='adv-prev-input-b',
-                                                                    value=100,
-                                                                    type='number')),
-                                                html.Span(desc.main_panel_s2_b, id='adv-main-panel-s2-b')
-                                            ]),
-                                            dcc.Loading(
-                                                id='adv-loading-b',
-                                                type='circle',
-                                                children=[
-                                                    html.H4(className='model-output-text', id='adv-model-text-1-b',
-                                                            children="2 people for 31 days"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-2-b',
-                                                            children="5 people for 8 days"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-3-b',
-                                                            children="10 people for 3 days"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-4-b',
-                                                            children="25 people for 31 hours"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-5-b',
-                                                            children="100 people for 8 hours"),
-                                                ],
-                                                color='#de1616',
-                                            ),
-                                            html.Br(),
-                                            html.Div([
-                                                html.H4([
-                                                    html.Span("", id='adv-n-input-pretext-b'),
-                                                    html.Span([dcc.Input(id='adv-n-input-b',
-                                                                         value=10,
-                                                                         type='number')]),
-                                                    html.Span("", id='adv-n-input-posttext-b'),
-                                                ], className='model-output-text', style={'padding-bottom': '.2em'}),
-                                                html.H4([
-                                                    html.Span("", id='adv-t-input-pretext-b'),
-                                                    html.Span([dcc.Input(id='adv-t-input-b',
-                                                                         value=4,
-                                                                         type='number')]),
-                                                    html.Span(" " + desc.units_hr, id='adv-tn-tail-string-b'),
-                                                    html.Span("", id='adv-t-input-posttext-b'),
-                                                ], className='model-output-text')]),
-                                            html.Br(),
-                                            html.H4([html.Span(desc.main_panel_six_ft_1, id='adv-main-six-ft-1-b'),
-                                                     html.Span(id='adv-six-ft-output-b',
-                                                               children=''' 2 people ''',
-                                                               style={'color': '#de1616'}),
-                                                     html.Span(desc.main_panel_six_ft_2, id='adv-main-six-ft-2-b'),
-                                                     html.Span(id='adv-six-ft-output-t-b', style={'color': '#de1616'})],
-                                                    style={'color': '#000000'})
-                                        ], className='panel-main-output'),
-                                        html.Br(),
-                                        html.Div(desc.main_airb_trans_only_desc_b, id='adv-main-airb-trans-desc-b',
-                                                 className='panel-airb-desc'),
-                                        html.Div(desc.incidence_rate_refs, id='adv-incidence-rate-refs-b',
-                                                 className='panel-airb-desc')
-                                    ]),
-                                ),
-                                dcc.Tab(
-                                    id='adv-output-panel-tab-c',
-                                    label=desc.risk_personal_desc,
-                                    className='custom-tab',
-                                    children=html.Div(className='output-content', children=[
-                                        html.Div([
-                                            html.H3([
-                                                html.Span(desc.main_panel_s1_c, id='adv-main-panel-s1-c'),
-                                                html.Span(dcc.Input(id='adv-prev-input-c',
-                                                                    value=100,
-                                                                    type='number')),
-                                                html.Span(desc.main_panel_s2_c, id='adv-main-panel-s2-c')
-                                            ]),
-                                            dcc.Loading(
-                                                id='adv-loading-c',
-                                                type='circle',
-                                                children=[
-                                                    html.H4(className='model-output-text', id='adv-model-text-1-c',
-                                                            children="2 people for 31 days"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-2-c',
-                                                            children="5 people for 8 days"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-3-c',
-                                                            children="10 people for 3 days"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-4-c',
-                                                            children="25 people for 31 hours"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-5-c',
-                                                            children="100 people for 8 hours"),
-                                                ],
-                                                color='#de1616',
-                                            ),
-                                            html.Br(),
-                                            html.Div([
-                                                html.H4([
-                                                    html.Span("", id='adv-n-input-pretext-c'),
-                                                    html.Span([dcc.Input(id='adv-n-input-c',
-                                                                         value=10,
-                                                                         type='number')]),
-                                                    html.Span("", id='adv-n-input-posttext-c'),
-                                                ], className='model-output-text', style={'padding-bottom': '.2em'}),
-                                                html.H4([
-                                                    html.Span("", id='adv-t-input-pretext-c'),
-                                                    html.Span([dcc.Input(id='adv-t-input-c',
-                                                                         value=4,
-                                                                         type='number')]),
-                                                    html.Span(" " + desc.units_hr, id='adv-tn-tail-string-c'),
-                                                    html.Span("", id='adv-t-input-posttext-c'),
-                                                ], className='model-output-text')]),
-                                            html.Br(),
-                                            html.H4([html.Span(desc.main_panel_six_ft_1, id='adv-main-six-ft-1-c'),
-                                                     html.Span(id='adv-six-ft-output-c',
-                                                               children=''' 2 people ''',
-                                                               style={'color': '#de1616'}),
-                                                     html.Span(desc.main_panel_six_ft_2, id='adv-main-six-ft-2-c'),
-                                                     html.Span(id='adv-six-ft-output-t-c', style={'color': '#de1616'})],
-                                                    style={'color': '#000000'})
-                                        ], className='panel-main-output'),
-                                        html.Br(),
-                                        html.Div(desc.main_airb_trans_only_desc_c, id='adv-main-airb-trans-desc-c',
-                                                 className='panel-airb-desc'),
-                                        html.Div(desc.incidence_rate_refs, id='adv-incidence-rate-refs-c',
-                                                 className='panel-airb-desc')
-                                    ]),
-                                ),
-                            ],
-                                colors={
-                                    "border": "#c9c9c9",
-                                    "primary": "#de1616"
-                                })
-                        ], style=ess.tabs_card_style
-                    ),
+                                        ], className='panel-airb-desc')])]),
                     html.Div(
                         className='card',
                         id='adv-card-co2',
@@ -555,26 +432,12 @@ layout = html.Div(children=[
                             html.Div(desc.co2_param_desc),
                             html.Br(),
                             html.H5([
-                                html.Span(dcc.Dropdown(id='adv-risk-mode-co2',
-                                                       options=desc.risk_options,
-                                                       value='conditional',
-                                                       searchable=False,
-                                                       clearable=False)),
-                            ], style={'color': '#000000'}),
-                            html.H5([
                                 html.Span(desc.co2_atm_input_1),
                                 html.Span(dcc.Input(id='adv-atm-input-co2',
                                                     value=410,
                                                     type='number')),
                                 html.Span(desc.co2_atm_input_2),
                             ]),
-                            html.H5([
-                                html.Span(desc.co2_prev_input_1),
-                                html.Span(dcc.Input(id='adv-prev-input-co2',
-                                                    value=100,
-                                                    type='number')),
-                                html.Span(desc.co2_prev_input_2),
-                            ], id='adv-co2-prev-div'),
                             html.Div([
                                 dcc.Graph(
                                     id='adv-co2-output-graph',
@@ -596,16 +459,16 @@ layout = html.Div(children=[
                                     color='#de1616',
                                 ),
                                 html.Span(desc.co2_calc_3),
-                                html.Span([
-                                    html.Span(desc.co2_safe_sent_1),
-                                    dcc.Loading(
-                                        html.Span(id='adv-co2-output-healthy'),
-                                        parent_style={'display': 'inline-block'},
-                                        type='circle',
-                                        color='#de1616',
-                                    ),
-                                    html.Span(desc.co2_safe_sent_2)
-                                ], id='adv-safe-sent')
+                                # html.Span([
+                                #     html.Span(desc.co2_safe_sent_1),
+                                #     dcc.Loading(
+                                #         html.Span(id='adv-co2-output-healthy'),
+                                #         parent_style={'display': 'inline-block'},
+                                #         type='circle',
+                                #         color='#de1616',
+                                #     ),
+                                #     html.Span(desc.co2_safe_sent_2)
+                                # ], id='adv-safe-sent')
                             ]),
                             html.Div([
                                 desc.co2_safe_footer
