@@ -210,11 +210,11 @@ model_output_n_vals_big = [25, 100, 250, 500, 1000]
 # Max time reported in the big red text output
 covid_recovery_time = 14  # Days
 
+
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
-                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, n_max_input_b=2, exp_time_input_b=1,
-                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1, exp_time_input_co2=1,
-                prevalence_co2=1, atm_co2=410):
+                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, exp_time_co2=1, prevalence=1,
+                atm_co2=410):
     error_msg = ""
 
     desc_file = get_desc_file(language)
@@ -229,15 +229,15 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["aerosol_radius"]
     elif max_viral_deact_rate is None:
         error_msg = desc_file.error_list["viral_deact_rate"]
-    elif n_max_input is None or n_max_input < 2 or n_max_input_b is None or n_max_input_b < 2 or n_max_input_c is None or n_max_input_c < 2:
+    elif n_max_input is None or n_max_input < 2:
         error_msg = desc_file.error_list["n_max_input"]
-    elif exp_time_input == 0 or exp_time_input is None or exp_time_input_b == 0 or exp_time_input_b is None or exp_time_input_c == 0 or exp_time_input_c is None or exp_time_input_co2 == 0 or exp_time_input_co2 is None:
+    elif exp_time_input == 0 or exp_time_input is None or exp_time_co2 == 0 or exp_time_co2 is None:
         error_msg = desc_file.error_list["exp_time_input"]
     elif air_exchange_rate == 0 or air_exchange_rate is None:
         error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
         error_msg = desc_file.error_list["merv"]
-    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 100000 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 100000 or prevalence_co2 is None or prevalence_co2 <= 0 or prevalence_co2 >= 100000:
+    elif prevalence is None or prevalence <= 0 or prevalence >= 100000:
         error_msg = desc_file.error_list["prevalence"]
     elif atm_co2 is None:
         error_msg = desc_file.error_list["atm_co2"]
@@ -364,12 +364,12 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
                                  mode='lines',
                                  name=guideline_trace_text,
                                  line=go.scatter.Line(color="#de1616"),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours'+'<br>Guideline: %{y:,.0f} ppm<extra></extra>'))
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Guideline: %{y:,.0f} ppm<extra></extra>'))
     new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
                                  mode='lines',
                                  name=co2_safe_trace_text,
                                  line=go.scatter.Line(color="#8ad4ed"),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours'+'<br>Respiratory Safety Threshold: %{y:,.0f} ppm<extra></extra>'))
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Respiratory Safety Threshold: %{y:,.0f} ppm<extra></extra>'))
     new_fig.update_layout(transition_duration=500,
                           title=graph_title_co2, height=500,
                           xaxis_title=desc_file.graph_xtitle,
@@ -798,13 +798,6 @@ def get_lang_text_adv(language, disp_width):
             desc_file.pop_immunity_header,
             desc_file.pop_immunity_desc,
             desc_file.perc_immune_label,
-            desc_file.risk_conditional_desc,
-            desc_file.perc_infectious_label,
-            desc_file.perc_susceptible_label,
-            desc_file.risk_prevalence_desc,
-            desc_file.perc_infectious_label,
-            desc_file.perc_susceptible_label,
-            desc_file.risk_personal_desc,
             desc_file.perc_infectious_label,
             desc_file.perc_susceptible_label,
             desc_file.other_io,
@@ -827,24 +820,7 @@ def get_lang_text_adv(language, disp_width):
             desc_file.conc_relax_rate_label,
             desc_file.airb_trans_label,
             desc_file.graph_output_header,
-            desc_file.risk_conditional_desc,
             " " + desc_file.units_hr,
-            desc_file.risk_prevalence_desc,
-            " " + desc_file.units_hr,
-            desc_file.main_panel_six_ft_1,
-            desc_file.main_panel_six_ft_2,
-            desc_file.main_panel_s1_b,
-            desc_file.main_panel_s2_b,
-            desc_file.main_airb_trans_only_disc,
-            desc_file.incidence_rate_refs,
-            desc_file.risk_personal_desc,
-            " " + desc_file.units_hr,
-            desc_file.main_panel_six_ft_1,
-            desc_file.main_panel_six_ft_2,
-            desc_file.main_panel_s1_c,
-            desc_file.main_panel_s2_c,
-            desc_file.main_airb_trans_only_disc,
-            desc_file.incidence_rate_refs,
             lang_break_age]
 
 

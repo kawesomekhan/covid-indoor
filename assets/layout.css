@@ -165,7 +165,7 @@ body {
 #adv-atm-input-co2 {
     width: var(--big-number-input-width);
 }
-#prev-input-b, #prev-input-c, #adv-prev-input-b, #adv-prev-input-c {
+#adv-prev-input {
     width: var(--prevalence-input-width);
 }
 
