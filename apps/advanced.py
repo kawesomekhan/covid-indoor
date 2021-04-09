@@ -47,6 +47,13 @@ layout = html.Div(children=[
         is_open=False,
     ),
 
+    dbc.Alert(
+        "Personal Risk Alert",
+        id='adv-risk-alert',
+        className='risk-alert',
+        is_open=False,
+    ),
+
     html.Div(
         className='main-content',
         children=[
@@ -57,21 +64,25 @@ layout = html.Div(children=[
                         className='card',
                         id='adv-card-risk-mode',
                         children=[
-                            # TODO: Update this
                             html.Div([
-                                html.H6(html.Span("Risk Mode", id='adv-risk-mode-header')),
-                                dcc.RadioItems(id='adv-risk-mode',
-                                               options=desc.risk_options,
-                                               value='conditional',
-                                               labelClassName='radio-label'),
+                                html.H6(html.Span(desc.risk_mode_panel_header, id='adv-risk-mode-header')),
+                                dcc.Dropdown(id='adv-risk-mode',
+                                             options=desc.risk_options,
+                                             value='conditional',
+                                             searchable=False,
+                                             clearable=False),
                                 html.Br(),
-                                html.H5([
-                                    html.Span(desc.co2_prev_input_1),
-                                    html.Span(dcc.Input(id='adv-prev',
-                                                        value=100,
-                                                        type='number')),
-                                    html.Span(desc.co2_prev_input_2),
-                                ])
+                                html.Div([
+                                    html.H5([
+                                        html.Span(desc.co2_prev_input_1),
+                                        html.Span(dcc.Input(id='adv-prev',
+                                                            value=100,
+                                                            type='number')),
+                                        html.Span(desc.co2_prev_input_2),
+                                    ]),
+                                    html.Div(desc.incidence_rate_refs, id='adv-incidence-rate-refs-b',
+                                             className='panel-airb-desc')
+                                ], id='adv-prev-block'),
                             ]),
                         ]
                     ),
@@ -364,58 +375,57 @@ layout = html.Div(children=[
                     html.Div(
                         className='card',
                         children=[html.Div(className='output-content', children=[
-                                        html.Div([
-                                            # TODO: Update this header
-                                            html.H4("Calculate Safe Occupancy"),
-                                            html.H3(html.Span(desc.main_panel_s1, id='adv-main-panel-s1')),
-                                            dcc.Loading(
-                                                id='adv-loading',
-                                                type='circle',
-                                                children=[
-                                                    html.H4(className='model-output-text', id='adv-model-text-1',
-                                                            children="2 people for 31 days"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-2',
-                                                            children="5 people for 8 days"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-3',
-                                                            children="10 people for 3 days"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-4',
-                                                            children="25 people for 31 hours"),
-                                                    html.H4(className='model-output-text', id='adv-model-text-5',
-                                                            children="100 people for 8 hours"),
-                                                ],
-                                                color='#de1616',
-                                            ),
-                                            html.Br(),
-                                            html.Div([
-                                                html.H4([
-                                                    html.Span("", id='adv-n-input-pretext'),
-                                                    html.Span([dcc.Input(id='adv-n-input',
-                                                                         value=10,
-                                                                         type='number')]),
-                                                    html.Span("", id='adv-n-input-posttext'),
-                                                ], className='model-output-text', style={'padding-bottom': '.2em'}),
-                                                html.H4([
-                                                    html.Span("", id='adv-t-input-pretext'),
-                                                    html.Span([dcc.Input(id='adv-t-input',
-                                                                         value=4,
-                                                                         type='number')]),
-                                                    html.Span(" " + desc.units_hr, id='adv-tn-tail-string'),
-                                                    html.Span("", id='adv-t-input-posttext'),
-                                                ], className='model-output-text')]),
-                                            html.Br(),
-                                            html.H4([html.Span(desc.main_panel_six_ft_1, id='adv-main-six-ft-1'),
-                                                     html.Span(id='adv-six-ft-output',
-                                                               children=''' 2 people ''',
-                                                               style={'color': '#de1616'}),
-                                                     html.Span(desc.main_panel_six_ft_2, id='adv-main-six-ft-2'),
-                                                     html.Span(id='adv-six-ft-output-t', style={'color': '#de1616'}),
-                                                     html.Span("", id='adv-main-six-ft-3')],
-                                                    style={'color': '#000000'}),
-                                        ], className='panel-main-output'),
-                                        html.Br(),
-                                        html.Div([
-                                            html.Span(desc.main_airb_trans_only_disc, id='adv-main-airb-trans-disc')
-                                        ], className='panel-airb-desc')])]),
+                            html.Div([
+                                html.H4(desc.occupancy_panel_header),
+                                html.H3(html.Span(desc.main_panel_s1, id='adv-main-panel-s1')),
+                                dcc.Loading(
+                                    id='adv-loading',
+                                    type='circle',
+                                    children=[
+                                        html.H4(className='model-output-text', id='adv-model-text-1',
+                                                children="2 people for 31 days"),
+                                        html.H4(className='model-output-text', id='adv-model-text-2',
+                                                children="5 people for 8 days"),
+                                        html.H4(className='model-output-text', id='adv-model-text-3',
+                                                children="10 people for 3 days"),
+                                        html.H4(className='model-output-text', id='adv-model-text-4',
+                                                children="25 people for 31 hours"),
+                                        html.H4(className='model-output-text', id='adv-model-text-5',
+                                                children="100 people for 8 hours"),
+                                    ],
+                                    color='#de1616',
+                                ),
+                                html.Br(),
+                                html.Div([
+                                    html.H4([
+                                        html.Span("", id='adv-n-input-pretext'),
+                                        html.Span([dcc.Input(id='adv-n-input',
+                                                             value=10,
+                                                             type='number')]),
+                                        html.Span("", id='adv-n-input-posttext'),
+                                    ], className='model-output-text', style={'padding-bottom': '.2em'}),
+                                    html.H4([
+                                        html.Span("", id='adv-t-input-pretext'),
+                                        html.Span([dcc.Input(id='adv-t-input',
+                                                             value=4,
+                                                             type='number')]),
+                                        html.Span(" " + desc.units_hr, id='adv-tn-tail-string'),
+                                        html.Span("", id='adv-t-input-posttext'),
+                                    ], className='model-output-text')]),
+                                html.Br(),
+                                html.H4([html.Span(desc.main_panel_six_ft_1, id='adv-main-six-ft-1'),
+                                         html.Span(id='adv-six-ft-output',
+                                                   children=''' 2 people ''',
+                                                   style={'color': '#de1616'}),
+                                         html.Span(desc.main_panel_six_ft_2, id='adv-main-six-ft-2'),
+                                         html.Span(id='adv-six-ft-output-t', style={'color': '#de1616'}),
+                                         html.Span("", id='adv-main-six-ft-3')],
+                                        style={'color': '#000000'}),
+                            ], className='panel-main-output'),
+                            html.Br(),
+                            html.Div([
+                                html.Span(desc.main_airb_trans_only_disc, id='adv-main-airb-trans-disc')
+                            ], className='panel-airb-desc')])]),
                     html.Div(
                         className='card',
                         id='adv-card-co2',
@@ -487,11 +497,9 @@ layout = html.Div(children=[
      Output('adv-curr-viral-strain', 'children'),
      Output('adv-viral-strain', 'marks'),
      Output('adv-pim-header', 'children'),
-     Output('adv-main-panel-s1', 'children'),
      Output('adv-main-six-ft-1', 'children'),
      Output('adv-main-six-ft-2', 'children'),
      Output('adv-main-six-ft-3', 'children'),
-     Output('adv-main-airb-trans-disc', 'children'),
      Output('adv-about-text', 'children'),
      Output('adv-tab-b', 'label'),
      Output('adv-room-header-body', 'children'),
@@ -633,8 +641,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
@@ -754,17 +761,65 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            cq_text, error_msg, False
 
 
-# Update prevalence CO2 input visibility depending on selected risk mode
+# Update main panel (occupancy panel) first sentence based on the selected language, prevalence, and risk mode.
 @app.callback(
-    [Output('adv-co2-prev-div', 'style')],
-    [Input('adv-risk-mode-co2', 'value')]
+    [Output('adv-main-panel-s1', 'children'),
+     Output('adv-main-airb-trans-disc', 'children')],
+    [Input('adv-risk-mode', 'value'),
+     Input('adv-prev', 'value'),
+     Input('url', 'search')]
 )
-def update_prev_co2_vis(risk_mode_co2):
-    vis_style = {'display': 'inline'}
-    if risk_mode_co2 == 'conditional':
-        vis_style = {'display': 'none'}
+def update_occupancy_panel_sentence(risk_mode, prevalence, search):
+    language = ess.get_lang(search)
+    desc_file = ess.get_desc_file(language)
+    if risk_mode == 'conditional':
+        children_main = desc_file.main_panel_s1
+        children_disc = desc_file.main_airb_trans_only_disc
+    elif risk_mode == 'prevalence':
+        children_main = html.Span([
+            html.Span(desc_file.main_panel_s1_b),
+            html.Span('{:,.0f} '.format(prevalence)),
+            html.Span(desc_file.main_panel_s2_b),
+        ])
+        children_disc = desc_file.main_airb_trans_only_desc_b
+    elif risk_mode == 'personal':
+        children_main = html.Span([
+            html.Span(desc_file.main_panel_s1_c),
+            html.Span('{:,.0f} '.format(prevalence)),
+            html.Span(desc_file.main_panel_s2_c),
+        ])
+        children_disc = desc_file.main_airb_trans_only_desc_c
 
-    return [vis_style]
+    return [children_main, children_disc]
+
+
+# Update prevalence input (enabled/disabled) depending on selected risk mode.
+@app.callback(
+    [Output('adv-prev-block', 'style')],
+    [Input('adv-risk-mode', 'value')]
+)
+def update_prev_co2_vis(risk_mode):
+    if risk_mode == 'conditional':
+        return [{'display': 'none'}]
+    else:
+        return [{'display': 'inline'}]
+
+
+# Update risk alert display (open/closed) depending on selected risk mode
+@app.callback(
+    [Output('adv-risk-alert', 'children'),
+     Output('adv-risk-alert', 'is_open')],
+    [Input('adv-risk-mode', 'value'),
+     Input('url', 'search')]
+)
+def update_risk_alert(risk_mode, search):
+    language = ess.get_lang(search)
+    desc_file = ess.get_desc_file(language)
+
+    if risk_mode == 'personal':
+        return [desc_file.risk_personal_warning, True]
+    else:
+        return ["", False]
 
 
 # Update options based on selected presets, also if units changed

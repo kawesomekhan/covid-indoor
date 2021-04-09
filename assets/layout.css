@@ -2,7 +2,7 @@
 
 :root {
     --big-number-input-width: 90px;
-    --prevalence-input-width: 120px;
+    --prevalence-input-width: 75px;
 }
 
 /* For default, desktop layout */
@@ -24,6 +24,19 @@ body {
     width: 256px;
     top: 16px;
     right: 16px;
+    z-index: 2;
+
+    padding: 0.75rem 1.25rem;
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid transparent;
+    border-color: #f5c6cb;
+    border-radius: 0.25rem;
+}
+
+.risk-alert {
+    position: fixed;
+    top: 16px;
     z-index: 1;
 
     padding: 0.75rem 1.25rem;
@@ -165,7 +178,7 @@ body {
 #adv-atm-input-co2 {
     width: var(--big-number-input-width);
 }
-#adv-prev-input {
+#adv-prev {
     width: var(--prevalence-input-width);
 }
 

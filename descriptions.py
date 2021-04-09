@@ -79,6 +79,7 @@ error_list = {
     "atm_co2": "Error: Background CO\u2082 level is required."
 }
 
+
 # Main Panel Text
 curr_room_header = "Room Specifications: "
 presets = [
@@ -160,7 +161,14 @@ risk_options = [
     {'label': risk_prevalence_desc, 'value': 'prevalence'},
     {'label': risk_personal_desc, 'value': 'personal'},
 ]
+risk_personal_warning = html.Span([
+    html.Span('''Warning: ''', style={'font-weight': 'bold'}),
+    html.Span('''the selected risk mode (To limit my personal risk...) considers probability of 
+infection to a particular individual. It is thus far less restrictive and should not be used for establishing 
+community safety guidelines.''')])
 
+risk_mode_panel_header = "Risk Mode"
+occupancy_panel_header = "Calculate Safe Occupancy"
 main_panel_s1 = '''To limit COVID-19 transmission* after an infected person enters this space, 
 there should be no more than: '''
 
@@ -214,7 +222,7 @@ graph_ytitle_co2 = "CO\u2082 Concentration (ppm)"
 co2_title = "Calculate Safe CO\u2082 Concentration"
 co2_param_desc = '''The guideline for the parameters chosen above is expressed here in terms of a CO\u2082 
 concentration threshold.'''
-co2_prev_input_1 = "Prevalence: "
+co2_prev_input_1 = html.Span(["Prevalence", html.Sup('1'), html.Span(": ")])
 co2_prev_input_2 = " per 100,000"
 co2_atm_input_1 = "Background CO\u2082: "
 co2_atm_input_2 = " ppm"

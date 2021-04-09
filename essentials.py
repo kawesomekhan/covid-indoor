@@ -83,9 +83,9 @@ room_preset_settings = {
         'rh': 0.6
     },
     'classroom': {
-        'floor-area': 900,
+        'floor-area': 910,
         'ceiling-height': 12,
-        'floor-area-metric': 900 / m_to_ft / m_to_ft,
+        'floor-area-metric': 910 / m_to_ft / m_to_ft,
         'ceiling-height-metric': 12 / m_to_ft,
         'ventilation': 3,
         'filtration': 6,
@@ -768,11 +768,9 @@ def get_lang_text_adv(language, disp_width):
             desc_file.curr_strain_header,
             desc_file.viral_strain_marks,
             desc_file.pim_header,
-            desc_file.main_panel_s1,
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
             main_panel_six_ft_3,
-            desc_file.main_airb_trans_only_disc,
             desc_file.about,
             desc_file.room_header,
             desc_file.room_header,
