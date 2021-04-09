@@ -80,7 +80,7 @@ layout = html.Div(children=[
                                                             type='number')),
                                         html.Span(desc.co2_prev_input_2),
                                     ]),
-                                    html.Div(desc.incidence_rate_refs, id='adv-incidence-rate-refs-b',
+                                    html.Div(desc.incidence_rate_refs, id='adv-incidence-rate-refs',
                                              className='panel-airb-desc')
                                 ], id='adv-prev-block'),
                             ]),
@@ -548,7 +548,9 @@ layout = html.Div(children=[
      Output('adv-airb-trans-label', 'children'),
      Output('adv-graph-output-header', 'children'),
      Output('adv-tn-tail-string', 'children'),
-     Output('adv-lang-break-age', 'children')],
+     Output('adv-lang-break-age', 'children'),
+     Output('adv-risk-mode', 'options'),
+     Output('adv-incidence-rate-refs', 'children')],
     [Input('url', 'search'),
      Input('window-width', 'children')]
 )
@@ -781,14 +783,20 @@ def update_occupancy_panel_sentence(risk_mode, prevalence, search):
             html.Span('{:,.0f} '.format(prevalence)),
             html.Span(desc_file.main_panel_s2_b),
         ])
-        children_disc = desc_file.main_airb_trans_only_desc_b
+        if hasattr(desc_file, "main_airb_trans_only_desc_b"):
+            children_disc = desc_file.main_airb_trans_only_desc_b
+        else:
+            children_disc = ess.get_desc_file("en").main_airb_trans_only_desc_b
     elif risk_mode == 'personal':
         children_main = html.Span([
             html.Span(desc_file.main_panel_s1_c),
             html.Span('{:,.0f} '.format(prevalence)),
             html.Span(desc_file.main_panel_s2_c),
         ])
-        children_disc = desc_file.main_airb_trans_only_desc_c
+        if hasattr(desc_file, "main_airb_trans_only_desc_c"):
+            children_disc = desc_file.main_airb_trans_only_desc_c
+        else:
+            children_disc = ess.get_desc_file("en").main_airb_trans_only_desc_c
 
     return [children_main, children_disc]
 
@@ -817,7 +825,10 @@ def update_risk_alert(risk_mode, search):
     desc_file = ess.get_desc_file(language)
 
     if risk_mode == 'personal':
-        return [desc_file.risk_personal_warning, True]
+        if hasattr(desc_file, "risk_personal_warning"):
+            return [desc_file.risk_personal_warning, True]
+        else:
+            return ["", False]
     else:
         return ["", False]
 

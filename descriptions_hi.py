@@ -149,6 +149,11 @@ pim_header = "प्रतिरक्षा प्रतिशत: "
 risk_conditional_desc = "यदि एक संक्रमित व्यक्ति…"
 risk_prevalence_desc = "संक्रमण की व्यापकता को देखते हुए…"
 risk_personal_desc = "मेरे व्यक्तिगत जोखिम को सीमित करने के लिए ..."
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 main_panel_s1 = "इस मॉडल के आधार पर, यह कक्ष निम्न अवधि तथा लोगों की संख्या के लिए सुरक्षित होना चाहिए: "
 

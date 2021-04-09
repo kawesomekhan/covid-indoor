@@ -819,7 +819,9 @@ def get_lang_text_adv(language, disp_width):
             desc_file.airb_trans_label,
             desc_file.graph_output_header,
             " " + desc_file.units_hr,
-            lang_break_age]
+            lang_break_age,
+            desc_file.risk_options,
+            desc_file.incidence_rate_refs]
 
 
 # Get header and footer based on language

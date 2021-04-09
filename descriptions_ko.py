@@ -195,6 +195,11 @@ pim_header = "면역률: "
 risk_conditional_desc = "감염자가 입장하면..."
 risk_prevalence_desc = "감염 유병률을 감안할 때..."
 risk_personal_desc = "자신의 개인적인 위험성을 제한하기 위해..."
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 error_list = {
     "floor_area": "오류: 바닥 면적 란을 비워둘 수 없습니다.",

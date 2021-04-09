@@ -148,6 +148,11 @@ pim_header = "Procento imunizovaných: "
 risk_conditional_desc = "Pokud nakažená osoba vstoupí..."
 risk_prevalence_desc = "Za předpokladu, že prevalence infekce je..."
 risk_personal_desc = "Abych omezil riziko, že se nakazím, ..."
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 main_panel_s1 = "Na základě modelu by mělo být pro tuto místnost bezpečné*: "
 
