@@ -36,7 +36,9 @@ def update_mask_fit_disp: Updates mask fit/compliance filtration display based o
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd, "en")
-fig_co2 = ess.get_model_figure_co2(myInd, 'conditional', "en")
+fig_co2 = ess.get_model_figure_co2(myInd, 'conditional', "en", 1920)
+co2_graph_config_desktop = {'displayModeBar': 'hover'}
+co2_graph_config_mobile = {'displayModeBar': False}
 
 # Main App
 layout = html.Div(children=[
@@ -443,7 +445,8 @@ layout = html.Div(children=[
                             html.Div([
                                 dcc.Graph(
                                     id='adv-co2-output-graph',
-                                    figure=fig_co2
+                                    figure=fig_co2,
+                                    config=co2_graph_config_desktop,
                                 ),
                             ]),
                             html.H3([
@@ -564,6 +567,7 @@ def update_lang_adv(search, window_width):
 @app.callback(
     [Output('adv-safety-graph', 'figure'),
      Output('adv-co2-output-graph', 'figure'),
+     Output('adv-co2-output-graph', 'config'),
      Output('adv-co2-output', 'children'),
      Output('adv-model-text-1', 'children'),
      Output('adv-model-text-2', 'children'),
@@ -623,13 +627,15 @@ def update_lang_adv(search, window_width):
      Input('adv-exp-time-input-co2', 'value'),
      Input('url', 'search')],
     [State('adv-floor-area-text', 'children'),
-     State('adv-ceiling-height-text', 'children')]
+     State('adv-ceiling-height-text', 'children'),
+     State('window-width', 'children')]
 )
 def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
                   breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, sr_age_factor,
                   sr_strain_factor, pim_input, def_aerosol_radius,
                   max_viral_deact_rate, n_max_input, exp_time_input, risk_mode, prevalence, atm_co2, exp_time_co2,
-                  search, floor_area_text, ceiling_height_text):
+                  search, floor_area_text, ceiling_height_text, window_width):
+    window_width = float(window_width)
     language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
                                 max_viral_deact_rate, language, n_max_input, exp_time_input,
@@ -641,7 +647,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
+               dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
@@ -730,7 +736,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
 
     # Now take care of the CO2 panel
     myInd.atm_co2 = atm_co2
-    new_fig_co2 = ess.get_model_figure_co2(myInd, risk_mode, language)
+    new_fig_co2 = ess.get_model_figure_co2(myInd, risk_mode, language, window_width)
     safe_co2_conc = myInd.calc_co2(myInd.calc_n_max(exp_time_co2, risk_mode))
     co2_base_string = '{:,.0f} ppm'
     if hasattr(desc_file, 'safe_co2_conc'):
@@ -740,8 +746,12 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     recommended_co2_conc = min(safe_co2_conc, max_co2_conc)
     recommended_co2_conc_text = co2_base_string.format(recommended_co2_conc)
 
+    co2_graph_config = co2_graph_config_desktop
+    if window_width < 1200:
+        co2_graph_config = co2_graph_config_mobile
+
     # Update all relevant display items (figure, red output text)
-    return new_fig, new_fig_co2, recommended_co2_conc_text, \
+    return new_fig, new_fig_co2, co2_graph_config, recommended_co2_conc_text, \
            model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], six_ft_text, six_ft_exp_time, preset_dd_value, human_preset_dd_value, pi_text, \
            ps_text, \

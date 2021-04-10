@@ -335,8 +335,10 @@ def get_model_figure(indoor_model, language):
 # Returns the plotly figure based on the supplied indoor model.
 # This specifically outputs safe steady-state CO2 concentration (ppm) vs. exposure time.
 # risk_mode: conditional, prevalence, or personal
-def get_model_figure_co2(indoor_model, risk_mode, language):
+def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     desc_file = get_desc_file(language)
+    is_mobile = window_width <= 600
+
     recommended_df = pd.DataFrame(columns=['exposure_time', 'co2_recommended'])
     new_df = indoor_model.calc_co2_series(0.1, 1000, 100, risk_mode)
     safe_df = pd.DataFrame(columns=['exposure_time', 'co2_safe'])
@@ -407,6 +409,8 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
                               font_family="Barlow",
                           ),
                           hovermode='closest')
+    if is_mobile:
+        new_fig.update_layout(title="", height=400, showlegend=False)
     new_fig.update_xaxes(type="log", showspikes=True)
     new_fig.update_yaxes(type="log", showspikes=True)
 
