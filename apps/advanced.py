@@ -461,16 +461,16 @@ layout = html.Div(children=[
                                     color='#de1616',
                                 ),
                                 html.Span(desc.co2_calc_3),
-                                html.Span([
-                                    html.Span(desc.co2_safe_sent_1),
-                                    dcc.Loading(
-                                        html.Span(id='adv-co2-output-healthy'),
-                                        parent_style={'display': 'inline-block'},
-                                        type='circle',
-                                        color='#de1616',
-                                    ),
-                                    html.Span(desc.co2_safe_sent_2)
-                                ], id='adv-safe-sent')
+                                # html.Span([
+                                #     html.Span(desc.co2_safe_sent_1),
+                                #     dcc.Loading(
+                                #         html.Span(id='adv-co2-output-healthy'),
+                                #         parent_style={'display': 'inline-block'},
+                                #         type='circle',
+                                #         color='#de1616',
+                                #     ),
+                                #     html.Span(desc.co2_safe_sent_2)
+                                # ], id='adv-safe-sent')
                             ]),
                             html.Div([
                                 desc.co2_safe_footer
@@ -565,8 +565,6 @@ def update_lang_adv(search, window_width):
     [Output('adv-safety-graph', 'figure'),
      Output('adv-co2-output-graph', 'figure'),
      Output('adv-co2-output', 'children'),
-     Output('adv-co2-output-healthy', 'children'),
-     Output('adv-safe-sent', 'style'),
      Output('adv-model-text-1', 'children'),
      Output('adv-model-text-2', 'children'),
      Output('adv-model-text-3', 'children'),
@@ -644,7 +642,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, dash.no_update, error_msg, True
+               error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
     my_units = ess.get_units(search)
@@ -738,21 +736,12 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     if hasattr(desc_file, 'safe_co2_conc'):
         co2_base_string = desc_file.co2_base_string
 
-    safe_co2_conc_text = co2_base_string.format(safe_co2_conc)
-
     max_co2_conc = ess.get_safe_resp_co2_limit(exp_time_co2)
-    safe_sentence_viz = False
-    healthy_co2_conc_text = ""
-    if safe_co2_conc > max_co2_conc:
-        safe_sentence_viz = True
-        healthy_co2_conc_text = co2_base_string.format(max_co2_conc)
-
-    safe_sent_style = {'display': 'none'}
-    if safe_sentence_viz:
-        safe_sent_style = {'display': 'inline'}
+    recommended_co2_conc = min(safe_co2_conc, max_co2_conc)
+    recommended_co2_conc_text = co2_base_string.format(recommended_co2_conc)
 
     # Update all relevant display items (figure, red output text)
-    return new_fig, new_fig_co2, safe_co2_conc_text, healthy_co2_conc_text, safe_sent_style, \
+    return new_fig, new_fig_co2, recommended_co2_conc_text, \
            model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
            model_output_text[4], six_ft_text, six_ft_exp_time, preset_dd_value, human_preset_dd_value, pi_text, \
            ps_text, \

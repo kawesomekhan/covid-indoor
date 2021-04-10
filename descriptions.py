@@ -215,6 +215,8 @@ transient_text = "Transient"
 steady_state_text = "Steady-State"
 co2_safe_trace_text = "Respiratory Safety Threshold"
 guideline_trace_text = "Guideline"
+background_co2_text = "Background CO\u2082: "
+recommended_co2_text = "Recommended Limit"
 
 graph_title_co2 = "Safe CO\u2082 Concentration (ppm) vs. Exposure Time"
 graph_ytitle_co2 = "CO\u2082 Concentration (ppm)"
@@ -224,11 +226,11 @@ co2_param_desc = '''The guideline for the parameters chosen above is expressed h
 concentration threshold.'''
 co2_prev_input_1 = html.Span(["Prevalence", html.Sup('1'), html.Span(": ")])
 co2_prev_input_2 = " per 100,000"
-co2_atm_input_1 = "Background CO\u2082: "
+co2_atm_input_1 = background_co2_text
 co2_atm_input_2 = " ppm"
 co2_calc_1 = "For an exposure time of "
-co2_calc_2 = " hours, the calculated safe steady-state CO\u2082 concentration in this space is "
-co2_calc_3 = " (based on the guideline)."
+co2_calc_2 = " hours, the calculated safe time-averaged CO\u2082 concentration in this space is "
+co2_calc_3 = "."
 co2_base_string = '{:,.2f} ppm'
 
 co2_safe_sent_1 = "This limit exceeds that for healthy respiratory activity, which is "

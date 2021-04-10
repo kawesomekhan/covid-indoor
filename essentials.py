@@ -337,22 +337,37 @@ def get_model_figure(indoor_model, language):
 # risk_mode: conditional, prevalence, or personal
 def get_model_figure_co2(indoor_model, risk_mode, language):
     desc_file = get_desc_file(language)
+    recommended_df = pd.DataFrame(columns=['exposure_time', 'co2_recommended'])
     new_df = indoor_model.calc_co2_series(0.1, 1000, 100, risk_mode)
     safe_df = pd.DataFrame(columns=['exposure_time', 'co2_safe'])
+    background_df = pd.DataFrame(columns=['exposure_time', 'co2_background'])
     for exp_time in numpy.logspace(math.log(0.1, 10), math.log(1000, 10), 100):
         safe_co2_limit = get_safe_resp_co2_limit(exp_time)
+        recommended_co2_limit = min(safe_co2_limit, indoor_model.calc_co2_exp_time(exp_time, risk_mode))
         safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
+        recommended_df = recommended_df.append(pd.DataFrame({'exposure_time': [exp_time],
+                                                             'co2_rec': [recommended_co2_limit]}))
+        background_df = background_df.append(pd.DataFrame({'exposure_time': [exp_time],
+                                                           'co2_background': [indoor_model.atm_co2]}))
 
     new_fig = go.Figure()
+    recommended_co2_text = desc.recommended_co2_text
     guideline_trace_text = desc.guideline_trace_text
     co2_safe_trace_text = desc.co2_safe_trace_text
+    background_co2_text = desc.background_co2_text
     graph_title_co2 = desc.graph_title_co2
     graph_ytitle_co2 = desc.graph_ytitle_co2
+    if hasattr(desc_file, "recommended_co2_text"):
+        recommended_co2_text = desc_file.recommended_co2_text
+
     if hasattr(desc_file, "guideline_trace_text"):
         guideline_trace_text = desc_file.guideline_trace_text
 
     if hasattr(desc_file, "co2_safe_trace_text"):
         co2_safe_trace_text = desc_file.co2_safe_trace_text
+
+    if hasattr(desc_file, "background_co2_text"):
+        background_co2_text = desc_file.background_co2_text
 
     if hasattr(desc_file, "graph_title_co2"):
         graph_title_co2 = desc_file.graph_title_co2
@@ -360,16 +375,28 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
     if hasattr(desc_file, "graph_ytitle_co2"):
         graph_ytitle_co2 = desc_file.graph_ytitle_co2
 
+    new_fig.add_trace(go.Scatter(x=recommended_df["exposure_time"], y=recommended_df["co2_rec"],
+                                 mode='lines',
+                                 name=recommended_co2_text,
+                                 line=go.scatter.Line(color="#de1616"),
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Recommended Limit: %{y:,.0f} ppm<extra></extra>'))
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
                                  mode='lines',
                                  name=guideline_trace_text,
-                                 line=go.scatter.Line(color="#de1616"),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Guideline: %{y:,.0f} ppm<extra></extra>'))
+                                 line=go.scatter.Line(color="#730707", dash='dot'),
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Guideline: %{y:,.0f} ppm<extra></extra>',
+                                 visible='legendonly'))
     new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
                                  mode='lines',
                                  name=co2_safe_trace_text,
-                                 line=go.scatter.Line(color="#8ad4ed"),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Respiratory Safety Threshold: %{y:,.0f} ppm<extra></extra>'))
+                                 line=go.scatter.Line(color="#8ad4ed", dash='dot'),
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Respiratory Safety Threshold: %{y:,.0f} ppm<extra></extra>',
+                                 visible='legendonly'))
+    new_fig.add_trace(go.Scatter(x=background_df["exposure_time"], y=background_df["co2_background"],
+                                 mode='lines',
+                                 name=background_co2_text,
+                                 line=go.scatter.Line(color="#000000", dash='dot'),
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Background CO\u2082: %{y:,.0f} ppm<extra></extra>'))
     new_fig.update_layout(transition_duration=500,
                           title=graph_title_co2, height=500,
                           xaxis_title=desc_file.graph_xtitle,

@@ -157,6 +157,10 @@ class Indoors:
         breathing_flow_rate = self.physio_params[0]  # m3 / hr
         return (38000 * breathing_flow_rate * n_max / (self.conc_relax_rate * self.room_vol)) + self.atm_co2  # ppm
 
+    # Calculate safe steady-state CO2 concentration (ppm) for a single exposure time.
+    def calc_co2_exp_time(self, exp_time, risk_mode):
+        return self.calc_co2(self.calc_n_max(exp_time, risk_mode))
+
     # Calculate maximum exposure time allowed given a capacity (# people), transient
     def calc_max_time(self, n_max, risk_type='conditional'):
         risk_tolerance = self.prec_params[1]  # no units
@@ -183,12 +187,11 @@ class Indoors:
 
         return df
 
-    # Calculate safe steady-state CO2 concentration (ppm) across a range of exposure times, returning both transient
-    # and steady-state outputs
+    # Calculate safe steady-state CO2 concentration (ppm) across a range of exposure times, returning transient output.
     def calc_co2_series(self, t_min, t_max, t_num, risk_mode):
         df = pd.DataFrame(columns=['exposure_time', 'co2_trans'])
         for exp_time in numpy.logspace(math.log(t_min, 10), math.log(t_max, 10), t_num):
-            co2_trans = self.calc_co2(self.calc_n_max(exp_time, risk_mode))
+            co2_trans = self.calc_co2_exp_time(exp_time, risk_mode)
             df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans]}))
 
         return df
