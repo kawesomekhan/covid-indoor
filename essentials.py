@@ -614,7 +614,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} m\u00B3/hr'.format(breathing_flow_rate),
-            '{:,.2f} quanta/m\u00B3'.format(infectiousness),
+            '{:,.2f} quanta/m\u00B3'.format(infectiousness * indoor_model.relative_sus),
             '{:,.2f}'.format(mask_pass_prob),
             '{:,.0f} m\u00B3'.format(indoor_model.room_vol / 35.315),  # ft3 to m3
             '{:,.0f} m\u00B3/hr'.format(indoor_model.fresh_rate / 35.3147 * 60),  # ft3/min to m3/hr
@@ -641,7 +641,7 @@ def get_qb_text(indoor_model, units):
 
 # Returns the value for Cq given the units.
 def get_cq_text(indoor_model, units):
-    infectiousness = indoor_model.disease_params[0]
+    infectiousness = indoor_model.disease_params[0] * indoor_model.relative_sus
     if units == 'british':
         return '{:,.2f} q/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
     elif units == 'metric':
