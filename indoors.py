@@ -155,7 +155,8 @@ class Indoors:
     # Output is in parts per million (ppm) of CO2
     def calc_co2(self, n_max):
         breathing_flow_rate = self.physio_params[0]  # m3 / hr
-        return (38000 * breathing_flow_rate * n_max / (self.conc_relax_rate * self.room_vol)) + self.atm_co2  # ppm
+        outdoor_exchange_rate = self.physical_params[2]  # /hr
+        return (38000 * breathing_flow_rate * n_max / (outdoor_exchange_rate * self.room_vol)) + self.atm_co2  # ppm
 
     # Calculate safe steady-state CO2 concentration (ppm) for a single exposure time.
     def calc_co2_exp_time(self, exp_time, risk_mode):
