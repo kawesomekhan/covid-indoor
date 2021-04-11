@@ -84,9 +84,9 @@ room_preset_settings = {
         'rh': 0.6
     },
     'classroom': {
-        'floor-area': 900,
+        'floor-area': 910,
         'ceiling-height': 12,
-        'floor-area-metric': 900 / m_to_ft / m_to_ft,
+        'floor-area-metric': 910 / m_to_ft / m_to_ft,
         'ceiling-height-metric': 12 / m_to_ft,
         'ventilation': 3,
         'filtration': 6,
@@ -211,11 +211,11 @@ model_output_n_vals_big = [25, 100, 250, 500, 1000]
 # Max time reported in the big red text output
 covid_recovery_time = 14  # Days
 
+
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
-                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, n_max_input_b=2, exp_time_input_b=1,
-                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1, exp_time_input_co2=1,
-                prevalence_co2=1, atm_co2=410):
+                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, exp_time_co2=1, prevalence=1,
+                atm_co2=410):
     error_msg = ""
 
     desc_file = get_desc_file(language)
@@ -230,15 +230,15 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["aerosol_radius"]
     elif max_viral_deact_rate is None:
         error_msg = desc_file.error_list["viral_deact_rate"]
-    elif n_max_input is None or n_max_input < 2 or n_max_input_b is None or n_max_input_b < 2 or n_max_input_c is None or n_max_input_c < 2:
+    elif n_max_input is None or n_max_input < 2:
         error_msg = desc_file.error_list["n_max_input"]
-    elif exp_time_input == 0 or exp_time_input is None or exp_time_input_b == 0 or exp_time_input_b is None or exp_time_input_c == 0 or exp_time_input_c is None or exp_time_input_co2 == 0 or exp_time_input_co2 is None:
+    elif exp_time_input == 0 or exp_time_input is None or exp_time_co2 == 0 or exp_time_co2 is None:
         error_msg = desc_file.error_list["exp_time_input"]
     elif air_exchange_rate == 0 or air_exchange_rate is None:
         error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
         error_msg = desc_file.error_list["merv"]
-    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 100000 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 100000 or prevalence_co2 is None or prevalence_co2 <= 0 or prevalence_co2 >= 100000:
+    elif prevalence is None or prevalence <= 0 or prevalence >= 100000:
         error_msg = desc_file.error_list["prevalence"]
     elif atm_co2 is None:
         error_msg = desc_file.error_list["atm_co2"]
@@ -336,24 +336,41 @@ def get_model_figure(indoor_model, language):
 # Returns the plotly figure based on the supplied indoor model.
 # This specifically outputs safe steady-state CO2 concentration (ppm) vs. exposure time.
 # risk_mode: conditional, prevalence, or personal
-def get_model_figure_co2(indoor_model, risk_mode, language):
+def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     desc_file = get_desc_file(language)
+    is_mobile = window_width <= 600
+
+    recommended_df = pd.DataFrame(columns=['exposure_time', 'co2_recommended'])
     new_df = indoor_model.calc_co2_series(0.1, 1000, 100, risk_mode)
     safe_df = pd.DataFrame(columns=['exposure_time', 'co2_safe'])
+    background_df = pd.DataFrame(columns=['exposure_time', 'co2_background'])
     for exp_time in numpy.logspace(math.log(0.1, 10), math.log(1000, 10), 100):
         safe_co2_limit = get_safe_resp_co2_limit(exp_time)
+        recommended_co2_limit = min(safe_co2_limit, indoor_model.calc_co2_exp_time(exp_time, risk_mode))
         safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
+        recommended_df = recommended_df.append(pd.DataFrame({'exposure_time': [exp_time],
+                                                             'co2_rec': [recommended_co2_limit]}))
+        background_df = background_df.append(pd.DataFrame({'exposure_time': [exp_time],
+                                                           'co2_background': [indoor_model.atm_co2]}))
 
     new_fig = go.Figure()
+    recommended_co2_text = desc.recommended_co2_text
     guideline_trace_text = desc.guideline_trace_text
     co2_safe_trace_text = desc.co2_safe_trace_text
+    background_co2_text = desc.background_co2_text
     graph_title_co2 = desc.graph_title_co2
     graph_ytitle_co2 = desc.graph_ytitle_co2
+    if hasattr(desc_file, "recommended_co2_text"):
+        recommended_co2_text = desc_file.recommended_co2_text
+
     if hasattr(desc_file, "guideline_trace_text"):
         guideline_trace_text = desc_file.guideline_trace_text
 
     if hasattr(desc_file, "co2_safe_trace_text"):
         co2_safe_trace_text = desc_file.co2_safe_trace_text
+
+    if hasattr(desc_file, "background_co2_text"):
+        background_co2_text = desc_file.background_co2_text
 
     if hasattr(desc_file, "graph_title_co2"):
         graph_title_co2 = desc_file.graph_title_co2
@@ -361,16 +378,28 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
     if hasattr(desc_file, "graph_ytitle_co2"):
         graph_ytitle_co2 = desc_file.graph_ytitle_co2
 
+    new_fig.add_trace(go.Scatter(x=recommended_df["exposure_time"], y=recommended_df["co2_rec"],
+                                 mode='lines',
+                                 name=recommended_co2_text,
+                                 line=go.scatter.Line(color="#de1616"),
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Recommended Limit: %{y:,.0f} ppm<extra></extra>'))
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
                                  mode='lines',
                                  name=guideline_trace_text,
-                                 line=go.scatter.Line(color="#de1616"),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours'+'<br>Guideline: %{y:,.0f} ppm<extra></extra>'))
+                                 line=go.scatter.Line(color="#730707", dash='dot'),
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Guideline: %{y:,.0f} ppm<extra></extra>',
+                                 visible='legendonly'))
     new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
                                  mode='lines',
                                  name=co2_safe_trace_text,
-                                 line=go.scatter.Line(color="#8ad4ed"),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours'+'<br>Respiratory Safety Threshold: %{y:,.0f} ppm<extra></extra>'))
+                                 line=go.scatter.Line(color="#8ad4ed", dash='dot'),
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Respiratory Safety Threshold: %{y:,.0f} ppm<extra></extra>',
+                                 visible='legendonly'))
+    new_fig.add_trace(go.Scatter(x=background_df["exposure_time"], y=background_df["co2_background"],
+                                 mode='lines',
+                                 name=background_co2_text,
+                                 line=go.scatter.Line(color="#000000", dash='dot'),
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Background CO\u2082: %{y:,.0f} ppm<extra></extra>'))
     new_fig.update_layout(transition_duration=500,
                           title=graph_title_co2, height=500,
                           xaxis_title=desc_file.graph_xtitle,
@@ -381,6 +410,8 @@ def get_model_figure_co2(indoor_model, risk_mode, language):
                               font_family="Barlow",
                           ),
                           hovermode='closest')
+    if is_mobile:
+        new_fig.update_layout(title="", height=400, showlegend=False)
     new_fig.update_xaxes(type="log", showspikes=True)
     new_fig.update_yaxes(type="log", showspikes=True)
 
@@ -584,7 +615,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} m\u00B3/hr'.format(breathing_flow_rate),
-            '{:,.2f} quanta/m\u00B3'.format(infectiousness),
+            '{:,.2f} quanta/m\u00B3'.format(infectiousness * indoor_model.relative_sus),
             '{:,.2f}'.format(mask_pass_prob),
             '{:,.0f} m\u00B3'.format(indoor_model.room_vol / 35.315),  # ft3 to m3
             '{:,.0f} m\u00B3/hr'.format(indoor_model.fresh_rate / 35.3147 * 60),  # ft3/min to m3/hr
@@ -611,7 +642,7 @@ def get_qb_text(indoor_model, units):
 
 # Returns the value for Cq given the units.
 def get_cq_text(indoor_model, units):
-    infectiousness = indoor_model.disease_params[0]
+    infectiousness = indoor_model.disease_params[0] * indoor_model.relative_sus
     if units == 'british':
         return '{:,.2f} q/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
     elif units == 'metric':
@@ -769,11 +800,9 @@ def get_lang_text_adv(language, disp_width):
             desc_file.curr_strain_header,
             desc_file.viral_strain_marks,
             desc_file.pim_header,
-            desc_file.main_panel_s1,
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
             main_panel_six_ft_3,
-            desc_file.main_airb_trans_only_disc,
             desc_file.about,
             desc_file.room_header,
             desc_file.room_header,
@@ -799,13 +828,6 @@ def get_lang_text_adv(language, disp_width):
             desc_file.pop_immunity_header,
             desc_file.pop_immunity_desc,
             desc_file.perc_immune_label,
-            desc_file.risk_conditional_desc,
-            desc_file.perc_infectious_label,
-            desc_file.perc_susceptible_label,
-            desc_file.risk_prevalence_desc,
-            desc_file.perc_infectious_label,
-            desc_file.perc_susceptible_label,
-            desc_file.risk_personal_desc,
             desc_file.perc_infectious_label,
             desc_file.perc_susceptible_label,
             desc_file.other_io,
@@ -828,25 +850,10 @@ def get_lang_text_adv(language, disp_width):
             desc_file.conc_relax_rate_label,
             desc_file.airb_trans_label,
             desc_file.graph_output_header,
-            desc_file.risk_conditional_desc,
             " " + desc_file.units_hr,
-            desc_file.risk_prevalence_desc,
-            " " + desc_file.units_hr,
-            desc_file.main_panel_six_ft_1,
-            desc_file.main_panel_six_ft_2,
-            desc_file.main_panel_s1_b,
-            desc_file.main_panel_s2_b,
-            desc_file.main_airb_trans_only_disc,
-            desc_file.incidence_rate_refs,
-            desc_file.risk_personal_desc,
-            " " + desc_file.units_hr,
-            desc_file.main_panel_six_ft_1,
-            desc_file.main_panel_six_ft_2,
-            desc_file.main_panel_s1_c,
-            desc_file.main_panel_s2_c,
-            desc_file.main_airb_trans_only_disc,
-            desc_file.incidence_rate_refs,
-            lang_break_age]
+            lang_break_age,
+            desc_file.risk_options,
+            desc_file.incidence_rate_refs]
 
 
 # Get header and footer based on language

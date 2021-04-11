@@ -150,6 +150,11 @@ pim_header = "Prozentsatz immun: "
 risk_conditional_desc = "Falls eine infizierte Person eintritt…"
 risk_prevalence_desc = "Angesichts der Ausbreitung der Infektion…"
 risk_personal_desc = "Um mein persönliches Risiko zu begrenzen…"
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 main_panel_s1 = "Basierend auf diesem Modell, sollte die Situation im Raum sicher sein bei: "
 
