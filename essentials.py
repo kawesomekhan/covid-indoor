@@ -6,6 +6,7 @@ import descriptions_cs as desc_cs
 import descriptions_da as desc_da
 import descriptions_de as desc_de
 import descriptions_es as desc_es
+import descriptions_eu as desc_eu
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
 import descriptions_hi as desc_hi
@@ -875,6 +876,8 @@ def get_desc_file(language):
         desc_file = desc_da
     elif language == "de":
         desc_file = desc_de
+    elif language == "eu":
+        desc_file = desc_eu
     elif language == "zh":
         desc_file = desc_zh
     elif language == "hi":
