@@ -29,7 +29,7 @@ languages = [
     {'label': "Euskara", 'value': "eu"},
     {'label': "Fran\u00e7ais", 'value': "fr"},
     {'label': "हिन्दी", 'value': "hi"},
-    # {'label': "Bahasa Indonesia", 'value': "id", 'disabled': True},
+    {'label': "Bahasa Indonesia", 'value': "id"},
     # {'label': "Italiano", 'value': "it", 'disabled': True},
     {'label': "한국어", 'value': "ko"},
     {'label': "Magyar", 'value': "hu"},
