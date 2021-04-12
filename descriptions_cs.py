@@ -148,6 +148,11 @@ pim_header = "Procento imunizovaných: "
 risk_conditional_desc = "Pokud nakažená osoba vstoupí..."
 risk_prevalence_desc = "Za předpokladu, že prevalence infekce je..."
 risk_personal_desc = "Abych omezil riziko, že se nakazím, ..."
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 main_panel_s1 = "Na základě modelu by mělo být pro tuto místnost bezpečné*: "
 
@@ -350,7 +355,7 @@ recirc_types = [
 
 humidity_text = "Relativní vlhkost: "
 humidity_marks = {
-    0: {'label': '0%: Velmi sucho', 'style': {'max-width': '25px'}},
+    0.01: {'label': '1%: Velmi sucho', 'style': {'max-width': '25px'}},
     0.2: {'label': '20%: Letadlo', 'style': {'max-width': '50px'}},
     0.3: {'label': '30%: Sucho'},
     0.6: {'label': '60%: Normální vlhkost'},

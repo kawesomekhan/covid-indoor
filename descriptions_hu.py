@@ -195,6 +195,11 @@ pim_header = "Immunisak aránya:"
 risk_conditional_desc = "Ha egy fertőzött személy belép…"
 risk_prevalence_desc = "Tekintettel a fertőzés gyakoriságára…"
 risk_personal_desc = "Az egyéni kockázatom korlátozása érdekében…"
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 error_list = {
     "floor_area": "Hiba: Az alapterület nem hiányozhat.",

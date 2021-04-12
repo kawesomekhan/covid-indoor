@@ -8,6 +8,8 @@
 
     --small-heading-font-size: 18px;
 
+    --radio-label-font-size: 18px;
+
     --mobile-font-size: 13px;
     --mobile-slider-mark-size: 12px;
 
@@ -79,6 +81,14 @@ h6 {
 
 six-ft-output {
     color: var(--accent-color);
+}
+
+#adv-co2-output, #adv-co2-output-healthy {
+    color: var(--accent-color);
+}
+
+.radio-label {
+    font-size: var(--radio-label-font-size);
 }
 
 /* Small-width/mobile layout */
