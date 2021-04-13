@@ -453,7 +453,7 @@ def get_model_output_text(indoor_model, risk_type, recovery_time, language):
         else:
             max_time = indoor_model.calc_max_time(n_val, risk_type)  # hours
             time_text = time_to_text(max_time, True, recovery_time, language)
-            safe_co2 = indoor_model.calc_co2(n_val)
+            safe_co2 = indoor_model.calc_co2_n(n_val)
 
             if output_type == 'occupancy':
                 if language in sov_languages:
@@ -597,8 +597,8 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60),  # m3/hr to ft3/min
-            '{:,.2f} quanta/ft\u00B3'.format(infectiousness * indoor_model.relative_sus / 35.3147),  # 1/m3 to 1/ft3
-            '{:,.2f}'.format(mask_pass_prob),
+            '{:,.2f} quanta/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
+            '{:,.3f}'.format(mask_pass_prob),
             '{:,.0f} ft\u00B3'.format(indoor_model.room_vol),
             '{:,.0f} ft\u00B3/min'.format(indoor_model.fresh_rate),
             '{:,.0f} ft\u00B3/min'.format(indoor_model.recirc_rate),
@@ -615,8 +615,8 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} m\u00B3/hr'.format(breathing_flow_rate),
-            '{:,.2f} quanta/m\u00B3'.format(infectiousness * indoor_model.relative_sus),
-            '{:,.2f}'.format(mask_pass_prob),
+            '{:,.2f} quanta/m\u00B3'.format(infectiousness),
+            '{:,.3f}'.format(mask_pass_prob),
             '{:,.0f} m\u00B3'.format(indoor_model.room_vol / 35.315),  # ft3 to m3
             '{:,.0f} m\u00B3/hr'.format(indoor_model.fresh_rate / 35.3147 * 60),  # ft3/min to m3/hr
             '{:,.0f} m\u00B3/hr'.format(indoor_model.recirc_rate / 35.3147 * 60),  # ft3/min to m3/hr
@@ -642,7 +642,7 @@ def get_qb_text(indoor_model, units):
 
 # Returns the value for Cq given the units.
 def get_cq_text(indoor_model, units):
-    infectiousness = indoor_model.disease_params[0] * indoor_model.relative_sus
+    infectiousness = indoor_model.disease_params[0]
     if units == 'british':
         return '{:,.2f} q/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
     elif units == 'metric':

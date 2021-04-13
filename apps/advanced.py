@@ -698,10 +698,6 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Update the figure with a new model calculation
     new_fig = ess.get_model_figure(myInd, language)
 
-    # Update the red text output with new model calculations
-    # Model values of interest
-    interest_output = ess.get_interest_output_text(myInd, my_units)
-
     # Outputs
     if risk_mode == 'conditional':
         prevalence = 0
@@ -737,7 +733,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Now take care of the CO2 panel
     myInd.atm_co2 = atm_co2
     new_fig_co2 = ess.get_model_figure_co2(myInd, risk_mode, language, window_width)
-    safe_co2_conc = myInd.calc_co2(myInd.calc_n_max(exp_time_co2, risk_mode))
+    safe_co2_conc = myInd.calc_co2_n(myInd.calc_n_max(exp_time_co2, risk_mode))
     co2_base_string = '{:,.0f} ppm'
     if hasattr(desc_file, 'safe_co2_conc'):
         co2_base_string = desc_file.co2_base_string
@@ -749,6 +745,10 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     co2_graph_config = co2_graph_config_desktop
     if window_width < 1200:
         co2_graph_config = co2_graph_config_mobile
+
+    # Update the red text output with new model calculations
+    # Model values of interest
+    interest_output = ess.get_interest_output_text(myInd, my_units)
 
     # Update all relevant display items (figure, red output text)
     return new_fig, new_fig_co2, co2_graph_config, recommended_co2_conc_text, \

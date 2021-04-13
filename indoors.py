@@ -81,6 +81,10 @@ class Indoors:
         {'merv': 20, '0.3-1': 0.9999997, '1-3': 0.9999997, '3-10': 0.9999997},
     ]
 
+    density_droplet = 1100  # kg/m3
+    viscosity_air = 1.86 * (10 ** -5)  # Pa s
+    acceleration_gravity = 9.8  # m/s2
+
     def __init__(self):
         self.set_default_params()
         self.calc_vars()
@@ -122,7 +126,8 @@ class Indoors:
 
         self.viral_deact_rate = max_viral_deact_rate * relative_humidity
 
-        self.sett_speed = 3 * (self.eff_aerosol_radius / 5) ** 2  # mm/s
+        # self.sett_speed = 3 * (self.eff_aerosol_radius / 5) ** 2  # mm/s
+        self.sett_speed = (2 / 9) * self.density_droplet * self.acceleration_gravity * (self.eff_aerosol_radius ** 2) / (self.viscosity_air * (10 ** 9))
         self.sett_speed = self.sett_speed * 60 * 60 / 1000  # m/hr
 
         self.conc_relax_rate = air_exch_rate + self.air_filt_rate + self.viral_deact_rate + self.sett_speed / mean_ceiling_height_m  # /hr
@@ -153,14 +158,25 @@ class Indoors:
 
     # Calculates the safe, steady-state CO2 level in the room given N
     # Output is in parts per million (ppm) of CO2
-    def calc_co2(self, n_max):
+    def calc_co2_n(self, n_max):
         breathing_flow_rate = self.physio_params[0]  # m3 / hr
         outdoor_exchange_rate = self.physical_params[2]  # /hr
-        return (38000 * breathing_flow_rate * n_max / (outdoor_exchange_rate * self.room_vol)) + self.atm_co2  # ppm
+        room_vol_m = 0.0283168 * self.room_vol  # m3
+        return (38000 * breathing_flow_rate * n_max / (outdoor_exchange_rate * room_vol_m)) + self.atm_co2  # ppm
+
+    # Calculates the safe, steady-state CO2 level in the room given tau (exposure time)
+    # Output is in parts per million (ppm) of CO2
+    def calc_co2_t(self, exp_time):
+        breathing_flow_rate = self.physio_params[0]  # m3 / hr
+        outdoor_exchange_rate = self.physical_params[2]  # /hr
+        risk_tolerance = self.prec_params[1]  # no units
+        exhaled_air_inf = self.disease_params[0] * self.relative_sus  # infection quanta/m3
+        mask_passage_prob = self.prec_params[0]  # no units
+        return (38000 * risk_tolerance * self.conc_relax_rate / (exp_time * breathing_flow_rate * exhaled_air_inf * (mask_passage_prob ** 2) * outdoor_exchange_rate)) + self.atm_co2  # ppm
 
     # Calculate safe steady-state CO2 concentration (ppm) for a single exposure time.
     def calc_co2_exp_time(self, exp_time, risk_mode):
-        return self.calc_co2(self.calc_n_max(exp_time, risk_mode))
+        return self.calc_co2_n(self.calc_n_max(exp_time, risk_mode))
 
     # Calculate maximum exposure time allowed given a capacity (# people), transient
     def calc_max_time(self, n_max, risk_type='conditional'):
