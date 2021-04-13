@@ -32,8 +32,8 @@ sov_languages = ["hi"]
 normal_credits = '''William H. Green, Matthew Haefner, 
                  David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
-translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, Henrik Bruus, John Bush, 
-                        Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, 
+translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Juncal Arbelaiz, Antonio Bertei, Henrik Bruus, John Bush, 
+                        Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, Arantza Etxeburua 
                         Anders Flodmarke, Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
                         Michal Pavelka, Juan Puyo, László Sándor, Myungjin Seo, Huanhuan Tian, Ettore Virga, Chenyu Wen, 
                         Gede Wenten, Hongbo Zhao, Juner Zhu'''
