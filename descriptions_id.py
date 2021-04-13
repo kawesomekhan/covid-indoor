@@ -1,4 +1,5 @@
 import dash_html_components as html
+import descriptions_links as links
 
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
@@ -126,6 +127,7 @@ age_group_marks = {
     0.68: {'label': '0.68: Dewasa (15-64 tahun)', 'style': {'max-width': '75px'}},
     1: {'label': '1.00: Lanjut Usia (>64 tahun)', 'style': {'width': '75px'}}
 }
+lang_break_age = html.Br()
 
 curr_strain_header = "Strain Virus: "
 presets_strain = [
@@ -148,20 +150,25 @@ pim_header = "Persentase immun: "
 risk_conditional_desc = "Jika seseorang yang terinfeksi memasuki..."
 risk_prevalence_desc = "Dengan prevalensi infeksi..."
 risk_personal_desc = "Untuk membatasi risiko pribadi saya..."
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 main_panel_s1 = "Berdasarkan model ini, ruangan ini akan aman* jika memiliki: "
 
 main_panel_s1_b = html.Span([
-    html.Span('''Untuk membatasi penularan* COVID-19 dalam populasi dengan prevalensi infeksi '''),
+    html.Span('''Untuk membatasi penularan* COVID-19 dalam populasi dengan prevalensi'''),
     html.Sup('''1'''),
-    html.Span(''' of ''')
+    html.Span(''' infeksi ''')
 ])
 main_panel_s2_b = ''' per 100,000, ruangan ini seharusnya tidak lebih dari:  '''
 
 main_panel_s1_c = html.Span([
-    html.Span('''Untuk membatasi peluang saya terinfeksi COVID-19 dalam populasi dengan prevalensi1 infeksi '''),
+    html.Span('''Untuk membatasi peluang saya terinfeksi COVID-19 dalam populasi dengan prevalensi'''),
     html.Sup('''1'''),
-    html.Span(''' of ''')
+    html.Span(''' infeksi ''')
 ])
 main_panel_s2_c = ''' per 100,000, ruangan ini seharusnya tidak lebih dari: '''
 
@@ -177,6 +184,8 @@ units_month_one = 'bulan'
 
 is_past_recovery_base_string = '{n_val} orang selama >{val:.0f} jam,'
 model_output_base_string = '{n_val} orang selama '
+nt_bridge_string = " orang selama "
+tn_bridge_string = " selama "
 
 main_panel_six_ft_1 = "Sebaliknya, pedoman jaga jarak enam kaki (atau dua meter) akan membatasi hunian menjadi "
 main_panel_six_ft_2 = " yang akan melanggar pedoman* setelah "
@@ -190,42 +199,41 @@ graph_ytitle = "Maximum Occupancy N"
 transient_text = "Transien"
 steady_state_text = "Kondisi tunak"
 
-main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
-                                      html.Span(html.A(href=links.link_docs,
-                                                       children="airborne transmissions",
-                                                       target='_blank'), ),
-                                      html.Span(''' per infected person to be less than the risk tolerance 
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
-main_airb_trans_only_disc_basic = html.Div(["*The guideline restricts the probability of ",
+main_airb_trans_only_disc = html.Div(["*Panduan tersebut membatasi kemungkinan ",
                                             html.Span(html.A(href=links.link_docs,
-                                                             children="airborne transmissions",
+                                                             children="penularan melalui udara",
                                                              target='_blank'), ),
-                                            html.Span(''' per infected person to be less than the risk tolerance (10%)
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
+                                            html.Span(''' per orang yang terinfeksi menjadi kurang dari toleransi 
+                                            risiko selama waktu paparan kumulatif yang 
+                                            terdaftar.''')], className='airborne-text')
+main_airb_trans_only_disc_basic = html.Div(["*Panduan tersebut membatasi kemungkinan ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="penularan melalui udara",
+                                                             target='_blank'), ),
+                                            html.Span(''' per orang yang terinfeksi menjadi kurang dari toleransi 
+                                            risiko (10%) selama waktu paparan kumulatif yang 
+                                            terdaftar.''')], className='airborne-text')
 
 other_risk_modes_desc = html.Div('''Skenario risiko lain dipertimbangkan dalam Mode Lanjutan. Secara khusus, seseorang dapat 
   mempertimbangkan prevalensi infeksi dalam populasi, kekebalan yang diperoleh melalui vaksinasi atau paparan sebelumnya, dan 
   risiko terhadap individu tertentu.''')
 
-main_airb_trans_only_desc_b = html.Div(["*The guideline restricts the probability of one ",
-                                        html.Span(html.A(href=links.link_docs,
-                                                         children="airborne transmission",
-                                                         target='_blank'), ),
-                                        html.Span(''' per infected person to be less than the risk tolerance 
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
-main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probability of ",
-                                        html.Span(html.A(href=links.link_docs,
-                                                         children="airborne transmission",
-                                                         target='_blank'), ),
-                                        html.Span(''' to a particular individual to be less than the risk tolerance 
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
+main_airb_trans_only_desc_b = html.Div(["*Panduan tersebut membatasi kemungkinan satu ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="penularan melalui udara",
+                                                             target='_blank'), ),
+                                            html.Span(''' per orang yang terinfeksi menjadi kurang dari toleransi 
+                                            risiko selama waktu paparan kumulatif yang 
+                                            terdaftar.''')], className='airborne-text')
+main_airb_trans_only_desc_c = html.Div(["*Panduan tersebut membatasi kemungkinan ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="penularan melalui udara",
+                                                             target='_blank'), ),
+                                            html.Span(''' ke individu tertentu menjadi kurang dari toleransi risiko 
+                                            selama waktu paparan kumulatif yang 
+                                            terdaftar.''')], className='airborne-text')
 
-airb_trans_only_disc = html.Div('''Panduan ini berdasarkan pertimbangan penularan melalui udara dari satu orang 
-yang terinfeksi selama waktu paparan kumulatif tertentu (lihat daftar). ''', className='airborne-text')
+airb_trans_only_disc = html.Div('''''', className='airborne-text')
 
 incidence_rate_refs = html.Div([html.Sup('''1'''),
                                 html.Span('''Untuk memperkirakan prevalensi lokal Anda, berikut beberapa sumber yang dapat digunakan: '''),
@@ -344,7 +352,7 @@ recirc_types = [
 
 humidity_text = "Humiditas Relatif: "
 humidity_marks = {
-    0: {'label': '0%: Sangat kering', 'style': {'max-width': '25px'}},
+    0.01: {'label': '1%: Sangat kering', 'style': {'max-width': '25px'}},
     0.2: {'label': '20%: Pesawat terbang', 'style': {'max-width': '50px'}},
     0.3: {'label': '30%: Kering'},
     0.6: {'label': '60%: Rata-rata'},
