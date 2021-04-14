@@ -27,6 +27,7 @@ languages = [
     {'label': "English", 'value': "en"},
     # {'label': "Espa\u00f1ol", 'value': "es", 'disabled': True},
     {'label': "Euskara", 'value': "eu"},
+    {'label': "فارسی", 'value': "fa"},
     {'label': "Fran\u00e7ais", 'value': "fr"},
     {'label': "हिन्दी", 'value': "hi"},
     {'label': "Bahasa Indonesia", 'value': "id"},
@@ -118,7 +119,7 @@ app.layout = html.Div([
 
     html.Div(id='window-width'),
     html.Div(id='window-height'),
-])
+], id='app-layout', dir='ltr')
 
 
 # Updates window width div on page update
@@ -215,9 +216,11 @@ def update_units_search(units, lang, search):
 
 
 # Updates menu dropdowns language and units based on URL search terms.
+# Also updates page direction (ltr or rtl) depending on selected language
 @app.callback(
     [Output('units-setting', 'value'),
-     Output('lang-setting', 'value')],
+     Output('lang-setting', 'value'),
+     Output('app-layout', 'dir')],
     [Input('url', 'search')]
 )
 def update_dropdowns(search):
@@ -230,7 +233,11 @@ def update_dropdowns(search):
     if "lang" in params:
         my_lang = params["lang"]
 
-    return [my_units, my_lang]
+    lang_dir = 'ltr'
+    if my_lang in ess.rtl_languages:
+        lang_dir = 'rtl'
+
+    return [my_units, my_lang, lang_dir]
 
 
 # Updates URL pathname based on mode dropdown

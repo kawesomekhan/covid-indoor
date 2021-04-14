@@ -7,6 +7,7 @@ import descriptions_da as desc_da
 import descriptions_de as desc_de
 import descriptions_es as desc_es
 import descriptions_eu as desc_eu
+import descriptions_fa as desc_fa
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
 import descriptions_hi as desc_hi
@@ -28,6 +29,9 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 
 # Languages where the time comes before the occupancy in the big red output (SOV order)
 sov_languages = ["hi"]
+
+# Languages that read right-to-left
+rtl_languages = ["fa"]
 
 normal_credits = '''William H. Green, Matthew Haefner, 
                  David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
@@ -885,6 +889,8 @@ def get_desc_file(language):
         desc_file = desc_de
     elif language == "eu":
         desc_file = desc_eu
+    elif language == "fa":
+        desc_file = desc_fa
     elif language == "zh":
         desc_file = desc_zh
     elif language == "hi":
