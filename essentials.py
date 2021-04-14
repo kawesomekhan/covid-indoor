@@ -7,6 +7,7 @@ import descriptions_da as desc_da
 import descriptions_de as desc_de
 import descriptions_es as desc_es
 import descriptions_eu as desc_eu
+import descriptions_fa as desc_fa
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
 import descriptions_hi as desc_hi
@@ -29,9 +30,13 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 # Languages where the time comes before the occupancy in the big red output (SOV order)
 sov_languages = ["hi"]
 
+# Languages that read right-to-left
+rtl_languages = ["fa"]
+
 normal_credits = '''William H. Green, Matthew Haefner, 
                  David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
+
 translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Juncal Arbelaiz, Antonio Bertei, Henrik Bruus, John Bush, 
                         Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, Arantza Etxeburua 
                         Anders Flodmarke, Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
@@ -690,6 +695,10 @@ def get_lang_text_basic(language, disp_width):
     if hasattr(desc_file, 'main_panel_six_ft_3'):
         main_panel_six_ft_3 = desc_file.main_panel_six_ft_3
 
+    lang_direction = 'ltr'
+    if language in rtl_languages:
+        lang_direction = 'rtl'
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -754,7 +763,8 @@ def get_lang_text_basic(language, disp_width):
             desc_file.n_input_text_3,
             desc_file.t_input_text_1,
             desc_file.t_input_text_2,
-            desc_file.t_input_text_3]
+            desc_file.t_input_text_3,
+            lang_direction]
 
 
 # Returns text for updating language from the given descriptions file.
@@ -875,7 +885,9 @@ def get_header_and_footer_text(language):
 # Returns description file based on language
 def get_desc_file(language):
     desc_file = desc
-    if language == "fr":
+    if language == "fa":
+        desc_file = desc_fa
+    elif language == "fr":
         desc_file = desc_fr
     elif language == "cs":
         desc_file = desc_cs

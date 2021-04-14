@@ -468,7 +468,8 @@ layout = html.Div(children=[
      Output('n-input-text-3', 'children'),
      Output('t-input-text-1', 'children'),
      Output('t-input-text-2', 'children'),
-     Output('t-input-text-3', 'children')],
+     Output('t-input-text-3', 'children'),
+     Output('app-layout', 'dir')],
     [Input('url', 'search'),
      Input('window-width', 'children')]
 )
