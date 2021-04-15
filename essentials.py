@@ -583,7 +583,7 @@ def get_n_max_text(n, n_max, language):
     if n > n_max:
         return desc_file.n_max_overflow_base_string.format(n_max)
     else:
-        return desc_file.n_max_base_string.format(n)
+        return desc_file.n_max_base_string.format(math.floor(n))
 
 
 # Returns the output text for the variables of interest, shown in the FAQ/Other Inputs & Outputs tab.

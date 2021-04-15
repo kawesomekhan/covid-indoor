@@ -172,11 +172,11 @@ class Indoors:
         risk_tolerance = self.prec_params[1]  # no units
         exhaled_air_inf = self.disease_params[0] * self.relative_sus  # infection quanta/m3
         mask_passage_prob = self.prec_params[0]  # no units
-        return (38000 * risk_tolerance * self.conc_relax_rate / (exp_time * breathing_flow_rate * exhaled_air_inf * (mask_passage_prob ** 2) * outdoor_exchange_rate)) + self.atm_co2  # ppm
+        return (38000 * risk_tolerance * self.conc_relax_rate / (exp_time * breathing_flow_rate * exhaled_air_inf * (mask_passage_prob ** 2) * outdoor_exchange_rate * self.percentage_sus)) + self.atm_co2  # ppm
 
     # Calculate safe steady-state CO2 concentration (ppm) for a single exposure time.
     def calc_co2_exp_time(self, exp_time, risk_mode):
-        if risk_mode == 'conditional-ignore':
+        if risk_mode == 'conditional':
             return self.calc_co2_t(exp_time)
         else:
             return self.calc_co2_n(self.calc_n_max(exp_time, risk_mode))
