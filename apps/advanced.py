@@ -733,7 +733,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Now take care of the CO2 panel
     myInd.atm_co2 = atm_co2
     new_fig_co2 = ess.get_model_figure_co2(myInd, risk_mode, language, window_width)
-    safe_co2_conc = myInd.calc_co2_n(myInd.calc_n_max(exp_time_co2, risk_mode))
+    safe_co2_conc = myInd.calc_co2_exp_time(exp_time_co2, risk_mode)
     co2_base_string = '{:,.0f} ppm'
     if hasattr(desc_file, 'safe_co2_conc'):
         co2_base_string = desc_file.co2_base_string

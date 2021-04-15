@@ -387,14 +387,12 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
                                  mode='lines',
                                  name=guideline_trace_text,
                                  line=go.scatter.Line(color="#730707", dash='dot'),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Guideline: %{y:,.0f} ppm<extra></extra>',
-                                 visible='legendonly'))
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Guideline: %{y:,.0f} ppm<extra></extra>'))
     new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
                                  mode='lines',
                                  name=co2_safe_trace_text,
                                  line=go.scatter.Line(color="#8ad4ed", dash='dot'),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Respiratory Safety Threshold: %{y:,.0f} ppm<extra></extra>',
-                                 visible='legendonly'))
+                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Respiratory Safety Threshold: %{y:,.0f} ppm<extra></extra>'))
     new_fig.add_trace(go.Scatter(x=background_df["exposure_time"], y=background_df["co2_background"],
                                  mode='lines',
                                  name=background_co2_text,
@@ -412,8 +410,15 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
                           hovermode='closest')
     if is_mobile:
         new_fig.update_layout(title="", height=400, showlegend=False)
+
     new_fig.update_xaxes(type="log", showspikes=True)
     new_fig.update_yaxes(type="log", showspikes=True)
+
+    max_guideline_val = new_df["co2_trans"].max()
+    if max_guideline_val * 1.2 > 50000:
+        new_fig.update_yaxes(range=[math.log(indoor_model.atm_co2 * 0.8, 10), math.log(50000, 10)])
+    else:
+        new_fig.update_yaxes(range=[math.log(indoor_model.atm_co2 * 0.8, 10), math.log(max_guideline_val * 1.2, 10)])
 
     return new_fig
 

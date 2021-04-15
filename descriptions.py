@@ -164,7 +164,7 @@ risk_options = [
 risk_personal_warning = html.Span([
     html.Span('''Warning: ''', style={'font-weight': 'bold'}),
     html.Span('''the selected risk mode (To limit my personal risk...) considers probability of 
-infection to a particular individual. It is thus far less restrictive and should not be used for establishing 
+transmission to a particular individual. It is thus far less restrictive and should not be used for establishing 
 community safety guidelines.''')])
 
 risk_mode_panel_header = "Risk Mode"

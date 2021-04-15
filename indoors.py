@@ -176,7 +176,10 @@ class Indoors:
 
     # Calculate safe steady-state CO2 concentration (ppm) for a single exposure time.
     def calc_co2_exp_time(self, exp_time, risk_mode):
-        return self.calc_co2_n(self.calc_n_max(exp_time, risk_mode))
+        if risk_mode == 'conditional-ignore':
+            return self.calc_co2_t(exp_time)
+        else:
+            return self.calc_co2_n(self.calc_n_max(exp_time, risk_mode))
 
     # Calculate maximum exposure time allowed given a capacity (# people), transient
     def calc_max_time(self, n_max, risk_type='conditional'):
