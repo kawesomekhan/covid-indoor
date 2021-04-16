@@ -15,6 +15,7 @@ import descriptions_id as desc_id
 import descriptions_it as desc_it
 import descriptions_ko as desc_ko
 import descriptions_nl as desc_nl
+import descriptions_pt_br as desc_pt_br
 import descriptions_sv as desc_sv
 
 import pandas as pd
@@ -35,7 +36,8 @@ normal_credits = '''William H. Green, Matthew Haefner,
 translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Juncal Arbelaiz, Antonio Bertei, Henrik Bruus, John Bush, 
                         Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, Arantza Etxeburua 
                         Anders Flodmarke, Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
-                        Michal Pavelka, Juan Puyo, László Sándor, Myungjin Seo, Huanhuan Tian, Ettore Virga, Chenyu Wen, 
+                        Michal Pavelka, Juan Puyo, László Sándor, Myungjin Seo, Lucas Tambasco, 
+                        Huanhuan Tian, Ettore Virga, Chenyu Wen, 
                         Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 m_to_ft = 3.28084
@@ -378,26 +380,31 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     if hasattr(desc_file, "graph_ytitle_co2"):
         graph_ytitle_co2 = desc_file.graph_ytitle_co2
 
+    ht_rec = desc_file.graph_xtitle + ": %{x:,.1f}<br>" + recommended_co2_text + ": %{y:,.0f} ppm<extra></extra>"
+    ht_guideline = desc_file.graph_xtitle + ": %{x:,.1f}<br>" + guideline_trace_text + ": %{y:,.0f} ppm<extra></extra>"
+    ht_safe = desc_file.graph_xtitle + ": %{x:,.1f}<br>" + co2_safe_trace_text + ": %{y:,.0f} ppm<extra></extra>"
+    ht_bg = desc_file.graph_xtitle + ": %{x:,.1f}<br>" + background_co2_text + ": %{y:,.0f} ppm<extra></extra>"
+
     new_fig.add_trace(go.Scatter(x=recommended_df["exposure_time"], y=recommended_df["co2_rec"],
                                  mode='lines',
                                  name=recommended_co2_text,
                                  line=go.scatter.Line(color="#de1616"),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Recommended Limit: %{y:,.0f} ppm<extra></extra>'))
+                                 hovertemplate=ht_rec))
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
                                  mode='lines',
                                  name=guideline_trace_text,
                                  line=go.scatter.Line(color="#730707", dash='dot'),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Guideline: %{y:,.0f} ppm<extra></extra>'))
+                                 hovertemplate=ht_guideline))
     new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
                                  mode='lines',
                                  name=co2_safe_trace_text,
                                  line=go.scatter.Line(color="#8ad4ed", dash='dot'),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Respiratory Safety Threshold: %{y:,.0f} ppm<extra></extra>'))
+                                 hovertemplate=ht_safe))
     new_fig.add_trace(go.Scatter(x=background_df["exposure_time"], y=background_df["co2_background"],
                                  mode='lines',
                                  name=background_co2_text,
                                  line=go.scatter.Line(color="#000000", dash='dot'),
-                                 hovertemplate='Exposure Time: %{x:,.1f} hours' + '<br>Background CO\u2082: %{y:,.0f} ppm<extra></extra>'))
+                                 hovertemplate=ht_bg))
     new_fig.update_layout(transition_duration=500,
                           title=graph_title_co2, height=500,
                           xaxis_title=desc_file.graph_xtitle,
@@ -794,6 +801,54 @@ def get_lang_text_adv(language, disp_width):
     if hasattr(desc_file, 'lang_break_age'):
         lang_break_age = desc_file.lang_break_age
 
+    risk_mode_panel_header = desc.risk_mode_panel_header
+    if hasattr(desc_file, 'risk_mode_panel_header'):
+        risk_mode_panel_header = desc_file.risk_mode_panel_header
+
+    co2_prev_input_1 = desc.co2_prev_input_1
+    if hasattr(desc_file, 'co2_prev_input_1'):
+        co2_prev_input_1 = desc_file.co2_prev_input_1
+
+    co2_prev_input_2 = desc.co2_prev_input_2
+    if hasattr(desc_file, 'co2_prev_input_2'):
+        co2_prev_input_2 = desc_file.co2_prev_input_2
+
+    occ_panel_header = desc.occupancy_panel_header
+    if hasattr(desc_file, 'occupancy_panel_header'):
+        occ_panel_header = desc_file.occupancy_panel_header
+
+    co2_panel_header = desc.co2_title
+    if hasattr(desc_file, 'co2_title'):
+        co2_panel_header = desc_file.co2_title
+
+    co2_param_desc = desc.co2_param_desc
+    if hasattr(desc_file, 'co2_param_desc'):
+        co2_param_desc = desc_file.co2_param_desc
+
+    co2_atm_input_1 = desc.co2_atm_input_1
+    if hasattr(desc_file, 'co2_atm_input_1'):
+        co2_atm_input_1 = desc_file.co2_atm_input_1
+
+    co2_atm_input_2 = desc.co2_atm_input_2
+    if hasattr(desc_file, 'co2_atm_input_2'):
+        co2_atm_input_2 = desc_file.co2_atm_input_2
+
+    co2_calc_1 = desc.co2_calc_1
+    if hasattr(desc_file, 'co2_calc_1'):
+        co2_calc_1 = desc_file.co2_calc_1
+
+    co2_calc_2 = desc.co2_calc_2
+    if hasattr(desc_file, 'co2_calc_2'):
+        co2_calc_2 = desc_file.co2_calc_2
+
+    co2_calc_3 = desc.co2_calc_3
+    if hasattr(desc_file, 'co2_calc_3'):
+        co2_calc_3 = desc_file.co2_calc_3
+
+    co2_safe_footer = desc.co2_safe_footer
+    if hasattr(desc_file, 'co2_safe_footer'):
+        co2_safe_footer = desc_file.co2_safe_footer
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -858,7 +913,19 @@ def get_lang_text_adv(language, disp_width):
             " " + desc_file.units_hr,
             lang_break_age,
             desc_file.risk_options,
-            desc_file.incidence_rate_refs]
+            co2_prev_input_1,
+            co2_prev_input_2,
+            desc_file.incidence_rate_refs,
+            risk_mode_panel_header,
+            occ_panel_header,
+            co2_panel_header,
+            co2_param_desc,
+            co2_atm_input_1,
+            co2_atm_input_2,
+            co2_calc_1,
+            co2_calc_2,
+            co2_calc_3,
+            co2_safe_footer]
 
 
 # Get header and footer based on language
@@ -906,6 +973,8 @@ def get_desc_file(language):
         desc_file = desc_nl
     elif language == "es":
         desc_file = desc_es
+    elif language == "pt-br":
+        desc_file = desc_pt_br
     elif language == "sv":
         desc_file = desc_sv
 
