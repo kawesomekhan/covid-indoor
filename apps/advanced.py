@@ -76,11 +76,11 @@ layout = html.Div(children=[
                                 html.Br(),
                                 html.Div([
                                     html.H5([
-                                        html.Span(desc.co2_prev_input_1),
+                                        html.Span(desc.co2_prev_input_1, id='adv-co2-prev-input-1'),
                                         html.Span(dcc.Input(id='adv-prev',
                                                             value=100,
                                                             type='number')),
-                                        html.Span(desc.co2_prev_input_2),
+                                        html.Span(desc.co2_prev_input_2, id='adv-co2-prev-input-2'),
                                     ]),
                                     html.Div(desc.incidence_rate_refs, id='adv-incidence-rate-refs',
                                              className='panel-airb-desc')
@@ -378,7 +378,7 @@ layout = html.Div(children=[
                         className='card',
                         children=[html.Div(className='output-content', children=[
                             html.Div([
-                                html.H4(desc.occupancy_panel_header),
+                                html.H4(desc.occupancy_panel_header, id='adv-occ-panel-header'),
                                 html.H3(html.Span(desc.main_panel_s1, id='adv-main-panel-s1')),
                                 dcc.Loading(
                                     id='adv-loading',
@@ -432,15 +432,15 @@ layout = html.Div(children=[
                         className='card',
                         id='adv-card-co2',
                         children=[
-                            html.H4(desc.co2_title),
-                            html.Div(desc.co2_param_desc),
+                            html.H4(desc.co2_title, id='adv-co2-panel-header'),
+                            html.Div(desc.co2_param_desc, id='adv-co2-param-desc'),
                             html.Br(),
                             html.H5([
-                                html.Span(desc.co2_atm_input_1),
+                                html.Span(desc.co2_atm_input_1, id='adv-co2-atm-input-1'),
                                 html.Span(dcc.Input(id='adv-atm-input-co2',
                                                     value=410,
                                                     type='number')),
-                                html.Span(desc.co2_atm_input_2),
+                                html.Span(desc.co2_atm_input_2, id='adv-co2-atm-input-2'),
                             ]),
                             html.Div([
                                 dcc.Graph(
@@ -450,34 +450,24 @@ layout = html.Div(children=[
                                 ),
                             ]),
                             html.H3([
-                                html.Span(desc.co2_calc_1),
+                                html.Span(desc.co2_calc_1, id='adv-co2-calc-1'),
                                 html.Span(
                                     dcc.Input(id='adv-exp-time-input-co2',
                                               value=8,
                                               type='number')
                                 ),
-                                html.Span(desc.co2_calc_2),
+                                html.Span(desc.co2_calc_2, id='adv-co2-calc-2'),
                                 dcc.Loading(
                                     html.Span(id='adv-co2-output'),
                                     parent_style={'display': 'inline-block'},
                                     type='circle',
                                     color='#de1616',
                                 ),
-                                html.Span(desc.co2_calc_3),
-                                # html.Span([
-                                #     html.Span(desc.co2_safe_sent_1),
-                                #     dcc.Loading(
-                                #         html.Span(id='adv-co2-output-healthy'),
-                                #         parent_style={'display': 'inline-block'},
-                                #         type='circle',
-                                #         color='#de1616',
-                                #     ),
-                                #     html.Span(desc.co2_safe_sent_2)
-                                # ], id='adv-safe-sent')
+                                html.Span(desc.co2_calc_3, id='adv-co2-calc-3'),
                             ]),
                             html.Div([
                                 desc.co2_safe_footer
-                            ], className='panel-airb-desc')
+                            ], className='panel-airb-desc', id='adv-co2-safe-footer')
                         ]
                     )
                 ]
@@ -553,7 +543,19 @@ layout = html.Div(children=[
      Output('adv-tn-tail-string', 'children'),
      Output('adv-lang-break-age', 'children'),
      Output('adv-risk-mode', 'options'),
-     Output('adv-incidence-rate-refs', 'children')],
+     Output('adv-co2-prev-input-1', 'children'),
+     Output('adv-co2-prev-input-2', 'children'),
+     Output('adv-incidence-rate-refs', 'children'),
+     Output('adv-risk-mode-header', 'children'),
+     Output('adv-occ-panel-header', 'children'),
+     Output('adv-co2-panel-header', 'children'),
+     Output('adv-co2-param-desc', 'children'),
+     Output('adv-co2-atm-input-1', 'children'),
+     Output('adv-co2-atm-input-2', 'children'),
+     Output('adv-co2-calc-1', 'children'),
+     Output('adv-co2-calc-2', 'children'),
+     Output('adv-co2-calc-3', 'children'),
+     Output('adv-co2-safe-footer', 'children')],
     [Input('url', 'search'),
      Input('window-width', 'children')]
 )

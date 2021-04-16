@@ -29,11 +29,12 @@ languages = [
     {'label': "Euskara", 'value': "eu"},
     {'label': "Fran\u00e7ais", 'value': "fr"},
     {'label': "हिन्दी", 'value': "hi"},
+    {'label': "Magyar", 'value': "hu"},
     {'label': "Bahasa Indonesia", 'value': "id"},
     # {'label': "Italiano", 'value': "it", 'disabled': True},
     {'label': "한국어", 'value': "ko"},
-    {'label': "Magyar", 'value': "hu"},
     # {'label': "Nederlands", 'value': "nl"},
+    {'label': "Português do Brasil", 'value': "pt-br"},
     {'label': "Svenska", 'value': "sv"},
     {'label': "简体中文", 'value': "zh"},
 ]
