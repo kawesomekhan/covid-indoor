@@ -1,4 +1,5 @@
 import dash_html_components as html
+import descriptions_links as links
 
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
@@ -73,37 +74,122 @@ error_list = {
     "n_max_input": "Fehler: Anzahl an Personen kann nicht kleiner als zwei sein.",
     "exp_time_input": "Fehler: Expositionszeit muss größer als 0 sein.",
     "air_exchange_rate": "Fehler: Luftwechselrate (ACH) muss größer als 0 sein.",
-    "merv": "Fehler: Luftfiltersystem (MERV) kann nicht leer sein."
+    "merv": "Fehler: Luftfiltersystem (MERV) kann nicht leer sein.",
+    "prevalence": "Fehler: Die Verbreitung (Prävalenz) muss größer als 0 und kleiner als 100.000 betragen."
 }
 
 # Main Panel Text
-curr_room_header = "Aktueller Raum: "
+curr_room_header = "Raumspezifikationen: "
 presets = [
     {'label': "Benutzerdefiniert", 'value': 'custom'},
     {'label': "Haus im Stadtrandgebiet", 'value': 'house'},
     {'label': "Restaurant", 'value': 'restaurant'},
-    {'label': "Leises Büro", 'value': 'office'},
+    {'label': "Büro", 'value': 'office'},
     {'label': "Klassenzimmer", 'value': 'classroom'},
-    {'label': "New Yorker U-Bahn-Wagen", 'value': 'subway'},
-    {'label': "Boeing 737", 'value': 'airplane'},
+    {'label': "Wohnzimmer", 'value': 'living-room'},
+    {'label': "U-Bahn-Wagen", 'value': 'subway'},
+    {'label': "Kommerzielles Linienflugzeug", 'value': 'airplane'},
     {'label': "Kirche", 'value': 'church'},
+]
+
+curr_human_header = "Menschliches Verhalten: "
+presets_human = [
+    {'label': "Benutzerdefiniert", 'value': 'custom'},
+    {'label': "Masken, ruhend", 'value': 'masks-1'},
+    {'label': "Masken, redend", 'value': 'masks-2'},
+    {'label': "Masken, Tätigkeit ausübend", 'value': 'masks-3'},
+    {'label': "Ohne Maske, ruhend", 'value': 'no-masks-1'},
+    {'label': "Ohne Maske, sprechend", 'value': 'no-masks-2'},
+    {'label': "Ohne Maske, Tätigkeit ausübend", 'value': 'no-masks-3'},
+    {'label': "Ohne Maske, singend", 'value': 'singing-1'},
+]
+
+curr_risk_header = "Risikotoleranz: "
+# presets_risk = [
+#     {'label': "Low", 'value': 0.01},
+#     {'label': "Medium", 'value': 0.1},
+#     {'label': "High", 'value': 1},
+# ]
+risk_tol_marks = {
+    # 0.01: {'label': '0.01: Safer', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: Sicher', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: Unsicher'}
+}
+
+curr_age_header = "Altersgruppe: "
+presets_age = [
+    {'label': "Kinder (<15 Jahre)", 'value': 0.23},
+    {'label': "Erwachsene (15-64 Jahre)", 'value': 0.68},
+    {'label': "Ältere Menschen (>64 Jahre)", 'value': 1}
+]
+age_group_marks = {
+    0.23: {'label': '0.23: Kinder (<15 Jahre)', 'style': {'max-width': '75px'}},
+    0.68: {'label': '0.68: Erwachsene (15-64 Jahre)', 'style': {'max-width': '75px'}},
+    1: {'label': '1.00: Ältere Menschen (>64 Jahre)', 'style': {'width': '75px'}}
+}
+lang_break_age = html.Br()
+
+curr_strain_header = "Virusvariante: "
+presets_strain = [
+    # {'label': "SARS-CoV-1", 'value': 0.1},
+    {'label': "SARS-CoV-2 (Wuhan Variante)", 'value': 1},
+    {'label': "SARS-CoV-2 - B.1.1.7 (UK Variante)", 'value': 1.58}
+]
+viral_strain_marks = {
+    1: {'label': '1.0: Wuhan', 'style': {'max-width': '100px'}},
+    1.58: {'label': '1.58: B.1.1.7/UK'}
+}
+
+pim_header = "Prozentsatz immun: "
+# pim_marks = {
+#     0: {'label': '0% (basic mode)'},
+#     0.33: {'label': '33% (default)'},
+#     1: {'label': '100%'}
+# }
+
+risk_conditional_desc = "Falls eine infizierte Person eintritt…"
+risk_prevalence_desc = "Angesichts der Ausbreitung der Infektion…"
+risk_personal_desc = "Um mein persönliches Risiko zu begrenzen…"
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
 ]
 
 main_panel_s1 = "Basierend auf diesem Modell, sollte die Situation im Raum sicher sein bei: "
 
+main_panel_s1_b = html.Span([
+    html.Span('''Um die COVID-19- Übertragung * in der Bevölkerung mit einer Prävalenz'''),
+    html.Sup('''1'''),
+    html.Span(''' von ''')
+])
+main_panel_s2_b = ''' pro 100.000 zu begrenzen, sollte dieser Raum nicht mehr haben als: '''
+
+main_panel_s1_c = html.Span([
+    html.Span('''Um mein Risiko, in einer Bevölkerung mit einer Infektionsprävalenz'''),
+    html.Sup('''1'''),
+    html.Span(''' von ''')
+])
+main_panel_s2_c = ''' pro 100.000 mit COVID-19 infiziert zu werden, sollte dieser Raum nicht mehr haben als: '''
+
 units_hr = 'Stunden'
 units_min = 'Minuten'
 units_days = 'Tage'
+units_months = 'Monate'
 
-units_hr_one = 'Stunden'
-units_min_one = 'Minuten'
-units_day_one = 'Tage'
+units_hr_one = 'Stunde'
+units_min_one = 'Minute'
+units_day_one = 'Tag'
+units_month_one = 'Monat'
 
 is_past_recovery_base_string = '{n_val} Personen für >{val:.0f} Tage,'
 model_output_base_string = '{n_val} Personen für '
+nt_bridge_string = " Personen für "
+tn_bridge_string = " für "
 
-main_panel_six_ft_1 = "Beachte, dass die 2 m-Distanzrichtlinie besagt, dass bis zu "
-main_panel_six_ft_2 = " in diesem Raum für eine unbegrenzte Zeitdauer sicher wären."
+main_panel_six_ft_1 = "Im Gegensatz dazu würde der Sechs-Fuß- (oder Zwei-Meter-) Abstandsrichtwert die Belegung auf "
+main_panel_six_ft_2 = " begrenzen, was nach "
+main_panel_six_ft_3 = " gegen die Richtlinie* verstoßen würde."
 
 six_ft_base_string = ' {} Personen'
 six_ft_base_string_one = ' {} Personen'
@@ -114,22 +200,71 @@ graph_ytitle = "Maximale Personenbelegung N"
 transient_text = "Instationärer Zustand"
 steady_state_text = "Stationärer Zustand"
 
-main_airb_trans_only_disc = html.Div(["Die Richtlinie basiert auf der Betrachtung der luftgetragenen ",
-                                      html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
-                                                       children="Aerosolübertragung",
+main_airb_trans_only_disc = html.Div(["*Die Richtlinie schränkt die Wahrscheinlichkeit von ",
+                                      html.Span(html.A(href=links.link_docs,
+                                                       children="luftgetragenen Übertragungen ",
                                                        target='_blank'), ),
-                                      html.Span(''' ausgehend von einer einzelnen, infizierten Person über die 
-                                      angegebene kumulative Expositionszeit.  ''')], className='airborne-text')
+                                      html.Span(''' pro Person auf weniger als die Risikotoleranz über die angegebene 
+                                      kumulative Expositionszeit ein.''')], className='airborne-text')
+main_airb_trans_only_disc_basic = html.Div(["*Die Richtlinie beschränkt die Wahrscheinlichkeit von ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="luftgetragenen Übertragungen ",
+                                                             target='_blank'), ),
+                                            html.Span(''' pro infizierter Person auf weniger als die Risikotoleranz (
+                                            10 %) über die angegebene kumulative Expositionszeit.''')],
+                                           className='airborne-text')
 
-airb_trans_only_disc = html.Div('''Die Richtlinie basiert auf der Betrachtung der luftgetragenen 
-Aerosolübertragung ausgehend von einer einzelnen, infizierten Person über die angegebene kumulative Expositionszeit.  
-''', className='airborne-text')
+other_risk_modes_desc = html.Div('''Andere Risikoszenarien werden im erweiterten Modus berücksichtigt. Insbesondere 
+kann man die Prävalenz der Infektion in der Bevölkerung, die durch Impfung oder frühere Ansteckung erworbene 
+Immunität und das Risiko für eine individueller Person berücksichtigen.''')
+
+main_airb_trans_only_desc_b = html.Div(["*Die Richtlinie schränkt die Wahrscheinlichkeit einer einzelnen ",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="Übertragung",
+                                                         target='_blank'), ),
+                                        html.Span(''' über die Luft pro infizierter Person auf weniger als die 
+                                        Risikotoleranz über die angegebene kumulative Expositionszeit ein.''')],
+                                       className='airborne-text')
+main_airb_trans_only_desc_c = html.Div(["*Die Richtlinie schränkt die Wahrscheinlichkeit einer luftgetragenen ",
+                                        html.Span(html.A(href=links.link_docs,
+                                                         children="Übertragung",
+                                                         target='_blank'), ),
+                                        html.Span(''' auf eine bestimmte Person auf weniger als die Risikotoleranz 
+                                        über die angegebene kumulative Expositionszeit ein.''')],
+                                       className='airborne-text')
+
+airb_trans_only_disc = html.Div('''''', className='airborne-text')
+
+incidence_rate_refs = html.Div([html.Sup('''1'''),
+                                html.Span('''Um Ihre lokale Prävalenz abzuschätzen, können Sie hier hilfreiche 
+                                Informationen finden: '''),
+                                # html.Span(html.A(href=links.link_jhu_dashboard,
+                                #                  children="JHU COVID-19 Dashboard",
+                                #                  target='_blank')),
+                                # html.Span(''', '''),
+                                html.Span(html.A(href=links.link_cdc_dashboard,
+                                                 children="CDC COVID-19 Data Tracker",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.Span(html.A(href=links.link_jhu_data,
+                                                 children="JHU Coronavirus Resource Center",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.A(children="US Immunity Estimates",
+                                       href=links.link_cdc_immunity,
+                                       target='_blank'),
+                                html.Span(", "),
+                                html.A(children="International Immunity Estimates",
+                                       href=links.link_jhu_vaccine,
+                                       target='_blank'),
+                                ], className='airborne-text')
 
 # Bottom panels text
-n_input_text_1 = "Falls sich in diesem Raum "
+n_input_text_1 = "Wenn sich in diesem Raum "
 n_max_base_string = ' {:.0f} Personen'
-n_input_text_2 = " Personen befinden, sind diese für "
-n_input_text_3 = " sicher."
+n_max_overflow_base_string = ' >{:.0f} Personen'
+n_input_text_2 = " Personen aufhalten, würde der Richtwert nach "
+n_input_text_3 = " Stunden verletzt werden."
 
 t_input_text_1 = "Falls sich die Personen etwa "
 t_input_text_2 = " Stunden hier aufhalten, sollte die Raumbelegung auf "
@@ -163,10 +298,16 @@ about = html.Div([
               Filtrationsraten, die Art des Tragens von Mund-Nasen-Bedeckungen, die Atemaktivität und die 
               Risikotoleranz kann gezeigt werden, wie die Übertragung von COVID-19 in verschiedenen Innenräumen 
               minimiert werden kann.''')]),
+    html.Br(),
+    html.Div([html.Span('''Die Wissenschaft hinter der App wird auch in einem kostenlosen Massive Open Online Course 
+    (MOOC) auf ecX vermittelt: '''),
+              html.A(children="10.S95x Physics of COVID-19 Transmission",
+                     href=links.link_mooc,
+                     target='_blank')])
 ])
 
 # Room Specifications
-room_header = "Raumspezifikationen"
+room_header = "Raumspezifikationen - Details"
 
 floor_area_text = "Gesamte Raumfläche (sq. ft.): "
 floor_area_text_metric = "Gesamte Raumfläche (m²): "
@@ -174,8 +315,9 @@ ceiling_height_text = "Durchschnittliche Raumhöhe (ft.): "
 ceiling_height_text_metric = "Durchschnittliche Raumhöhe (m): "
 
 ventilation_text = "Belüftungssystem: "
-vent_type_output_base = "{:.0f} ACH"
-ventilation_text_adv = "Belüftungssystem (ACH): "
+vent_type_output_base = "{:.1f} ACH"
+vent_type_output_units = html.Span(["hr", html.Sup("-1"), " (ACH draußen)"])
+ventilation_text_adv = html.Span(["Belüftungssystem (hr", html.Sup("-1"), ", ACH draußen): "])
 ventilation_types = [
     {'label': "Geschlossene Fenster", 'value': 0.3},
     {'label': "Geöffnete Fenster", 'value': 2},
@@ -214,7 +356,7 @@ recirc_types = [
 
 humidity_text = "Relative Luftfeuchtigkeit: "
 humidity_marks = {
-    0: {'label': '0%: Sehr trocken', 'style': {'max-width': '25px'}},
+    0.01: {'label': '1%: Sehr trocken', 'style': {'max-width': '25px'}},
     0.2: {'label': '20%: Flugzeug', 'style': {'max-width': '50px'}},
     0.3: {'label': '30%: Trocken'},
     0.6: {'label': '60%: Durchschnittlich'},
@@ -224,12 +366,13 @@ humidity_marks = {
 need_more_ctrl_text = '''Sie möchten mehr Kontrolle über Ihre Eingabeparameter? Wechseln Sie zum erweiterten Modus, 
 indem Sie das Dropdown-Menü oben auf der Webseite nutzten.'''
 
-human_header = "Menschliches Verhalten"
+human_header = "Menschliches Verhalten - Details"
 # Human Behavior
-exertion_text = "Betätigungslevel: "
+exertion_text = "Atemfrequenz: "
 exertion_types = [
     {'label': "Ruhend", 'value': 0.49},
     {'label': "Stehend", 'value': 0.54},
+    {'label': "Singend", 'value': 1},
     {'label': "Leichte Tätigkeit", 'value': 1.38},
     {'label': "Moderate Tätigkeit", 'value': 2.35},
     {'label': "Schwere Tätigkeit", 'value': 3.30},
@@ -252,18 +395,18 @@ expiratory_types = [
 
 mask_type_text = "Filtrationseffizienz der Mund-Nasen-Bedeckung (Maskentyp): "
 mask_type_marks = {
-    0: {'label': "0% (Keine, Gesichtsvisier)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (Grob gewebte Baumwolle)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (Seide, Flannel, Chiffon)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (Chirurgisch, Baumwolle)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (N95-Maske)", 'style': {'max-width': '50px'}},
+    0: {'label': "0% (Kein, Gesichtsvisier)", 'style': {'max-width': '75px'}},
+    0.5: {'label': "50% (Baumwolle, Flanell)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "70% (Mehrlagige Baumwolle, Seide)", 'style': {'max-width': '75px'}},
+    0.90: {'label': "90% (Chirurgische Einwegartikel)", 'style': {'max-width': '75px'}},
+    # 0.99: {'label': "99% (N95 Atemschutzmaske)", 'style': {'max-width': '50px'}},
 }
 mask_types = [
-    {'label': "Keine, Gesichtsvisier", 'value': 0},
-    {'label': "Grob gewebte Baumwolle", 'value': 0.1},
-    {'label': "Seide, Flannel, Chiffon", 'value': 0.5},
-    {'label': "Chirurgisch, Baumwolle", 'value': 0.9},
-    {'label': "N95-Maske", 'value': 0.95},
+    {'label': "Kein, Gesichtsvisier", 'value': 0},
+    {'label': "Baumwolle, Flanell", 'value': 0.5},
+    {'label': "Mehrlagige Baumwolle, Seide", 'value': 0.7},
+    {'label': "Chirurgische Einwegartikel", 'value': 0.9},
+    {'label': "N95 Atemschutzmaske", 'value': 0.99},
 ]
 
 mask_fit_text = "Passform der Mund-Nasen-Bedeckung / Befolgung der Tragepflicht: "
@@ -279,28 +422,28 @@ geringere Risikotoleranz. Eine hohe Risikotoleranz bedeutet eine wahrscheinliche
 Belegungssituation (für Details siehe FAQ).''', style={'font-size': '13px',
                                                                                      'margin-left': '20px'})
 risk_tol_marks = {
-    0.01: {'label': '0.01: Sicherer', 'style': {'max-width': '50px'}},
+    # 0.01: {'label': '0.01: Sicherer', 'style': {'max-width': '50px'}},
     0.1: {'label': '0.10: Sicher', 'style': {'max-width': '50px'}},
     1: {'label': '1.00: Unsicher'}
 }
 
 # FAQ/Other Inputs & Outputs
 faq_header = "Frequently Asked Questions (FAQ)"
-other_io = "Weitere Inputs & Outputs"
+other_io = "Weitere Parameter"
 
 faq_top = html.Div([
     html.H6("Frequently Asked Questions"),
     html.H5("Wieso sind 6 Feet/2 m Abstand nicht ausreichend?"),
     html.Div([
-        html.Div([html.Span(''''''),
-                  # html.A(children="airborne transmission",
-                  #        href=link_docs,
-                  #        target='_blank'),
-                  html.Span('''6 Feet/2 m Abstand schützen vor großen Tröpfchen, die durch Husten von infizierten 
-                  Personen ausgestoßen werden, wie es auch der Mund-Nasen-Schutz tut. Allerdings schützt der Abstand 
-                  nicht vor luftgetragene Übertragung durch infektiöse Aerosole, welche in der Luft schweben und sich 
-                  in der gesamten Raumluft verteilen können. Innerhalb von Räumen sind Personen mit 20 m Abstand 
-                  nicht geschützter vor Aerosolübertragung als Personen mit 2 m Abstand.''')]),
+        html.Div([html.Span('''6-Fuß- (oder 2-Meter-) Abstand schützen Sie vor großen Tropfen, die von einer 
+        infizierten Person beim Husten ausgestoßen werden, ebenso wie Mund-Nasen-Bedeckungen; er schützt allerdings 
+        nicht vor der '''),
+                  html.A(children="Übertragung",
+                         href=links.link_docs,
+                         target='_blank'),
+                  html.Span(''' durch infektiöse Aerosole, die in der Luft schweben und sich im Raum verteilen. In 
+                  Innenräumen sind Personen mit einem Abstand von 60 Fuß nicht sicherer vor einer Übertragung durch 
+                  die Luft als mit einem Abstand von 6 Fuß.''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Gibt es andere Arten von Übertragungswegen?"),
@@ -355,6 +498,11 @@ faq_top = html.Div([
         Falls Sie eine bessere Kontrolle über die Input-Werte haben möchten, wechseln Sie zum erweiterten Modus, indem 
         sie das Dropdown-Menü oben auf der Webseite nutzen.
     ''', className='faq-answer'),
+    html.Br(),
+    html.H5("Warum haben N95-Atemschutzmasken eine Wirksamkeit von 99%?"),
+    html.Div('''N95-Atemschutzmasken haben eine Filterwirksamkeit von mindestens 95 % bei Partikelgrößen von 0,3 μm, 
+    die 10-mal kleiner sind als die Tropfengrößen bei der luftgetragenen COVID-19-Übertragung. Bei größeren Tropfen 
+    sind N95-Atemschutzmasken sogar noch effizienter und nähern sich Werten nahe 100 % an.''', className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([
@@ -383,19 +531,61 @@ faq_other_params_text = html.Div([
 aerosol_radius_text = "Effektiver Aerosolradius (bei RH = 60%), r\u0305 (\u03bcm): "
 viral_deact_text = html.Span(["Maximale Virusinaktivierungsrate (bei RH = 100%), \u03BB", html.Sub('vmax'), " (/hr): "])
 
-values_interest_header = ""
+pop_immunity_header = "Immunität der Bevölkerung: "
+perc_immune_label = html.Span(["Prozentsatz immun p", html.Sub('im'), " = p", html.Sub('ex'), " + p", html.Sub('v'),
+                               " = "])
+perc_infectious_label = html.Span(["Prozentsatz infektiös p", html.Sub('i'), " = "])
+perc_vaccinated_label = html.Span(["Prozentsatz geimpft p", html.Sub('v'), " ="])
+perc_prev_infected_label = html.Span(["Prozentsatz früher infiziert p", html.Sub('ex'), " = "])
+perc_susceptible_label = html.Span(["Prozentsatz anfälliger Personen p", html.Sub('s'), " = 1 - (p", html.Sub('im'), " + p",
+                                    html.Sub('i'), ") = "])
+pop_immunity_desc = html.Div([html.Div(['''Der infektiöse Prozentsatz p''', html.Sub('i'), ''' in der Bevölkerung 
+errechnet sich aus der zum Risikoszenario angegebenen infektösen Prävalenz (Gegeben durch die Prävalenz der 
+Infektion..., Um mein persönliches Risiko zu begrenzen...).  Der Prozentsatz der Immunität  p''', html.Sub('im'),
+                                        ''' kann grob aus dem Impfprozentsatz der Bevölkerung plus der Gesamtfallrate 
+                                        in der Bevölkerung geschätzt werden, indem der Beitrag der unentdeckten Fälle 
+                                        vernachlässigt wird. Diese beiden Werte werden verwendet, 
+                                        um den empfänglichen Prozentsatz p''', html.Sub('s'), ''' zu berechnen. Im 
+                                        Basismodus und im ersten Risikomodus (Wenn eine infizierte Person 
+                                        eintritt...) wird dieser Wert mit 100 % angenommen. risk mode (If an infected 
+                                        person enters…), this value is assumed to be 100%.''']),
+                              html.Br(),
+                              html.Div(['''Hier sind einige hilfreiche Links, um p''', html.Sub('i'), ''' und p''',
+                                        html.Sub('im'), ''' zu ermitteln: ''',
+                                        html.Span(html.A(href=links.link_cdc_dashboard,
+                                                         children="CDC COVID-19 Data Tracker",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.Span(html.A(href=links.link_jhu_data,
+                                                         children="JHU Coronavirus Resource Center",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.A(children="US Immunity Estimates",
+                                               href=links.link_cdc_immunity,
+                                               target='_blank'),
+                                        html.Span(", "),
+                                        html.A(children="International Immunity Estimates",
+                                               href=links.link_jhu_vaccine,
+                                               target='_blank'),
+                                        ])
+                              ])
+
+values_interest_header = "Berechnete Werte"
 values_interest_desc = html.Div([
     html.H5("Was genau berechnet die App?"),
     html.Div([
-        html.Div([html.Span('''Eine gegebene Risikotoleranzen berücksichtigend berechnet die App die maximale 
-        kumulative Aufenthaltsdauer, sowie das Produkt aus Personenbelegung und Raumbelegungsdauer in Anwesenheit 
-        einer infizierten Person. Die App ermittelt außerdem die folgenden Größen, die im '''),
+        html.Div([html.Span('''Die App berechnet die maximal zulässige kumulative Expositionszeit, das Produkt aus 
+        Raumbelegung und Zeit, in einem Innenraum. Die Ausbreitung von COVID-19 wird dadurch begrenzt, 
+        dass die erwartete Anzahl von Übertragungen pro infizierter Person, die "Indoor-Reproduktionszahl", 
+        kleiner als die gewählte Risikotoleranz sein muss. Die App berechnet auch verwandte Größen, 
+        die im verwiesenen '''),
                   html.A(children="Paper",
                          href=link_paper,
                          target='_blank'),
-                  html.Span(''' definiert und gegebenenfalls von Interesse sind:''')]),
+                  html.Span(''' definiert und möglicherweise von Interesse sind:''')]),
     ], className='faq-answer'),
 ])
+relative_sus_label = html.Span(["Relative Anfälligkeit s", html.Sub('r'), ": "])
 outdoor_air_frac_label = html.Span(["Anteil an Frischluft Z", html.Sub('p'), ": "])
 aerosol_eff_label = html.Span(["Aerosolfiltrationseffizienz p", html.Sub('f'), ": "])
 breathing_rate_label = html.Span(["Luftstromrate beim Atmen Q", html.Sub('b'), ": "])
@@ -419,13 +609,9 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("Berücksichtigt das Modell die Verbreitung der Infektion in der lokalen Bevölkerung?"),
-    html.Div(['''Nein. Das Modell ermittelt das Risiko der Übertragung ausgehend von einer einzelnen, infizierten 
-    Person. Damit ist impliziert, dass die Verbreitung der Infektion innerhalb der Bevölkerung relative gering ist. 
-    Innerhalb dieser Grenzen steigt das Übertragungsrisiko mit der erwarteten Anzahl an infizierten Personen in einem 
-    Raum, genauer das Produkt an Raumbelegung und Verbreitung innerhalb der Bevölkerung. Die Toleranz sollte somit im 
-    Verhältnis zum Wert der erwarteten infizierten Personen gesenkt werden, falls dieser eins übersteigt. Umgekehrt, 
-    kann die Toleranz proportional erhöht werden, wenn die erwartete Anzahl an infizierten Personen innerhalb des 
-    Raums Null annähert, bis die empfohlenen Restriktionen als nicht mehr erforderlich erachtet werden.'''],
+    html.Div(['''Der Einfluss der Prävalenz der Infektion in der lokalen Bevölkerung kann im erweiterten Modus 
+    berücksichtigt werden. Dort kann man in der Registerkarte Weitere Parameter auch den Einfluss der Immunität in 
+    der Bevölkerung abschätzen, die durch Impfungen oder frühere Infektionen entstehen kann.'''],
              className='faq-answer'),
 ])
 

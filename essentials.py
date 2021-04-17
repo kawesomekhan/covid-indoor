@@ -6,6 +6,7 @@ import descriptions_cs as desc_cs
 import descriptions_da as desc_da
 import descriptions_de as desc_de
 import descriptions_es as desc_es
+import descriptions_eu as desc_eu
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
 import descriptions_hi as desc_hi
@@ -14,7 +15,12 @@ import descriptions_id as desc_id
 import descriptions_it as desc_it
 import descriptions_ko as desc_ko
 import descriptions_nl as desc_nl
+import descriptions_pt_br as desc_pt_br
 import descriptions_sv as desc_sv
+
+import pandas as pd
+import numpy
+import math
 
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
@@ -24,12 +30,14 @@ essentials.py contains functionality shared by both Basic Mode and Advanced Mode
 # Languages where the time comes before the occupancy in the big red output (SOV order)
 sov_languages = ["hi"]
 
-normal_credits = '''William H. Green, David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
+normal_credits = '''William H. Green, Matthew Haefner, 
+                 David Keating, Ann Kinzig, Caeli MacLennan, Michelle Quien, Marc Rosenbaum, 
                  David Stark'''
-translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Antonio Bertei, Henrik Bruus, John Bush, 
-                        Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, 
+translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Juncal Arbelaiz, Antonio Bertei, Henrik Bruus, John Bush, 
+                        Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, Arantza Etxeburua 
                         Anders Flodmarke, Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
-                        Michal Pavelka, Juan Puyo, Myungjin Seo, Huanhuan Tian, Ettore Virga, Chenyu Wen, 
+                        Michal Pavelka, Juan Puyo, László Sándor, Myungjin Seo, Lucas Tambasco, 
+                        Huanhuan Tian, Ettore Virga, Chenyu Wen, 
                         Gede Wenten, Hongbo Zhao, Juner Zhu'''
 
 m_to_ft = 3.28084
@@ -78,9 +86,9 @@ room_preset_settings = {
         'rh': 0.6
     },
     'classroom': {
-        'floor-area': 900,
+        'floor-area': 910,
         'ceiling-height': 12,
-        'floor-area-metric': 900 / m_to_ft / m_to_ft,
+        'floor-area-metric': 910 / m_to_ft / m_to_ft,
         'ceiling-height-metric': 12 / m_to_ft,
         'ventilation': 3,
         'filtration': 6,
@@ -208,8 +216,8 @@ covid_recovery_time = 14  # Days
 
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
-                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, n_max_input_b=2, exp_time_input_b=1,
-                n_max_input_c=2, exp_time_input_c=1, prevalence_b=1, prevalence_c=1):
+                max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, exp_time_co2=1, prevalence=1,
+                atm_co2=410):
     error_msg = ""
 
     desc_file = get_desc_file(language)
@@ -224,16 +232,18 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["aerosol_radius"]
     elif max_viral_deact_rate is None:
         error_msg = desc_file.error_list["viral_deact_rate"]
-    elif n_max_input is None or n_max_input < 2 or n_max_input_b is None or n_max_input_b < 2 or n_max_input_c is None or n_max_input_c < 2:
+    elif n_max_input is None or n_max_input < 2:
         error_msg = desc_file.error_list["n_max_input"]
-    elif exp_time_input == 0 or exp_time_input is None or exp_time_input_b == 0 or exp_time_input_b is None or exp_time_input_c == 0 or exp_time_input_c is None:
+    elif exp_time_input == 0 or exp_time_input is None or exp_time_co2 == 0 or exp_time_co2 is None:
         error_msg = desc_file.error_list["exp_time_input"]
     elif air_exchange_rate == 0 or air_exchange_rate is None:
         error_msg = desc_file.error_list["air_exchange_rate"]
     elif merv is None:
         error_msg = desc_file.error_list["merv"]
-    elif prevalence_b is None or prevalence_b <= 0 or prevalence_b >= 100000 or prevalence_c is None or prevalence_c <= 0 or prevalence_c >= 100000:
+    elif prevalence is None or prevalence <= 0 or prevalence >= 100000:
         error_msg = desc_file.error_list["prevalence"]
+    elif atm_co2 is None:
+        error_msg = desc_file.error_list["atm_co2"]
 
     return error_msg
 
@@ -325,10 +335,117 @@ def get_model_figure(indoor_model, language):
     return new_fig
 
 
+# Returns the plotly figure based on the supplied indoor model.
+# This specifically outputs safe steady-state CO2 concentration (ppm) vs. exposure time.
+# risk_mode: conditional, prevalence, or personal
+def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
+    desc_file = get_desc_file(language)
+    is_mobile = window_width <= 600
+
+    recommended_df = pd.DataFrame(columns=['exposure_time', 'co2_recommended'])
+    new_df = indoor_model.calc_co2_series(0.1, 1000, 100, risk_mode)
+    safe_df = pd.DataFrame(columns=['exposure_time', 'co2_safe'])
+    background_df = pd.DataFrame(columns=['exposure_time', 'co2_background'])
+    for exp_time in numpy.logspace(math.log(0.1, 10), math.log(1000, 10), 100):
+        safe_co2_limit = get_safe_resp_co2_limit(exp_time)
+        recommended_co2_limit = min(safe_co2_limit, indoor_model.calc_co2_exp_time(exp_time, risk_mode))
+        safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
+        recommended_df = recommended_df.append(pd.DataFrame({'exposure_time': [exp_time],
+                                                             'co2_rec': [recommended_co2_limit]}))
+        background_df = background_df.append(pd.DataFrame({'exposure_time': [exp_time],
+                                                           'co2_background': [indoor_model.atm_co2]}))
+
+    new_fig = go.Figure()
+    recommended_co2_text = desc.recommended_co2_text
+    guideline_trace_text = desc.guideline_trace_text
+    co2_safe_trace_text = desc.co2_safe_trace_text
+    background_co2_text = desc.background_co2_text
+    graph_title_co2 = desc.graph_title_co2
+    graph_ytitle_co2 = desc.graph_ytitle_co2
+    if hasattr(desc_file, "recommended_co2_text"):
+        recommended_co2_text = desc_file.recommended_co2_text
+
+    if hasattr(desc_file, "guideline_trace_text"):
+        guideline_trace_text = desc_file.guideline_trace_text
+
+    if hasattr(desc_file, "co2_safe_trace_text"):
+        co2_safe_trace_text = desc_file.co2_safe_trace_text
+
+    if hasattr(desc_file, "background_co2_text"):
+        background_co2_text = desc_file.background_co2_text
+
+    if hasattr(desc_file, "graph_title_co2"):
+        graph_title_co2 = desc_file.graph_title_co2
+
+    if hasattr(desc_file, "graph_ytitle_co2"):
+        graph_ytitle_co2 = desc_file.graph_ytitle_co2
+
+    ht_rec = desc_file.graph_xtitle + ": %{x:,.1f}<br>" + recommended_co2_text + ": %{y:,.0f} ppm<extra></extra>"
+    ht_guideline = desc_file.graph_xtitle + ": %{x:,.1f}<br>" + guideline_trace_text + ": %{y:,.0f} ppm<extra></extra>"
+    ht_safe = desc_file.graph_xtitle + ": %{x:,.1f}<br>" + co2_safe_trace_text + ": %{y:,.0f} ppm<extra></extra>"
+    ht_bg = desc_file.graph_xtitle + ": %{x:,.1f}<br>" + background_co2_text + ": %{y:,.0f} ppm<extra></extra>"
+
+    new_fig.add_trace(go.Scatter(x=recommended_df["exposure_time"], y=recommended_df["co2_rec"],
+                                 mode='lines',
+                                 name=recommended_co2_text,
+                                 line=go.scatter.Line(color="#de1616"),
+                                 hovertemplate=ht_rec))
+    new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
+                                 mode='lines',
+                                 name=guideline_trace_text,
+                                 line=go.scatter.Line(color="#730707", dash='dot'),
+                                 hovertemplate=ht_guideline))
+    new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
+                                 mode='lines',
+                                 name=co2_safe_trace_text,
+                                 line=go.scatter.Line(color="#8ad4ed", dash='dot'),
+                                 hovertemplate=ht_safe))
+    new_fig.add_trace(go.Scatter(x=background_df["exposure_time"], y=background_df["co2_background"],
+                                 mode='lines',
+                                 name=background_co2_text,
+                                 line=go.scatter.Line(color="#000000", dash='dot'),
+                                 hovertemplate=ht_bg))
+    new_fig.update_layout(transition_duration=500,
+                          title=graph_title_co2, height=500,
+                          xaxis_title=desc_file.graph_xtitle,
+                          yaxis_title=graph_ytitle_co2,
+                          font_family="Barlow",
+                          template="simple_white",
+                          hoverlabel=dict(
+                              font_family="Barlow",
+                          ),
+                          hovermode='closest')
+    if is_mobile:
+        new_fig.update_layout(title="", height=400, showlegend=False)
+
+    new_fig.update_xaxes(type="log", showspikes=True)
+    new_fig.update_yaxes(type="log", showspikes=True)
+
+    max_guideline_val = new_df["co2_trans"].max()
+    if max_guideline_val * 1.2 > 50000:
+        new_fig.update_yaxes(range=[math.log(indoor_model.atm_co2 * 0.8, 10), math.log(50000, 10)])
+    else:
+        new_fig.update_yaxes(range=[math.log(indoor_model.atm_co2 * 0.8, 10), math.log(max_guideline_val * 1.2, 10)])
+
+    return new_fig
+
+
+# Returns the upper limit on CO2 (ppm) given the exposure time (hr).
+def get_safe_resp_co2_limit(exp_time):
+    # Safety threshold curve, interpolated from USDA threshold values
+    # f(x) = 2000 + a/(t + b)
+    const = 2000  # ppm
+    a = 25636.363641827  # ppm-hr
+    b = 0.545454545606364  # hr
+    return const + a / (exp_time + b)
+
+
 # Returns the big red output text.
+# risk_type: conditional, prevalence, or personal
 # recovery_time: Time to recovery in days
 # If recovery time is -1, will not limit the output.
 def get_model_output_text(indoor_model, risk_type, recovery_time, language):
+    output_type = 'occupancy'
     desc_file = get_desc_file(language)
     # Check if we should use the normal n vals, or the big n vals
     n_val_series = model_output_n_vals
@@ -348,11 +465,22 @@ def get_model_output_text(indoor_model, risk_type, recovery_time, language):
         else:
             max_time = indoor_model.calc_max_time(n_val, risk_type)  # hours
             time_text = time_to_text(max_time, True, recovery_time, language)
-            if language in sov_languages:
-                base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
+            safe_co2 = indoor_model.calc_co2_n(n_val)
+
+            if output_type == 'occupancy':
+                if language in sov_languages:
+                    base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string
+                else:
+                    base_string = desc_file.model_output_base_string + time_text
+
+                model_output_text[index] = base_string.format(n_val=n_val)
             else:
-                base_string = desc_file.model_output_base_string + time_text
-            model_output_text[index] = base_string.format(n_val=n_val)
+                if language in sov_languages:
+                    base_string = time_text + desc_file.model_output_suffix + desc_file.model_output_base_string_co2
+                else:
+                    base_string = desc_file.model_output_base_string_co2 + time_text
+
+                model_output_text[index] = base_string.format(co2=safe_co2)
 
         index += 1
 
@@ -462,7 +590,7 @@ def get_n_max_text(n, n_max, language):
     if n > n_max:
         return desc_file.n_max_overflow_base_string.format(n_max)
     else:
-        return desc_file.n_max_base_string.format(n)
+        return desc_file.n_max_base_string.format(math.floor(n))
 
 
 # Returns the output text for the variables of interest, shown in the FAQ/Other Inputs & Outputs tab.
@@ -481,8 +609,8 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f}'.format(outdoor_air_frac),
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60),  # m3/hr to ft3/min
-            '{:,.2f} quanta/ft\u00B3'.format(infectiousness * indoor_model.relative_sus / 35.3147),  # 1/m3 to 1/ft3
-            '{:,.2f}'.format(mask_pass_prob),
+            '{:,.2f} quanta/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
+            '{:,.3f}'.format(mask_pass_prob),
             '{:,.0f} ft\u00B3'.format(indoor_model.room_vol),
             '{:,.0f} ft\u00B3/min'.format(indoor_model.fresh_rate),
             '{:,.0f} ft\u00B3/min'.format(indoor_model.recirc_rate),
@@ -500,7 +628,7 @@ def get_interest_output_text(indoor_model, units):
             '{:,.2f}'.format(aerosol_filtration_eff),
             '{:,.2f} m\u00B3/hr'.format(breathing_flow_rate),
             '{:,.2f} quanta/m\u00B3'.format(infectiousness),
-            '{:,.2f}'.format(mask_pass_prob),
+            '{:,.3f}'.format(mask_pass_prob),
             '{:,.0f} m\u00B3'.format(indoor_model.room_vol / 35.315),  # ft3 to m3
             '{:,.0f} m\u00B3/hr'.format(indoor_model.fresh_rate / 35.3147 * 60),  # ft3/min to m3/hr
             '{:,.0f} m\u00B3/hr'.format(indoor_model.recirc_rate / 35.3147 * 60),  # ft3/min to m3/hr
@@ -545,7 +673,6 @@ def search_to_params(search):
     search = search[1:]
 
     params_raw = search.split("&")
-
     for param in params_raw:
         param_split = param.split("=")
         output_dict[param_split[0]] = param_split[1]
@@ -674,6 +801,54 @@ def get_lang_text_adv(language, disp_width):
     if hasattr(desc_file, 'lang_break_age'):
         lang_break_age = desc_file.lang_break_age
 
+    risk_mode_panel_header = desc.risk_mode_panel_header
+    if hasattr(desc_file, 'risk_mode_panel_header'):
+        risk_mode_panel_header = desc_file.risk_mode_panel_header
+
+    co2_prev_input_1 = desc.co2_prev_input_1
+    if hasattr(desc_file, 'co2_prev_input_1'):
+        co2_prev_input_1 = desc_file.co2_prev_input_1
+
+    co2_prev_input_2 = desc.co2_prev_input_2
+    if hasattr(desc_file, 'co2_prev_input_2'):
+        co2_prev_input_2 = desc_file.co2_prev_input_2
+
+    occ_panel_header = desc.occupancy_panel_header
+    if hasattr(desc_file, 'occupancy_panel_header'):
+        occ_panel_header = desc_file.occupancy_panel_header
+
+    co2_panel_header = desc.co2_title
+    if hasattr(desc_file, 'co2_title'):
+        co2_panel_header = desc_file.co2_title
+
+    co2_param_desc = desc.co2_param_desc
+    if hasattr(desc_file, 'co2_param_desc'):
+        co2_param_desc = desc_file.co2_param_desc
+
+    co2_atm_input_1 = desc.co2_atm_input_1
+    if hasattr(desc_file, 'co2_atm_input_1'):
+        co2_atm_input_1 = desc_file.co2_atm_input_1
+
+    co2_atm_input_2 = desc.co2_atm_input_2
+    if hasattr(desc_file, 'co2_atm_input_2'):
+        co2_atm_input_2 = desc_file.co2_atm_input_2
+
+    co2_calc_1 = desc.co2_calc_1
+    if hasattr(desc_file, 'co2_calc_1'):
+        co2_calc_1 = desc_file.co2_calc_1
+
+    co2_calc_2 = desc.co2_calc_2
+    if hasattr(desc_file, 'co2_calc_2'):
+        co2_calc_2 = desc_file.co2_calc_2
+
+    co2_calc_3 = desc.co2_calc_3
+    if hasattr(desc_file, 'co2_calc_3'):
+        co2_calc_3 = desc_file.co2_calc_3
+
+    co2_safe_footer = desc.co2_safe_footer
+    if hasattr(desc_file, 'co2_safe_footer'):
+        co2_safe_footer = desc_file.co2_safe_footer
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -685,11 +860,9 @@ def get_lang_text_adv(language, disp_width):
             desc_file.curr_strain_header,
             desc_file.viral_strain_marks,
             desc_file.pim_header,
-            desc_file.main_panel_s1,
             desc_file.main_panel_six_ft_1,
             desc_file.main_panel_six_ft_2,
             main_panel_six_ft_3,
-            desc_file.main_airb_trans_only_disc,
             desc_file.about,
             desc_file.room_header,
             desc_file.room_header,
@@ -715,13 +888,6 @@ def get_lang_text_adv(language, disp_width):
             desc_file.pop_immunity_header,
             desc_file.pop_immunity_desc,
             desc_file.perc_immune_label,
-            desc_file.risk_conditional_desc,
-            desc_file.perc_infectious_label,
-            desc_file.perc_susceptible_label,
-            desc_file.risk_prevalence_desc,
-            desc_file.perc_infectious_label,
-            desc_file.perc_susceptible_label,
-            desc_file.risk_personal_desc,
             desc_file.perc_infectious_label,
             desc_file.perc_susceptible_label,
             desc_file.other_io,
@@ -744,25 +910,22 @@ def get_lang_text_adv(language, disp_width):
             desc_file.conc_relax_rate_label,
             desc_file.airb_trans_label,
             desc_file.graph_output_header,
-            desc_file.risk_conditional_desc,
             " " + desc_file.units_hr,
-            desc_file.risk_prevalence_desc,
-            " " + desc_file.units_hr,
-            desc_file.main_panel_six_ft_1,
-            desc_file.main_panel_six_ft_2,
-            desc_file.main_panel_s1_b,
-            desc_file.main_panel_s2_b,
-            desc_file.main_airb_trans_only_disc,
+            lang_break_age,
+            desc_file.risk_options,
+            co2_prev_input_1,
+            co2_prev_input_2,
             desc_file.incidence_rate_refs,
-            desc_file.risk_personal_desc,
-            " " + desc_file.units_hr,
-            desc_file.main_panel_six_ft_1,
-            desc_file.main_panel_six_ft_2,
-            desc_file.main_panel_s1_c,
-            desc_file.main_panel_s2_c,
-            desc_file.main_airb_trans_only_disc,
-            desc_file.incidence_rate_refs,
-            lang_break_age]
+            risk_mode_panel_header,
+            occ_panel_header,
+            co2_panel_header,
+            co2_param_desc,
+            co2_atm_input_1,
+            co2_atm_input_2,
+            co2_calc_1,
+            co2_calc_2,
+            co2_calc_3,
+            co2_safe_footer]
 
 
 # Get header and footer based on language
@@ -792,6 +955,8 @@ def get_desc_file(language):
         desc_file = desc_da
     elif language == "de":
         desc_file = desc_de
+    elif language == "eu":
+        desc_file = desc_eu
     elif language == "zh":
         desc_file = desc_zh
     elif language == "hi":
@@ -808,6 +973,8 @@ def get_desc_file(language):
         desc_file = desc_nl
     elif language == "es":
         desc_file = desc_es
+    elif language == "pt-br":
+        desc_file = desc_pt_br
     elif language == "sv":
         desc_file = desc_sv
 
@@ -838,7 +1005,7 @@ def did_switch_units(search, floor_area_text, ceiling_height_text):
     if floor_area_text == desc_file.floor_area_text and ceiling_height_text == desc_file.ceiling_height_text:
         curr_units = "british"
     elif floor_area_text == desc_file.floor_area_text_metric and \
-         ceiling_height_text == desc_file.ceiling_height_text_metric:
+            ceiling_height_text == desc_file.ceiling_height_text_metric:
         curr_units = "metric"
     else:
         # Changed languages
@@ -848,8 +1015,3 @@ def did_switch_units(search, floor_area_text, ceiling_height_text):
         return curr_units
     else:
         return ""
-
-
-
-
-

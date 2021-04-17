@@ -194,6 +194,11 @@ pim_header = "Proportion de personnes immunisées:"
 risk_conditional_desc = "Si une personne infectée entre..."
 risk_prevalence_desc = "Étant donné le taux d'incidence..."
 risk_personal_desc = "Pour limiter mon risque personnel..."
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 error_list = {
     "floor_area": "Erreur : la surface au sol doit être renseignée.",

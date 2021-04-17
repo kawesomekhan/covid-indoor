@@ -2,7 +2,7 @@
 
 :root {
     --big-number-input-width: 90px;
-    --prevalence-input-width: 120px;
+    --prevalence-input-width: 75px;
 }
 
 /* For default, desktop layout */
@@ -24,6 +24,19 @@ body {
     width: 256px;
     top: 16px;
     right: 16px;
+    z-index: 2;
+
+    padding: 0.75rem 1.25rem;
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid transparent;
+    border-color: #f5c6cb;
+    border-radius: 0.25rem;
+}
+
+.risk-alert {
+    position: fixed;
+    top: 16px;
     z-index: 1;
 
     padding: 0.75rem 1.25rem;
@@ -36,6 +49,12 @@ body {
 
 /* Presets Grid */
 .grid-presets {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 0px;
+    align-items: end;
+}
+.adv-grid-presets {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     padding: 0px;
@@ -74,20 +93,28 @@ body {
     display: grid;
     grid-template-rows: 1fr auto;
 }
-.panel-main-output {
-
-}
 /* Card Footer/Disclaimer Text */
 .airborne-text {
     bottom: 1em;
 }
 
+/* CO2 Panel Grid */
+.grid-co2-panel {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
 
 /* Main Grid */
 .grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
     grid-template-rows: auto 1fr;
+    padding: 0;
+}
+.adv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
     padding: 0;
 }
 .card {
@@ -100,9 +127,26 @@ body {
     border: solid 1px #DDDDDD;
     box-shadow: 0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24)
 }
-#card-tab, #adv-card-tab {
+#card-tab {
     grid-row-start: 1;
     grid-row-end: 3;
+}
+#adv-card-tab {
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+#adv-card-presets {
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 2;
+    grid-column-end: 4;
+}
+
+#adv-risk-mode-co2 {
+    max-width: 500px;
+}
+#adv-co2-prev-div {
+    padding-top: 1em;
 }
 
 /* Tabs */
@@ -130,11 +174,33 @@ body {
 }
 
 #adv-n-input, #n-input, #n-input-b, #n-input-c, #adv-n-input-b, #adv-n-input-c, #adv-t-input, #t-input,
-#t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c {
+#t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c, #adv-prev-input-co2, #adv-exp-time-input-co2,
+#adv-atm-input-co2 {
     width: var(--big-number-input-width);
 }
-#prev-input-b, #prev-input-c, #adv-prev-input-b, #adv-prev-input-c {
+#adv-prev {
     width: var(--prevalence-input-width);
+}
+
+/* Advanced Intermediate Size */
+@media only screen and (max-width: 1760px) {
+    .adv-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto 1fr auto;
+        padding: 0;
+    }
+    .adv-grid-presets {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0px;
+    }
+    #adv-card-presets {
+        grid-row-start: 1;
+        grid-row-end: 2;
+        grid-column-start: 2;
+        grid-column-end: 3;
+    }
 }
 
 /* Intermediate Size */
@@ -154,6 +220,11 @@ body {
 @media only screen and (max-width: 1200px) {
     /* Presets Grid */
     .grid-presets {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding: 0px;
+    }
+    .adv-grid-presets {
         display: grid;
         grid-template-columns: 1fr;
         padding: 0px;
@@ -191,13 +262,27 @@ body {
         grid-auto-rows: auto;
         padding: 0;
     }
+    .adv-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        padding: 0;
+    }
     .card {
         min-width: 0;
         padding: 1em;
     }
+
+    /* Cards */
     #card-tab, #adv-card-tab {
         grid-row-start: 5;
         grid-row-end: 6;
+    }
+    #adv-card-presets {
+        grid-row-start: 2;
+        grid-row-end: 3;
+        grid-column-start: 1;
+        grid-column-end: 2;
     }
 
     /* Tabs */

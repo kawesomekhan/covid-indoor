@@ -3,3 +3,4 @@ venv
 .DS_Store
 .env
 .idea
+/virtual-env/

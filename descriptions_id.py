@@ -1,4 +1,5 @@
 import dash_html_components as html
+import descriptions_links as links
 
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).
@@ -73,37 +74,121 @@ error_list = {
     "n_max_input": "Error: Jumlah orang tidak boleh kurang dari 2.",
     "exp_time_input": "Error: Waktu pemaparan harus lebih dari 0.",
     "air_exchange_rate": "Error: Tingkat Ventilasi (ACH) harus lebih besar dari 0.",
-    "merv": "Error: Sistem Filtrasi (MERV) tidak boleh kosong."
+    "merv": "Error: Sistem Filtrasi (MERV) tidak boleh kosong.",
+    "prevalence": "Error: Prevalensi harus lebih besar dari 0 dan kurang dari 100.000."
 }
 
 # Main Panel Text
 curr_room_header = "Ruangan saat ini: "
 presets = [
     {'label': "Custom", 'value': 'custom'},
-    {'label': "Rumah Pinggiran Kota", 'value': 'house'},
-    {'label': "Restoran", 'value': 'restaurant'},
-    {'label': "Kantor yang Sepi", 'value': 'office'},
-    {'label': "Ruang Kuliah", 'value': 'classroom'},
-    {'label': "Kereta Jalur Bawah Tanah New York", 'value': 'subway'},
-    {'label': "Boeing 737", 'value': 'airplane'},
+    {'label': "Ruang kelas", 'value': 'classroom'},
+    {'label': "Ruang keluarga", 'value': 'living-room'},
     {'label': "Gereja", 'value': 'church'},
+    {'label': "Restoran", 'value': 'restaurant'},
+    {'label': "Kantor", 'value': 'office'},
+    {'label': "Mobil bawah tanah", 'value': 'subway'},
+    {'label': "Pesawat komersial", 'value': 'airplane'},
+]
+
+curr_human_header = "Perilaku Manusia: "
+presets_human = [
+    {'label': "Custom", 'value': 'custom'},
+    {'label': "Bermasker, Beristirahat", 'value': 'masks-1'},
+    {'label': "Bermasker, Berbicara", 'value': 'masks-2'},
+    {'label': "Bermasker, Berolahraga", 'value': 'masks-3'},
+    {'label': "Tidak Bermasker, Beristirahat", 'value': 'no-masks-1'},
+    {'label': "Tidak Bermasker, Berbicara", 'value': 'no-masks-2'},
+    {'label': "Tidak Bermasker, Berolahraga", 'value': 'no-masks-3'},
+    {'label': "Tidak Bermasker, Bernyanyi", 'value': 'singing-1'},
+]
+
+curr_risk_header = "Toleransi Risiko: "
+risk_tol_marks = {
+    # 0.01: {'label': '0.01: Lebih Aman', 'style': {'max-width': '50px'}},
+    0.1: {'label': '0.10: Lebih Aman', 'style': {'max-width': '50px'}},
+    1: {'label': '1.00: Tidak Aman'}
+}
+
+risk_tolerance_text = "Toleransi Risiko: "
+risk_tol_desc = html.Div('''Populasi yang lebih rentan seperti orang tua atau mereka yang memiliki kondisi medis yang 
+sudah ada sebelumnya memerlukan toleransi risiko yang lebih rendah. Toleransi risiko yang lebih tinggi berarti lebih 
+banyak transmisi yang diharapkan selama waktu tinggal yang diharapkan (lihat FAQ untuk detailnya).''',
+                         style={'font-size': '13px', 'margin-left': '20px'})
+
+curr_age_header = "Kelompok Usia: "
+presets_age = [
+    {'label': "Anak-Anak (<15 tahun)", 'value': 0.23},
+    {'label': "Dewasa (15-64 tahun)", 'value': 0.68},
+    {'label': "Lanjut Usia (>64 tahun)", 'value': 1}
+]
+age_group_marks = {
+    0.23: {'label': '0.23: Anak-Anak (<15 tahun)', 'style': {'max-width': '75px'}},
+    0.68: {'label': '0.68: Dewasa (15-64 tahun)', 'style': {'max-width': '75px'}},
+    1: {'label': '1.00: Lanjut Usia (>64 tahun)', 'style': {'width': '75px'}}
+}
+lang_break_age = html.Br()
+
+curr_strain_header = "Strain Virus: "
+presets_strain = [
+    # {'label': "SARS-CoV-1", 'value': 0.1},
+    {'label': "SARS-CoV-2 (Wuhan Strain)", 'value': 1},
+    {'label': "SARS-CoV-2 - B.1.1.7 (UK Strain)", 'value': 1.58}
+]
+viral_strain_marks = {
+    1: {'label': '1.0: Wuhan', 'style': {'max-width': '100px'}},
+    1.58: {'label': '1.58: B.1.1.7/UK'}
+}
+
+pim_header = "Persentase immun: "
+# pim_marks = {
+#     0: {'label': '0% (mode dasar)'},
+#     0.33: {'label': '33% (bawaan)'},
+#     1: {'label': '100%'}
+# }
+
+risk_conditional_desc = "Jika seseorang yang terinfeksi memasuki..."
+risk_prevalence_desc = "Dengan prevalensi infeksi..."
+risk_personal_desc = "Untuk membatasi risiko pribadi saya..."
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
 ]
 
 main_panel_s1 = "Berdasarkan model ini, ruangan ini akan aman* jika memiliki: "
 
+main_panel_s1_b = html.Span([
+    html.Span('''Untuk membatasi penularan* COVID-19 dalam populasi dengan prevalensi'''),
+    html.Sup('''1'''),
+    html.Span(''' infeksi ''')
+])
+main_panel_s2_b = ''' per 100,000, ruangan ini seharusnya tidak lebih dari:  '''
+
+main_panel_s1_c = html.Span([
+    html.Span('''Untuk membatasi peluang saya terinfeksi COVID-19 dalam populasi dengan prevalensi'''),
+    html.Sup('''1'''),
+    html.Span(''' infeksi ''')
+])
+main_panel_s2_c = ''' per 100,000, ruangan ini seharusnya tidak lebih dari: '''
+
 units_hr = 'jam'
 units_min = 'menit'
 units_days = 'hari'
+units_months = 'beberapa bulan'
 
 units_hr_one = 'jam'
 units_min_one = 'menit'
 units_day_one = 'hari'
+units_month_one = 'bulan'
 
 is_past_recovery_base_string = '{n_val} orang selama >{val:.0f} jam,'
 model_output_base_string = '{n_val} orang selama '
+nt_bridge_string = " orang selama "
+tn_bridge_string = " selama "
 
-main_panel_six_ft_1 = "Perhatikan bahwa pedoman jarak enam kaki atau dua meter akan menunjukkan bahwa "
-main_panel_six_ft_2 = " akan aman di ruangan ini untuk waktu yang tidak terbatas."
+main_panel_six_ft_1 = "Sebaliknya, pedoman jaga jarak enam kaki (atau dua meter) akan membatasi hunian menjadi "
+main_panel_six_ft_2 = " yang akan melanggar pedoman* setelah "
 
 six_ft_base_string = ' hingga {} orang'
 six_ft_base_string_one = ' hingga {} orang'
@@ -114,24 +199,74 @@ graph_ytitle = "Maximum Occupancy N"
 transient_text = "Transien"
 steady_state_text = "Kondisi tunak"
 
-main_airb_trans_only_disc = html.Div(["*Panduan ini berdasarkan pertimbangan ",
-                                      html.Span(html.A(href='https://www.nature.com/articles/d41586-020-02058-1',
-                                                       children="penularan melalui udara",
-                                                       target='_blank'), ),
-                                      html.Span(''' dari satu orang yang terinfeksi selama waktu paparan kumulatif 
-                                      tertentu (lihat daftar).''')], className='airborne-text')
+main_airb_trans_only_disc = html.Div(["*Panduan tersebut membatasi kemungkinan ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="penularan melalui udara",
+                                                             target='_blank'), ),
+                                            html.Span(''' per orang yang terinfeksi menjadi kurang dari toleransi 
+                                            risiko selama waktu paparan kumulatif yang 
+                                            terdaftar.''')], className='airborne-text')
+main_airb_trans_only_disc_basic = html.Div(["*Panduan tersebut membatasi kemungkinan ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="penularan melalui udara",
+                                                             target='_blank'), ),
+                                            html.Span(''' per orang yang terinfeksi menjadi kurang dari toleransi 
+                                            risiko (10%) selama waktu paparan kumulatif yang 
+                                            terdaftar.''')], className='airborne-text')
 
-airb_trans_only_disc = html.Div('''Panduan ini berdasarkan pertimbangan penularan melalui udara dari satu orang 
-yang terinfeksi selama waktu paparan kumulatif tertentu (lihat daftar). ''', className='airborne-text')
+other_risk_modes_desc = html.Div('''Skenario risiko lain dipertimbangkan dalam Mode Lanjutan. Secara khusus, seseorang dapat 
+  mempertimbangkan prevalensi infeksi dalam populasi, kekebalan yang diperoleh melalui vaksinasi atau paparan sebelumnya, dan 
+  risiko terhadap individu tertentu.''')
+
+main_airb_trans_only_desc_b = html.Div(["*Panduan tersebut membatasi kemungkinan satu ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="penularan melalui udara",
+                                                             target='_blank'), ),
+                                            html.Span(''' per orang yang terinfeksi menjadi kurang dari toleransi 
+                                            risiko selama waktu paparan kumulatif yang 
+                                            terdaftar.''')], className='airborne-text')
+main_airb_trans_only_desc_c = html.Div(["*Panduan tersebut membatasi kemungkinan ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="penularan melalui udara",
+                                                             target='_blank'), ),
+                                            html.Span(''' ke individu tertentu menjadi kurang dari toleransi risiko 
+                                            selama waktu paparan kumulatif yang 
+                                            terdaftar.''')], className='airborne-text')
+
+airb_trans_only_disc = html.Div('''''', className='airborne-text')
+
+incidence_rate_refs = html.Div([html.Sup('''1'''),
+                                html.Span('''Untuk memperkirakan prevalensi lokal Anda, berikut beberapa sumber yang dapat digunakan: '''),
+                                # html.Span(html.A(href=links.link_jhu_dashboard,
+                                #                  children="JHU COVID-19 Dashboard",
+                                #                  target='_blank')),
+                                # html.Span(''', '''),
+                                html.Span(html.A(href=links.link_cdc_dashboard,
+                                                 children="CDC COVID-19 Data Tracker",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.Span(html.A(href=links.link_jhu_data,
+                                                 children="JHU Coronavirus Resource Center",
+                                                 target='_blank')),
+                                html.Span(", "),
+                                html.A(children="US Immunity Estimates",
+                                       href=links.link_cdc_immunity,
+                                       target='_blank'),
+                                html.Span(", "),
+                                html.A(children="International Immunity Estimates",
+                                       href=links.link_jhu_vaccine,
+                                       target='_blank'),
+                                ], className='airborne-text')
 
 # Bottom panels text
-n_input_text_1 = "Jika ruangan ini berisi "
-n_input_text_2 = " orang, penghuninya seharusnya aman selama "
+n_input_text_1 = "Jika ruangan ini memiliki "
+n_max_base_string = ' {:.0f} orang'
+n_max_overflow_base_string = ' >{:.0f} orang'
+n_input_text_2 = " orang, pedoman tersebut* akan dilanggar setelah "
 n_input_text_3 = "."
 
 t_input_text_1 = "Jika orang-orang menempati ruang tersebut selama kira-kira "
 t_input_text_2 = " jam, jumlah orang yang bisa menempati ruang tersebut seharusnya dibatasi sebanyak "
-n_max_base_string = ' {:.0f} orang'
 t_input_text_3 = "."
 
 # About
@@ -160,10 +295,15 @@ about = html.Div([
               spesifikasi ruangan, tingkat ventilasi dan filtrasi, penggunaan masker, aktivitas pernapasan, 
               dan toleransi risiko (di tab lain), Anda dapat melihat cara mengurangi penularan COVID-19 dalam ruangan 
               (indoor), di berbagai ruangan yang berbeda.''')]),
+    html.Br(),
+    html.Div([html.Span('''Sains dibalik aplikasi ini juga diajarkan secara gratis, mandiri secara massif, kursus daring terbuka (MOOC) pada edX: '''),
+              html.A(children="10.S95x Physics of COVID-19 Transmission",
+                     href=links.link_mooc,
+                     target='_blank')])
 ])
 
 # Room Specifications
-room_header = "Spesifikasi Ruangan"
+room_header = "Spesifikasi Ruangan - Detail"
 
 floor_area_text = "Total luas lantai (sq. ft.): "
 floor_area_text_metric = "Total luas lantai (m²): "
@@ -172,7 +312,8 @@ ceiling_height_text_metric = "Tinggi langit-langit rata-rata (m): "
 
 ventilation_text = "Sistem Ventilasi: "
 vent_type_output_base = "{:.0f} ACH"
-ventilation_text_adv = "Sistem Ventilasi (ACH): "
+vent_type_output_units = html.Span(["hr", html.Sup("-1"), " (ACH Luar ruangan)"])
+ventilation_text_adv = html.Span(["Ventilation (hr", html.Sup("-1"), ", ACH Luar ruangan): "])
 ventilation_types = [
     {'label': "Jendela-jendela tertutup", 'value': 0.3},
     {'label': "Jendela-jendela terbuka", 'value': 2},
@@ -211,7 +352,7 @@ recirc_types = [
 
 humidity_text = "Humiditas Relatif: "
 humidity_marks = {
-    0: {'label': '0%: Sangat kering', 'style': {'max-width': '25px'}},
+    0.01: {'label': '1%: Sangat kering', 'style': {'max-width': '25px'}},
     0.2: {'label': '20%: Pesawat terbang', 'style': {'max-width': '50px'}},
     0.3: {'label': '30%: Kering'},
     0.6: {'label': '60%: Rata-rata'},
@@ -221,12 +362,13 @@ humidity_marks = {
 need_more_ctrl_text = '''Perlu lebih banyak kontrol atas input Anda? Beralih ke Mode Lanjutan menggunakan pilihan di 
 bagian atas halaman. '''
 
-human_header = "Kebiasaan Manusia"
+human_header = "Perilaku Manusia - Detail"
 # Human Behavior
-exertion_text = "Tingkat Pengerahan Tenaga: "
+exertion_text = "Tingkat Pernapasan: "
 exertion_types = [
     {'label': "Beristirahat", 'value': 0.49},
     {'label': "Berdiri", 'value': 0.54},
+    {'label': "Bernyanyi", 'value': 1},
     {'label': "Olahraga Ringan", 'value': 1.38},
     {'label': "Olahraga Sedang", 'value': 2.35},
     {'label': "Olahraga Berat", 'value': 3.30},
@@ -249,18 +391,18 @@ expiratory_types = [
 
 mask_type_text = "Efisiensi Filtrasi Masker (tipe makser): "
 mask_type_marks = {
-    0: {'label': "0% (tidak ada, pelindung wajah)", 'style': {'max-width': '50px'}},
-    0.1: {'label': "10% (kapas kasar)", 'style': {'max-width': '50px'}},
-    0.5: {'label': "50% (sutra, flanel, sifon)", 'style': {'max-width': '50px'}},
-    0.75: {'label': "75% (bedah, kapas)", 'style': {'max-width': '50px'}},
-    0.95: {'label': "95% (respirator N95)", 'style': {'max-width': '50px'}},
+    0: {'label': "0% (tidak ada, pelindung wajah)", 'style': {'max-width': '75px'}},
+    0.5: {'label': "50% (katun, flanel)", 'style': {'max-width': '50px'}},
+    0.7: {'label': "70% (kapas multilayer, sutra)", 'style': {'max-width': '75px'}},
+    0.90: {'label': "90% (masker bedah sekali pakai)", 'style': {'max-width': '75px'}},
+    # 0.99: {'label': "99% (N95 Respirator)", 'style': {'max-width': '50px'}},
 }
 mask_types = [
     {'label': "Tidak ada, Pelindung Wajah", 'value': 0},
-    {'label': "Kapas Kasar", 'value': 0.1},
-    {'label': "Sutra, Flanel, Sifon", 'value': 0.5},
-    {'label': "Bedah, Kapas", 'value': 0.9},
-    {'label': "Respirator N95", 'value': 0.95},
+    {'label': "Katun, Flanel", 'value': 0.5},
+    {'label': "Kapas Multilayer, Sutra", 'value': 0.7},
+    {'label': "Masker bedah sekali pakai", 'value': 0.9},
+    {'label': "N95 Respirator", 'value': 0.99},
 ]
 
 mask_fit_text = "Kesesuaian Masker: "
@@ -270,33 +412,21 @@ mask_fit_marks = {
     0.95: {'label': '95%: Bagus'}
 }
 
-risk_tolerance_text = "Toleransi Risiko: "
-risk_tol_desc = html.Div('''Populasi yang lebih rentan seperti orang tua atau mereka yang memiliki kondisi medis yang 
-sudah ada sebelumnya memerlukan toleransi risiko yang lebih rendah. Toleransi risiko yang lebih tinggi berarti lebih 
-banyak transmisi yang diharapkan selama waktu tinggal yang diharapkan (lihat FAQ untuk detailnya).''',
-                         style={'font-size': '13px', 'margin-left': '20px'})
-risk_tol_marks = {
-    0.01: {'label': '0.01: Lebih Aman', 'style': {'max-width': '50px'}},
-    0.1: {'label': '0.10: Aman', 'style': {'max-width': '50px'}},
-    1: {'label': '1.00: Tidak Aman'}
-}
-
 # FAQ/Other Inputs & Outputs
-faq_header = "Pertanyaan yang Sering Diajukan"
-other_io = "Inputs & Outputs Lainnya"
+faq_header = "Pertanyaan yang Sering Ditanyakan:"
+other_io = "Parameter-parameter Lain"
 
 faq_top = html.Div([
     html.H6("Pertanyaan yang Sering Diajukan"),
     html.H5("Mengapa jarak 6 kaki / 2 meter tidak cukup?"),
     html.Div([
-        html.Div([html.Span('''Jarak 6 kaki / 2 meter melindungi Anda dari tetesan besar yang dikeluarkan oleh orang 
-        yang terinfeksi yang batuk, seperti halnya masker wajah; namun, ini tidak melindungi dari '''),
+        html.Div([html.Span('''Jarak 6 kaki (atau 2 meter) melindungi Anda dari tetesan besar yang dikeluarkan oleh 
+          orang yang terinfeksi ketika batuk, seperti yang dilakukan oleh masker wajah; namun, ini tidak melindungi dari  '''),
                   html.A(children="penularan melalui udara",
                          href=link_docs,
                          target='_blank'),
-                  html.Span(''' oleh aerosol infeksius yang tersuspensi di udara dan dapat bercampur di seluruh 
-                  ruangan. Di dalam ruangan, orang tidak lebih aman dari penularan melalui udara pada jarak 6 kaki 
-                  dari 60 kaki.''')]),
+                  html.Span(''' oleh aerosol infeksius yang tersuspensi di udara dan bercampur di seluruh ruangan. Di dalam 
+                    ruangan, orang tidak lebih aman dari transmisi udara pada ketinggian 60 kaki daripada 6 kaki. ''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Apakah ada cara penularan lain?"),
@@ -348,6 +478,11 @@ faq_top = html.Div([
         Jika Anda membutuhkan lebih banyak kontrol atas input Anda, alihkan ke Mode Lanjutan menggunakan menu di bagian 
         atas halaman web.
     ''', className='faq-answer'),
+    html.Br(),
+    html.H5("Mengapa Respirator N95 memiliki efisiensi 99%?"),
+    html.Div('''Respirator N95 memiliki efisiensi penyaringan setidaknya 95% pada ukuran partikel 0,3 μm, 10 kali lebih 
+      kecil dari ukuran tetesan pada transmisi COVID-19 di udara. Untuk tetesan yang lebih besar, respirator N95 bahkan 
+      lebih efisien, mendekati level mendekati 100%. ''', className='faq-answer'),
 ])
 
 faq_other_params_text = html.Div([
@@ -375,19 +510,56 @@ faq_other_params_text = html.Div([
 aerosol_radius_text = "Radius Aerosol Efektif (pada RH = 60%), r\u0305 (\u03bcm): "
 viral_deact_text = html.Span(["Tingkat Deaktivasi Virus Maksimum (pada RH = 100%), \u03BB", html.Sub('vmax'), " (/hr): "])
 
-values_interest_header = "Calculated Values of Interest: "
+pop_immunity_header = "Imunitas Populasi: "
+perc_immune_label = html.Span(["Persentase immun p", html.Sub('im'), " = p", html.Sub('ex'), " + p", html.Sub('v'),
+                               " = "])
+perc_infectious_label = html.Span(["Persentase infeksi p", html.Sub('i'), " = "])
+perc_vaccinated_label = html.Span(["Persentase yang divaksinasi p", html.Sub('v'), " ="])
+perc_prev_infected_label = html.Span(["Persentase yang terinfeksi sebelumnya p", html.Sub('ex'), " = "])
+perc_susceptible_label = html.Span(["Persentase rentan p", html.Sub('s'), " = 1 - (p", html.Sub('im'), " + p",
+                                    html.Sub('i'), ") = "])
+pop_immunity_desc = html.Div([html.Div(['''Persentasi infeksi p''', html.Sub('i'), ''' dalam populasi dihitung dari 
+  prevalensi infeksius yang dimasukkan dalam tab skenario risiko lainnya (Dengan prevalensi infeksi…, Untuk membatasi 
+  risiko pribadi saya…). Persentasi immun  p''', html.Sub('im'), ''' dapat diperkirakan secara konservatif dari persentase 
+  vaksinasi populasi ditambah tingkat kasus total dalam populasi, dengan mengabaikan kontribusi dari kasus yang tidak 
+  terdeteksi. Kedua nilai ini digunakan untuk menghitung persentase yang rentan p''', html.Sub('s'), '''. Dalam Mode Dasar 
+  dan dalam mode risiko pertama (Jika seseorang yang terinfeksi memasuki…), nilai ini diasumsikan 100%.''']),
+                              html.Br(),
+                              html.Div(['''Berikut ini beberapa tautan yang dapat digunakan untuk menemukan p''', html.Sub('i'), ''' dan p''',
+                                        html.Sub('im'), ''': ''',
+                                        html.Span(html.A(href=links.link_cdc_dashboard,
+                                                         children="CDC COVID-19 Data Tracker",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.Span(html.A(href=links.link_jhu_data,
+                                                         children="JHU Coronavirus Resource Center",
+                                                         target='_blank')),
+                                        html.Span(", "),
+                                        html.A(children="US Immunity Estimates",
+                                               href=links.link_cdc_immunity,
+                                               target='_blank'),
+                                        html.Span(", "),
+                                        html.A(children="International Immunity Estimates",
+                                               href=links.link_jhu_vaccine,
+                                               target='_blank'),
+                                        ])
+                              ])
+
+values_interest_header = "Nilai-Nilai yang Dihitung: "
 values_interest_desc = html.Div([
     html.H5("Apa sebenarnya yang dihitung aplikasi ini?"),
     html.Div([
-        html.Div([html.Span('''Dengan adanya toleransi risiko untuk penularan melalui udara, aplikasi ini menghitung 
-        waktu paparan kumulatif maksimum yang diizinkan, produk dari penghuni ruangan, dan waktu dimana ada orang 
-        yang terinfeksi. Aplikasi ini juga menghitung kuantitas terkait, yang dijelaskan di '''),
+        html.Div([html.Span('''Aplikasi ini menghitung waktu paparan kumulatif maksimum yang diizinkan, produk dari 
+          hunian suatu ruangan dan waktu, di ruang dalam ruangan. Penyebaran COVID-19 dibatasi dengan mensyaratkan 
+          bahwa jumlah penularan yang diharapkan per individu yang terinfeksi, "nomor reproduksi dalam ruangan", kurang 
+          dari toleransi risiko yang dipilih. Aplikasi ini juga menghitung jumlah terkait, yang dijelaskan di '''),
                   html.A(children="makalah ini",
-                         href=link_paper,
+                         href=links.link_paper,
                          target='_blank'),
-                  html.Span(''', yang mungkin menarik:''')]),
+                  html.Span(''', yang mungkin menarik untuk dibaca:''')]),
     ], className='faq-answer'),
 ])
+relative_sus_label = html.Span(["Kerentanan relatif s", html.Sub('r'), ": "])
 outdoor_air_frac_label = html.Span(["Fraksi udara luar ruangan Z", html.Sub('p'), ": "])
 aerosol_eff_label = html.Span(["Efisiensi filtrasi aerosol p", html.Sub('f'), ": "])
 breathing_rate_label = html.Span(["Laju aliran pernafasan Q", html.Sub('b'), ": "])
@@ -411,13 +583,9 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("Apakah model ini memperhitungkan prevalensi infeksi pada populasi lokal?"),
-    html.Div(['''Tidak. Model tersebut menghitung risiko penularan dari satu orang yang terinfeksi. Dengan demikian 
-    secara implisit mengasumsikan bahwa prevalensi infeksi pada populasi relatif rendah. Dalam batasan ini, 
-    risiko penularan meningkat dengan perkiraan jumlah orang yang terinfeksi di ruangan tersebut, khususnya produk 
-    penghuni ruangan, dan prevalensi dalam populasi. Toleransi harus diturunkan sebanding dengan angka ini jika 
-    melebihi satu. Sebaliknya, ketika perkiraan jumlah orang yang terinfeksi di ruangan itu mendekati nol, 
-    toleransi dapat ditingkatkan secara proporsional hingga pembatasan yang direkomendasikan dianggap tidak perlu. 
-    '''],
+    html.Div(['''Pengaruh prevalensi infeksi pada populasi lokal dapat dipertimbangkan dalam Mode Lanjutan. Di sana, di 
+      tab Parameter Lain, seseorang juga dapat menilai pengaruh kekebalan dalam populasi, seperti yang mungkin timbul melalui 
+      vaksinasi atau infeksi sebelumnya.'''],
              className='faq-answer'),
 ])
 

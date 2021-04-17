@@ -69,7 +69,7 @@ layout = html.Div(children=[
                                 children=[
                                     html.H6(html.Span(desc.room_header, id='room-header-body')),
                                     html.Div([html.Span(desc.floor_area_text, id='floor-area-text'),
-                                              dcc.Input(id='floor-area', value=900,
+                                              dcc.Input(id='floor-area', value=910,
                                                         type='number')]),
                                     html.Br(),
                                     html.Div([html.Span(desc.ceiling_height_text, id='ceiling-height-text'),

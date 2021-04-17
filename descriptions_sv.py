@@ -150,6 +150,11 @@ pim_header = "Procent immune: "
 risk_conditional_desc = "Om en smittad person går in…"
 risk_prevalence_desc = "Med en infektionsprevalens på…"
 risk_personal_desc = "För att begränsa min personliga risk…"
+risk_options = [
+    {'label': risk_conditional_desc, 'value': 'conditional'},
+    {'label': risk_prevalence_desc, 'value': 'prevalence'},
+    {'label': risk_personal_desc, 'value': 'personal'},
+]
 
 main_panel_s1 = "Baserat på denna modell borde det vara säkert för detta utrymme att ha: "
 
