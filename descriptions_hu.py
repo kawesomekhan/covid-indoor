@@ -8,7 +8,7 @@ descriptions_hu: Hungarian
 
 """
 
-link_paper = "https://doi.org/10.1101/2020.08.26.20182824"
+link_paper = "https://doi.org/10.1073/pnas.2018995118"
 link_docs = "https://docs.google.com/document/d/1fB5pysccOHvxphpTmCG_TGdytavMmc1cUumn8m0pwzo/edit"
 link_mooc = "https://www.edx.org/course/physics-of-covid-19-transmission?utm_campaign=mitx&utm_medium=partner-marketing&utm_source=affiliate&utm_content=10.s95x-app"
 
