@@ -260,13 +260,12 @@ main_airb_trans_only_desc_b = html.Div(["*A diretriz restringe a probabilidade d
                                                          target='_blank'), ),
                                         html.Span(''' por pessoa infectada a ser menor do que a tolerância de risco 
                                         pelo tempo de exposição cumulativa listado.''')], className='airborne-text')
-main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probability of ",
+main_airb_trans_only_desc_c = html.Div(["*A diretriz restringe a probabilidade de ",
                                         html.Span(html.A(href=links.link_docs,
-                                                         children="airborne transmission",
+                                                         children="transmissão aérea",
                                                          target='_blank'), ),
-                                        html.Span(''' to a particular individual to be less than the risk tolerance 
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
+                                        html.Span(''' de um indivíduo a ser menor do que a tolerância de risco pelo 
+                                        tempo de exposição cumulativa listado.''')], className='airborne-text')
 
 airb_trans_only_disc = html.Div('''''', className='airborne-text')
 
