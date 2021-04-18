@@ -75,7 +75,7 @@ error_list = {
     "exp_time_input": "Hiba: A kitettségi időnek 0-nál nagyobbnak kell lennie.",
     "air_exchange_rate": "Hiba: A szellőztetési sebességnek (ACH) nagyobbnak kell lennie, mint 0.",
     "merv": "Hiba: A szűrőrendszer (MERV) nem hiányozhat.",
-    "prevalence": "Hiba: A gyakoriságnak 0-nál nagyobbnak és 100 000-nél kisebbnek kell lennie."
+    "prevalence": "Hiba: A gyakoriságnak 0-nál nagyobbnak és 100 000-nél kisebbnek kell lennie.",
     "atm_co2": "Hiba: Háttér CO\u2082 szintet meg kell adni."
 }
 
@@ -128,6 +128,7 @@ age_group_marks = {
     0.68: {'label': '0.68: Felnőttek (15-64 évesek)', 'style': {'max-width': '75px'}},
     1: {'label': '1.00: Idősek (>64 évesek)', 'style': {'width': '100px'}}
 }
+lang_break_age = html.Br()
 
 curr_strain_header = "Vírusváltozat: "
 presets_strain = [
