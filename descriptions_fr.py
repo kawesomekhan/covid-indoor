@@ -8,7 +8,7 @@ descriptions_fr: French
 
 """
 
-link_paper = "https://www.medrxiv.org/content/10.1101/2020.08.26.20182824v2"
+link_paper = "https://www.pnas.org/content/118/17/e2018995118"
 link_docs = "https://docs.google.com/document/d/1fB5pysccOHvxphpTmCG_TGdytavMmc1cUumn8m0pwzo/edit"
 link_mooc = "https://www.edx.org/course/physics-of-covid-19-transmission?utm_campaign=mitx&utm_medium=partner-marketing&utm_source=affiliate&utm_content=10.s95x-app"
 
@@ -110,7 +110,7 @@ graph_title_co2 = "Concentration de CO\u2082 (ppm) limite vs. temps d'exposition
 graph_ytitle_co2 = "Concentration de CO\u2082 (ppm)"
 
 co2_title = "Voir le seuil de Concentration de CO\u2082 recommandé"
-co2_param_desc = '''La recommandation pour les paramètres définis ci-dessus est ici exprimée sous forme d'un seuil de concentration de CO\u2082 à ne pas dépasser.''' 
+co2_param_desc = '''La recommandation (pour les paramètres choisis ci-dessus) est exprimée ici sous la forme d'un seuil de concentration de CO\u2082 à ne pas dépasser.''' 
 co2_prev_input_1 = "Incidence : "
 co2_prev_input_2 = " pour 100 000"
 co2_atm_input_1 = "CO\u2082 ambiant : "
@@ -217,7 +217,7 @@ risk_personal_desc = "Pour limiter mon risque personnel..."
 error_list = {
     "floor_area": "Erreur : la surface au sol doit être renseignée.",
     "ceiling_height": "Erreur : la hauteur sous plafond doit être renseignée.",
-    "recirc_rate": "Erreur : le taux de recirculation d'air (ACH) doit être renseigné.",
+    "recirc_rate": "Erreur : le taux de recirculation d'air doit être renseigné.",
     "aerosol_radius": "Erreur : le rayon de l'aérosol doit être renseigné.",
     "viral_deact_rate": "Erreur : le taux d'inactivation virale doit être renseigné.",
     "n_max_input": "Erreur : le nombre de personnes ne peut pas être inférieur à 2.",
