@@ -29,6 +29,12 @@ header = html.Div([
                                    target='_blank',
                                    children='''Bazant & Bush, 2020''')),
                   html.Span(")")]),
+        html.Div([html.Span(
+            ["Monitoring carbon dioxide to quantify the risk of indoor airborne transmission of COVID-19 ("]),
+                  html.Span(html.A(href=links.link_paper_co2,
+                                   target='_blank',
+                                   children='''Bazant et al., 2021''')),
+                  html.Span(")")]),
         html.Div([
             html.A(href=links.link_bazant_covid,
                    children=links.link_bazant_covid,
