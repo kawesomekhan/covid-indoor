@@ -111,7 +111,7 @@ graph_ytitle_co2 = "Concentration de CO\u2082 (ppm)"
 
 co2_title = "Voir le seuil de Concentration de CO\u2082 recommandé"
 co2_param_desc = '''La recommandation (pour les paramètres choisis ci-dessus) est exprimée ici sous la forme d'un seuil de concentration de CO\u2082 à ne pas dépasser.''' 
-co2_prev_input_1 = "Incidence : "
+co2_prev_input_1 = html.Span(["Incidence", html.Sup('1'), html.Span(" : ")])
 co2_prev_input_2 = " pour 100 000"
 co2_atm_input_1 = "CO\u2082 ambiant : "
 co2_atm_input_2 = " ppm"
