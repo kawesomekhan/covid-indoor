@@ -1,5 +1,14 @@
 /* CSS related to app layout */
 
+/* Temp */
+#adv-card-co2 {
+    display: none
+}
+#adv-card-occ {
+    grid-column-start: 2;
+    grid-column-end: 4;
+}
+
 :root {
     --big-number-input-width: 90px;
     --prevalence-input-width: 75px;
@@ -218,6 +227,12 @@ body {
 
 /* Small-width/mobile layout */
 @media only screen and (max-width: 1200px) {
+    /* Temp */
+    #adv-card-occ {
+        grid-column-start: 1;
+        grid-column-end: 2;
+    }
+
     /* Presets Grid */
     .grid-presets {
         display: grid;

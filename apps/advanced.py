@@ -376,6 +376,7 @@ layout = html.Div(children=[
                                            })], style={'margin': '1em', 'padding': '0', 'border': 'none'}),
                     html.Div(
                         className='card',
+                        id='adv-card-occ',
                         children=[html.Div(className='output-content', children=[
                             html.Div([
                                 html.H4(desc.occupancy_panel_header, id='adv-occ-panel-header'),
