@@ -139,6 +139,7 @@ age_group_marks = {
     0.68: {'label': '0.68: Ενήλικες (15-64 ετών)', 'style': {'max-width': '75px'}},
     1: {'label': '1.00: Ηλικιωμένοι (> 64 ετών)', 'style': {'width': '75px'}}
 }
+lang_break_age = html.Br()
 
 curr_strain_header = "Ιικό στέλεχος: "
 presets_strain = [
@@ -247,40 +248,40 @@ co2_safe_footer = html.Span(['''Το κατώφλι της αναπνευστι�
                                     target='_blank'),
                              '''.'''])
 
-main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
-                                      html.Span(html.A(href=links.link_docs,
-                                                       children="airborne transmissions",
-                                                       target='_blank'), ),
-                                      html.Span(''' per infected person to be less than the risk tolerance 
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
-main_airb_trans_only_disc_basic = html.Div(["*The guideline restricts the probability of ",
+main_airb_trans_only_disc = html.Div(["*Η κατευθυντήρια γραμμή περιορίζει την πιθανότητα ",
                                             html.Span(html.A(href=links.link_docs,
-                                                             children="airborne transmissions",
+                                                             children="οι αερομεταφερόμενες μεταδόσεις",
                                                              target='_blank'), ),
-                                            html.Span(''' per infected person to be less than the risk tolerance (10%)
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
+                                            html.Span(''' ανά μολυσμένο άτομο να είναι μικρότερες από την ανοχή 
+                                            κινδύνου για τον συνολικό χρόνο έκθεσης 
+                                            που αναφέρεται. ''')], className='airborne-text')
+main_airb_trans_only_disc_basic = html.Div(["*Η κατευθυντήρια γραμμή περιορίζει την πιθανότητα ",
+                                            html.Span(html.A(href=links.link_docs,
+                                                             children="οι αερομεταφερόμενες μεταδόσεις",
+                                                             target='_blank'), ),
+                                            html.Span(''' ανά μολυσμένο άτομο να είναι μικρότερες από την ανοχή 
+                                            κινδύνου (10%) για τον συνολικό χρόνο έκθεσης 
+                                            που αναφέρεται. ''')], className='airborne-text')
 
 other_risk_modes_desc = html.Div('''Άλλα σενάρια κινδύνου λαμβάνονται υπόψη στη λειτουργία για προχωρημένους. 
 Συγκεκριμένα, μπορεί κανείς να εξετάσει την συχνότητα της λοίμωξης στον πληθυσμό, 
 την ανοσία που αποκτήθηκε μέσω εμβολιασμού ή προηγούμενης έκθεσης, και τον κίνδυνο 
 για ένα συγκεκριμένο άτομο.''')
 
-main_airb_trans_only_desc_b = html.Div(["*The guideline restricts the probability of one ",
+main_airb_trans_only_desc_b = html.Div(["*Η κατευθυντήρια γραμμή περιορίζει την πιθανότητα μιας ",
                                         html.Span(html.A(href=links.link_docs,
-                                                         children="airborne transmission",
+                                                         children="αερομεταφερόμενης μετάδοσης",
                                                          target='_blank'), ),
-                                        html.Span(''' per infected person to be less than the risk tolerance 
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
-main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probability of ",
+                                        html.Span(''' ανά μολυσμένο άτομο να είναι μικρότερη από την ανοχή κινδύνου 
+                                        κατά τον συνολικό χρόνο έκθεσης που αναφέρεται ''')],
+                                       className='airborne-text')
+main_airb_trans_only_desc_c = html.Div(["*Η κατευθυντήρια γραμμή περιορίζει την πιθανότητα ",
                                         html.Span(html.A(href=links.link_docs,
-                                                         children="airborne transmission",
+                                                         children="της αερομεταφερόμενης μετάδοσης",
                                                          target='_blank'), ),
-                                        html.Span(''' to a particular individual to be less than the risk tolerance 
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
+                                        html.Span(''' σε ένα συγκεκριμένο άτομο να είναι μικρότερη από την ανοχή 
+                                        κινδύνου κατά τον συνολικό χρόνο έκθεσης που 
+                                        αναφέρεται. ''')], className='airborne-text')
 
 airb_trans_only_disc = html.Div('''''', className='airborne-text')
 
@@ -476,13 +477,14 @@ faq_top = html.Div([
     html.H6("Συχνές Ερωτήσεις"),
     html.H5("Γιατί δεν είναι αρκετά τα 6 πόδια / 2 μέτρα;"),
     html.Div([
-        html.Div([html.Span('''6 feet (or 2 meter) spacing protects you from large drops ejected by an infected 
-        person coughing, as do face masks; however, it doesn’t protect against '''),
-                  html.A(children="airborne transmission",
+        html.Div([html.Span('''Η απόσταση των 6 ποδιών / 2 μέτρων, όπως και οι μάσκες προσώπου, σας προστατεύουν από 
+        τις μεγάλες σταγόνες που εκτοξεύονται από ένα μολυσμένο άτομο όταν βήχει. Ωστόσο, δεν σας προστατεύουν από '''),
+                  html.A(children="την αερομεταφερόμενη μετάδοση",
                          href=links.link_docs,
                          target='_blank'),
-                  html.Span(''' by infectious aerosols that are suspended in the air and mixed throughout a room. 
-                  Indoors, people are no safer from airborne transmission at 60 feet than 6 feet. ''')]),
+                  html.Span(''' μολυσματικών μικροσταγονίδίων τα οποία αιωρούνται στον αέρα και μπορούν να αναμιχθούν 
+                  εντός της αίθουσας. Σε εσωτερικούς χώρους, οι άνθρωποι δεν είναι πιο ασφαλείς από την 
+                  αερομεταφερόμενη μετάδοση στα 6 πόδια από ότι στα 60 πόδια. ''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Υπάρχουν άλλοι τρόποι μετάδοσης;"),
@@ -617,9 +619,9 @@ faq_graphs_text = html.Div([
 
 faq_infect_rate = html.Div([
     html.H5("Αυτό το μοντέλο εξηγεί την γενίκευση της λοίμωξης στον τοπικό πληθυσμό;"),
-    html.Div(['''The influence of the prevalence of infection in the local population may be considered in Advanced 
-    Mode. There, in the Other Parameters tab, one may also assess the influence of immunity in the population, 
-    as may arise through vaccination or previous infection.'''],
+    html.Div(['''Η επίδραση της συχνότητας μολύνσεων στον τοπικό πληθυσμό μπορεί να εξεταστεί στη λειτουργία για 
+    προχωρημένους. Εκεί, στην καρτέλα Άλλες παράμετροι, μπορεί κανείς να αξιολογήσει επίσης την επίδραση της 
+    ανοσίας του πληθυσμού, όπως αυτή μπορεί να προκύψει μέσω του εμβολιασμού ή προηγούμενων μολύνσεων.'''],
              className='faq-answer'),
 ])
 
