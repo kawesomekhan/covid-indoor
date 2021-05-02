@@ -391,16 +391,16 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
                                  name=recommended_co2_text,
                                  line=go.scatter.Line(color="#de1616"),
                                  hovertemplate=ht_rec))
-    new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
-                                 mode='lines',
-                                 name=guideline_trace_text,
-                                 line=go.scatter.Line(color="#730707", dash='dot'),
-                                 hovertemplate=ht_guideline))
-    new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
-                                 mode='lines',
-                                 name=co2_safe_trace_text,
-                                 line=go.scatter.Line(color="#8ad4ed", dash='dot'),
-                                 hovertemplate=ht_safe))
+    # new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["co2_trans"],
+    #                              mode='lines',
+    #                              name=guideline_trace_text,
+    #                              line=go.scatter.Line(color="#730707", dash='dot'),
+    #                              hovertemplate=ht_guideline))
+    # new_fig.add_trace(go.Scatter(x=safe_df["exposure_time"], y=safe_df["co2_safe"],
+    #                              mode='lines',
+    #                              name=co2_safe_trace_text,
+    #                              line=go.scatter.Line(color="#8ad4ed", dash='dot'),
+    #                              hovertemplate=ht_safe))
     new_fig.add_trace(go.Scatter(x=background_df["exposure_time"], y=background_df["co2_background"],
                                  mode='lines',
                                  name=background_co2_text,
@@ -423,8 +423,9 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     new_fig.update_yaxes(type="log", showspikes=True)
 
     max_guideline_val = new_df["co2_trans"].max()
-    if max_guideline_val * 1.2 > 50000:
-        new_fig.update_yaxes(range=[math.log(indoor_model.atm_co2 * 0.8, 10), math.log(50000, 10)])
+    y_max = 2000
+    if max_guideline_val * 1.2 > y_max:
+        new_fig.update_yaxes(range=[math.log(indoor_model.atm_co2 * 0.8, 10), math.log(y_max, 10)])
     else:
         new_fig.update_yaxes(range=[math.log(indoor_model.atm_co2 * 0.8, 10), math.log(max_guideline_val * 1.2, 10)])
 
