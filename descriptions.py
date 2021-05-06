@@ -236,6 +236,9 @@ co2_atm_input_2 = " ppm"
 co2_calc_1 = "For an exposure time of "
 co2_calc_2 = " hours, the calculated safe time-averaged CO\u2082 concentration in this space is "
 co2_calc_3 = "."
+co2_calc_inv_1 = "For a CO\u2082 concentration of "
+co2_calc_inv_2 = " ppm*, the guideline would be violated after "
+co2_calc_inv_3 = "."
 co2_base_string = '{:,.2f} ppm'
 
 co2_safe_sent_1 = "This limit exceeds that for healthy respiratory activity, which is "

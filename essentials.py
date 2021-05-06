@@ -22,6 +22,7 @@ import descriptions_sv as desc_sv
 import pandas as pd
 import numpy
 import math
+from scipy.optimize import fsolve
 
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
@@ -213,6 +214,9 @@ model_output_n_vals_big = [25, 100, 250, 500, 1000]
 
 # Max time reported in the big red text output
 covid_recovery_time = 14  # Days
+
+# CO2 max allowed output for graphs and other front end panels
+co2_max_output = 2000  # ppm
 
 
 # Determines what error message we should use, if any
@@ -423,7 +427,7 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     new_fig.update_yaxes(type="log", showspikes=True)
 
     max_guideline_val = new_df["co2_trans"].max()
-    y_max = 2000
+    y_max = co2_max_output
     if max_guideline_val * 1.2 > y_max:
         new_fig.update_yaxes(range=[math.log(indoor_model.atm_co2 * 0.8, 10), math.log(y_max, 10)])
     else:
@@ -440,6 +444,29 @@ def get_safe_resp_co2_limit(exp_time):
     a = 25636.363641827  # ppm-hr
     b = 0.545454545606364  # hr
     return const + a / (exp_time + b)
+
+
+# Returns the recommended co2 limit given an exposure time
+def get_recommended_co2_limit(indoor_model, risk_mode, exp_time):
+    safe_co2_conc = indoor_model.calc_co2_exp_time(exp_time, risk_mode)
+    max_co2_conc = get_safe_resp_co2_limit(exp_time)
+    return min(safe_co2_conc, max_co2_conc)
+
+
+# Returns the maximum exposure time given a recommended CO2 concentration and risk mode
+# Ok this is going to be a messy function so try to clean up later
+def get_exp_time_from_co2(indoor_model, risk_mode, co2_conc):
+    # discontinuous function, so do binary search to narrow until threshold
+    guess = 10  # hours
+    thresh = 0.001  # ppm
+    recommended_co2_conc = get_recommended_co2_limit(indoor_model, risk_mode, guess)
+    diff_sq = (recommended_co2_conc - co2_conc) ** 2
+
+    def func(x):
+        return [get_recommended_co2_limit(indoor_model, risk_mode, x[0]) - co2_conc]
+
+    root = fsolve(func, [guess])
+    return root[0]
 
 
 # Returns the big red output text.
@@ -523,6 +550,7 @@ def get_six_ft_exp_time(indoor_model, risk_type, recovery_time, language):
 
 
 # Converts a time (in hours) into a text with formatting based on minutes/hours/days.
+# keep_hours: Whether to keep hours in the output time along with day/month
 # recovery_time: Time to recovery in days
 # If recovery time is -1, will not limit the output.
 def time_to_text(time, keep_hours, recovery_time, language):
@@ -847,6 +875,18 @@ def get_lang_text_adv(language, disp_width):
     if hasattr(desc_file, 'co2_calc_3'):
         co2_calc_3 = desc_file.co2_calc_3
 
+    co2_calc_inv_1 = desc.co2_calc_inv_1
+    if hasattr(desc_file, 'co2_calc_inv_1'):
+        co2_calc_inv_1 = desc_file.co2_calc_inv_1
+
+    co2_calc_inv_2 = desc.co2_calc_inv_2
+    if hasattr(desc_file, 'co2_calc_inv_2'):
+        co2_calc_inv_2 = desc_file.co2_calc_inv_2
+
+    co2_calc_inv_3 = desc.co2_calc_inv_3
+    if hasattr(desc_file, 'co2_calc_inv_3'):
+        co2_calc_inv_3 = desc_file.co2_calc_inv_3
+
     co2_safe_footer = desc.co2_safe_footer
     if hasattr(desc_file, 'co2_safe_footer'):
         co2_safe_footer = desc_file.co2_safe_footer
@@ -927,6 +967,9 @@ def get_lang_text_adv(language, disp_width):
             co2_calc_1,
             co2_calc_2,
             co2_calc_3,
+            co2_calc_inv_1,
+            co2_calc_inv_2,
+            co2_calc_inv_3,
             co2_safe_footer]
 
 

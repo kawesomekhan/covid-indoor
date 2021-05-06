@@ -8,4 +8,5 @@ dash-table==4.10.1
 flask-talisman==0.7.0
 numpy==1.18.5
 pandas==1.0.5
+scipy==1.6.3
 gunicorn
