@@ -2,6 +2,7 @@
 
 :root {
     --big-number-input-width: 90px;
+    --co2-input-width: 100px;
     --prevalence-input-width: 75px;
 }
 
@@ -175,11 +176,14 @@ body {
 
 #adv-n-input, #n-input, #n-input-b, #n-input-c, #adv-n-input-b, #adv-n-input-c, #adv-t-input, #t-input,
 #t-input-b, #t-input-c, #adv-t-input-b, #adv-t-input-c, #adv-prev-input-co2, #adv-exp-time-input-co2,
-#adv-atm-input-co2 {
+#adv-atm-input-co2{
     width: var(--big-number-input-width);
 }
 #adv-prev {
     width: var(--prevalence-input-width);
+}
+#adv-co2-input {
+    width: var(--co2-input-width);
 }
 
 /* Advanced Intermediate Size */

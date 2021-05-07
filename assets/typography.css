@@ -83,7 +83,7 @@ six-ft-output {
     color: var(--accent-color);
 }
 
-#adv-co2-output, #adv-co2-output-healthy {
+#adv-co2-output, #adv-co2-output-healthy, #adv-exp-time-output-co2 {
     color: var(--accent-color);
 }
 

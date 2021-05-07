@@ -81,7 +81,8 @@ error_list = {
     "air_exchange_rate": "Error: Ventilation Rate (ACH) must be greater than 0.",
     "merv": "Error: Filtration System (MERV) cannot be empty.",
     "prevalence": "Error: Incidence rate must be greater than 0 and less than 100,000.",
-    "atm_co2": "Error: Background CO\u2082 level is required."
+    "atm_co2": "Error: Background CO\u2082 level is required.",
+    "co2_input": "Error: CO\u2082 level is required."
 }
 
 
@@ -236,16 +237,34 @@ co2_atm_input_2 = " ppm"
 co2_calc_1 = "For an exposure time of "
 co2_calc_2 = " hours, the calculated safe time-averaged CO\u2082 concentration in this space is "
 co2_calc_3 = "."
+co2_calc_inv_1 = "For a CO\u2082 concentration of "
+co2_calc_inv_2 = " ppm*, the guideline would be violated after "
+co2_calc_inv_3 = "."
 co2_base_string = '{:,.2f} ppm'
 
 co2_safe_sent_1 = "This limit exceeds that for healthy respiratory activity, which is "
 co2_safe_sent_2 = "."
 
-co2_safe_footer = html.Span(['''The respiratory safety threshold is interpolated based on ''',
-                             html.A(href=links.link_usda_co2,
-                                    children='''recommended limits from the USDA''',
-                                    target='_blank'),
-                             '''.'''])
+# co2_safe_footer = html.Span(['''The respiratory safety threshold is interpolated based on ''',
+#                              html.A(href=links.link_usda_co2,
+#                                     children='''recommended limits from the USDA''',
+#                                     target='_blank'),
+#                              '''.'''])
+co2_safe_footer = html.Span([html.Div('''CO\u2082 outputs are limited to a maximum of 2,000 ppm, the level 
+considered safe for long-term exposure to carbon dioxide.'''),
+                             html.Div([
+                                        html.A(href=links.link_usda_co2,
+                                               children='''USDA Respiratory Limits''',
+                                               target='_blank'),
+                                        html.Span([''', ''']),
+                                        html.A(href=links.link_kane_co2,
+                                               children='''Kane International Limits''',
+                                               target='_blank'),
+                                        html.Span(['''.'''])
+                             ]),
+                             html.Div(['''*700 ppm is the conservative limit suggested by Jimenez for 
+                             COVID-19 safety.'''])
+                             ])
 
 main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
                                       html.Span(html.A(href=links.link_docs,
