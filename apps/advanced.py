@@ -662,7 +662,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
                                 max_viral_deact_rate, language, n_max_input, exp_time_input,
-                                exp_time_co2, prevalence, atm_co2)
+                                exp_time_co2, prevalence, atm_co2, co2_input)
 
     if error_msg != "":
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \

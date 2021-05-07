@@ -222,7 +222,7 @@ co2_max_output = 2000  # ppm
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
                 max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, exp_time_co2=1, prevalence=1,
-                atm_co2=410):
+                atm_co2=410, co2_input=700):
     error_msg = ""
 
     desc_file = get_desc_file(language)
@@ -247,8 +247,16 @@ def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate
         error_msg = desc_file.error_list["merv"]
     elif prevalence is None or prevalence <= 0 or prevalence >= 100000:
         error_msg = desc_file.error_list["prevalence"]
-    elif atm_co2 is None:
-        error_msg = desc_file.error_list["atm_co2"]
+    elif atm_co2 is None or atm_co2 < 0:
+        if "atm_co2" in desc_file.error_list:
+            error_msg = desc_file.error_list["atm_co2"]
+        else:
+            error_msg = desc.error_list["atm_co2"]
+    elif co2_input is None:
+        if "co2_input" in desc_file.error_list:
+            error_msg = desc_file.error_list["co2_input"]
+        else:
+            error_msg = desc.error_list["co2_input"]
 
     return error_msg
 
