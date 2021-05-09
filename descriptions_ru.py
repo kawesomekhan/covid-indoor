@@ -133,6 +133,7 @@ age_group_marks = {
     0.68: {'label': '0.68: Взрослые (15-64 лет)', 'style': {'max-width': '75px'}},
     1: {'label': '1.00: Пожилые (> 64 лет)', 'style': {'width': '75px'}}
 }
+lang_break_age = html.Br()
 
 curr_strain_header = "Вирусный штамм: "
 presets_strain = [
@@ -242,39 +243,35 @@ co2_safe_footer = html.Span(['''Предел респираторной безо
                                     target='_blank'),
                              '''.'''])
 
-main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
+main_airb_trans_only_disc = html.Div(["*Руководство ограничивает вероятность ",
                                       html.Span(html.A(href=links.link_docs,
-                                                       children="airborne transmissions",
+                                                       children="передачи инфекции воздушно-капельным путем",
                                                        target='_blank'), ),
-                                      html.Span(''' per infected person to be less than the risk tolerance 
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
-main_airb_trans_only_disc_basic = html.Div(["*The guideline restricts the probability of ",
-                                            html.Span(html.A(href=links.link_docs,
-                                                             children="airborne transmissions",
-                                                             target='_blank'), ),
-                                            html.Span(''' per infected person to be less than the risk tolerance (10%)
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
+                                      html.Span(''' от одного инфицированного человека до уровня ниже допустимого 
+                                      уровня риска в течение указанного совокупного 
+                                      времени воздействия.''')], className='airborne-text')
+main_airb_trans_only_disc_basic = html.Div(["*Руководство ограничивает вероятность ",
+                                      html.Span(html.A(href=links.link_docs,
+                                                       children="передачи инфекции воздушно-капельным путем",
+                                                       target='_blank'), ),
+                                      html.Span(''' от одного инфицированного человека до уровня ниже допустимого 
+                                      уровня риска (10%) в течение указанного совокупного 
+                                      времени воздействия.''')], className='airborne-text')
 
 other_risk_modes_desc = html.Div('''Другие сценарии риска рассматриваются в продвинутом режиме. В частности, 
 можно учитывать распространенность инфекции среди населения, иммунитет, приобретенный в результате вакцинации или 
 предыдущего контакта, а также риск для конкретного человека.''')
 
-main_airb_trans_only_desc_b = html.Div(["*The guideline restricts the probability of one ",
+main_airb_trans_only_desc_b = html.Div(["*Руководство ограничивает вероятность одной ",
                                         html.Span(html.A(href=links.link_docs,
-                                                         children="airborne transmission",
+                                                         children="передачи воздушно-капельным путем",
                                                          target='_blank'), ),
-                                        html.Span(''' per infected person to be less than the risk tolerance 
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
-main_airb_trans_only_desc_c = html.Div(["*The guideline restricts the probability of ",
+                                        html.Span(''' от одного инфицированного человека до уровня ниже допустимого уровня риска в течение указанного совокупного времени воздействия.''')], className='airborne-text')
+main_airb_trans_only_desc_c = html.Div(["*Руководство ограничивает вероятность ",
                                         html.Span(html.A(href=links.link_docs,
-                                                         children="airborne transmission",
+                                                         children="передачи вируса воздушно-капельным путем",
                                                          target='_blank'), ),
-                                        html.Span(''' to a particular individual to be less than the risk tolerance 
-                                      over the cumulative exposure time 
-                                      listed.''')], className='airborne-text')
+                                        html.Span(''' конкретному человеку до уровня ниже допустимого уровня риска в течение указанного совокупного времени воздействия.''')], className='airborne-text')
 
 airb_trans_only_disc = html.Div('''''', className='airborne-text')
 
@@ -321,24 +318,17 @@ about = html.Div([
     здравоохранения рекомендуют ограничения на: расстояние между людьми (2 метра), время пребывания (15 минут), 
     максимальную вместимость (25 человек) или минимальную вентиляцию ( 6 воздухообменов в час).'''),
     html.Br(),
-    html.Div([html.Span('''There is growing '''),
-              html.A(children="scientific evidence",
+    html.Div([html.Span(''''''),
+              html.A(children="Появляется все больше",
                      href=links.link_docs,
                      target='_blank'),
-              html.Span(''' for airborne transmission of COVID-19, which occurs when 
-    infectious aerosol droplets are exchanged by breathing shared indoor air. While public health organizations are 
-    beginning to acknowledge airborne transmission, they have yet to provide a safety guideline that incorporates all 
-    the relevant variables.''')]),
+              html.Span(''' научных доказательств передачи COVID-19 воздушным путем, когда происходит обмен каплями инфекционного аэрозоля при вдыхании общего воздуха в помещении. Хотя организации общественного здравоохранения начинают признавать передачу вируса воздушно-капельным путем, они еще не разработали рекомендации по безопасности, включающие все соответствующие переменные. ''')]),
     html.Br(),
-    html.Div([html.Span('''This app, developed by Kasim Khan in collaboration with Martin Z. Bazant and John W. M. Bush, 
-    uses a '''),
-              html.A(children="theoretical model",
+    html.Div([html.Span('''Эта приложение, разработанная Касим Ханам в сотрудничестве с Мартином З. Базантом и Джоном В. М. Бушем, использует '''),
+              html.A(children="теоретическую модель",
                      href=links.link_paper,
                      target='_blank'),
-              html.Span(''' to calculate safe exposure times and occupancy levels for indoor spaces.  By adjusting 
-    room specifications, ventilation and filtration rates, face-mask usage, respiratory activities, 
-    and risk tolerance (in the other tabs), you can see how to mitigate indoor COVID-19 transmission in different 
-    indoor spaces.''')]),
+              html.Span(''' для расчета безопасного времени воздействия и уровней вместимости для внутренних помещений. Регулируя характеристики помещения, скорость вентиляции и фильтрации, использование лицевой маски, респираторную активность и устойчивость к риску (на других вкладках), вы можете увидеть как уменьшить передачу COVID-19 внутри различных помещениях. ''')]),
     html.Br(),
     html.Div(['''В базовом режиме вы можете рассчитать пределы безопасной занятости после входа одного 
     инфицированного человека в помещение. В расширенном режиме вы можете учитывать дополнительные факторы, 
@@ -471,47 +461,35 @@ faq_top = html.Div([
     html.H6("Часто задаваемые вопросы"),
     html.H5("Почему недостаточно расстояния двух метров ?"),
     html.Div([
-        html.Div([html.Span('''6 feet (or 2 meter) spacing protects you from large drops ejected by an infected 
-        person coughing, as do face masks; however, it doesn’t protect against '''),
-                  html.A(children="airborne transmission",
+        html.Div([html.Span('''Двух метровое расстояние защищает вас от больших капель выбрасываемых инфицированным человеком при кашле, так же как и маски для лица; однако оно не защищает от '''),
+                  html.A(children="передачи по воздуху",
                          href=links.link_docs,
                          target='_blank'),
-                  html.Span(''' by infectious aerosols that are suspended in the air and mixed throughout a room. 
-                  Indoors, people are no safer from airborne transmission at 60 feet than 6 feet. ''')]),
+                  html.Span(''' инфекционных аэрозолей, которые смешиваются с воздухом в помещений. В закрытом помещении люди не более защищены от передачи по воздуху на расстояние двух метров, чем на расстояние двадцати метров.  ''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Есть ли другие способы передачи?"),
     html.Div([
-        html.Div([html.A(children="Airborne transmission",
+        html.Div([html.Span('''Считается, что '''),
+            html.A(children="воздушно-капельная передача",
                          href=links.link_docs,
                          target='_blank'),
-                  html.Span(''' is thought to be dominant for COVID-19, but other modes are possible, such as `fomite’ 
-                  transmission through direct contact with infectious residues on surfaces, `large-droplet' 
-                  transmission via coughing or sneezing, and `short-range aerosol' transmission from the respiratory 
-                  jet of an infected person over a prolonged period. While the latter two modes may be significant, 
-                  they are largely eliminated when face masks or shields are worn; however, the risk of airborne 
-                  transmission remains.''')]),
+                  html.Span(''' COVID-19 является основной, но возможны и другие способы, такие как передача "фомита" при прямом контакте с инфекционными остатками на поверхностях, "крупнокапельная" передача при кашле или чихании и "аэрозоль ближнего действия" передача из дыхательной струи инфицированного человека в течение длительного периода. В то время как последние два режима значительно устраняются при ношении лицевых масок или щитов, риск передачи воздушно-капельным путем сохраняется. ''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Можем ли мы действительно предположить что воздух в комнате хорошо перемешан?"),
     html.Div([
-        html.Div([html.Span('''There are many contributors to mixing in indoor spaces, including buoyancy-driven 
-        flows (from heaters, air conditioners or windows), forced convection from vents and fans, and human motion 
-        and respiration. While there are exceptions, as discussed in the '''),
-                  html.A(children="paper",
+        html.Div([html.Span('''Есть много факторов, способствующих перемешиванию в помещениях, включая потоки вызываемые плавучестью (от обогревателей, кондиционеров или окон), принудительную конвекцию от вентиляционных отверстий и вентиляторов, а также движение и дыхание человека. Хотя есть исключения, как обсуждается в '''),
+                  html.A(children="статье",
                          href=links.link_paper,
                          target='_blank'),
-                  html.Span(''', the assumption of well-mixedness is widely used in the theoretical modeling of 
-                  airborne disease transmission.''')]),
+                  html.Span(''', предположение о хорошей смешанности широко используется при теоретическом моделировании передачи болезней передающихся воздушным путем.''')]),
     ], className='faq-answer'),
     html.Br(),
     html.H5("Остаётся ли в силе рекомендация, в случае очень просторных помещений?"),
     html.Div([
-        html.Div([html.Span('''In concert halls, stadiums, or other large, ventilated spaces with large numbers of 
-        people, the risk of airborne transmission is significant and properly captured by the guideline.  However, 
-        when masks or face shields are not worn, there is an additional risk of short-range transmission through 
-        respiratory jets, estimated in the '''),
-                  html.A(children="paper",
+        html.Div([html.Span('''В концертных залах, стадионах или других больших вентилируемых помещениях с большим количеством людей, риск передачи воздушно-капельным путем является значительным и должным образом отражен в руководстве. Так же, когда защитные маски не используются, существует дополнительный риск передачи на коротких расстояниях через респираторные потоки, как обсуждается в '''),
+                  html.A(children="статье",
                          href=links.link_paper,
                          target='_blank'),
                   html.Span('''.''')]),
@@ -538,23 +516,18 @@ faq_top = html.Div([
 
 faq_other_params_text = html.Div([
     html.H5("Есть ли какие-либо скрытые параметры в базовом режиме?"),
-    html.Div([html.Span('''All of the relevant physical parameters are detailed in the '''),
-              html.A(children="paper",
+    html.Div([html.Span('''Все соответствующие физические параметры подробно описаны в '''),
+              html.A(children="статье",
                      href=links.link_paper,
                      target='_blank'),
-              html.Span('''. In Basic Mode, the app assumes a default effective aerosol radius of 2 μm (at 60% 
-              humidity) and a maximum viral deactivation rate of 0.6 /hr (at ~100% humidity), both of which increase 
-              with relative humidity (RH). Estimates for the viral deactivation rate err on the conservative side of 
-              slower deactivation.  The viral deactivation rate can be increased by ultraviolet radiation (UV-C) or 
-              chemical disinfectants (e.g. hydrogen peroxide, ozone). The app also estimates the key disease 
-              parameter, the infectiousness of exhaled air, C'''),
+              html.Span('''. В базовом режиме приложение предполагает что эффективный радиус аэрозоля равен по умолчанию двум микроном (при влажности 60%) и что максимальная скорость деактивации вирусов равна 0.6 / час (при влажности ~ 100%), оба значения увеличиваются с относительной влажностью. Оценки скорости деактивации вирусов консервативно предпологают более медленную деактивацию. Скорость деактивации вирусов можно повысить с помощью ультрафиолетового излучения или химических дезинфицирующих средств. 
+              Приложение также оценивает ключевой параметр заболевания, инфекционность выдыхаемого воздуха, C'''),
               html.Sub("q"),
-              html.Span(''' (infection quanta per unit volume), from the specified 
-              respiratory activity, using tabulated values in Figure 2 of the '''),
-              html.A(children="paper",
+              html.Span(''' (количество инфекций на единицу объема), исходя из заданной респираторной активности, используя табличные значения на Рисунке 2 в '''),
+              html.A(children="статье",
                      href=links.link_paper,
                      target='_blank'),
-              html.Span('''. You define these parameters yourself in Advanced Mode.''')],
+              html.Span('''. Вы сами определяете эти параметры в расширенном режиме.''')],
              className='faq-answer'),
 ])
 
@@ -601,14 +574,11 @@ values_interest_header = "Расчёт важных значений: "
 values_interest_desc = html.Div([
     html.H5("Что именно рассчитывает приложение?"),
     html.Div([
-        html.Div([html.Span('''The app calculates the maximum allowable cumulative exposure time, the product of room 
-        occupancy and time, in an indoor space. The spread of COVID-19 is limited by requiring that the expected 
-        number of transmissions per infected individual, the “indoor reproductive number", be less than the chosen 
-        risk tolerance. The app also calculates related quantities, defined in the '''),
-                  html.A(children="paper",
+        html.Div([html.Span('''Учитывая допустимую степень риска воздушно-капельной передачи, приложение рассчитывает максимально допустимое совокупное время воздействия, произведение вместительности комнаты и время нахождения в присутствие инфицированного человека. Приложение также вычисляет другие значения определенные в '''),
+                  html.A(children="статье",
                          href=links.link_paper,
                          target='_blank'),
-                  html.Span(''', that may be of interest:''')]),
+                  html.Span(''', которые могут представлять интерес: ''')]),
     ], className='faq-answer'),
 ])
 relative_sus_label = html.Span(["Relative susceptibility s", html.Sub('r'), ": "])
