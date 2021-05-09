@@ -262,8 +262,10 @@ considered safe for long-term exposure to carbon dioxide.'''),
                                                target='_blank'),
                                         html.Span(['''.'''])
                              ]),
-                             html.Div(['''*700 ppm is the conservative limit suggested by Jimenez for 
-                             COVID-19 safety.'''])
+                             html.Div([html.A(href=links.link_jimenez_co2,
+                                               children='''*700 ppm is the conservative limit recommended by J. L. 
+                                               Jimenez for COVID-19 safety.''',
+                                               target='_blank')])
                              ])
 
 main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
