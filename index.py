@@ -35,6 +35,7 @@ languages = [
     {'label': "한국어", 'value': "ko"},
     # {'label': "Nederlands", 'value': "nl"},
     {'label': "Português do Brasil", 'value': "pt-br"},
+    {'label': "Pусский", 'value': "ru"},
     {'label': "Svenska", 'value': "sv"},
     {'label': "简体中文", 'value': "zh"},
 ]

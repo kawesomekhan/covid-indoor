@@ -17,6 +17,7 @@ import descriptions_it as desc_it
 import descriptions_ko as desc_ko
 import descriptions_nl as desc_nl
 import descriptions_pt_br as desc_pt_br
+import descriptions_ru as desc_ru
 import descriptions_sv as desc_sv
 
 import pandas as pd
@@ -1030,6 +1031,8 @@ def get_desc_file(language):
         desc_file = desc_es
     elif language == "pt-br":
         desc_file = desc_pt_br
+    elif language == "ru":
+        desc_file = desc_ru
     elif language == "sv":
         desc_file = desc_sv
 
