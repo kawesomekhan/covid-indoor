@@ -38,7 +38,7 @@ normal_credits = '''William H. Green, Matthew Haefner,
                  David Stark'''
 translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Juncal Arbelaiz, Antonio Bertei, Henrik Bruus, John Bush, 
                         Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, Arantza Etxeburua 
-                        Anders Flodmarke, Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
+                        Anders Flodmarke, Valeri Frumkin, Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
                         Michal Pavelka, Juan Puyo, László Sándor, Myungjin Seo, Lucas Tambasco, 
                         Huanhuan Tian, Ettore Virga, Chenyu Wen, 
                         Gede Wenten, Hongbo Zhao, Juner Zhu'''
