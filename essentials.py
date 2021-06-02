@@ -10,6 +10,7 @@ import descriptions_es as desc_es
 import descriptions_eu as desc_eu
 import descriptions_fr as desc_fr
 import descriptions_zh as desc_zh
+import descriptions_zh_tw as desc_zh_tw
 import descriptions_hi as desc_hi
 import descriptions_hu as desc_hu
 import descriptions_id as desc_id
@@ -40,8 +41,7 @@ translation_credits = '''Khoiruddin Ad-Damaki, Shashank Agarwal, Juncal Arbelaiz
                         Rafael Suarez Camacho, Laura Champion, Supratim Das, Inga Dorner, Surya Effendy, Arantza Etxeburua 
                         Anders Flodmarke, Valeri Frumkin, Sung Jae Kim, Vaclav Klika, Ulrike Krewer, Bonho Koo, John Ochsendorf, 
                         Michal Pavelka, Juan Puyo, László Sándor, Myungjin Seo, Lucas Tambasco, 
-                        Huanhuan Tian, Ettore Virga, Chenyu Wen, 
-                        Gede Wenten, Hongbo Zhao, Juner Zhu'''
+                        Huanhuan Tian, Ettore Virga, Chenyu Wen, Gede Wenten, Hongbo Zhao, Juner Zhu, Ryan Wu'''
 
 m_to_ft = 3.28084
 month_to_hour = 730.001
@@ -1015,6 +1015,8 @@ def get_desc_file(language):
         desc_file = desc_eu
     elif language == "zh":
         desc_file = desc_zh
+    elif language == "zh_tw":
+        desc_file = desc_zh_tw
     elif language == "hi":
         desc_file = desc_hi
     elif language == "hu":
