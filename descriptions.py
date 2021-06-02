@@ -147,13 +147,18 @@ age_group_marks = {
 curr_strain_header = "Viral Strain: "
 presets_strain = [
     # {'label': "SARS-CoV-1", 'value': 0.1},
-    {'label': "SARS-CoV-2 (Wuhan Strain)", 'value': 1},
-    {'label': "SARS-CoV-2 - B.1.1.7 (UK Strain)", 'value': 1.58}
+    {'label': "SARS-CoV-2 (Wuhan)", 'value': 1},
+    {'label': "SARS-CoV-2 - B.1.427/429 (California)", 'value': 1.2},
+    {'label': "SARS-CoV-2 - 501 Y.V2 (South Africa)", 'value': 1.5},
+    {'label': "SARS-CoV-2 - B.1.1.7 (UK)", 'value': 1.58},
 ]
 viral_strain_marks = {
-    1: {'label': '1.0: Wuhan', 'style': {'max-width': '100px'}},
-    1.58: {'label': '1.58: B.1.1.7/UK'}
+    1: {'label': 'Wuhan', 'style': {'max-width': '50px'}},
+    1.2: {'label': 'Cali-fornia', 'style': {'max-width': '50px'}},
+    1.5: {'label': 'S. Africa', 'style': {'max-width': '25px'}},
+    1.58: {'label': 'UK'}
 }
+
 
 pim_header = "Percentage Immune: "
 # pim_marks = {

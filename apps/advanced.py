@@ -984,7 +984,10 @@ def update_age_group_disp(age_factor):
     [Input('adv-viral-strain', 'value')]
 )
 def update_viral_strain_disp(strain_factor):
-    return ["{:.2f}".format(strain_factor)]
+    output = "{:.2f}".format(strain_factor)
+    if strain_factor in ess.viral_strains:
+        output = ess.viral_strains[strain_factor] + " (" + output + ") "
+    return [output]
 
 
 # Percentage Immune slider value display
