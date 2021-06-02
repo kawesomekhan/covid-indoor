@@ -334,6 +334,7 @@ incidence_rate_refs = html.Div([html.Sup('''1'''),
 # Bottom panels text
 n_input_text_1 = "如果該房間有 "
 n_max_base_string = ' {:.0f} 人'
+n_max_overflow_base_string = ' >{:.0f} 人'
 n_input_text_2 = " 人，根據本指南則不可逗留超過 "
 n_input_text_3 = "小時。"
 
