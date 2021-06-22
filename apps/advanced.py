@@ -144,8 +144,8 @@ layout = html.Div(children=[
                                             html.Span(id='adv-viral-strain-output')
                                         ]),
                                         dcc.Slider(id='adv-viral-strain',
-                                                   min=0.1,
-                                                   max=2,
+                                                   min=0.5,
+                                                   max=3,
                                                    step=0.01,
                                                    value=1,
                                                    marks=desc.viral_strain_marks),
