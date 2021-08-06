@@ -220,12 +220,12 @@ covid_recovery_time = 14  # Days
 co2_max_output = 2000  # ppm
 
 viral_strains = {
-    1: 'SARS-CoV-2',
+    1: 'SARS-CoV-2 Wuhan',
     1.2: 'B.1.427/429',
-    1.5: '501 Y.V2',
-    1.58: 'B.1.1.7'
+    1.5: 'B.1.1.7 UK, B.1.351 South Africa',
+    2.001: 'P.1 Brazil',
+    2.5: 'B.1.617.2 India'
 }
-
 
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,

@@ -147,18 +147,19 @@ age_group_marks = {
 curr_strain_header = "Viral Strain: "
 presets_strain = [
     # {'label': "SARS-CoV-1", 'value': 0.1},
-    {'label': "SARS-CoV-2 (Wuhan)", 'value': 1},
-    {'label': "SARS-CoV-2 - B.1.427/429 (California)", 'value': 1.2},
-    {'label': "SARS-CoV-2 - 501 Y.V2 (South Africa), B.1.1.7 (UK)", 'value': 1.5},
-    {'label': "SARS-CoV-2 - P.1 (Brazil)", 'value': 2.001},  # See viral_strain_marks for why this isn't 2.0
-    {'label': "SARS-CoV-2 - B.1.617.2 (India)", 'value': 2.5},
+    {'label': "Wildtype (SARS-CoV-2 Wuhan)", 'value': 1},
+    # {'label': "SARS-CoV-2 - B.1.427/429 (California)", 'value': 1.2},
+    {'label': "Alpha (B.1.1.7 UK)", 'value': 1.5},
+    {'label': "Beta (B.1.351 South Africa)", 'value': 1.501},
+    {'label': "Gamma (P.1 Brazil)", 'value': 2.001},  # See viral_strain_marks for why this isn't 2.0
+    {'label': "Delta (B.1.617.2 India)", 'value': 2.5},
 ]
 viral_strain_marks = {
-    1: {'label': 'Wuhan', 'style': {'max-width': '50px'}},
-    1.2: {'label': 'Cali-fornia', 'style': {'max-width': '50px'}},
-    1.5: {'label': 'S. Africa, UK', 'style': {'max-width': '50px'}},
-    2.001: {'label': 'Brazil', 'style': {'max-width': '50px'}},  # For some reason, 2.0 makes the label invisible
-    2.5: {'label': 'India', 'style': {'max-width': '50px'}},
+    1: {'label': 'Wildtype', 'style': {'max-width': '50px'}},
+    # 1.2: {'label': 'Cali-fornia', 'style': {'max-width': '50px'}},
+    1.5: {'label': 'Alpha, Beta', 'style': {'max-width': '50px'}},
+    2.001: {'label': 'Gamma', 'style': {'max-width': '50px'}},  # For some reason, 2.0 makes the label invisible
+    2.5: {'label': 'Delta', 'style': {'max-width': '50px'}},
 }
 
 
