@@ -401,6 +401,7 @@ ventilation_text = "Ventilation: "
 vent_type_output_base = "{:.1f} "
 vent_type_output_units = html.Span(["hr", html.Sup("-1"), " (outdoor ACH)"])
 ventilation_text_adv = html.Span(["Ventilation (hr", html.Sup("-1"), ", outdoor ACH): "])
+ventilation_text_exp = "Ventilation (hr-1, outdoor ACH): "
 ventilation_types = [
     {'label': "Closed windows", 'value': 0.3},
     {'label': "Open windows", 'value': 2},
@@ -429,6 +430,7 @@ recirc_text = "Recirculation Rate: "
 recirc_type_output_base = "{:.1f} "
 recirc_type_output_units = html.Span(["hr", html.Sup("-1")])
 recirc_text_adv = html.Span(["Recirculation Rate (hr", html.Sup("-1"), "): "])
+recirc_text_exp = "Recirculation Rate (hr-1): "
 recirc_types = [
     {'label': "None", 'value': 0},
     {'label': "Slow", 'value': 0.3},
@@ -597,6 +599,7 @@ faq_other_params_text = html.Div([
 
 aerosol_radius_text = "Effective Aerosol Radius (at RH = 60%), r\u0305 (\u03bcm): "
 viral_deact_text = html.Span(["Maximum Viral Deactivation Rate (at RH = 100%), \u03BB", html.Sub('vmax'), " (/hr): "])
+viral_deact_text_exp = "Maximum Viral Deactivation Rate (at RH = 100%), \u03BBvmax (/hr): "
 
 pop_immunity_header = "Population Immunity: "
 perc_immune_label = html.Span(["Percentage immune p", html.Sub('im'), " = p", html.Sub('ex'), " + p", html.Sub('v'),
@@ -651,10 +654,15 @@ values_interest_desc = html.Div([
 ])
 relative_sus_label = html.Span(["Relative susceptibility s", html.Sub('r'), ": "])
 outdoor_air_frac_label = html.Span(["Outdoor air fraction Z", html.Sub('p'), ": "])
+outdoor_air_frac_label_exp = "Outdoor air fraction Zp: "
 aerosol_eff_label = html.Span(["Aerosol filtration efficiency p", html.Sub('f'), ": "])
+aerosol_eff_label_exp = "Aerosol filtration efficiency pf: "
 breathing_rate_label = html.Span(["Breathing flow rate Q", html.Sub('b'), ": "])
+breathing_rate_label_exp = "Breathing flow rate Qb (m3/hr): "
 cq_label = html.Span(["Infectiousness of exhaled air C", html.Sub('q'), ": "])
+cq_label_exp = "Infectiousness of exhaled air Cq (quanta/m3): "
 mask_pass_prob_label = html.Span(["Mask passage probability p", html.Sub('m'), ": "])
+mask_pass_prob_label_exp = "Mask passage probability pm: "
 room_vol_label = html.Span(["Room volume V: "])
 vent_rate_Label = html.Span(["Ventilation (outdoor) flow rate Q: "])
 recirc_rate_label = html.Span(["Return (recirculation) flow rate Q", html.Sub('f'), ": "])

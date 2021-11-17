@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy
 import math
+import io
+import base64
 
 """
 Indoors is a class which represents the model calculation. A detailed description of
@@ -34,6 +36,7 @@ def clamp: Clamps a value within a given range.
 
 class Indoors:
     # Model Parameters
+    # TODO: Can refactor these into dictionaries
     physical_params = []
     physio_params = []
     disease_params = []
@@ -118,7 +121,7 @@ class Indoors:
 
         self.fresh_rate = self.room_vol * air_exch_rate / 60  # ft3/min
 
-        self.recirc_rate = self.fresh_rate * (1/primary_outdoor_air_fraction - 1)  # ft3/min
+        self.recirc_rate = self.fresh_rate * (1 / primary_outdoor_air_fraction - 1)  # ft3/min
 
         self.air_filt_rate = aerosol_filtration_eff * self.recirc_rate * 60 / self.room_vol  # /hr
 
@@ -127,24 +130,29 @@ class Indoors:
         self.viral_deact_rate = max_viral_deact_rate * relative_humidity
 
         # self.sett_speed = 3 * (self.eff_aerosol_radius / 5) ** 2  # mm/s
-        self.sett_speed = (2 / 9) * self.density_droplet * self.acceleration_gravity * (self.eff_aerosol_radius ** 2) / (self.viscosity_air * (10 ** 9))
+        self.sett_speed = (2 / 9) * self.density_droplet * self.acceleration_gravity * (
+                self.eff_aerosol_radius ** 2) / (self.viscosity_air * (10 ** 9))
         self.sett_speed = self.sett_speed * 60 * 60 / 1000  # m/hr
 
         self.conc_relax_rate = air_exch_rate + self.air_filt_rate + self.viral_deact_rate + self.sett_speed / mean_ceiling_height_m  # /hr
 
-        self.airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (room_vol_m * self.conc_relax_rate)
+        self.airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (
+                room_vol_m * self.conc_relax_rate)
 
     # Calculate maximum people allowed in the room given an exposure time (hours), using the
     # transient model
     def calc_n_max(self, exp_time, risk_type='conditional'):
         risk_tolerance = self.prec_params[1]  # no units
         if risk_type == 'conditional':
-            n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.percentage_sus * self.airb_trans_rate * exp_time))
+            n_max = 1 + (risk_tolerance * (1 + 1 / (self.conc_relax_rate * exp_time)) / (
+                    self.percentage_sus * self.airb_trans_rate * exp_time))
         elif risk_type == 'prevalence':
-            n_max = ((risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time))) / (self.prevalence * self.percentage_sus * self.airb_trans_rate * exp_time)) ** 0.5
+            n_max = ((risk_tolerance * (1 + 1 / (self.conc_relax_rate * exp_time))) / (
+                    self.prevalence * self.percentage_sus * self.airb_trans_rate * exp_time)) ** 0.5
         elif risk_type == 'personal':
             risk_tolerance = risk_tolerance / self.prevalence
-            n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.airb_trans_rate * exp_time))
+            n_max = 1 + (risk_tolerance * (1 + 1 / (self.conc_relax_rate * exp_time)) / (
+                    self.airb_trans_rate * exp_time))
         else:
             n_max = 0
         return n_max
@@ -172,7 +180,8 @@ class Indoors:
         risk_tolerance = self.prec_params[1]  # no units
         exhaled_air_inf = self.disease_params[0] * self.relative_sus  # infection quanta/m3
         mask_passage_prob = self.prec_params[0]  # no units
-        return (38000 * risk_tolerance * self.conc_relax_rate / (exp_time * breathing_flow_rate * exhaled_air_inf * (mask_passage_prob ** 2) * outdoor_exchange_rate * self.percentage_sus)) + self.atm_co2  # ppm
+        return (38000 * risk_tolerance * self.conc_relax_rate / (exp_time * breathing_flow_rate * exhaled_air_inf * (
+                mask_passage_prob ** 2) * outdoor_exchange_rate * self.percentage_sus)) + self.atm_co2  # ppm
 
     # Calculate safe steady-state CO2 concentration (ppm) for a single exposure time.
     def calc_co2_exp_time(self, exp_time, risk_mode):
@@ -182,7 +191,7 @@ class Indoors:
             return self.calc_co2_n(self.calc_n_max(exp_time, risk_mode))
 
     # Calculate maximum exposure time allowed given a capacity (# people), transient
-    def calc_max_time(self, n_max, risk_type='conditional'):
+    def calc_max_time(self, n_max, risk_type='conditional', assump='transient'):
         risk_tolerance = self.prec_params[1]  # no units
         if risk_type == 'conditional':
             risk_tolerance = risk_tolerance / self.percentage_sus
@@ -192,6 +201,8 @@ class Indoors:
             risk_tolerance = risk_tolerance / self.prevalence
 
         exp_time_ss = risk_tolerance / ((n_max - 1) * self.airb_trans_rate)  # hrs, steady-state
+        if assump == 'steady-state':
+            return exp_time_ss
         exp_time_trans = exp_time_ss * (1 + (1 + 4 / (self.conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient
         return exp_time_trans
 
@@ -207,12 +218,24 @@ class Indoors:
 
         return df
 
+    # Returns a dataframe of maximum exposure times allowed for each risk mode based on capacity
+    def get_max_time_series(self, n_min, n_max, n_step, risk_mode):
+        df = pd.DataFrame(columns=['capacity', 'exp-time'])
+        for capacity in numpy.arange(n_min, n_max, n_step):
+            exp_time = self.calc_max_time(capacity, risk_mode)
+            df = df.append(pd.DataFrame({'capacity': [capacity], 'exp-time': [exp_time]}))
+
+        return df
+
     # Calculate safe steady-state CO2 concentration (ppm) across a range of exposure times, returning transient output.
     def calc_co2_series(self, t_min, t_max, t_num, risk_mode):
-        df = pd.DataFrame(columns=['exposure_time', 'co2_trans'])
+        df = pd.DataFrame(columns=['exposure_time', 'co2_trans', 'co2_resp', 'co2_rec'])
         for exp_time in numpy.logspace(math.log(t_min, 10), math.log(t_max, 10), t_num):
             co2_trans = self.calc_co2_exp_time(exp_time, risk_mode)
-            df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans]}))
+            co2_resp = self.get_safe_resp_co2_limit(exp_time)
+            co2_rec = min(co2_trans, co2_resp)
+            df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans],
+                                         'co2_resp': [co2_resp], 'co2_rec': [co2_rec]}))
 
         return df
 
@@ -226,6 +249,61 @@ class Indoors:
         floor_area = self.physical_params[0]  # ft2
         flr_rad = 3  # ft
         return math.floor(floor_area / flr_rad ** 2)
+
+    # Returns an Excel file of the current model inputs & outputs
+    # desc_file: Descriptions file used to pull text / labels from
+    # units: Unit system to use
+    # TODO: Update descriptions files for other languages
+    def get_excel(self, desc_file, risk_mode):
+        xlsx_io = io.BytesIO()
+        writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
+        # Tab 1: Export Information
+
+        # Tab 2: Inputs
+        physical_labels = [desc_file.floor_area_text, desc_file.ceiling_height_text,
+                           desc_file.ventilation_text_exp, desc_file.outdoor_air_frac_label_exp,
+                           desc_file.aerosol_eff_label_exp, desc_file.humidity_text]
+        physical_df = pd.DataFrame(list(zip(physical_labels, self.physical_params)), columns=["Parameter", "Value"])
+
+        physio_labels = [desc_file.breathing_rate_label_exp, desc_file.aerosol_radius_text]
+        physio_df = pd.DataFrame(list(zip(physio_labels, self.physio_params)), columns=["Parameter", "Value"])
+
+        disease_labels = [desc_file.cq_label_exp, desc_file.viral_deact_text_exp]
+        disease_df = pd.DataFrame(list(zip(disease_labels, self.disease_params)), columns=["Parameter", "Value"])
+
+        prec_labels = [desc_file.mask_pass_prob_label_exp, desc_file.curr_risk_header]
+        prec_df = pd.DataFrame(list(zip(prec_labels, self.prec_params)), columns=["Parameter", "Value"])
+
+        other_labels = ["Prevalence", "Background CO2 (ppm)", "Percentage susceptible ps", "Age Factor",
+                        "Viral Strain Factor"]
+        other_params = [self.prevalence, self.atm_co2, self.percentage_sus, self.sr_age_factor, self.sr_strain_factor]
+        other_df = pd.DataFrame(list(zip(other_labels, other_params)), columns=["Parameter", "Value"])
+
+        params_df = physical_df.append(physio_df).append(disease_df).append(prec_df).append(other_df)
+        params_df.to_excel(writer, sheet_name="Model Parameters", index=False)
+
+        # Tab 3: Outputs (safe occupancy)
+        occ_df = self.get_max_time_series(2, self.get_n_max(), 1, risk_mode)
+        occ_df = occ_df.rename(columns={'capacity': "Capacity",
+                                        'exp-time': "[Risk Mode: " + risk_mode + "] Maximum Exposure Time (hr)"})
+        occ_df.to_excel(writer, sheet_name="Outputs (Safe Occupancy)", index=False)
+
+        # Tab 4: Outputs (safe CO2)
+        co2_df = self.calc_co2_series(0.1, 1000, 1000, risk_mode)
+        co2_df = co2_df.rename(columns={'exposure_time': "Exposure Time (hr)",
+                                        'co2_trans': "[Risk Mode: " + risk_mode + "] Safe CO2 Concentration (ppm)",
+                                        'co2_resp': "USDA Safety CO2 Threshold (ppm)",
+                                        'co2_rec': "Recommended CO2 Limit (ppm)"})
+        co2_df.to_excel(writer, sheet_name="Outputs (CO2)", index=False)
+
+        # Save file and return data
+        writer.save()
+        xlsx_io.seek(0)
+        # https://en.wikipedia.org/wiki/Data_URI_scheme
+        media_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        data = base64.b64encode(xlsx_io.read()).decode("utf-8")
+        href_data_downloadable = f'data:{media_type};base64,{data}'
+        return href_data_downloadable
 
     # Sets default parameters.
     def set_default_params(self):
@@ -257,6 +335,19 @@ class Indoors:
         # Prevalence
         self.prevalence = 0.01
 
+    # Returns the upper limit on CO2 (ppm) given the exposure time (hr).
+    # I don't want to import essentials.py in Indoors, so I just copied the function from there over here.
+    # Might be a potential to refactor.
+    # TODO: Consolidate this with the function in essentials.py
+    @staticmethod
+    def get_safe_resp_co2_limit(exp_time):
+        # Safety threshold curve, interpolated from USDA threshold values
+        # f(x) = 2000 + a/(t + b)
+        const = 2000  # ppm
+        a = 25636.363641827  # ppm-hr
+        b = 0.545454545606364  # hr
+        return const + a / (exp_time + b)
+
     # Convert MERV rating to aerosol filtration efficiency
     # merv: if not integer, floor it
     # aerosol_radius: must be <= 10
@@ -282,9 +373,3 @@ class Indoors:
     @staticmethod
     def clamp(n, smallest, largest):
         return max(smallest, min(n, largest))
-
-
-
-
-
-

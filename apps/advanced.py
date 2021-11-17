@@ -12,6 +12,8 @@ import descriptions as desc
 import descriptions_fr as desc_fr
 import essentials as ess
 
+from datetime import datetime
+
 """
 advanced.py contains the core functionality of the Dash app Advanced Mode. It is responsible for taking inputs,
 feeding those inputs to the model (indoors.py), and displaying the model outputs in an effective, concise
@@ -73,6 +75,11 @@ layout = html.Div(children=[
                                              value='conditional',
                                              searchable=False,
                                              clearable=False),
+                                html.Br(),
+                                html.Div([
+                                    html.A("Export Results", id='adv-export-res', download='data.xlsx', href="",
+                                           target="_blank")
+                                ]),
                                 html.Br(),
                                 html.Div([
                                     html.H5([
@@ -623,6 +630,8 @@ def update_lang_adv(search, window_width):
      Output('adv-t-input-posttext', 'children'),
      Output('adv-qb-output', 'children'),
      Output('adv-cq-output', 'children'),
+     Output('adv-export-res', 'href'),
+     Output('adv-export-res', 'download'),
      Output('adv-alert-no-update', 'children'),
      Output('adv-alert-no-update', 'is_open')],
     [Input('adv-floor-area', 'value'),
@@ -671,7 +680,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
-               dash.no_update, error_msg, True
+               dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
     # Check our units! Did we switch? If so, convert values before calculating
     my_units = ess.get_units(search)
@@ -778,6 +787,13 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Model values of interest
     interest_output = ess.get_interest_output_text(myInd, my_units)
 
+    # Get the updated CSV href in case the user decides to export the data
+    if language == 'en':
+        export_output = myInd.get_excel(desc_file, risk_mode)
+    else:
+        export_output = ""
+    export_filename = "indoor-covid-safety-export " + datetime.now().strftime("%Y-%m-%d %H-%M-%S") + ".xlsx"
+
     # Update all relevant display items (figure, red output text)
     return new_fig, new_fig_co2, co2_graph_config, recommended_co2_conc_text, exp_time_text_co2, \
            model_output_text[0], model_output_text[1], model_output_text[2], model_output_text[3], \
@@ -787,7 +803,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            interest_output[4], interest_output[5], interest_output[6], interest_output[7], interest_output[8], \
            interest_output[9], interest_output[10], interest_output[11], interest_output[12], interest_output[13], \
            interest_output[14], n_input_pretext, n_input_posttext, t_input_pretext, t_input_posttext, qb_text, \
-           cq_text, error_msg, False
+           cq_text, export_output, export_filename, error_msg, False
 
 
 # Update main panel (occupancy panel) first sentence based on the selected language, prevalence, and risk mode.
