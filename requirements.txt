@@ -9,4 +9,5 @@ flask-talisman==0.7.0
 numpy==1.18.5
 pandas==1.0.5
 scipy==1.6.3
+xlsxwriter==3.0.2
 gunicorn
