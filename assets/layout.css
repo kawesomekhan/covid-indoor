@@ -67,6 +67,11 @@ body {
 .mobile-break {
     display: none;
 }
+#adv-imp-btn, #adv-up-btn {
+    width: 100%;
+    margin-bottom: 8px;
+    font-family: 'Barlow', sans-serif;
+}
 
 /* Settings Grid */
 .grid-settings {

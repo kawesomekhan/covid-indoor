@@ -252,14 +252,36 @@ class Indoors:
 
     # Returns an Excel file of the current model inputs & outputs
     # desc_file: Descriptions file used to pull text / labels from
-    # units: Unit system to use
+    # risk_mode: Selected risk mode at time of export
+    # model_inputs_combined: list of relevant user inputs required to replicate results
     # TODO: Update descriptions files for other languages
-    def get_excel(self, desc_file, risk_mode):
+    def get_excel(self, desc_file, risk_mode, model_inputs_combined):
         xlsx_io = io.BytesIO()
         writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
-        # Tab 1: Export Information
+        # Tab 1: Inputs
+        input_df = pd.DataFrame(model_inputs_combined, columns=["Parameter", "Value"])
+        input_df.to_excel(writer, sheet_name="Model Inputs", index=False, startrow=8)
 
-        # Tab 2: Inputs
+        header_text = "COVID-19 Indoor Safety Guideline Data Export (from indoor-covid-safety.herokuapp.com)"
+        model_inputs_desc = "Model Inputs: Contains all user-defined inputs in the app."
+        model_params_desc = "Model Parameters: Contains parameters used during the calculation of the safety guideline."
+        outputs_occ_desc = "Outputs (Safe Occupancy): Maximum exposure time vs. room capacity. The risk mode used " \
+                           "here is the same risk mode that was selected in the app at the time of export."
+        outputs_co2_desc = "Outputs (CO2): Recommended CO2 Limit vs. room capacity. The risk mode used " \
+                           "here is the same risk mode that was selected in the app at the time of export."
+        import_desc = "This file can also function as a way to save analyses. Upload this file in Advanced Mode (see" \
+                      "the button labeled 'Import from Excel') to pick up where you left off. If you'd like to change" \
+                      "any inputs manually, please do so in the 'Model Inputs' tab."
+
+        input_sheet = writer.sheets["Model Inputs"]
+        input_sheet.write(0, 0, header_text)
+        input_sheet.write(1, 0, model_inputs_desc)
+        input_sheet.write(2, 0, model_params_desc)
+        input_sheet.write(3, 0, outputs_occ_desc)
+        input_sheet.write(4, 0, outputs_co2_desc)
+        input_sheet.write(5, 0, import_desc)
+
+        # Tab 2: Model Parameters
         physical_labels = [desc_file.floor_area_text, desc_file.ceiling_height_text,
                            desc_file.ventilation_text_exp, desc_file.outdoor_air_frac_label_exp,
                            desc_file.aerosol_eff_label_exp, desc_file.humidity_text]
@@ -295,6 +317,19 @@ class Indoors:
                                         'co2_resp': "USDA Safety CO2 Threshold (ppm)",
                                         'co2_rec': "Recommended CO2 Limit (ppm)"})
         co2_df.to_excel(writer, sheet_name="Outputs (CO2)", index=False)
+
+        # Autofit column widths
+        dfs = {"Model Inputs": input_df, "Model Parameters": params_df,
+               "Outputs (Safe Occupancy)": occ_df, "Outputs (CO2)": co2_df}
+        for sheetname, df in dfs.items():
+            worksheet = writer.sheets[sheetname]
+            for idx, col in enumerate(df):
+                series = df[col]
+                max_len = max((
+                    series.astype(str).map(len).max(),  # len of largest item
+                    len(str(series.name))  # len of column name/header
+                )) + 1  # adding a little extra space
+                worksheet.set_column(idx, idx, max_len)  # set column width
 
         # Save file and return data
         writer.save()
