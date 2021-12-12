@@ -25,6 +25,6 @@ csp = {
                  'https://fonts.gstatic.com',]
 }
 
-Talisman(app.server, content_security_policy=csp)
+# Talisman(app.server, content_security_policy=csp)
 
 curr_units = 'british'
