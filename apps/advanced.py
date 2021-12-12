@@ -76,10 +76,20 @@ layout = html.Div(children=[
                                              searchable=False,
                                              clearable=False),
                                 html.Br(),
-                                html.Div([
-                                    html.A("Export Results", id='adv-export-res', download='data.xlsx', href="",
-                                           target="_blank")
-                                ]),
+                                dcc.Loading(
+                                    id='adv-imp-exp-btns',
+                                    type="circle",
+                                    children=html.Div([
+                                        html.A(html.Button("Export Results", id='adv-up-btn'),
+                                               id='adv-export-res', download='data.xlsx', href="",
+                                               target="_blank"),
+                                        dcc.Upload(id='adv-upload-excel',
+                                                   children=html.Div([
+                                                       html.Button("Import from Excel", id='adv-imp-btn'),
+                                                   ]),
+                                                   multiple=False),
+                                    ]),
+                                ),
                                 html.Br(),
                                 html.Div([
                                     html.H5([
@@ -789,7 +799,20 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
 
     # Get the updated CSV href in case the user decides to export the data
     if language == 'en':
-        export_output = myInd.get_excel(desc_file, risk_mode)
+        # Put all inputs into dataframes
+        model_inputs = [floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv, relative_humidity,
+                        breathing_flow_rate, infectiousness, mask_eff, mask_fit, risk_tolerance, sr_age_factor,
+                        sr_strain_factor, pim_input, def_aerosol_radius,
+                        max_viral_deact_rate]
+
+        model_inputs_labels = [desc_file.floor_area_text, desc_file.ceiling_height_text, desc_file.ventilation_text_exp,
+                               desc_file.recirc_text_exp, desc_file.filtration_text_adv, desc_file.humidity_text,
+                               desc_file.breathing_rate_label_exp, desc_file.cq_label_exp, desc_file.mask_type_text,
+                               desc_file.mask_fit_text, desc_file.curr_risk_header, desc_file.curr_age_header,
+                               desc_file.curr_strain_header, desc_file.pim_header, desc_file.aerosol_radius_text,
+                               desc_file.viral_deact_text_exp]
+        model_inputs_combined = list(zip(model_inputs_labels, model_inputs))
+        export_output = myInd.get_excel(desc_file, risk_mode, model_inputs_combined)
     else:
         export_output = ""
     export_filename = "indoor-covid-safety-export " + datetime.now().strftime("%Y-%m-%d %H-%M-%S") + ".xlsx"
@@ -876,7 +899,7 @@ def update_risk_alert(risk_mode, search):
         return ["", False]
 
 
-# Update options based on selected presets, also if units changed
+# Update options based on selected presets, also if units changed, also if uploaded file
 # Updates labels depending on selected unit system (and language)
 @app.callback(
     [Output('adv-floor-area', 'value'),
@@ -888,16 +911,21 @@ def update_risk_alert(risk_mode, search):
      Output('adv-floor-area-text', 'children'),
      Output('adv-ceiling-height-text', 'children')],
     [Input('adv-presets', 'value'),
-     Input('url', 'search')],
+     Input('url', 'search'),
+     Input('adv-upload-excel', 'contents')],
     [State('adv-floor-area-text', 'children'),
      State('adv-ceiling-height-text', 'children'),
      State('adv-floor-area', 'value'),
-     State('adv-ceiling-height', 'value')]
+     State('adv-ceiling-height', 'value'),
+     State('adv-upload-excel', 'filename')]
 )
-def update_room_presets_and_units(preset, search, floor_area_text, ceiling_height_text, curr_floor_area,
-                                  curr_ceiling_height):
+def update_room_presets_and_units(preset, search, upload_contents,
+                                  floor_area_text, ceiling_height_text, curr_floor_area,
+                                  curr_ceiling_height, upload_filename):
     desc_file = ess.get_desc_file(ess.get_lang(search))
     my_units = ess.get_units(search)
+    no_output = [dash.no_update] * 6
+
     curr_units = ess.did_switch_units(search, floor_area_text, ceiling_height_text)
     did_switch = False
     if curr_units != "":
@@ -909,62 +937,120 @@ def update_room_presets_and_units(preset, search, floor_area_text, ceiling_heigh
     else:
         text_output = [desc_file.floor_area_text_metric, desc_file.ceiling_height_text_metric]
 
-    # Update the room and behavior options based on the selected preset
-    if preset == 'custom':
-        if did_switch:
-            return floor_area, ceiling_height, dash.no_update, \
-                   dash.no_update, dash.no_update, dash.no_update, text_output[0], text_output[1]
+    if dash.callback_context.triggered[0]['prop_id'].split('.')[0] == 'adv-upload-excel':
+        output = ess.parse_excel(upload_contents, upload_filename)
+        if output is None:
+            return no_output + [text_output[0], text_output[1]]
         else:
-            return dash.no_update, dash.no_update, dash.no_update, \
-                   dash.no_update, dash.no_update, dash.no_update, text_output[0], text_output[1]
+            floor_area = output[0]
+            ceiling_height = output[1]
+            if my_units == "metric":
+                [floor_area, ceiling_height] = ess.convert_units("british", "metric", floor_area, ceiling_height)
+
+            return [floor_area, ceiling_height] + output[2:6] + [text_output[0], text_output[1]]
     else:
-        curr_settings = ess.room_preset_settings[preset]
-        if not did_switch:
-            if my_units == "british":
-                floor_area = curr_settings['floor-area']
-                ceiling_height = curr_settings['ceiling-height']
-            elif my_units == "metric":
-                floor_area = round(curr_settings['floor-area-metric'], 2)
-                ceiling_height = round(curr_settings['ceiling-height-metric'], 2)
+        # Update the room and behavior options based on the selected preset
+        if preset == 'custom':
+            if did_switch:
+                return floor_area, ceiling_height, dash.no_update, \
+                       dash.no_update, dash.no_update, dash.no_update, text_output[0], text_output[1]
+            else:
+                return dash.no_update, dash.no_update, dash.no_update, \
+                       dash.no_update, dash.no_update, dash.no_update, text_output[0], text_output[1]
+        else:
+            curr_settings = ess.room_preset_settings[preset]
+            if not did_switch:
+                if my_units == "british":
+                    floor_area = curr_settings['floor-area']
+                    ceiling_height = curr_settings['ceiling-height']
+                elif my_units == "metric":
+                    floor_area = round(curr_settings['floor-area-metric'], 2)
+                    ceiling_height = round(curr_settings['ceiling-height-metric'], 2)
 
-        return floor_area, ceiling_height, curr_settings['ventilation'], \
-               curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['rh'], \
-               text_output[0], text_output[1]
+            return floor_area, ceiling_height, curr_settings['ventilation'], \
+                   curr_settings['recirc-rate'], curr_settings['filtration'], curr_settings['rh'], \
+                   text_output[0], text_output[1]
 
 
-# Update options based on selected presets
+# Update options based on selected presets, also if uploaded file
 @app.callback(
     [Output('adv-exertion-level', 'value'),
      Output('adv-exp-activity', 'value'),
      Output('adv-mask-type', 'value'),
      Output('adv-mask-fit', 'value')],
-    [Input('adv-presets-human', 'value')]
+    [Input('adv-presets-human', 'value'),
+     Input('adv-upload-excel', 'contents')],
+    [State('adv-upload-excel', 'filename')]
 )
-def update_human_presets(preset):
+def update_human_presets(preset, upload_contents, upload_filename):
     # Update the room and behavior options based on the selected preset
-    if preset == 'custom':
-        return dash.no_update, dash.no_update, dash.no_update, dash.no_update
+    no_output = [dash.no_update] * 4
+
+    if dash.callback_context.triggered[0]['prop_id'].split('.')[0] == 'adv-upload-excel':
+        output = ess.parse_excel(upload_contents, upload_filename)
+        if output is None:
+            return no_output
+        else:
+            return output[6:10]
     else:
-        curr_settings = ess.human_preset_settings[preset]
-        return curr_settings['exertion'], curr_settings['expiratory'], curr_settings['masks'], \
-               curr_settings['mask-fit'],
+        if preset == 'custom':
+            return no_output
+        else:
+            curr_settings = ess.human_preset_settings[preset]
+            return curr_settings['exertion'], curr_settings['expiratory'], curr_settings['masks'], \
+                   curr_settings['mask-fit'],
+
+
+# Update inputs based on uploaded Excel file
+@app.callback(
+    [Output('adv-risk-tolerance', 'value'),
+     Output('adv-age-group', 'value'),
+     Output('adv-viral-strain', 'value'),
+     Output('adv-aerosol-radius', 'value'),
+     Output('adv-viral-deact-rate', 'value')],
+    [Input('adv-upload-excel', 'contents')],
+    [State('adv-upload-excel', 'filename'),
+     State('adv-risk-tolerance', 'value'),
+     State('adv-age-group', 'value'),
+     State('adv-viral-strain', 'value')])
+def import_excel(contents, filename, curr_risk, curr_age, curr_strain):
+    no_output = [curr_risk, curr_age, curr_strain] + [dash.no_update] * 2
+
+    if contents is not None:
+        output = ess.parse_excel(contents, filename)
+        if output is None:
+            return no_output
+        else:
+            return output[10:13] + output[14:16]
+    else:
+        return no_output
 
 
 # Update max pim slider value
 @app.callback(
     [Output('adv-pim-input', 'max'),
      Output('adv-pim-input', 'value')],
-    [Input('adv-prev', 'value')],
-    [State('adv-pim-input', 'value')]
+    [Input('adv-prev', 'value'),
+     Input('adv-upload-excel', 'contents')],
+    [State('adv-pim-input', 'value'),
+     State('adv-upload-excel', 'filename')]
 )
-def update_pim_slider_max(prev, curr_pim):
+def update_pim_slider_max(prev, upload_contents, curr_pim, upload_filename):
     prev = prev / 100000
     pim_max = 1 - prev - 0.001
-    new_pim = curr_pim
-    if curr_pim >= pim_max:
-        new_pim = pim_max - 0.01
 
-    return [pim_max, new_pim]
+    if dash.callback_context.triggered[0]['prop_id'].split('.')[0] == 'adv-upload-excel':
+        output = ess.parse_excel(upload_contents, upload_filename)
+        if output is None:
+            return dash.no_update
+        else:
+            return [pim_max, output[13]]
+    else:
+        new_pim = curr_pim
+        if curr_pim >= pim_max:
+            new_pim = pim_max - 0.01
+
+        return [pim_max, new_pim]
 
 
 # Relative Humidity slider value display

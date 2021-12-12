@@ -26,6 +26,9 @@ import numpy
 import math
 from scipy.optimize import fsolve
 
+import base64
+import io
+
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
 
@@ -705,6 +708,23 @@ def get_cq_text(indoor_model, units):
         return '{:,.2f} q/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
     elif units == 'metric':
         return '{:,.2f} q/m\u00B3'.format(infectiousness)
+
+
+# Parses Excel file and returns a list of model inputs
+def parse_excel(contents, filename):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+    try:
+        if '.xls' in filename:
+            # Assume that the user uploaded an Excel file
+            df = pd.read_excel(io.BytesIO(decoded), sheet_name="Model Inputs", engine='openpyxl')
+            return df["Value"].tolist()
+    except Exception as e:
+        print(e)
+        return None
+
+    return None
 
 
 # Returns a dictionary of parameters and values given by the search url.
