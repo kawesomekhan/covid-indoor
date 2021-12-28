@@ -157,8 +157,8 @@ presets_strain = [
 viral_strain_marks = {
     1: {'label': 'Wildtype', 'style': {'max-width': '50px'}},
     # 1.2: {'label': 'Cali-fornia', 'style': {'max-width': '50px'}},
-    1.5: {'label': 'Alpha, Beta', 'style': {'max-width': '50px'}},
-    2.001: {'label': 'Gamma', 'style': {'max-width': '50px'}},  # For some reason, 2.0 makes the label invisible
+#     1.5: {'label': 'Alpha, Beta', 'style': {'max-width': '50px'}},
+#     2.001: {'label': 'Gamma', 'style': {'max-width': '50px'}},  # For some reason, 2.0 makes the label invisible
     2.5: {'label': 'Delta', 'style': {'max-width': '50px'}},
 }
 
