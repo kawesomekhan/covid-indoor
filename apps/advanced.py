@@ -162,8 +162,8 @@ layout = html.Div(children=[
                                         ]),
                                         dcc.Slider(id='adv-viral-strain',
                                                    min=0.5,
-                                                   max=3,
-                                                   step=0.01,
+                                                   max=9,
+                                                   step=0.1,
                                                    value=1,
                                                    marks=desc.viral_strain_marks),
                                         html.Div([html.Br()], className='mobile-break')
