@@ -31,8 +31,9 @@ header = html.Div([
                   html.Span(", Beyond Six Feet, "),
                   html.Span(html.A(href=links.link_paper,
                                    target='_blank',
-                                   children='''medRxiv (2020)''')),]),
-        html.Div([html.Span(["Monitoring carbon dioxide to quantify the risk of indoor airborne transmission of COVID-19 ("]),
+                                   children='''medRxiv (2020)''')), ]),
+        html.Div([html.Span(
+            ["Monitoring carbon dioxide to quantify the risk of indoor airborne transmission of COVID-19 ("]),
                   html.Span(html.A(href=links.link_paper_co2,
                                    target='_blank',
                                    children='''Bazant et al., 2021''')),
@@ -87,7 +88,6 @@ error_list = {
     "atm_co2": "Error: Background CO\u2082 level is required.",
     "co2_input": "Error: CO\u2082 level is required."
 }
-
 
 # Main Panel Text
 curr_room_header = "Room Specifications: "
@@ -144,6 +144,7 @@ age_group_marks = {
     1: {'label': '1.00: Elderly (>64 years)', 'style': {'width': '75px'}}
 }
 
+# TODO: Add Omicron to other languages
 curr_strain_header = "Viral Strain: "
 presets_strain = [
     # {'label': "SARS-CoV-1", 'value': 0.1},
@@ -153,15 +154,16 @@ presets_strain = [
     {'label': "Beta (B.1.351 South Africa)", 'value': 1.501},
     {'label': "Gamma (P.1 Brazil)", 'value': 2.001},  # See viral_strain_marks for why this isn't 2.0
     {'label': "Delta (B.1.617.2 India)", 'value': 2.5},
+    {'label': "Omicron (B.1.1.529 South Africa)", 'value': 4.0},
 ]
 viral_strain_marks = {
     1: {'label': 'Wildtype', 'style': {'max-width': '50px'}},
     # 1.2: {'label': 'Cali-fornia', 'style': {'max-width': '50px'}},
-#     1.5: {'label': 'Alpha, Beta', 'style': {'max-width': '50px'}},
-#     2.001: {'label': 'Gamma', 'style': {'max-width': '50px'}},  # For some reason, 2.0 makes the label invisible
+    # 1.5: {'label': 'Alpha, Beta', 'style': {'max-width': '50px'}},
+    # 2.001: {'label': 'Gamma', 'style': {'max-width': '50px'}},  # For some reason, 2.0 makes the label invisible
     2.5: {'label': 'Delta', 'style': {'max-width': '50px'}},
+    4: {'label': 'Omicron', 'style': {'max-width': '50px'}},
 }
-
 
 pim_header = "Percentage Immune: "
 # pim_marks = {
@@ -264,19 +266,19 @@ co2_safe_sent_2 = "."
 co2_safe_footer = html.Span([html.Div('''CO\u2082 outputs are limited to a maximum of 2,000 ppm, the level 
 considered safe for long-term exposure to carbon dioxide.'''),
                              html.Div([
-                                        html.A(href=links.link_usda_co2,
-                                               children='''USDA Respiratory Limits''',
-                                               target='_blank'),
-                                        html.Span([''', ''']),
-                                        html.A(href=links.link_kane_co2,
-                                               children='''Kane International Limits''',
-                                               target='_blank'),
-                                        html.Span(['''.'''])
+                                 html.A(href=links.link_usda_co2,
+                                        children='''USDA Respiratory Limits''',
+                                        target='_blank'),
+                                 html.Span([''', ''']),
+                                 html.A(href=links.link_kane_co2,
+                                        children='''Kane International Limits''',
+                                        target='_blank'),
+                                 html.Span(['''.'''])
                              ]),
                              html.Div([html.A(href=links.link_jimenez_co2,
-                                               children='''*700 ppm is the conservative limit recommended by J. L. 
+                                              children='''*700 ppm is the conservative limit recommended by J. L. 
                                                Jimenez for COVID-19 safety.''',
-                                               target='_blank')])
+                                              target='_blank')])
                              ])
 
 main_airb_trans_only_disc = html.Div(["*The guideline restricts the probability of ",
