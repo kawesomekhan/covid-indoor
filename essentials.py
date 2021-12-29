@@ -227,7 +227,8 @@ viral_strains = {
     1.2: 'B.1.427/429',
     1.5: 'B.1.1.7 UK, B.1.351 South Africa',
     2.001: 'P.1 Brazil',
-    2.5: 'B.1.617.2 India'
+    2.5: 'B.1.617.2 India',
+    4.0: 'B.1.1.529 South Africa'
 }
 
 # Determines what error message we should use, if any
