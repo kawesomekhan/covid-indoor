@@ -87,6 +87,9 @@ class Indoors:
     density_droplet = 1100  # kg/m3
     viscosity_air = 1.86 * (10 ** -5)  # Pa s
     acceleration_gravity = 9.8  # m/s2
+    co2_breath = 38000  # ppm
+    ft3_to_m3 = 0.0283168  # m3 / ft3
+    min_person_dist = 3  # shortest possible distance between people (ft)
 
     def __init__(self):
         self.set_default_params()
@@ -139,122 +142,77 @@ class Indoors:
         self.airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (
                 room_vol_m * self.conc_relax_rate)
 
-    # Calculate maximum people allowed in the room given an exposure time (hours), using the
-    # transient model
-    def calc_n_max(self, exp_time, risk_type='conditional'):
-        risk_tolerance = self.prec_params[1]  # no units
-        if risk_type == 'conditional':
-            n_max = 1 + (risk_tolerance * (1 + 1 / (self.conc_relax_rate * exp_time)) / (
-                    self.percentage_sus * self.airb_trans_rate * exp_time))
-        elif risk_type == 'prevalence':
-            n_max = ((risk_tolerance * (1 + 1 / (self.conc_relax_rate * exp_time))) / (
-                    self.prevalence * self.percentage_sus * self.airb_trans_rate * exp_time)) ** 0.5
-        elif risk_type == 'personal':
-            risk_tolerance = risk_tolerance / self.prevalence
-            n_max = 1 + (risk_tolerance * (1 + 1 / (self.conc_relax_rate * exp_time)) / (
-                    self.airb_trans_rate * exp_time))
-        else:
-            n_max = 0
-        return n_max
-
-    # Calculate maximum people allowed in the room given an exposure time (hours), using the
-    # steady-state model
-    def calc_n_max_ss(self, exp_time):
-        risk_tolerance = self.prec_params[1]  # no units
-        n_max = 1 + risk_tolerance / (self.airb_trans_rate * exp_time)
-        return n_max
-
-    # Calculates the safe, steady-state CO2 level in the room given N
-    # Output is in parts per million (ppm) of CO2
-    def calc_co2_n(self, n_max):
-        breathing_flow_rate = self.physio_params[0]  # m3 / hr
-        outdoor_exchange_rate = self.physical_params[2]  # /hr
-        room_vol_m = 0.0283168 * self.room_vol  # m3
-        return (38000 * breathing_flow_rate * n_max / (outdoor_exchange_rate * room_vol_m)) + self.atm_co2  # ppm
-
-    # Calculates the safe, steady-state CO2 level in the room given tau (exposure time)
-    # Output is in parts per million (ppm) of CO2
-    def calc_co2_t(self, exp_time):
-        breathing_flow_rate = self.physio_params[0]  # m3 / hr
-        outdoor_exchange_rate = self.physical_params[2]  # /hr
-        risk_tolerance = self.prec_params[1]  # no units
-        exhaled_air_inf = self.disease_params[0] * self.relative_sus  # infection quanta/m3
-        mask_passage_prob = self.prec_params[0]  # no units
-        return (38000 * risk_tolerance * self.conc_relax_rate / (exp_time * breathing_flow_rate * exhaled_air_inf * (
-                mask_passage_prob ** 2) * outdoor_exchange_rate * self.percentage_sus)) + self.atm_co2  # ppm
-
-    # Calculate safe steady-state CO2 concentration (ppm) for a single exposure time.
-    def calc_co2_exp_time(self, exp_time, risk_mode):
-        if risk_mode == 'conditional':
-            return self.calc_co2_t(exp_time)
-        else:
-            return self.calc_co2_n(self.calc_n_max(exp_time, risk_mode))
-
     # Calculate maximum exposure time allowed given a capacity (# people), transient
     def calc_max_time(self, n_max, risk_type='conditional', assump='transient'):
         risk_tolerance = self.prec_params[1]  # no units
+        y_ss = risk_tolerance / self.airb_trans_rate
         if risk_type == 'conditional':
-            risk_tolerance = risk_tolerance / self.percentage_sus
+            exp_time_ss = y_ss / ((n_max - 1) * self.percentage_sus)
         elif risk_type == 'prevalence':
-            risk_tolerance = ((n_max - 1) * risk_tolerance) / (n_max * n_max * self.prevalence * self.percentage_sus)
+            exp_time_ss = y_ss / (n_max * (n_max - 1) * self.prevalence * self.percentage_sus)
         elif risk_type == 'personal':
-            risk_tolerance = risk_tolerance / self.prevalence
+            exp_time_ss = y_ss / ((n_max - 1) * self.prevalence)
+        else:
+            exp_time_ss = y_ss
 
-        exp_time_ss = risk_tolerance / ((n_max - 1) * self.airb_trans_rate)  # hrs, steady-state
-        if assump == 'steady-state':
-            return exp_time_ss
         exp_time_trans = exp_time_ss * (1 + (1 + 4 / (self.conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient
-        return exp_time_trans
+        if assump == 'transient':
+            return exp_time_trans
+        else:
+            return exp_time_ss
 
-    # Calculate maximum people allowed in the room across a range of exposure times, returning both transient
-    # and steady-state outputs
-    def calc_n_max_series(self, t_min, t_max, t_step):
-        df = pd.DataFrame(columns=['exposure_time', 'occupancy_trans', 'occupancy_ss'])
-        for exp_time in numpy.arange(t_min, t_max, t_step):
-            n_max_trans = self.calc_n_max(exp_time)
-            n_max_ss = self.calc_n_max_ss(exp_time)
-            df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'occupancy_trans': [n_max_trans],
-                                         'occupancy_ss': [n_max_ss]}))
+    # Calculate maximum people allowed in the room given an exposure time (hours),
+    # risk type, and assumptions (transient or steady state)
+    def calc_n_max(self, exp_time, risk_type='conditional', assump='transient'):
+        risk_tolerance = self.prec_params[1]  # no units
+        y_t = risk_tolerance * (1 + 1 / (self.conc_relax_rate * exp_time)) / self.airb_trans_rate
+        y_ss = risk_tolerance / self.airb_trans_rate
 
-        return df
+        if assump == 'transient':
+            y = y_t
+        else:
+            y = y_ss
 
-    # Returns a dataframe of maximum exposure times allowed for each risk mode based on capacity
-    def get_max_time_series(self, n_min, n_max, n_step, risk_mode):
-        df = pd.DataFrame(columns=['capacity', 'exp-time'])
-        for capacity in numpy.arange(n_min, n_max, n_step):
-            exp_time = self.calc_max_time(capacity, risk_mode)
-            df = df.append(pd.DataFrame({'capacity': [capacity], 'exp-time': [exp_time]}))
+        if risk_type == 'conditional':
+            n_max = 1 + y / (self.percentage_sus * exp_time)
+        elif risk_type == 'prevalence':
+            n_max = 0.5 * (1 + (1 + (4 * y) / (self.percentage_sus * self.prevalence * exp_time)) ** 0.5)
+        elif risk_type == 'personal':
+            n_max = 1 + y / (self.prevalence * exp_time)
+        else:
+            n_max = 0
 
-        return df
+        return n_max
 
-    # Calculate safe steady-state CO2 concentration (ppm) across a range of exposure times, returning transient output.
-    def calc_co2_series(self, t_min, t_max, t_num, risk_mode):
-        df = pd.DataFrame(columns=['exposure_time', 'co2_trans', 'co2_resp', 'co2_rec'])
-        for exp_time in numpy.logspace(math.log(t_min, 10), math.log(t_max, 10), t_num):
-            co2_trans = self.calc_co2_exp_time(exp_time, risk_mode)
-            co2_resp = self.get_safe_resp_co2_limit(exp_time)
-            co2_rec = min(co2_trans, co2_resp)
-            df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans],
-                                         'co2_resp': [co2_resp], 'co2_rec': [co2_rec]}))
+    # Calculates the steady-state CO2 level in the room given N
+    # Output is in parts per million (ppm) of CO2
+    # Warning: Do not use transient N values for this method.
+    def calc_co2_n(self, n):
+        breathing_flow_rate = self.physio_params[0]  # m3 / hr
+        outdoor_exchange_rate = self.physical_params[2]  # /hr
+        room_vol_m = self.ft3_to_m3 * self.room_vol  # m3
+        return (self.co2_breath * breathing_flow_rate * n / (outdoor_exchange_rate * room_vol_m)) + self.atm_co2  # ppm
 
-        return df
+    # Calculate safe steady-state CO2 concentration (ppm) for a single exposure time.
+    def calc_co2_exp_time(self, exp_time, risk_mode):
+        return self.calc_co2_n(self.calc_n_max(exp_time, risk_mode, 'steady-state'))
 
     # Get the maximum number of people allowed in the room, based on the six-foot rule.
     def get_six_ft_n(self):
         floor_area = self.physical_params[0]  # ft2
-        return math.floor(floor_area / 36)
+        return math.floor(floor_area / (6 ** 2))
 
     # Get the maximum number of people this room can physically have (based on floor area)
     def get_n_max(self):
         floor_area = self.physical_params[0]  # ft2
-        flr_rad = 3  # ft
-        return math.floor(floor_area / flr_rad ** 2)
+        return math.floor(floor_area / self.min_person_dist ** 2)
 
     # Returns an Excel file of the current model inputs & outputs
     # desc_file: Descriptions file used to pull text / labels from
     # risk_mode: Selected risk mode at time of export
     # model_inputs_combined: list of relevant user inputs required to replicate results
     # TODO: Update descriptions files for other languages
+    # TODO: Move this to essentials.py
     def get_excel(self, desc_file, risk_mode, model_inputs_combined):
         xlsx_io = io.BytesIO()
         writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
@@ -368,9 +326,6 @@ class Indoors:
         self.prevalence = 0.01
 
     # Returns the upper limit on CO2 (ppm) given the exposure time (hr).
-    # I don't want to import essentials.py in Indoors, so I just copied the function from there over here.
-    # Might be a potential to refactor.
-    # TODO: Consolidate this with the function in essentials.py
     @staticmethod
     def get_safe_resp_co2_limit(exp_time):
         # Safety threshold curve, interpolated from USDA threshold values

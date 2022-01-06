@@ -231,6 +231,7 @@ viral_strains = {
     4.0: 'B.1.1.529 South Africa'
 }
 
+
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
                 max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, exp_time_co2=1, prevalence=1,
@@ -336,7 +337,7 @@ def get_human_preset_dd_value(exertion, expiratory_activity, masks, mask_fit, un
 # Returns the plotly figure based on the supplied indoor model.
 def get_model_figure(indoor_model, language):
     desc_file = get_desc_file(language)
-    new_df = indoor_model.calc_n_max_series(2, 100, 1.0)
+    new_df = calc_n_max_series(indoor_model, 2, 100, 1.0)
 
     new_fig = go.Figure()
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_trans"],
@@ -368,11 +369,11 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     is_mobile = window_width <= 600
 
     recommended_df = pd.DataFrame(columns=['exposure_time', 'co2_recommended'])
-    new_df = indoor_model.calc_co2_series(0.1, 1000, 100, risk_mode)
+    new_df = calc_co2_series(indoor_model, 0.1, 1000, 100, risk_mode)
     safe_df = pd.DataFrame(columns=['exposure_time', 'co2_safe'])
     background_df = pd.DataFrame(columns=['exposure_time', 'co2_background'])
     for exp_time in numpy.logspace(math.log(0.1, 10), math.log(1000, 10), 100):
-        safe_co2_limit = get_safe_resp_co2_limit(exp_time)
+        safe_co2_limit = indoor_model.get_safe_resp_co2_limit(exp_time)
         recommended_co2_limit = min(safe_co2_limit, indoor_model.calc_co2_exp_time(exp_time, risk_mode))
         safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
         recommended_df = recommended_df.append(pd.DataFrame({'exposure_time': [exp_time],
@@ -456,20 +457,10 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     return new_fig
 
 
-# Returns the upper limit on CO2 (ppm) given the exposure time (hr).
-def get_safe_resp_co2_limit(exp_time):
-    # Safety threshold curve, interpolated from USDA threshold values
-    # f(x) = 2000 + a/(t + b)
-    const = 2000  # ppm
-    a = 25636.363641827  # ppm-hr
-    b = 0.545454545606364  # hr
-    return const + a / (exp_time + b)
-
-
 # Returns the recommended co2 limit given an exposure time
 def get_recommended_co2_limit(indoor_model, risk_mode, exp_time):
     safe_co2_conc = indoor_model.calc_co2_exp_time(exp_time, risk_mode)
-    max_co2_conc = get_safe_resp_co2_limit(exp_time)
+    max_co2_conc = indoor_model.get_safe_resp_co2_limit(exp_time)
     return min(safe_co2_conc, max_co2_conc)
 
 
@@ -487,6 +478,42 @@ def get_exp_time_from_co2(indoor_model, risk_mode, co2_conc):
 
     root = fsolve(func, [guess])
     return root[0]
+
+
+# Calculate maximum people allowed in the room across a range of exposure times, returning both transient
+# and steady-state outputs
+def calc_n_max_series(indoor_model, t_min, t_max, t_step):
+    df = pd.DataFrame(columns=['exposure_time', 'occupancy_trans', 'occupancy_ss'])
+    for exp_time in numpy.arange(t_min, t_max, t_step):
+        n_max_trans = indoor_model.calc_n_max(exp_time)
+        n_max_ss = indoor_model.calc_n_max(exp_time, assump='steady-state')
+        df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'occupancy_trans': [n_max_trans],
+                                     'occupancy_ss': [n_max_ss]}))
+
+    return df
+
+
+# Returns a dataframe of maximum exposure times allowed for each risk mode based on capacity
+def get_max_time_series(indoor_model, n_min, n_max, n_step, risk_mode):
+    df = pd.DataFrame(columns=['capacity', 'exp-time'])
+    for capacity in numpy.arange(n_min, n_max, n_step):
+        exp_time = indoor_model.calc_max_time(capacity, risk_mode)
+        df = df.append(pd.DataFrame({'capacity': [capacity], 'exp-time': [exp_time]}))
+
+    return df
+
+
+# Calculate safe steady-state CO2 concentration (ppm) across a range of exposure times, returning transient output.
+def calc_co2_series(indoor_model, t_min, t_max, t_num, risk_mode):
+    df = pd.DataFrame(columns=['exposure_time', 'co2_trans', 'co2_resp', 'co2_rec'])
+    for exp_time in numpy.logspace(math.log(t_min, 10), math.log(t_max, 10), t_num):
+        co2_trans = indoor_model.calc_co2_exp_time(exp_time, risk_mode)
+        co2_resp = indoor_model.get_safe_resp_co2_limit(exp_time)
+        co2_rec = min(co2_trans, co2_resp)
+        df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans],
+                                     'co2_resp': [co2_resp], 'co2_rec': [co2_rec]}))
+
+    return df
 
 
 # Returns the big red output text.
