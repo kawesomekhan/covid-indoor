@@ -812,7 +812,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                                desc_file.curr_strain_header, desc_file.pim_header, desc_file.aerosol_radius_text,
                                desc_file.viral_deact_text_exp]
         model_inputs_combined = list(zip(model_inputs_labels, model_inputs))
-        export_output = myInd.get_excel(desc_file, risk_mode, model_inputs_combined)
+        export_output = ess.get_excel(myInd, desc_file, risk_mode, model_inputs_combined)
     else:
         export_output = ""
     export_filename = "indoor-covid-safety-export " + datetime.now().strftime("%Y-%m-%d %H-%M-%S") + ".xlsx"

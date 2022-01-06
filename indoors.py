@@ -1,8 +1,5 @@
-import pandas as pd
 import numpy
 import math
-import io
-import base64
 
 """
 Indoors is a class which represents the model calculation. A detailed description of
@@ -36,7 +33,6 @@ def clamp: Clamps a value within a given range.
 
 class Indoors:
     # Model Parameters
-    # TODO: Can refactor these into dictionaries
     physical_params = []
     physio_params = []
     disease_params = []
@@ -206,94 +202,6 @@ class Indoors:
     def get_n_max(self):
         floor_area = self.physical_params[0]  # ft2
         return math.floor(floor_area / self.min_person_dist ** 2)
-
-    # Returns an Excel file of the current model inputs & outputs
-    # desc_file: Descriptions file used to pull text / labels from
-    # risk_mode: Selected risk mode at time of export
-    # model_inputs_combined: list of relevant user inputs required to replicate results
-    # TODO: Update descriptions files for other languages
-    # TODO: Move this to essentials.py
-    def get_excel(self, desc_file, risk_mode, model_inputs_combined):
-        xlsx_io = io.BytesIO()
-        writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
-        # Tab 0: Text
-        header_text = "COVID-19 Indoor Safety Guideline Data Export (from indoor-covid-safety.herokuapp.com)"
-        model_inputs_desc = "Model Inputs: Contains all user-defined inputs in the app."
-        model_params_desc = "Model Parameters: Contains parameters used during the calculation of the safety guideline."
-        outputs_occ_desc = "Outputs (Safe Occupancy): Maximum exposure time vs. room capacity. The risk mode used " \
-                           "here is the same risk mode that was selected in the app at the time of export."
-        outputs_co2_desc = "Outputs (CO2): Recommended CO2 Limit vs. room capacity. The risk mode used " \
-                           "here is the same risk mode that was selected in the app at the time of export."
-        import_desc = "This file can also function as a way to save analyses. Upload this file in Advanced Mode (see" \
-                      "the button labeled 'Import from Excel') to pick up where you left off. If you'd like to change" \
-                      "any inputs manually, please do so in the 'Model Inputs' tab."
-
-        text_df = pd.DataFrame([model_inputs_desc, model_params_desc, outputs_occ_desc,
-                                outputs_co2_desc, import_desc], columns=[header_text])
-        text_df.to_excel(writer, sheet_name="Info", index=False)
-
-        # Tab 1: Inputs
-        input_df = pd.DataFrame(model_inputs_combined, columns=["Parameter", "Value"])
-        input_df.to_excel(writer, sheet_name="Model Inputs", index=False)
-
-        # Tab 2: Model Parameters
-        physical_labels = [desc_file.floor_area_text, desc_file.ceiling_height_text,
-                           desc_file.ventilation_text_exp, desc_file.outdoor_air_frac_label_exp,
-                           desc_file.aerosol_eff_label_exp, desc_file.humidity_text]
-        physical_df = pd.DataFrame(list(zip(physical_labels, self.physical_params)), columns=["Parameter", "Value"])
-
-        physio_labels = [desc_file.breathing_rate_label_exp, desc_file.aerosol_radius_text]
-        physio_df = pd.DataFrame(list(zip(physio_labels, self.physio_params)), columns=["Parameter", "Value"])
-
-        disease_labels = [desc_file.cq_label_exp, desc_file.viral_deact_text_exp]
-        disease_df = pd.DataFrame(list(zip(disease_labels, self.disease_params)), columns=["Parameter", "Value"])
-
-        prec_labels = [desc_file.mask_pass_prob_label_exp, desc_file.curr_risk_header]
-        prec_df = pd.DataFrame(list(zip(prec_labels, self.prec_params)), columns=["Parameter", "Value"])
-
-        other_labels = ["Prevalence", "Background CO2 (ppm)", "Percentage susceptible ps", "Age Factor",
-                        "Viral Strain Factor"]
-        other_params = [self.prevalence, self.atm_co2, self.percentage_sus, self.sr_age_factor, self.sr_strain_factor]
-        other_df = pd.DataFrame(list(zip(other_labels, other_params)), columns=["Parameter", "Value"])
-
-        params_df = physical_df.append(physio_df).append(disease_df).append(prec_df).append(other_df)
-        params_df.to_excel(writer, sheet_name="Model Parameters", index=False)
-
-        # Tab 3: Outputs (safe occupancy)
-        occ_df = self.get_max_time_series(2, self.get_n_max(), 1, risk_mode)
-        occ_df = occ_df.rename(columns={'capacity': "Capacity",
-                                        'exp-time': "[Risk Mode: " + risk_mode + "] Maximum Exposure Time (hr)"})
-        occ_df.to_excel(writer, sheet_name="Outputs (Safe Occupancy)", index=False)
-
-        # Tab 4: Outputs (safe CO2)
-        co2_df = self.calc_co2_series(0.1, 1000, 1000, risk_mode)
-        co2_df = co2_df.rename(columns={'exposure_time': "Exposure Time (hr)",
-                                        'co2_trans': "[Risk Mode: " + risk_mode + "] Safe CO2 Concentration (ppm)",
-                                        'co2_resp': "USDA Safety CO2 Threshold (ppm)",
-                                        'co2_rec': "Recommended CO2 Limit (ppm)"})
-        co2_df.to_excel(writer, sheet_name="Outputs (CO2)", index=False)
-
-        # Autofit column widths
-        dfs = {"Info": text_df, "Model Inputs": input_df, "Model Parameters": params_df,
-               "Outputs (Safe Occupancy)": occ_df, "Outputs (CO2)": co2_df}
-        for sheetname, df in dfs.items():
-            worksheet = writer.sheets[sheetname]
-            for idx, col in enumerate(df):
-                series = df[col]
-                max_len = max((
-                    series.astype(str).map(len).max(),  # len of largest item
-                    len(str(series.name))  # len of column name/header
-                )) + 1  # adding a little extra space
-                worksheet.set_column(idx, idx, max_len)  # set column width
-
-        # Save file and return data
-        writer.save()
-        xlsx_io.seek(0)
-        # https://en.wikipedia.org/wiki/Data_URI_scheme
-        media_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        data = base64.b64encode(xlsx_io.read()).decode("utf-8")
-        href_data_downloadable = f'data:{media_type};base64,{data}'
-        return href_data_downloadable
 
     # Sets default parameters.
     def set_default_params(self):
