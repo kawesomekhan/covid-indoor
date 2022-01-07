@@ -33,10 +33,19 @@ def clamp: Clamps a value within a given range.
 
 class Indoors:
     # Model Parameters
-    physical_params = []
-    physio_params = []
-    disease_params = []
-    prec_params = []
+    floor_area = 900  # ft2
+    mean_ceiling_height = 12  # ft
+    air_exchange_rate = 3  # /hr (air changes per hour (ACH))
+    primary_outdoor_air_fraction = 0.2  # 1.0 = natural ventilation
+    aerosol_filtration_eff = 0  # >0.9997 HEPA, =0.2-0.9 MERVs, =0 no filter
+    relative_humidity = 0.6
+    breathing_flow_rate = 0.5  # m3/hr
+    max_aerosol_radius = 2  # micrometers
+    exhaled_air_inf = 30  # infection quanta/m3
+    max_viral_deact_rate = 0.3  # /hr
+    mask_passage_prob = 0.1  # 1 = no masks, ~0.1 cloth, <0.05 N95
+    risk_tolerance = 0.1  # expected transmissions per infector
+
     prevalence = 0.01
     percentage_sus = 1
     sr_age_factor = 1
@@ -88,60 +97,41 @@ class Indoors:
     min_person_dist = 3  # shortest possible distance between people (ft)
 
     def __init__(self):
-        self.set_default_params()
         self.calc_vars()
 
     # Calculate all calculated variables
     def calc_vars(self):
-        # Physical Parameters
-        floor_area = self.physical_params[0]  # ft2
-        mean_ceiling_height = self.physical_params[1]  # ft
-        air_exch_rate = self.physical_params[2]  # /hr
-        primary_outdoor_air_fraction = self.physical_params[3]  # no units
-        aerosol_filtration_eff = self.physical_params[4]  # no units
-        relative_humidity = self.physical_params[5]  # no units
-
-        # Physiological Parameters
-        breathing_flow_rate = self.physio_params[0]  # m3 / hr
-        max_aerosol_radius = self.physio_params[1]
-
-        # Disease Parameters
         self.relative_sus = self.sr_age_factor * self.sr_strain_factor
-        exhaled_air_inf = self.disease_params[0] * self.relative_sus  # infection quanta/m3
-        max_viral_deact_rate = self.disease_params[1]  # /hr
-
-        # Precautionary Parameters
-        mask_passage_prob = self.prec_params[0]  # no units
+        exhaled_air_inf = self.exhaled_air_inf * self.relative_sus  # infection quanta/m3
 
         # Calculation
-        mean_ceiling_height_m = mean_ceiling_height * 0.3048
-        self.room_vol = floor_area * mean_ceiling_height  # ft3
+        mean_ceiling_height_m = self.mean_ceiling_height * 0.3048
+        self.room_vol = self.floor_area * self.mean_ceiling_height  # ft3
         room_vol_m = 0.0283168 * self.room_vol  # m3
 
-        self.fresh_rate = self.room_vol * air_exch_rate / 60  # ft3/min
+        self.fresh_rate = self.room_vol * self.air_exchange_rate / 60  # ft3/min
 
-        self.recirc_rate = self.fresh_rate * (1 / primary_outdoor_air_fraction - 1)  # ft3/min
+        self.recirc_rate = self.fresh_rate * (1 / self.primary_outdoor_air_fraction - 1)  # ft3/min
 
-        self.air_filt_rate = aerosol_filtration_eff * self.recirc_rate * 60 / self.room_vol  # /hr
+        self.air_filt_rate = self.aerosol_filtration_eff * self.recirc_rate * 60 / self.room_vol  # /hr
 
-        self.eff_aerosol_radius = ((0.4 / (1 - relative_humidity)) ** (1 / 3)) * max_aerosol_radius
+        self.eff_aerosol_radius = ((0.4 / (1 - self.relative_humidity)) ** (1 / 3)) * self.max_aerosol_radius
 
-        self.viral_deact_rate = max_viral_deact_rate * relative_humidity
+        self.viral_deact_rate = self.max_viral_deact_rate * self.relative_humidity
 
         # self.sett_speed = 3 * (self.eff_aerosol_radius / 5) ** 2  # mm/s
         self.sett_speed = (2 / 9) * self.density_droplet * self.acceleration_gravity * (
                 self.eff_aerosol_radius ** 2) / (self.viscosity_air * (10 ** 9))
         self.sett_speed = self.sett_speed * 60 * 60 / 1000  # m/hr
 
-        self.conc_relax_rate = air_exch_rate + self.air_filt_rate + self.viral_deact_rate + self.sett_speed / mean_ceiling_height_m  # /hr
+        self.conc_relax_rate = self.air_exchange_rate + self.air_filt_rate + self.viral_deact_rate + self.sett_speed / mean_ceiling_height_m  # /hr
 
-        self.airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (
+        self.airb_trans_rate = ((self.breathing_flow_rate * self.mask_passage_prob) ** 2) * exhaled_air_inf / (
                 room_vol_m * self.conc_relax_rate)
 
     # Calculate maximum exposure time allowed given a capacity (# people), transient
     def calc_max_time(self, n_max, risk_type='conditional', assump='transient'):
-        risk_tolerance = self.prec_params[1]  # no units
-        y_ss = risk_tolerance / self.airb_trans_rate
+        y_ss = self.risk_tolerance / self.airb_trans_rate
         if risk_type == 'conditional':
             exp_time_ss = y_ss / ((n_max - 1) * self.percentage_sus)
         elif risk_type == 'prevalence':
@@ -160,9 +150,8 @@ class Indoors:
     # Calculate maximum people allowed in the room given an exposure time (hours),
     # risk type, and assumptions (transient or steady state)
     def calc_n_max(self, exp_time, risk_type='conditional', assump='transient'):
-        risk_tolerance = self.prec_params[1]  # no units
-        y_t = risk_tolerance * (1 + 1 / (self.conc_relax_rate * exp_time)) / self.airb_trans_rate
-        y_ss = risk_tolerance / self.airb_trans_rate
+        y_t = self.risk_tolerance * (1 + 1 / (self.conc_relax_rate * exp_time)) / self.airb_trans_rate
+        y_ss = self.risk_tolerance / self.airb_trans_rate
 
         if assump == 'transient':
             y = y_t
@@ -184,10 +173,8 @@ class Indoors:
     # Output is in parts per million (ppm) of CO2
     # Warning: Do not use transient N values for this method.
     def calc_co2_n(self, n):
-        breathing_flow_rate = self.physio_params[0]  # m3 / hr
-        outdoor_exchange_rate = self.physical_params[2]  # /hr
         room_vol_m = self.ft3_to_m3 * self.room_vol  # m3
-        return (self.co2_breath * breathing_flow_rate * n / (outdoor_exchange_rate * room_vol_m)) + self.atm_co2  # ppm
+        return (self.co2_breath * self.breathing_flow_rate * n / (self.air_exchange_rate * room_vol_m)) + self.atm_co2  # ppm
 
     # Calculate safe steady-state CO2 concentration (ppm) for a single exposure time.
     def calc_co2_exp_time(self, exp_time, risk_mode):
@@ -195,43 +182,33 @@ class Indoors:
 
     # Get the maximum number of people allowed in the room, based on the six-foot rule.
     def get_six_ft_n(self):
-        floor_area = self.physical_params[0]  # ft2
-        return math.floor(floor_area / (6 ** 2))
+        return math.floor(self.floor_area / (6 ** 2))
 
     # Get the maximum number of people this room can physically have (based on floor area)
     def get_n_max(self):
-        floor_area = self.physical_params[0]  # ft2
-        return math.floor(floor_area / self.min_person_dist ** 2)
+        return math.floor(self.floor_area / (self.min_person_dist ** 2))
 
-    # Sets default parameters.
-    def set_default_params(self):
-        # Physical Parameters
-        floor_area = 900  # ft2
-        mean_ceiling_height = 12  # ft
-        air_exchange_rate = 3  # /hr (air changes per hour (ACH))
-        primary_outdoor_air_fraction = 0.2  # 1.0 = natural ventilation
-        aerosol_filtration_eff = 0  # >0.9997 HEPA, =0.2-0.9 MERVs, =0 no filter
-        relative_humidity = 0.6
-        self.physical_params = [floor_area, mean_ceiling_height, air_exchange_rate, primary_outdoor_air_fraction,
-                                aerosol_filtration_eff, relative_humidity]
-
-        # Physiological Parameters
-        breathing_flow_rate = 0.5  # m3/hr
-        max_aerosol_radius = 2  # micrometers
-        self.physio_params = [breathing_flow_rate, max_aerosol_radius]
-
-        # Disease Parameters
-        exhaled_air_inf = 30  # infection quanta/m3
-        max_viral_deact_rate = 0.3  # /hr
-        self.disease_params = [exhaled_air_inf, max_viral_deact_rate]
-
-        # Precautionary Parameters
-        mask_passage_prob = 0.1  # 1 = no masks, ~0.1 cloth, <0.05 N95
-        risk_tolerance = 0.1  # expected transmissions per infector
-        self.prec_params = [mask_passage_prob, risk_tolerance]
-
-        # Prevalence
-        self.prevalence = 0.01
+    # Returns a list of all model parameters
+    def get_params(self):
+        return [
+            self.floor_area,
+            self.mean_ceiling_height,
+            self.air_exchange_rate,
+            self.primary_outdoor_air_fraction,
+            self.aerosol_filtration_eff,
+            self.relative_humidity,
+            self.breathing_flow_rate,
+            self.max_aerosol_radius,
+            self.exhaled_air_inf,
+            self.max_viral_deact_rate,
+            self.mask_passage_prob,
+            self.risk_tolerance,
+            self.prevalence,
+            self.atm_co2,
+            self.percentage_sus,
+            self.sr_age_factor,
+            self.sr_strain_factor
+        ]
 
     # Returns the upper limit on CO2 (ppm) given the exposure time (hr).
     @staticmethod

@@ -535,6 +535,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     risk_tolerance = 0.1
     def_aerosol_radius = 2
     max_viral_deact_rate = 0.6
+    #--
     language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
                                 max_viral_deact_rate, language, n_max_input, exp_time_input)
@@ -546,6 +547,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
+    #--
     # Check our units! Did we switch? If so, convert values before calculating
     my_units = ess.get_units(search)
     curr_units = ess.did_switch_units(search, floor_area_text, ceiling_height_text)
@@ -575,11 +577,18 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Convert recirc rate to outdoor air fraction
     outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + recirc_rate)
 
-    myInd.physical_params = [floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction,
-                             aerosol_filtration_eff, relative_humidity]
-    myInd.physio_params = [breathing_flow_rate, def_aerosol_radius]
-    myInd.disease_params = [infectiousness, max_viral_deact_rate]
-    myInd.prec_params = [mask_passage_prob, risk_tolerance]
+    myInd.floor_area = floor_area
+    myInd.mean_ceiling_height = ceiling_height
+    myInd.air_exchange_rate = air_exchange_rate
+    myInd.primary_outdoor_air_fraction = outdoor_air_fraction
+    myInd.aerosol_filtration_eff = aerosol_filtration_eff
+    myInd.relative_humidity = relative_humidity
+    myInd.breathing_flow_rate = breathing_flow_rate
+    myInd.max_aerosol_radius = def_aerosol_radius
+    myInd.exhaled_air_inf = infectiousness
+    myInd.max_viral_deact_rate = max_viral_deact_rate
+    myInd.mask_passage_prob = mask_passage_prob
+    myInd.risk_tolerance = risk_tolerance
     myInd.sr_age_factor = sr_age_factor
     myInd.sr_strain_factor = sr_strain_factor
     myInd.percentage_sus = 1

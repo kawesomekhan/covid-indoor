@@ -692,6 +692,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
+    #--
     # Check our units! Did we switch? If so, convert values before calculating
     my_units = ess.get_units(search)
     curr_units = ess.did_switch_units(search, floor_area_text, ceiling_height_text)
@@ -721,11 +722,18 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     # Convert recirc rate to outdoor air fraction
     outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + recirc_rate)
 
-    myInd.physical_params = [floor_area, ceiling_height, air_exchange_rate, outdoor_air_fraction,
-                             aerosol_filtration_eff, relative_humidity]
-    myInd.physio_params = [breathing_flow_rate, def_aerosol_radius]
-    myInd.disease_params = [infectiousness, max_viral_deact_rate]
-    myInd.prec_params = [mask_passage_prob, risk_tolerance]
+    myInd.floor_area = floor_area
+    myInd.mean_ceiling_height = ceiling_height
+    myInd.air_exchange_rate = air_exchange_rate
+    myInd.primary_outdoor_air_fraction = outdoor_air_fraction
+    myInd.aerosol_filtration_eff = aerosol_filtration_eff
+    myInd.relative_humidity = relative_humidity
+    myInd.breathing_flow_rate = breathing_flow_rate
+    myInd.max_aerosol_radius = def_aerosol_radius
+    myInd.exhaled_air_inf = infectiousness
+    myInd.max_viral_deact_rate = max_viral_deact_rate
+    myInd.mask_passage_prob = mask_passage_prob
+    myInd.risk_tolerance = risk_tolerance
     myInd.sr_age_factor = sr_age_factor
     myInd.sr_strain_factor = sr_strain_factor
     ps_conditional = 1 - pim_input
@@ -739,6 +747,10 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
 
     # Update the figure with a new model calculation
     new_fig = ess.get_model_figure(myInd, language)
+
+    # Update the red text output with new model calculations
+    # Model values of interest
+    interest_output = ess.get_interest_output_text(myInd, my_units)
 
     # Outputs
     if risk_mode == 'conditional':
@@ -792,10 +804,6 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     co2_graph_config = co2_graph_config_desktop
     if window_width < 1200:
         co2_graph_config = co2_graph_config_mobile
-
-    # Update the red text output with new model calculations
-    # Model values of interest
-    interest_output = ess.get_interest_output_text(myInd, my_units)
 
     # Get the updated CSV href in case the user decides to export the data
     if language == 'en':

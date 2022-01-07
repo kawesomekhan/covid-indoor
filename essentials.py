@@ -29,7 +29,6 @@ from scipy.optimize import fsolve
 import io
 import base64
 
-
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
 
@@ -301,6 +300,7 @@ def get_room_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, reci
     for setting_key in room_preset_settings:
         setting = room_preset_settings[setting_key]
 
+        is_right_volume = False
         if units == "british":
             is_right_volume = setting['floor-area'] == floor_area and \
                               setting['ceiling-height'] == ceiling_height
@@ -470,9 +470,10 @@ def get_recommended_co2_limit(indoor_model, risk_mode, exp_time):
 def get_exp_time_from_co2(indoor_model, risk_mode, co2_conc):
     # discontinuous function, so do binary search to narrow until threshold
     guess = 10  # hours
-    thresh = 0.001  # ppm
+    # thresh = 0.001  # ppm
     recommended_co2_conc = get_recommended_co2_limit(indoor_model, risk_mode, guess)
-    diff_sq = (recommended_co2_conc - co2_conc) ** 2
+
+    # diff_sq = (recommended_co2_conc - co2_conc) ** 2
 
     def func(x):
         return [get_recommended_co2_limit(indoor_model, risk_mode, x[0]) - co2_conc]
@@ -674,11 +675,11 @@ def get_n_max_text(n, n_max, language):
 # Returns the output text for the variables of interest, shown in the FAQ/Other Inputs & Outputs tab.
 # units: British or Metric.
 def get_interest_output_text(indoor_model, units):
-    outdoor_air_frac = indoor_model.physical_params[3]
-    aerosol_filtration_eff = indoor_model.physical_params[4]
-    breathing_flow_rate = indoor_model.physio_params[0]
-    infectiousness = indoor_model.disease_params[0]
-    mask_pass_prob = indoor_model.prec_params[0]
+    outdoor_air_frac = indoor_model.primary_outdoor_air_fraction
+    aerosol_filtration_eff = indoor_model.aerosol_filtration_eff
+    breathing_flow_rate = indoor_model.breathing_flow_rate
+    infectiousness = indoor_model.exhaled_air_inf
+    mask_pass_prob = indoor_model.mask_passage_prob
 
     # Calculated Values of Interest Output
     if units == "british":
@@ -723,7 +724,7 @@ def get_interest_output_text(indoor_model, units):
 
 # Returns the value for Qb given the units.
 def get_qb_text(indoor_model, units):
-    breathing_flow_rate = indoor_model.physio_params[0]
+    breathing_flow_rate = indoor_model.breathing_flow_rate
     if units == 'british':
         return '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60)  # m3/hr to ft3/min
     elif units == 'metric':
@@ -732,7 +733,7 @@ def get_qb_text(indoor_model, units):
 
 # Returns the value for Cq given the units.
 def get_cq_text(indoor_model, units):
-    infectiousness = indoor_model.disease_params[0]
+    infectiousness = indoor_model.exhaled_air_inf
     if units == 'british':
         return '{:,.2f} q/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
     elif units == 'metric':
@@ -768,37 +769,23 @@ def get_excel(indoor_model, desc_file, risk_mode, model_inputs_combined):
     input_df.to_excel(writer, sheet_name="Model Inputs", index=False)
 
     # Tab 2: Model Parameters
-    physical_labels = [desc_file.floor_area_text, desc_file.ceiling_height_text,
-                       desc_file.ventilation_text_exp, desc_file.outdoor_air_frac_label_exp,
-                       desc_file.aerosol_eff_label_exp, desc_file.humidity_text]
-    physical_df = pd.DataFrame(list(zip(physical_labels, indoor_model.physical_params)), columns=["Parameter", "Value"])
-
-    physio_labels = [desc_file.breathing_rate_label_exp, desc_file.aerosol_radius_text]
-    physio_df = pd.DataFrame(list(zip(physio_labels, indoor_model.physio_params)), columns=["Parameter", "Value"])
-
-    disease_labels = [desc_file.cq_label_exp, desc_file.viral_deact_text_exp]
-    disease_df = pd.DataFrame(list(zip(disease_labels, indoor_model.disease_params)), columns=["Parameter", "Value"])
-
-    prec_labels = [desc_file.mask_pass_prob_label_exp, desc_file.curr_risk_header]
-    prec_df = pd.DataFrame(list(zip(prec_labels, indoor_model.prec_params)), columns=["Parameter", "Value"])
-
-    other_labels = ["Prevalence", "Background CO2 (ppm)", "Percentage susceptible ps", "Age Factor",
-                    "Viral Strain Factor"]
-    other_params = [indoor_model.prevalence, indoor_model.atm_co2, indoor_model.percentage_sus,
-                    indoor_model.sr_age_factor, indoor_model.sr_strain_factor]
-    other_df = pd.DataFrame(list(zip(other_labels, other_params)), columns=["Parameter", "Value"])
-
-    params_df = physical_df.append(physio_df).append(disease_df).append(prec_df).append(other_df)
+    param_labels = [desc_file.floor_area_text, desc_file.ceiling_height_text,
+                    desc_file.ventilation_text_exp, desc_file.outdoor_air_frac_label_exp,
+                    desc_file.aerosol_eff_label_exp, desc_file.humidity_text, desc_file.breathing_rate_label_exp,
+                    desc_file.aerosol_radius_text, desc_file.cq_label_exp, desc_file.viral_deact_text_exp,
+                    desc_file.mask_pass_prob_label_exp, desc_file.curr_risk_header, "Prevalence",
+                    "Background CO2 (ppm)", "Percentage susceptible ps", "Age Factor", "Viral Strain Factor"]
+    params_df = pd.DataFrame(list(zip(param_labels, indoor_model.get_params())), columns=["Parameter", "Value"])
     params_df.to_excel(writer, sheet_name="Model Parameters", index=False)
 
     # Tab 3: Outputs (safe occupancy)
-    occ_df = indoor_model.get_max_time_series(2, indoor_model.get_n_max(), 1, risk_mode)
+    occ_df = get_max_time_series(indoor_model, 2, indoor_model.get_n_max(), 1, risk_mode)
     occ_df = occ_df.rename(columns={'capacity': "Capacity",
                                     'exp-time': "[Risk Mode: " + risk_mode + "] Maximum Exposure Time (hr)"})
     occ_df.to_excel(writer, sheet_name="Outputs (Safe Occupancy)", index=False)
 
     # Tab 4: Outputs (safe CO2)
-    co2_df = indoor_model.calc_co2_series(0.1, 1000, 1000, risk_mode)
+    co2_df = calc_co2_series(indoor_model, 0.1, 1000, 1000, risk_mode)
     co2_df = co2_df.rename(columns={'exposure_time': "Exposure Time (hr)",
                                     'co2_trans': "[Risk Mode: " + risk_mode + "] Safe CO2 Concentration (ppm)",
                                     'co2_resp': "USDA Safety CO2 Threshold (ppm)",
