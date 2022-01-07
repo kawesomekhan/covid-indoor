@@ -26,8 +26,8 @@ import numpy
 import math
 from scipy.optimize import fsolve
 
-import base64
 import io
+import base64
 
 """
 essentials.py contains functionality shared by both Basic Mode and Advanced Mode.
@@ -231,6 +231,7 @@ viral_strains = {
     4.0: 'B.1.1.529 South Africa'
 }
 
+
 # Determines what error message we should use, if any
 def get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, max_aerosol_radius,
                 max_viral_deact_rate, language, n_max_input=2, exp_time_input=1, exp_time_co2=1, prevalence=1,
@@ -299,6 +300,7 @@ def get_room_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, reci
     for setting_key in room_preset_settings:
         setting = room_preset_settings[setting_key]
 
+        is_right_volume = False
         if units == "british":
             is_right_volume = setting['floor-area'] == floor_area and \
                               setting['ceiling-height'] == ceiling_height
@@ -336,7 +338,7 @@ def get_human_preset_dd_value(exertion, expiratory_activity, masks, mask_fit, un
 # Returns the plotly figure based on the supplied indoor model.
 def get_model_figure(indoor_model, language):
     desc_file = get_desc_file(language)
-    new_df = indoor_model.calc_n_max_series(2, 100, 1.0)
+    new_df = calc_n_max_series(indoor_model, 2, 100, 1.0)
 
     new_fig = go.Figure()
     new_fig.add_trace(go.Scatter(x=new_df["exposure_time"], y=new_df["occupancy_trans"],
@@ -368,11 +370,11 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     is_mobile = window_width <= 600
 
     recommended_df = pd.DataFrame(columns=['exposure_time', 'co2_recommended'])
-    new_df = indoor_model.calc_co2_series(0.1, 1000, 100, risk_mode)
+    new_df = calc_co2_series(indoor_model, 0.1, 1000, 100, risk_mode)
     safe_df = pd.DataFrame(columns=['exposure_time', 'co2_safe'])
     background_df = pd.DataFrame(columns=['exposure_time', 'co2_background'])
     for exp_time in numpy.logspace(math.log(0.1, 10), math.log(1000, 10), 100):
-        safe_co2_limit = get_safe_resp_co2_limit(exp_time)
+        safe_co2_limit = indoor_model.get_safe_resp_co2_limit(exp_time)
         recommended_co2_limit = min(safe_co2_limit, indoor_model.calc_co2_exp_time(exp_time, risk_mode))
         safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
         recommended_df = recommended_df.append(pd.DataFrame({'exposure_time': [exp_time],
@@ -456,20 +458,10 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     return new_fig
 
 
-# Returns the upper limit on CO2 (ppm) given the exposure time (hr).
-def get_safe_resp_co2_limit(exp_time):
-    # Safety threshold curve, interpolated from USDA threshold values
-    # f(x) = 2000 + a/(t + b)
-    const = 2000  # ppm
-    a = 25636.363641827  # ppm-hr
-    b = 0.545454545606364  # hr
-    return const + a / (exp_time + b)
-
-
 # Returns the recommended co2 limit given an exposure time
 def get_recommended_co2_limit(indoor_model, risk_mode, exp_time):
     safe_co2_conc = indoor_model.calc_co2_exp_time(exp_time, risk_mode)
-    max_co2_conc = get_safe_resp_co2_limit(exp_time)
+    max_co2_conc = indoor_model.get_safe_resp_co2_limit(exp_time)
     return min(safe_co2_conc, max_co2_conc)
 
 
@@ -478,15 +470,52 @@ def get_recommended_co2_limit(indoor_model, risk_mode, exp_time):
 def get_exp_time_from_co2(indoor_model, risk_mode, co2_conc):
     # discontinuous function, so do binary search to narrow until threshold
     guess = 10  # hours
-    thresh = 0.001  # ppm
+    # thresh = 0.001  # ppm
     recommended_co2_conc = get_recommended_co2_limit(indoor_model, risk_mode, guess)
-    diff_sq = (recommended_co2_conc - co2_conc) ** 2
+
+    # diff_sq = (recommended_co2_conc - co2_conc) ** 2
 
     def func(x):
         return [get_recommended_co2_limit(indoor_model, risk_mode, x[0]) - co2_conc]
 
     root = fsolve(func, [guess])
     return root[0]
+
+
+# Calculate maximum people allowed in the room across a range of exposure times, returning both transient
+# and steady-state outputs
+def calc_n_max_series(indoor_model, t_min, t_max, t_step):
+    df = pd.DataFrame(columns=['exposure_time', 'occupancy_trans', 'occupancy_ss'])
+    for exp_time in numpy.arange(t_min, t_max, t_step):
+        n_max_trans = indoor_model.calc_n_max(exp_time)
+        n_max_ss = indoor_model.calc_n_max(exp_time, assump='steady-state')
+        df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'occupancy_trans': [n_max_trans],
+                                     'occupancy_ss': [n_max_ss]}))
+
+    return df
+
+
+# Returns a dataframe of maximum exposure times allowed for each risk mode based on capacity
+def get_max_time_series(indoor_model, n_min, n_max, n_step, risk_mode):
+    df = pd.DataFrame(columns=['capacity', 'exp-time'])
+    for capacity in numpy.arange(n_min, n_max, n_step):
+        exp_time = indoor_model.calc_max_time(capacity, risk_mode)
+        df = df.append(pd.DataFrame({'capacity': [capacity], 'exp-time': [exp_time]}))
+
+    return df
+
+
+# Calculate safe steady-state CO2 concentration (ppm) across a range of exposure times, returning transient output.
+def calc_co2_series(indoor_model, t_min, t_max, t_num, risk_mode):
+    df = pd.DataFrame(columns=['exposure_time', 'co2_trans', 'co2_resp', 'co2_rec'])
+    for exp_time in numpy.logspace(math.log(t_min, 10), math.log(t_max, 10), t_num):
+        co2_trans = indoor_model.calc_co2_exp_time(exp_time, risk_mode)
+        co2_resp = indoor_model.get_safe_resp_co2_limit(exp_time)
+        co2_rec = min(co2_trans, co2_resp)
+        df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans],
+                                     'co2_resp': [co2_resp], 'co2_rec': [co2_rec]}))
+
+    return df
 
 
 # Returns the big red output text.
@@ -646,11 +675,11 @@ def get_n_max_text(n, n_max, language):
 # Returns the output text for the variables of interest, shown in the FAQ/Other Inputs & Outputs tab.
 # units: British or Metric.
 def get_interest_output_text(indoor_model, units):
-    outdoor_air_frac = indoor_model.physical_params[3]
-    aerosol_filtration_eff = indoor_model.physical_params[4]
-    breathing_flow_rate = indoor_model.physio_params[0]
-    infectiousness = indoor_model.disease_params[0]
-    mask_pass_prob = indoor_model.prec_params[0]
+    outdoor_air_frac = indoor_model.primary_outdoor_air_fraction
+    aerosol_filtration_eff = indoor_model.aerosol_filtration_eff
+    breathing_flow_rate = indoor_model.breathing_flow_rate
+    infectiousness = indoor_model.exhaled_air_inf
+    mask_pass_prob = indoor_model.mask_passage_prob
 
     # Calculated Values of Interest Output
     if units == "british":
@@ -695,7 +724,7 @@ def get_interest_output_text(indoor_model, units):
 
 # Returns the value for Qb given the units.
 def get_qb_text(indoor_model, units):
-    breathing_flow_rate = indoor_model.physio_params[0]
+    breathing_flow_rate = indoor_model.breathing_flow_rate
     if units == 'british':
         return '{:,.2f} ft\u00B3/min'.format(breathing_flow_rate * 35.3147 / 60)  # m3/hr to ft3/min
     elif units == 'metric':
@@ -704,11 +733,86 @@ def get_qb_text(indoor_model, units):
 
 # Returns the value for Cq given the units.
 def get_cq_text(indoor_model, units):
-    infectiousness = indoor_model.disease_params[0]
+    infectiousness = indoor_model.exhaled_air_inf
     if units == 'british':
         return '{:,.2f} q/ft\u00B3'.format(infectiousness / 35.3147),  # 1/m3 to 1/ft3
     elif units == 'metric':
         return '{:,.2f} q/m\u00B3'.format(infectiousness)
+
+
+# Returns an Excel file of the current model inputs & outputs
+# desc_file: Descriptions file used to pull text / labels from
+# risk_mode: Selected risk mode at time of export
+# model_inputs_combined: list of relevant user inputs required to replicate results
+# TODO: Update descriptions files for other languages
+def get_excel(indoor_model, desc_file, risk_mode, model_inputs_combined):
+    xlsx_io = io.BytesIO()
+    writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
+    # Tab 0: Text
+    header_text = "COVID-19 Indoor Safety Guideline Data Export (from indoor-covid-safety.herokuapp.com)"
+    model_inputs_desc = "Model Inputs: Contains all user-defined inputs in the app."
+    model_params_desc = "Model Parameters: Contains parameters used during the calculation of the safety guideline."
+    outputs_occ_desc = "Outputs (Safe Occupancy): Maximum exposure time vs. room capacity. The risk mode used " \
+                       "here is the same risk mode that was selected in the app at the time of export."
+    outputs_co2_desc = "Outputs (CO2): Recommended CO2 Limit vs. room capacity. The risk mode used " \
+                       "here is the same risk mode that was selected in the app at the time of export."
+    import_desc = "This file can also function as a way to save analyses. Upload this file in Advanced Mode (see" \
+                  "the button labeled 'Import from Excel') to pick up where you left off. If you'd like to change" \
+                  "any inputs manually, please do so in the 'Model Inputs' tab."
+
+    text_df = pd.DataFrame([model_inputs_desc, model_params_desc, outputs_occ_desc,
+                            outputs_co2_desc, import_desc], columns=[header_text])
+    text_df.to_excel(writer, sheet_name="Info", index=False)
+
+    # Tab 1: Inputs
+    input_df = pd.DataFrame(model_inputs_combined, columns=["Parameter", "Value"])
+    input_df.to_excel(writer, sheet_name="Model Inputs", index=False)
+
+    # Tab 2: Model Parameters
+    param_labels = [desc_file.floor_area_text, desc_file.ceiling_height_text,
+                    desc_file.ventilation_text_exp, desc_file.outdoor_air_frac_label_exp,
+                    desc_file.aerosol_eff_label_exp, desc_file.humidity_text, desc_file.breathing_rate_label_exp,
+                    desc_file.aerosol_radius_text, desc_file.cq_label_exp, desc_file.viral_deact_text_exp,
+                    desc_file.mask_pass_prob_label_exp, desc_file.curr_risk_header, "Prevalence",
+                    "Background CO2 (ppm)", "Percentage susceptible ps", "Age Factor", "Viral Strain Factor"]
+    params_df = pd.DataFrame(list(zip(param_labels, indoor_model.get_params())), columns=["Parameter", "Value"])
+    params_df.to_excel(writer, sheet_name="Model Parameters", index=False)
+
+    # Tab 3: Outputs (safe occupancy)
+    occ_df = get_max_time_series(indoor_model, 2, indoor_model.get_n_max(), 1, risk_mode)
+    occ_df = occ_df.rename(columns={'capacity': "Capacity",
+                                    'exp-time': "[Risk Mode: " + risk_mode + "] Maximum Exposure Time (hr)"})
+    occ_df.to_excel(writer, sheet_name="Outputs (Safe Occupancy)", index=False)
+
+    # Tab 4: Outputs (safe CO2)
+    co2_df = calc_co2_series(indoor_model, 0.1, 1000, 1000, risk_mode)
+    co2_df = co2_df.rename(columns={'exposure_time': "Exposure Time (hr)",
+                                    'co2_trans': "[Risk Mode: " + risk_mode + "] Safe CO2 Concentration (ppm)",
+                                    'co2_resp': "USDA Safety CO2 Threshold (ppm)",
+                                    'co2_rec': "Recommended CO2 Limit (ppm)"})
+    co2_df.to_excel(writer, sheet_name="Outputs (CO2)", index=False)
+
+    # Autofit column widths
+    dfs = {"Info": text_df, "Model Inputs": input_df, "Model Parameters": params_df,
+           "Outputs (Safe Occupancy)": occ_df, "Outputs (CO2)": co2_df}
+    for sheetname, df in dfs.items():
+        worksheet = writer.sheets[sheetname]
+        for idx, col in enumerate(df):
+            series = df[col]
+            max_len = max((
+                series.astype(str).map(len).max(),  # len of largest item
+                len(str(series.name))  # len of column name/header
+            )) + 1  # adding a little extra space
+            worksheet.set_column(idx, idx, max_len)  # set column width
+
+    # Save file and return data
+    writer.save()
+    xlsx_io.seek(0)
+    # https://en.wikipedia.org/wiki/Data_URI_scheme
+    media_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    data = base64.b64encode(xlsx_io.read()).decode("utf-8")
+    href_data_downloadable = f'data:{media_type};base64,{data}'
+    return href_data_downloadable
 
 
 # Parses Excel file and returns a list of model inputs
