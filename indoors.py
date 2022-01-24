@@ -42,7 +42,7 @@ class Indoors:
     breathing_flow_rate = 0.5  # m3/hr
     max_aerosol_radius = 2  # micrometers
     exhaled_air_inf = 30  # infection quanta/m3
-    max_viral_deact_rate = 0.3  # /hr
+    max_viral_deact_rate = 0.6  # /hr
     mask_passage_prob = 0.1  # 1 = no masks, ~0.1 cloth, <0.05 N95
     risk_tolerance = 0.1  # expected transmissions per infector
 
