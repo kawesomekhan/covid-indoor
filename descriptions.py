@@ -154,7 +154,8 @@ presets_strain = [
     {'label': "Beta (B.1.351 South Africa)", 'value': 1.501},
     {'label': "Gamma (P.1 Brazil)", 'value': 2.001},  # See viral_strain_marks for why this isn't 2.0
     {'label': "Delta (B.1.617.2 India)", 'value': 2.5},
-    {'label': "Omicron (B.1.1.529 South Africa)", 'value': 4.0},
+    {'label': "Omicron (BA.1 South Africa)", 'value': 4.0},
+    {'label': "Omicron (BA.2)", 'value': 5.2},
 ]
 viral_strain_marks = {
     1: {'label': 'Wildtype', 'style': {'max-width': '50px'}},
@@ -162,7 +163,8 @@ viral_strain_marks = {
     # 1.5: {'label': 'Alpha, Beta', 'style': {'max-width': '50px'}},
     # 2.001: {'label': 'Gamma', 'style': {'max-width': '50px'}},  # For some reason, 2.0 makes the label invisible
     2.5: {'label': 'Delta', 'style': {'max-width': '50px'}},
-    4: {'label': 'Omicron', 'style': {'max-width': '50px'}},
+    4: {'label': 'Omicron BA.1', 'style': {'max-width': '50px'}},
+    5.2: {'label': 'BA.2', 'style': {'max-width': '50px'}},
 }
 
 pim_header = "Percentage Immune: "

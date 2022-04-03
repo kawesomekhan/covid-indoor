@@ -164,7 +164,7 @@ layout = html.Div(children=[
                                                    min=0.5,
                                                    max=10,
                                                    step=0.01,
-                                                   value=2.5,
+                                                   value=4.0,
                                                    marks=desc.viral_strain_marks),
                                         html.Div([html.Br()], className='mobile-break')
                                     ], className='card-presets'),

@@ -309,7 +309,7 @@ layout = html.Div(children=[
                                     ]),
                                     dcc.Dropdown(id='presets-strain',
                                                  options=desc.presets_strain,
-                                                 value=2.5,
+                                                 value=4.0,
                                                  searchable=False,
                                                  clearable=False)
                                 ], className='card-presets')

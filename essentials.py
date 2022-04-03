@@ -228,7 +228,8 @@ viral_strains = {
     1.5: 'B.1.1.7 UK, B.1.351 South Africa',
     2.001: 'P.1 Brazil',
     2.5: 'B.1.617.2 India',
-    4.0: 'B.1.1.529 South Africa'
+    4.0: 'BA.1 South Africa',
+    5.2: 'BA.2'
 }
 
 
