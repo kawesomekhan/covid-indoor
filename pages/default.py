@@ -1,13 +1,12 @@
 import dash
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 import indoors as ind
 from indoors import Indoors
 
-from app import app
+# from index import app
 import descriptions as desc
 import essentials as ess
 
@@ -33,9 +32,16 @@ def update_risk_tol_disp: Update risk tolerance display value
 def update_mask_fit_disp: Updates mask fit/compliance filtration display based on slider value
 """
 
+# dash Pages
+dash.register_page(__name__, name="Basic", path="/")
+
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd, "en")
+
+# TODO: finish implementing this function / converting query string handling
+# def layout(units=None, lang=None, **other_unknown_query_strings):
+#     # get the language to populate texts
 
 # Main App
 layout = html.Div(children=[
@@ -403,7 +409,7 @@ layout = html.Div(children=[
 
 
 # Updates all remaining text based on language
-@app.callback(
+@callback(
     [Output('tab-a', 'label'),
      Output('curr-room-header', 'children'),
      Output('presets', 'options'),
@@ -473,13 +479,14 @@ layout = html.Div(children=[
      Input('window-width', 'children')]
 )
 def update_lang(search, window_width):
+    print("URL / window size updated! setting language display to " + ess.get_lang(search))
     return ess.get_lang_text_basic(ess.get_lang(search), int(window_width))
 
 
 # Model Update & Calculation
 # Also updates output if language is changed
 # See indoors.py def set_default_params(self) for parameter descriptions.
-@app.callback(
+@callback(
     [Output('safety-graph', 'figure'),
      Output('model-text-1', 'children'),
      Output('model-text-2', 'children'),
@@ -535,7 +542,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     risk_tolerance = 0.1
     def_aerosol_radius = 2
     max_viral_deact_rate = 0.6
-    #--
+
     language = ess.get_lang(search)
     error_msg = ess.get_err_msg(floor_area, ceiling_height, air_exchange_rate, merv, recirc_rate, def_aerosol_radius,
                                 max_viral_deact_rate, language, n_max_input, exp_time_input)
@@ -547,12 +554,13 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, \
                dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, error_msg, True
 
-    #--
     # Check our units! Did we switch? If so, convert values before calculating
     my_units = ess.get_units(search)
     curr_units = ess.did_switch_units(search, floor_area_text, ceiling_height_text)
     if curr_units != "":
         [floor_area, ceiling_height] = ess.convert_units(curr_units, my_units, floor_area, ceiling_height)
+
+    print("Updating model with units as " + my_units)
 
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
     preset_dd_value = ess.get_room_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
@@ -623,9 +631,9 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
            exp_time_text, n_max_text, qb_text, cq_text, error_msg, False
 
 
-# Update options based on selected presets, also if units changed
+# Update model inputs based on selected presets, also if units changed
 # Updates labels depending on selected unit system (and language)
-@app.callback(
+@callback(
     [Output('floor-area', 'value'),
      Output('ceiling-height', 'value'),
      Output('ventilation-type', 'value'),
@@ -680,7 +688,7 @@ def update_room_presets_and_units(preset, search, floor_area_text, ceiling_heigh
 
 
 # Update options based on selected presets
-@app.callback(
+@callback(
     [Output('exertion-level', 'value'),
      Output('exp-activity', 'value'),
      Output('mask-type', 'value'),
@@ -698,7 +706,7 @@ def update_human_presets(preset):
 
 
 # Ventilation ACH value display
-@app.callback(
+@callback(
     [Output('ventilation-type-output', 'children')],
     [Input('ventilation-type', 'value'),
      Input('url', 'search')]
@@ -712,7 +720,7 @@ def update_vent_disp(air_exchange_rate, search):
 
 
 # Filtration value display
-@app.callback(
+@callback(
     [Output('filter-type-output', 'children')],
     [Input('filter-type', 'value'),
      Input('url', 'search')]
@@ -723,7 +731,7 @@ def update_filt_disp(merv, search):
 
 
 # Recirculation value display
-@app.callback(
+@callback(
     [Output('recirc-rate-output-2', 'children')],
     [Input('recirc-rate', 'value'),
      Input('url', 'search')]
@@ -737,7 +745,7 @@ def update_recirc_disp(recirc_rate, search):
 
 
 # Relative Humidity slider value display
-@app.callback(
+@callback(
     [Output('humidity-output', 'children')],
     [Input('relative-humidity', 'value')]
 )
@@ -755,7 +763,7 @@ def update_humid_disp(relative_humidity):
 
 
 # Mask Filtration Efficiency slider value display
-@app.callback(
+@callback(
     [Output('mask-eff-output', 'children')],
     [Input('mask-type', 'value')]
 )
@@ -764,7 +772,7 @@ def update_mask_type_disp(mask_eff):
 
 
 # Mask Fit/Compliance slider value display
-@app.callback(
+@callback(
     [Output('mask-fit-output', 'children')],
     [Input('mask-fit', 'value')]
 )

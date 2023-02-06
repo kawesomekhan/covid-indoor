@@ -1,12 +1,10 @@
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 from dash.dependencies import Input, Output
 import dash._callback_context
 import flask
 
-from app import app
-from apps import default, advanced
+# TODO: combine index and app.py (rename to app.py)
 
 import descriptions as desc
 import essentials as ess
@@ -16,6 +14,31 @@ index.py handles the general app functionality related to the HTML header, switc
 Advanced Mode), Unit Systems, Languages, and running the app.
 
 """
+
+# Dash App Setup
+app = dash.Dash(__name__, suppress_callback_exceptions=True, use_pages=True,
+                external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+csp = {
+    'default-src': ['\'self\'',
+                    'https://www.google-analytics.com'],
+    'script-src': ['\'self\'',
+                   'https://www.googletagmanager.com',
+                   'https://www.google-analytics.com',
+                   '\'unsafe-inline\'',
+                   '\'unsafe-eval\''],
+    'style-src': ['\'self\'',
+                  'https://fonts.googleapis.com',
+                  '\'unsafe-inline\''],
+    'font-src': ['\'self\'',
+                 'https://fonts.googleapis.com',
+                 'https://fonts.gstatic.com']
+}
+
+# Talisman(app.server, content_security_policy=csp)
+
+curr_units = 'british'
+
 
 # Languages
 languages = [
@@ -78,12 +101,39 @@ app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     dcc.Location(id='url-read'),
 
+
+
     html.Div(className='grid-header', children=[
         html.Div(className='card-header', children=[
             html.Span(desc.header, id='header-text')
         ]),
         html.Div(className='card-header', children=[
+
             html.Div(id='header-left', children=[
+                dbc.NavbarSimple(
+                    children=[
+                        dbc.DropdownMenu(
+                            children=[
+                                dbc.DropdownMenuItem("App Modes", header=True),
+                                dbc.DropdownMenuItem("Basic", href="/", style={"font-size": "13px"}),
+                                dbc.DropdownMenuItem("Advanced", href="/advanced", style={"font-size": "13px"}),
+                            ],
+                            nav=True,
+                            in_navbar=True,
+                            label="Modes",
+                            id='navbar-dropdown-menu',
+                            size="lg",
+                        ),
+                    ],
+                    links_left=False,
+                    color="#fff",
+                    dark=False,
+                    brand="Switch App Mode",
+                    brand_style={
+                        "color": "#de1616",
+                    },
+                    id='navbar',
+                ),
                 html.Div(className='grid-settings', children=[
                     html.Div(className='card-settings', children=[
                         html.Div(html.Span(desc.language_dd, id='language-dd'), className='settings-header'),
@@ -101,21 +151,22 @@ app.layout = html.Div([
                                      searchable=False,
                                      clearable=False)
                     ]),
-                    html.Div(className='card-settings', children=[
-                        html.Div(html.Span(desc.mode_dd, id='mode-dd'), className='settings-header'),
-                        dcc.Dropdown(id='app-mode',
-                                     options=desc.app_modes,
-                                     value="",
-                                     searchable=False,
-                                     clearable=False)
-                    ]),
+                    # html.Div(className='card-settings', children=[
+                    #     html.Div(html.Span(desc.mode_dd, id='mode-dd'), className='settings-header'),
+                    #     dcc.Dropdown(id='app-mode',
+                    #                  options=desc.app_modes,
+                    #                  value="",
+                    #                  searchable=False,
+                    #                  clearable=False)
+                    # ]),
                 ]),
 
             ])
         ]),
     ]),
     html.Br(),
-    html.Div(id='page-content'),
+    # html.Div(id='page-content'),
+    dash.page_container,
     html.Br(),
     html.Div(desc.footer, id='footer-text'),
 
@@ -168,17 +219,17 @@ def update_header_and_footer(search):
     return ess.get_header_and_footer_text(language)
 
 
-# Updates page content and app dropdown based on URL
-@app.callback(
-    [Output('page-content', 'children'),
-     Output('app-mode', 'value')],
-    [Input('url', 'pathname')]
-)
-def display_page(pathname):
-    if pathname == '/apps/advanced' or pathname == '/apps/advanced/':
-        return [advanced.layout, 'advanced']
-    else:
-        return [default.layout, 'basic']
+# # Updates page content and app dropdown based on URL
+# @app.callback(
+#     [Output('page-content', 'children'),
+#      Output('app-mode', 'value')],
+#     [Input('url', 'pathname')]
+# )
+# def display_page(pathname):
+#     if pathname == '/advanced' or pathname == '/advanced/':
+#         return [advanced.layout, 'advanced']
+#     else:
+#         return [default.layout, 'basic']
 
 
 # Updates URL based on menu dropdowns (language, units, mode)
@@ -189,8 +240,10 @@ def display_page(pathname):
      Input('url-read', 'search')]
 )
 def update_units_search(units, lang, search):
+    print("Updating URL query with units as " + units + " and language as " + lang)
     # if nothing is selected in our dropdown, that means we just loaded the page
     if units == "":
+        print("Just loaded!")
         return search
 
     units_str = ""
@@ -245,8 +298,8 @@ def update_app_mode(mode):
     if mode == 'basic':
         return "/"
     elif mode == 'advanced':
-        return "/apps/advanced"
+        return "/advanced"
 
 
 if __name__ == "__main__":
-    app.run_server(debug=False)
+    app.run_server(debug=True)

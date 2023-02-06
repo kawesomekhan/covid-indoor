@@ -1,4 +1,4 @@
-import dash_html_components as html
+from dash import html
 
 """
 descriptions.py contains all English text used throughout the app (Basic, Advanced Mode).

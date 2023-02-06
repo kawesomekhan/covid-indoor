@@ -1,5 +1,5 @@
 import plotly.graph_objects as go
-import dash_html_components as html
+from dash import html
 
 import descriptions as desc
 import descriptions_cs as desc_cs
@@ -377,11 +377,16 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     for exp_time in numpy.logspace(math.log(0.1, 10), math.log(1000, 10), 100):
         safe_co2_limit = indoor_model.get_safe_resp_co2_limit(exp_time)
         recommended_co2_limit = min(safe_co2_limit, indoor_model.calc_co2_exp_time(exp_time, risk_mode))
-        safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
-        recommended_df = recommended_df.append(pd.DataFrame({'exposure_time': [exp_time],
-                                                             'co2_rec': [recommended_co2_limit]}))
-        background_df = background_df.append(pd.DataFrame({'exposure_time': [exp_time],
-                                                           'co2_background': [indoor_model.atm_co2]}))
+        # safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
+        safe_df = pd.concat([safe_df, pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]})])
+        # recommended_df = recommended_df.append(pd.DataFrame({'exposure_time': [exp_time],
+        #                                                      'co2_rec': [recommended_co2_limit]}))
+        recommended_df = pd.concat([recommended_df,
+                                    pd.DataFrame({'exposure_time': [exp_time], 'co2_rec': [recommended_co2_limit]})])
+        # background_df = background_df.append(pd.DataFrame({'exposure_time': [exp_time],
+        #                                                    'co2_background': [indoor_model.atm_co2]}))
+        background_df = pd.concat([background_df,
+                                   pd.DataFrame({'exposure_time': [exp_time], 'co2_background': [indoor_model.atm_co2]})])
 
     new_fig = go.Figure()
     recommended_co2_text = desc.recommended_co2_text
@@ -490,8 +495,10 @@ def calc_n_max_series(indoor_model, t_min, t_max, t_step):
     for exp_time in numpy.arange(t_min, t_max, t_step):
         n_max_trans = indoor_model.calc_n_max(exp_time)
         n_max_ss = indoor_model.calc_n_max(exp_time, assump='steady-state')
-        df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'occupancy_trans': [n_max_trans],
-                                     'occupancy_ss': [n_max_ss]}))
+        # df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'occupancy_trans': [n_max_trans],
+        #                              'occupancy_ss': [n_max_ss]}))
+        df = pd.concat([df, pd.DataFrame({'exposure_time': [exp_time], 'occupancy_trans': [n_max_trans],
+                                          'occupancy_ss': [n_max_ss]})])
 
     return df
 
@@ -501,7 +508,8 @@ def get_max_time_series(indoor_model, n_min, n_max, n_step, risk_mode):
     df = pd.DataFrame(columns=['capacity', 'exp-time'])
     for capacity in numpy.arange(n_min, n_max, n_step):
         exp_time = indoor_model.calc_max_time(capacity, risk_mode)
-        df = df.append(pd.DataFrame({'capacity': [capacity], 'exp-time': [exp_time]}))
+        # df = df.append(pd.DataFrame({'capacity': [capacity], 'exp-time': [exp_time]}))
+        df = pd.concat([df, pd.DataFrame({'capacity': [capacity], 'exp-time': [exp_time]})])
 
     return df
 
@@ -513,8 +521,10 @@ def calc_co2_series(indoor_model, t_min, t_max, t_num, risk_mode):
         co2_trans = indoor_model.calc_co2_exp_time(exp_time, risk_mode)
         co2_resp = indoor_model.get_safe_resp_co2_limit(exp_time)
         co2_rec = min(co2_trans, co2_resp)
-        df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans],
-                                     'co2_resp': [co2_resp], 'co2_rec': [co2_rec]}))
+        # df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans],
+        #                              'co2_resp': [co2_resp], 'co2_rec': [co2_rec]}))
+        df = pd.concat([df, pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans],
+                                          'co2_resp': [co2_resp], 'co2_rec': [co2_rec]})])
 
     return df
 

@@ -4,5 +4,3 @@ venv
 .env
 .idea
 /virtual-env/
-/venv/
-/venv-old/

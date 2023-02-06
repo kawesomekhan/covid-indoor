@@ -1,13 +1,12 @@
 import dash
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 import indoors as ind
 from indoors import Indoors
 
-from app import app
+# from index import app
 import descriptions as desc
 import descriptions_fr as desc_fr
 import essentials as ess
@@ -34,6 +33,9 @@ def update_presets: Updates options based on selected presets
 def update_risk_tol_disp: Update risk tolerance display value
 def update_mask_fit_disp: Updates mask fit/compliance filtration display based on slider value
 """
+
+# dash Pages
+dash.register_page(__name__)
 
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
@@ -513,7 +515,7 @@ layout = html.Div(children=[
 
 
 # Updates all remaining text based on language
-@app.callback(
+@callback(
     [Output('adv-tab-a', 'label'),
      Output('adv-curr-room-header', 'children'),
      Output('adv-presets', 'options'),
@@ -604,7 +606,7 @@ def update_lang_adv(search, window_width):
 
 # Model Update & Calculation
 # See indoors.py def set_default_params(self) for parameter descriptions.
-@app.callback(
+@callback(
     [Output('adv-safety-graph', 'figure'),
      Output('adv-co2-output-graph', 'figure'),
      Output('adv-co2-output-graph', 'config'),
@@ -840,7 +842,7 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
 
 
 # Update main panel (occupancy panel) first sentence based on the selected language, prevalence, and risk mode.
-@app.callback(
+@callback(
     [Output('adv-main-panel-s1', 'children'),
      Output('adv-main-airb-trans-disc', 'children')],
     [Input('adv-risk-mode', 'value'),
@@ -878,7 +880,7 @@ def update_occupancy_panel_sentence(risk_mode, prevalence, search):
 
 
 # Update prevalence input (enabled/disabled) depending on selected risk mode.
-@app.callback(
+@callback(
     [Output('adv-prev-block', 'style')],
     [Input('adv-risk-mode', 'value')]
 )
@@ -890,7 +892,7 @@ def update_prev_co2_vis(risk_mode):
 
 
 # Update risk alert display (open/closed) depending on selected risk mode
-@app.callback(
+@callback(
     [Output('adv-risk-alert', 'children'),
      Output('adv-risk-alert', 'is_open')],
     [Input('adv-risk-mode', 'value'),
@@ -911,7 +913,7 @@ def update_risk_alert(risk_mode, search):
 
 # Update options based on selected presets, also if units changed, also if uploaded file
 # Updates labels depending on selected unit system (and language)
-@app.callback(
+@callback(
     [Output('adv-floor-area', 'value'),
      Output('adv-ceiling-height', 'value'),
      Output('adv-ventilation-type', 'value'),
@@ -983,7 +985,7 @@ def update_room_presets_and_units(preset, search, upload_contents,
 
 
 # Update options based on selected presets, also if uploaded file
-@app.callback(
+@callback(
     [Output('adv-exertion-level', 'value'),
      Output('adv-exp-activity', 'value'),
      Output('adv-mask-type', 'value'),
@@ -1012,7 +1014,7 @@ def update_human_presets(preset, upload_contents, upload_filename):
 
 
 # Update inputs based on uploaded Excel file
-@app.callback(
+@callback(
     [Output('adv-risk-tolerance', 'value'),
      Output('adv-age-group', 'value'),
      Output('adv-viral-strain', 'value'),
@@ -1037,7 +1039,7 @@ def import_excel(contents, filename, curr_risk, curr_age, curr_strain):
 
 
 # Update max pim slider value
-@app.callback(
+@callback(
     [Output('adv-pim-input', 'max'),
      Output('adv-pim-input', 'value')],
     [Input('adv-prev', 'value'),
@@ -1064,7 +1066,7 @@ def update_pim_slider_max(prev, upload_contents, curr_pim, upload_filename):
 
 
 # Relative Humidity slider value display
-@app.callback(
+@callback(
     [Output('adv-humidity-output', 'children')],
     [Input('adv-relative-humidity', 'value')]
 )
@@ -1073,7 +1075,7 @@ def update_humid_disp(relative_humidity):
 
 
 # Risk tolerance slider value display
-@app.callback(
+@callback(
     [Output('adv-risk-tolerance-output', 'children')],
     [Input('adv-risk-tolerance', 'value')]
 )
@@ -1082,7 +1084,7 @@ def update_risk_tol_disp(risk_tolerance):
 
 
 # Age Group slider value display
-@app.callback(
+@callback(
     [Output('adv-age-group-output', 'children')],
     [Input('adv-age-group', 'value')]
 )
@@ -1091,7 +1093,7 @@ def update_age_group_disp(age_factor):
 
 
 # Viral Strain slider value display
-@app.callback(
+@callback(
     [Output('adv-viral-strain-output', 'children')],
     [Input('adv-viral-strain', 'value')]
 )
@@ -1103,7 +1105,7 @@ def update_viral_strain_disp(strain_factor):
 
 
 # Percentage Immune slider value display
-@app.callback(
+@callback(
     [Output('adv-pim-output', 'children'),
      Output('adv-pim-output-other', 'children')],
     [Input('adv-pim-input', 'value')]
@@ -1114,7 +1116,7 @@ def update_viral_strain_disp(pim):
 
 
 # Mask Filtration Efficiency slider value display
-@app.callback(
+@callback(
     [Output('adv-mask-eff-output', 'children')],
     [Input('adv-mask-type', 'value')]
 )
@@ -1123,7 +1125,7 @@ def update_mask_type_disp(mask_eff):
 
 
 # Mask Fit/Compliance slider value display
-@app.callback(
+@callback(
     [Output('adv-mask-fit-output', 'children')],
     [Input('adv-mask-fit', 'value')]
 )
