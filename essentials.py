@@ -1137,7 +1137,8 @@ def get_header_and_footer_text(language):
             desc_file.units_dd,
             desc_file.mode_dd,
             desc_file.unit_settings,
-            desc_file.app_modes,
+            desc_file.app_modes[0]['label'],
+            desc_file.app_modes[1]['label'],
             footer]
 
 

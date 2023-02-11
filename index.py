@@ -114,13 +114,14 @@ app.layout = html.Div([
                     children=[
                         dbc.DropdownMenu(
                             children=[
-                                dbc.DropdownMenuItem("App Modes", header=True),
-                                dbc.DropdownMenuItem("Basic", href="/", style={"font-size": "13px"}),
-                                dbc.DropdownMenuItem("Advanced", href="/advanced", style={"font-size": "13px"}),
+                                dbc.DropdownMenuItem(desc.app_modes[0]['label'], href="/", style={"font-size": "13px"},
+                                                     id='basic-dd-item'),
+                                dbc.DropdownMenuItem(desc.app_modes[1]['label'], href="/advanced", style={"font-size": "13px"},
+                                                     id='adv-dd-item'),
                             ],
                             nav=True,
                             in_navbar=True,
-                            label="Modes",
+                            label=desc.mode_dd,
                             id='navbar-dropdown-menu',
                             size="lg",
                         ),
@@ -203,9 +204,10 @@ app.clientside_callback(
     [Output('header-text', 'children'),
      Output('language-dd', 'children'),
      Output('units-dd', 'children'),
-     Output('mode-dd', 'children'),
+     Output('navbar-dropdown-menu', 'label'),
      Output('units-setting', 'options'),
-     Output('app-mode', 'options'),
+     Output('basic-dd-item', 'children'),
+     Output('adv-dd-item', 'children'),
      Output('footer-text', 'children')],
     [Input('url', 'search')]
 )

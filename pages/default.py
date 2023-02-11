@@ -39,9 +39,12 @@ dash.register_page(__name__, name="Basic", path="/")
 myInd = ind.Indoors()
 fig = ess.get_model_figure(myInd, "en")
 
+
 # TODO: finish implementing this function / converting query string handling
 # def layout(units=None, lang=None, **other_unknown_query_strings):
 #     # get the language to populate texts
+#     text = ess.get_lang_text_basic(lang, int(window_width))
+
 
 # Main App
 layout = html.Div(children=[
