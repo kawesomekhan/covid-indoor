@@ -884,6 +884,11 @@ def get_lang_text_basic(language, disp_width):
     if hasattr(desc_file, 'main_panel_six_ft_3'):
         main_panel_six_ft_3 = desc_file.main_panel_six_ft_3
 
+    # if a language doesn't have the same amount of viral presets as english, fallback to english
+    presets_strain = desc.presets_strain
+    if len(desc_file.presets_strain) == len(desc.presets_strain):
+        presets_strain = desc_file.presets_strain
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -892,7 +897,7 @@ def get_lang_text_basic(language, disp_width):
             desc_file.curr_age_header,
             desc_file.presets_age,
             desc_file.curr_strain_header,
-            desc_file.presets_strain,
+            presets_strain,
             desc_file.other_risk_modes_desc,
             desc_file.main_panel_s1,
             desc_file.main_panel_six_ft_1,

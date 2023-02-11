@@ -291,16 +291,16 @@ def update_dropdowns(search):
     return [my_units, my_lang]
 
 
-# Updates URL pathname based on mode dropdown
-@app.callback(
-    Output('url', 'pathname'),
-    [Input('app-mode', 'value')]
-)
-def update_app_mode(mode):
-    if mode == 'basic':
-        return "/"
-    elif mode == 'advanced':
-        return "/advanced"
+# # Updates URL pathname based on mode dropdown
+# @app.callback(
+#     Output('url', 'pathname'),
+#     [Input('app-mode', 'value')]
+# )
+# def update_app_mode(mode):
+#     if mode == 'basic':
+#         return "/basic"
+#     elif mode == 'advanced':
+#         return "/advanced"
 
 
 if __name__ == "__main__":
