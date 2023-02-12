@@ -179,6 +179,10 @@ layout = html.Div(children=[
                                                    min=0,
                                                    max=1,
                                                    step=0.01,
+                                                   marks={
+                                                       0: '0%',
+                                                       0.99: '99%'
+                                                   },
                                                    value=0),
                                     ], className='card-presets')
                                 ],
@@ -1038,10 +1042,11 @@ def import_excel(contents, filename, curr_risk, curr_age, curr_strain):
         return no_output
 
 
-# Update max pim slider value
+# Update max pim slider value and marks
 @callback(
     [Output('adv-pim-input', 'max'),
-     Output('adv-pim-input', 'value')],
+     Output('adv-pim-input', 'value'),
+     Output('adv-pim-input', 'marks')],
     [Input('adv-prev', 'value'),
      Input('adv-upload-excel', 'contents')],
     [State('adv-pim-input', 'value'),
@@ -1062,7 +1067,12 @@ def update_pim_slider_max(prev, upload_contents, curr_pim, upload_filename):
         if curr_pim >= pim_max:
             new_pim = pim_max - 0.01
 
-        return [pim_max, new_pim]
+    marks = {
+        0: '0%',
+        pim_max: '{:.0%}'.format(pim_max)
+    }
+
+    return [pim_max, new_pim, marks]
 
 
 # Relative Humidity slider value display
