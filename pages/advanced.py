@@ -2,13 +2,11 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
-from dash.exceptions import PreventUpdate
 import indoors as ind
 from indoors import Indoors
 
 # from index import app
 import descriptions as desc
-import descriptions_fr as desc_fr
 import essentials as ess
 
 from datetime import datetime

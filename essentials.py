@@ -2,24 +2,12 @@ import plotly.graph_objects as go
 from dash import html
 
 import descriptions as desc
-import descriptions_cs as desc_cs
-import descriptions_da as desc_da
-import descriptions_de as desc_de
-import descriptions_el as desc_el
-import descriptions_es as desc_es
-import descriptions_eu as desc_eu
-import descriptions_fr as desc_fr
-import descriptions_zh as desc_zh
-import descriptions_zh_tw as desc_zh_tw
-import descriptions_hi as desc_hi
-import descriptions_hu as desc_hu
-import descriptions_id as desc_id
-import descriptions_it as desc_it
-import descriptions_ko as desc_ko
-import descriptions_nl as desc_nl
-import descriptions_pt_br as desc_pt_br
-import descriptions_ru as desc_ru
-import descriptions_sv as desc_sv
+from languages import descriptions_zh as desc_zh, descriptions_nl as desc_nl, descriptions_eu as desc_eu, \
+    descriptions_pt_br as desc_pt_br, descriptions_el as desc_el, descriptions_it as desc_it, \
+    descriptions_es as desc_es, descriptions_hi as desc_hi, descriptions_id as desc_id, descriptions_de as desc_de, \
+    descriptions_ko as desc_ko, descriptions_fr as desc_fr, descriptions_cs as desc_cs, \
+    descriptions_zh_tw as desc_zh_tw, descriptions_hu as desc_hu, descriptions_sv as desc_sv, \
+    descriptions_ru as desc_ru, descriptions_da as desc_da
 
 import pandas as pd
 import numpy
