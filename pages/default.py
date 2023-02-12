@@ -482,7 +482,6 @@ layout = html.Div(children=[
      Input('window-width', 'children')]
 )
 def update_lang(search, window_width):
-    print("URL / window size updated! setting language display to " + ess.get_lang(search))
     return ess.get_lang_text_basic(ess.get_lang(search), int(window_width))
 
 
@@ -562,8 +561,6 @@ def update_figure(floor_area, ceiling_height, air_exchange_rate, recirc_rate, me
     curr_units = ess.did_switch_units(search, floor_area_text, ceiling_height_text)
     if curr_units != "":
         [floor_area, ceiling_height] = ess.convert_units(curr_units, my_units, floor_area, ceiling_height)
-
-    print("Updating model with units as " + my_units)
 
     # Check if we just moved to a preset; if not, change the preset dropdown to custom
     preset_dd_value = ess.get_room_preset_dd_value(floor_area, ceiling_height, air_exchange_rate, recirc_rate, merv,
