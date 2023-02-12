@@ -33,7 +33,10 @@ def update_mask_fit_disp: Updates mask fit/compliance filtration display based o
 """
 
 # dash Pages
-dash.register_page(__name__, name="Basic", path="/")
+dash.register_page(__name__,
+                   name="Basic",
+                   path="/",
+                   redirect_from=["/apps"])
 
 # COVID-19 Calculator Setup
 myInd = ind.Indoors()
