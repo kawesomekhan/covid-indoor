@@ -805,7 +805,7 @@ def get_excel(indoor_model, desc_file, risk_mode, model_inputs_combined):
             worksheet.set_column(idx, idx, max_len)  # set column width
 
     # Save file and return data
-    writer.save()
+    writer.close()
     xlsx_io.seek(0)
     # https://en.wikipedia.org/wiki/Data_URI_scheme
     media_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
