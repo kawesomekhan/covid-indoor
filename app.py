@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash.dependencies import Input, Output
 import dash._callback_context
-import flask
+from flask_talisman import Talisman
 
 import descriptions as desc
 import essentials as ess
@@ -32,7 +32,7 @@ csp = {
                  'https://fonts.gstatic.com']
 }
 
-# Talisman(app.server, content_security_policy=csp)
+Talisman(app.server, content_security_policy=csp)
 
 curr_units = 'british'
 
@@ -271,4 +271,4 @@ def update_dropdowns(search):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=False)
