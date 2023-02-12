@@ -273,7 +273,7 @@ body {
         grid-template-columns: 100%;
         padding: 0;
     }
-    .card-header {
+    .app-card-header {
         margin: 1em;
         overflow-wrap: break-word;
     }

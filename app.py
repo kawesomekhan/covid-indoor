@@ -13,8 +13,7 @@ Advanced Mode), Unit Systems, Languages, and running the app.
 """
 
 # Dash App Setup
-app = dash.Dash(__name__, suppress_callback_exceptions=True, use_pages=True,
-                external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, suppress_callback_exceptions=True, use_pages=True)
 
 csp = {
     'default-src': ['\'self\'',
@@ -98,10 +97,10 @@ app.layout = html.Div([
     dcc.Location(id='url-read'),
 
     html.Div(className='grid-header', children=[
-        html.Div(className='card-header', children=[
+        html.Div(className='app-card-header', children=[
             html.Span(desc.header, id='header-text')
         ]),
-        html.Div(className='card-header', children=[
+        html.Div(className='app-card-header', children=[
 
             html.Div(id='header-left', children=[
                 dbc.NavbarSimple(
