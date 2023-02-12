@@ -1,25 +1,13 @@
 import plotly.graph_objects as go
-import dash_html_components as html
+from dash import html
 
 import descriptions as desc
-import descriptions_cs as desc_cs
-import descriptions_da as desc_da
-import descriptions_de as desc_de
-import descriptions_el as desc_el
-import descriptions_es as desc_es
-import descriptions_eu as desc_eu
-import descriptions_fr as desc_fr
-import descriptions_zh as desc_zh
-import descriptions_zh_tw as desc_zh_tw
-import descriptions_hi as desc_hi
-import descriptions_hu as desc_hu
-import descriptions_id as desc_id
-import descriptions_it as desc_it
-import descriptions_ko as desc_ko
-import descriptions_nl as desc_nl
-import descriptions_pt_br as desc_pt_br
-import descriptions_ru as desc_ru
-import descriptions_sv as desc_sv
+from languages import descriptions_zh as desc_zh, descriptions_nl as desc_nl, descriptions_eu as desc_eu, \
+    descriptions_pt_br as desc_pt_br, descriptions_el as desc_el, descriptions_it as desc_it, \
+    descriptions_es as desc_es, descriptions_hi as desc_hi, descriptions_id as desc_id, descriptions_de as desc_de, \
+    descriptions_ko as desc_ko, descriptions_fr as desc_fr, descriptions_cs as desc_cs, \
+    descriptions_zh_tw as desc_zh_tw, descriptions_hu as desc_hu, descriptions_sv as desc_sv, \
+    descriptions_ru as desc_ru, descriptions_da as desc_da
 
 import pandas as pd
 import numpy
@@ -377,11 +365,16 @@ def get_model_figure_co2(indoor_model, risk_mode, language, window_width):
     for exp_time in numpy.logspace(math.log(0.1, 10), math.log(1000, 10), 100):
         safe_co2_limit = indoor_model.get_safe_resp_co2_limit(exp_time)
         recommended_co2_limit = min(safe_co2_limit, indoor_model.calc_co2_exp_time(exp_time, risk_mode))
-        safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
-        recommended_df = recommended_df.append(pd.DataFrame({'exposure_time': [exp_time],
-                                                             'co2_rec': [recommended_co2_limit]}))
-        background_df = background_df.append(pd.DataFrame({'exposure_time': [exp_time],
-                                                           'co2_background': [indoor_model.atm_co2]}))
+        # safe_df = safe_df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]}))
+        safe_df = pd.concat([safe_df, pd.DataFrame({'exposure_time': [exp_time], 'co2_safe': [safe_co2_limit]})])
+        # recommended_df = recommended_df.append(pd.DataFrame({'exposure_time': [exp_time],
+        #                                                      'co2_rec': [recommended_co2_limit]}))
+        recommended_df = pd.concat([recommended_df,
+                                    pd.DataFrame({'exposure_time': [exp_time], 'co2_rec': [recommended_co2_limit]})])
+        # background_df = background_df.append(pd.DataFrame({'exposure_time': [exp_time],
+        #                                                    'co2_background': [indoor_model.atm_co2]}))
+        background_df = pd.concat([background_df,
+                                   pd.DataFrame({'exposure_time': [exp_time], 'co2_background': [indoor_model.atm_co2]})])
 
     new_fig = go.Figure()
     recommended_co2_text = desc.recommended_co2_text
@@ -490,8 +483,10 @@ def calc_n_max_series(indoor_model, t_min, t_max, t_step):
     for exp_time in numpy.arange(t_min, t_max, t_step):
         n_max_trans = indoor_model.calc_n_max(exp_time)
         n_max_ss = indoor_model.calc_n_max(exp_time, assump='steady-state')
-        df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'occupancy_trans': [n_max_trans],
-                                     'occupancy_ss': [n_max_ss]}))
+        # df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'occupancy_trans': [n_max_trans],
+        #                              'occupancy_ss': [n_max_ss]}))
+        df = pd.concat([df, pd.DataFrame({'exposure_time': [exp_time], 'occupancy_trans': [n_max_trans],
+                                          'occupancy_ss': [n_max_ss]})])
 
     return df
 
@@ -501,7 +496,8 @@ def get_max_time_series(indoor_model, n_min, n_max, n_step, risk_mode):
     df = pd.DataFrame(columns=['capacity', 'exp-time'])
     for capacity in numpy.arange(n_min, n_max, n_step):
         exp_time = indoor_model.calc_max_time(capacity, risk_mode)
-        df = df.append(pd.DataFrame({'capacity': [capacity], 'exp-time': [exp_time]}))
+        # df = df.append(pd.DataFrame({'capacity': [capacity], 'exp-time': [exp_time]}))
+        df = pd.concat([df, pd.DataFrame({'capacity': [capacity], 'exp-time': [exp_time]})])
 
     return df
 
@@ -513,8 +509,10 @@ def calc_co2_series(indoor_model, t_min, t_max, t_num, risk_mode):
         co2_trans = indoor_model.calc_co2_exp_time(exp_time, risk_mode)
         co2_resp = indoor_model.get_safe_resp_co2_limit(exp_time)
         co2_rec = min(co2_trans, co2_resp)
-        df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans],
-                                     'co2_resp': [co2_resp], 'co2_rec': [co2_rec]}))
+        # df = df.append(pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans],
+        #                              'co2_resp': [co2_resp], 'co2_rec': [co2_rec]}))
+        df = pd.concat([df, pd.DataFrame({'exposure_time': [exp_time], 'co2_trans': [co2_trans],
+                                          'co2_resp': [co2_resp], 'co2_rec': [co2_rec]})])
 
     return df
 
@@ -807,7 +805,7 @@ def get_excel(indoor_model, desc_file, risk_mode, model_inputs_combined):
             worksheet.set_column(idx, idx, max_len)  # set column width
 
     # Save file and return data
-    writer.save()
+    writer.close()
     xlsx_io.seek(0)
     # https://en.wikipedia.org/wiki/Data_URI_scheme
     media_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -874,6 +872,11 @@ def get_lang_text_basic(language, disp_width):
     if hasattr(desc_file, 'main_panel_six_ft_3'):
         main_panel_six_ft_3 = desc_file.main_panel_six_ft_3
 
+    # if a language doesn't have the same amount of viral presets as english, fallback to english
+    presets_strain = desc.presets_strain
+    if len(desc_file.presets_strain) == len(desc.presets_strain):
+        presets_strain = desc_file.presets_strain
+
     return [desc_file.about_header,
             desc_file.curr_room_header,
             desc_file.presets,
@@ -882,7 +885,7 @@ def get_lang_text_basic(language, disp_width):
             desc_file.curr_age_header,
             desc_file.presets_age,
             desc_file.curr_strain_header,
-            desc_file.presets_strain,
+            presets_strain,
             desc_file.other_risk_modes_desc,
             desc_file.main_panel_s1,
             desc_file.main_panel_six_ft_1,
@@ -1127,7 +1130,8 @@ def get_header_and_footer_text(language):
             desc_file.units_dd,
             desc_file.mode_dd,
             desc_file.unit_settings,
-            desc_file.app_modes,
+            desc_file.app_modes[0]['label'],
+            desc_file.app_modes[1]['label'],
             footer]
 
 
